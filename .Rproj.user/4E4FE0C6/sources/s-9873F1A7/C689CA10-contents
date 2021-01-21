@@ -155,9 +155,9 @@ There are two folders that need to be copied into the ACLIM2 folder on your comp
 
 1) [**00_ACLIM_shared>02_DATA>Newest**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk "00_ACLIM_shared>02_DATA>Newest"). This folder contains a folder called `roms_for_aclim` with all the ACLIM Level3 indices for model simulations available to ACLIM members.
 
-2) [**00_ACLIM_shared>02_DATA>Map_layers**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk "00_ACLIM_shared>02_DATA>Map_layers"). This folder contains base maps for the code below including `shp_files` and `geo_tif` folders.
+2) [**00_ACLIM_shared>02_DATA>Map_layers.zip**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk "00_ACLIM_shared>02_DATA>Map_layers"). This file needs to be unzipped after you download it to your local folder. It contains (large) base maps for the code below including `shp_files` and `geo_tif` folders.
 
-![Your local `ACLIM2/Data` directory should look something like this when you are done downloading the data.](Figs/data_dir.jpg){ width=65% }
+![Your local `ACLIM2/Data` directory should look something like this when you are done downloading the data and unzipping it.](Figs/data_dir.jpg){ width=65% }
 
 ## 2.3 Information about ACLIM Level3 indices
 

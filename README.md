@@ -166,12 +166,13 @@ your computer under \``~[YOURPATH]/ACLIM2/Data/in/`:
     ACLIM Level3 indices for model simulations available to ACLIM
     members.
 
-2.  [**00\_ACLIM\_shared\>02\_DATA\>Map\_layers**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk "00_ACLIM_shared>02_DATA>Map_layers").
-    This folder contains base maps for the code below including
+2.  [**00\_ACLIM\_shared\>02\_DATA\>Map\_layers.zip**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk "00_ACLIM_shared>02_DATA>Map_layers").
+    This file needs to be unzipped after you download it to your local
+    folder. It contains (large) base maps for the code below including
     `shp_files` and `geo_tif` folders.
 
 <figure>
-<img src="Figs/data_dir.jpg" style="width:65.0%" alt="" /><figcaption>Your local <code>ACLIM2/Data</code> directory should look something like this when you are done downloading the data.</figcaption>
+<img src="Figs/data_dir.jpg" style="width:65.0%" alt="" /><figcaption>Your local <code>ACLIM2/Data</code> directory should look something like this when you are done downloading the data and unzipping it.</figcaption>
 </figure>
 
 2.3 Information about ACLIM Level3 indices

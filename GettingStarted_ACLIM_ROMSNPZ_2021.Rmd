@@ -155,9 +155,9 @@ There are two folders that need to be copied into the ACLIM2 folder on your comp
 
 1) [**00_ACLIM_shared>02_DATA>Newest**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk "00_ACLIM_shared>02_DATA>Newest"). This folder contains a folder called `roms_for_aclim` with all the ACLIM Level3 indices for model simulations available to ACLIM members.
 
-2) [**00_ACLIM_shared>02_DATA>Map_layers**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk "00_ACLIM_shared>02_DATA>Map_layers"). This folder contains base maps for the code below including `shp_files` and `geo_tif` folders.
+2) [**00_ACLIM_shared>02_DATA>Map_layers.zip**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk "00_ACLIM_shared>02_DATA>Map_layers"). This file needs to be unzipped after you download it to your local folder. It contains (large) base maps for the code below including `shp_files` and `geo_tif` folders.
 
-![Your local `ACLIM2/Data` directory should look something like this when you are done downloading the data.](Figs/data_dir.jpg){ width=65% }
+![Your local `ACLIM2/Data` directory should look something like this when you are done downloading the data and unzipping it.](Figs/data_dir.jpg){ width=65% }
 
 ## 2.3 Information about ACLIM Level3 indices
 
@@ -511,10 +511,10 @@ The Model for Interdisciplinary Research on Climate (MIROC)-M model developed by
 This folder contains the most recent queries from the BEAST based on the scripts in [ACLIM_scripts]("https://github.com/kholsman/ACLIM/ACLIM_scripts"). The queries create annual indices (e.g., mean summer bottom temperature for the EBS survey area) which are station specific(Station_modelname) and based on the mean sampling date for each station, or based on weekly values (under folder [weekly]("https://github.com/kholsman/ACLIM/ACLIM_data/ROMS_NPZ_queries/weekly"); are "clipped to the survey area").
 These indices were cleaned and aggregated in the .Rdata file `ROMSNPZ_indices.Rdata` using the script `createROMSNPZ.R`.
 
-```{r mdfile, include=FALSE, eval=F, echo=FALSE}
- source("R/convertmd.R")
+
+```{r makeReadME, echo=FALSE,eval=F}
+ # copy and paste this into R window (won't work within markdown)
+ rmd2md(rmd_fl = "GettingStarted_ACLIM_ROMSNPZ_2021",md_fl = "README")
 ```
-
-
 
 
