@@ -1,0 +1,24 @@
+{
+    "id": "6254E216",
+    "path": "~/GitHub_new/ACLIM2/R/sub_fun/convert2df.R",
+    "project_path": "R/sub_fun/convert2df.R",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1611249847803.0,
+    "source_on_save": false,
+    "relative_order": 3,
+    "properties": {
+        "cursorPosition": "50,0",
+        "scrollLine": "12"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1611250573,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1611250573718,
+    "read_only": false,
+    "read_only_alternatives": []
+}

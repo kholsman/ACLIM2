@@ -41,8 +41,8 @@ output:
 ![.](Figs/ACLIM_logo.jpg){ width=20%}
 
 
-#### [**ACLIM Repo: github.com/kholsman/ACLIM2**](https://github.com/kholsman/ACLIM2 "ACLIM2 Repo")
- and data files maintained by:  
+#### [**ACLIM Repo: github.com/kholsman/ACLIM2**](https://github.com/kholsman/ACLIM2 "ACLIM2 Repo")  
+  Repo maintained by:  
   Kirstin Holsman  
   Alaska Fisheries Science Center  
   NOAA Fisheries, Seattle WA  
@@ -111,32 +111,63 @@ Cheng et al. in prep
 Kearney et al. in prep
 Pilcher et al. in prep (CMIP5 K20 projections) (ACLIM indices avail by permission only)
 
-## 1.3. ACLIM ROMSNPZ outputs: Level3 ACLIM Indices (google drive)
+# 2. Getting started with Level3 ACLIM Indices (google drive)
 
-### 1.3.1. Step 1: Clone the ACLIM2 repo to your local directory:
+## 2.1. Step 1: Clone the ACLIM2 GitHub code repo to your local directory:
 
 First clone the ACLIM ROMSNPZ repo. This repo will open and explore the netcdf (.nc) files in R and produce plots and standardized outputs for ACLIM analyses. Some standardized tools are included as functions in this repo including spatial averaging for seasonal, monthly and annual indices (e.g., Fall zooplankton biomass), as well as bias correction for projections (see Holsman et al. 2020 and Reum et al. 2020 for ACLIM 1.0 bias correction methods). The repo also includes a Rshiny interactive exploratory graphing tool which can be viewed online [**at this link**](). 
 
-Select `clone` or downlaod from the upper right hand side of the repo page :[**github.com/kholsman/ACLIM2**](https://github.com/kholsman/ACLIM2 "ACLIM2 Repo") and save it to your local directory: `~[YOURPATH]/ACLIM2`.
+### 2.1.1 R() to download from github:
+
+```{r gitdwnld, eval = FALSE,echo =T}
+
+    # Specify the download directory
+    main_nm       <- "ACLIM2"
+    download_path <- path.expand("~/desktop")
+    dest_fldr     <- file.path(download_path,main_nm)
+    
+    url           <- "https://github.com/kholsman/ACLIM2/archive/main.zip"
+    dest_file     <- file.path(download_path,paste0(main_nm,".zip"))
+    download.file(url=url, destfile=dest_file)
+    
+    # unzip the .zip file
+    setwd(download_path)
+    unzip (dest_file, exdir = "./",overwrite = T)
+    #rename the unzipped folder from ACLIM2-main to ACLIM2
+    file.rename(paste0(main_nm,"-main"), main_nm)
+    setwd(main_nm)
+    
+```
+
+If you have Rstudio installed you can double click on the ACLIM2.Rproj and use Rstudio to manage your plotting and files (recommended).
+
+### 2.1.2 Manually download from github repo using:
+
+Select `Download ZIP` from the upper right hand side of the repo page :[**github.com/kholsman/ACLIM2**](https://github.com/kholsman/ACLIM2 "ACLIM2 Repo") and save it to your local directory: `~[YOURPATH]/ACLIM2`.
 
 ![](Figs/clone.jpg){ width=40% }
 
-### 1.3.2 Step 2: Download the data from ACLIM google drive:
+## 2.2. Step 2: Download the data from ACLIM google drive:
 
-Data files are too large to store in the GitHub repository and are instead saved in the shared ACLIM data folder. For most applications you can use the ACLIM level3 post-processed indices available on the shared ACLIM drive:
-[**00_ACLIM_shared>02_DATA>2021_01_19**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk "00_ACLIM_shared>02_DATA>2021_01_19"). 
+Data files are too large to store in the GitHub repository and are instead saved in the shared ACLIM data folder. For most applications you can use the ACLIM level3 post-processed indices available on the shared ACLIM drive in the root google drive data folder: [**00_ACLIM_shared>02_DATA**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk "00_ACLIM_shared>02_DATA"). 
 
-Please be sure to coordinate with ROMSNPZ modeling team members to ensure data is applied appropriately. If you need access to the raw ROMSNPZ files (netcdf, non-regridded large files located on MOX). Please contact [**Kelly Kearney**](kelly.kearney@noaa.gov) or [**Al Hermann**](albert.j.hermann@noaa.gov).
+There are two folders that need to be copied into the ACLIM2 folder on your computer under ``~[YOURPATH]/ACLIM2/Data/in/`:
 
-**IMPORTANT**
+1) [**00_ACLIM_shared>02_DATA>Newest**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk "00_ACLIM_shared>02_DATA>Newest"). This folder contains a folder called `roms_for_aclim` with all the ACLIM Level3 indices for model simulations available to ACLIM members.
+
+2) [**00_ACLIM_shared>02_DATA>Map_layers**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk "00_ACLIM_shared>02_DATA>Map_layers"). This folder contains base maps for the code below including `shp_files` and `geo_tif` folders.
+
+![Your local `ACLIM2/Data` directory should look something like this when you are done downloading the data.](Figs/data_dir.jpg){ width=65% }
+
+## 2.3 Information about ACLIM Level3 indices
+
+Please be sure to coordinate with ROMSNPZ modeling team members to ensure data is applied appropriately. If you need access to the raw ROMSNPZ files (netcdf, non-regridded large files located on MOX). Please contact  [**Al Hermann**](albert.j.hermann@noaa.gov) or [**Kelly Kearney**](kelly.kearney@noaa.gov).
+
+**IMPORTANT**  
 The ACLIM indices are stored as netcdf files (.nc) format in the Data folder of the ACLIM shared google drive. Please note that while the CMIP5 set is now public (Hermann et al. 2019) **the CMIP6 suite is under embargo for QAQC and should not be shared outside of the ACLIM group**. Al, Wei, Kelly, Darren, and Kerim are in the process of synthesizing and publishing the CMIP6 data (goal is spring 2021 for submission), following those publications the data will be made accessible to the public via the PMEL data portal, as is the case for the CMIP5 data and public hindcasts. It is strongly recommended that you include at least one (ideally multiple) authors from the ROMSNPZ team as co-author on your paper if you are linking to this data, this is especially the case for the CMIP6 data. There are multiple spatial and temporal caveats that are best described in discussions with the authors of these data and inclusion as co-authors will facilitate appropriate application and interpretation of the ROMSNPZ data.
 
 
-These files can be used to generate seasonal, monthly, and annual indices (like those reported in Reum et al. 2020, Holsman et al. 2020).
-
-
-The ACLIM Level3 indices are stored in a folder by YYYY_MM_DD (e.g.,`2021_01_19`) downloaded from the root google drive folder [**00_ACLIM_shared>02_DATA**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk "00_ACLIM_shared>02_DATA"). The contents of the file (`roms_for_aclim` folder) should be copied into the `~[YOURPATH]/ACLIM2/Data/in/Newest` folder on your local repo directory, e.g.`~ACLIM2/Data/in/Newest/roms_for_aclim`.
-This folder is organized by Bering10K version, General Circulation Model (GCM) and carbon scenario, e.g. `B10K-H16_CMIP5_CESM_rcp45`. Within each folder the following subfolders are:
+These files can be used to generate seasonal, monthly, and annual indices (like those reported in Reum et al. 2020, Holsman et al. 2020). The `Newest` folder is organized by Bering10K version, General Circulation Model (GCM) and carbon scenario, e.g. `B10K-H16_CMIP5_CESM_rcp45`. Within each folder the following subfolders are:
 
 * `Level1`: (Empty; not copied from Mox)
 * `Level2`: (Empty; not copied from Mox)
@@ -149,8 +180,7 @@ This folder is organized by Bering10K version, General Circulation Model (GCM) a
 
 In section 2 below we explore these indices in more detail using R, including using (2) above to generate weekly, monthly, and seasonal indices (e.g. Fall Zooplankton) for use in biological models. 
 
-
-## 1.4. (Coming soon) PMEL public web-based database (beta-testing phase; currently limited to CMIP5)
+## 2.4. (Coming soon) PMEL public web-based database (beta-testing phase; currently limited to CMIP5)
 
 The ROMSNPZ team has been working with [Roland Schweitzer](roland.schweitzer@noaa.gov) and [Peggy Sullivan](peggy.sullivan@noaa.gov) to develop the ACLIM Live Access Server (LAS) to publicly host the published CMIP5 hindcasts and downscaled projections. This server is in beta testing phase and can be accessed at the following links:
 
@@ -160,7 +190,7 @@ The ROMSNPZ team has been working with [Roland Schweitzer](roland.schweitzer@noa
 
 ### [ERDAPP ACLIM data access tool](https://data.pmel.noaa.gov/aclim/erddap/)
 
-# 2. Exploring the ACLIM indices
+# 3. Exploring the ACLIM indices
 
 The following examples show how to access and plot the ACLIM indices from their stored netcdf (.nc) format in the Data folder of the ACLIM shared google drive. Please note that while the CMIP5 set is now public (Hermann et al. 2019) **the CMIP6 suite is under embargo for QAQC and should not be shared outside of the ACLIM group**. Al, Wei, Kelly, Darren, and Kerim are in the process of synthesizing and publishing the CMIP6 data (goal is spring 2021 for submission), following those publications the data will be made accessible to the public via the PMEL data portal, as is the case for the CMIP5 data and public hindcasts. It is strongly recommended that you include at least one (ideally multiple) authors from the ROMSNPZ team as co-author on your paper if you are linking to this data, this is especially the case for the CMIP6 data. There are multiple spatial and temporal caveats that are best described in discussions with the authors of these data and inclusion as co-authors will facilitate appropriate application and interpretation of the ROMSNPZ data.
 
@@ -205,12 +235,10 @@ The following examples show how to access and plot the ACLIM indices from their 
  
 ```
 
-## 2.1. Explore the indices using ncdf4 and ggplot
-
 The naming convention of the folders is:
 `B10K-[ROMSNPZ version]_[CMIP]_[GCM]_[carbon scenario]`.For example, the CMIP5 set of indices was downscaled using the H16 (Hermann et al. 2016) version of the ROMSNPZ. Three models were used to force boundary conditions( MIROC, CESM, and GFDL) under 2 carbon scenarios RCP 8.5 and RCP 4.5. So to see an individual trajectory we might look in the level3 (timeseries indices) folder under `B10K-H16_CMIP5_CESM_rcp45`, which would be the B10K version H16 of the CMIP5 CESM model under RCP4.5.
 
-### 2.1.1 Set up the R Workspace and explore the two ACLIM Level3 indices types:
+## 3.1. Set up the R Workspace and explore the two ACLIM Level3 indices types:
 
 The following `make.R` script will load the directory paths, preferences, packages, and based functions into R().
 ```{r setupL3, eval=F, echo=T}
@@ -251,7 +279,7 @@ Once the base files and setup are loaded you can explore the index types. Recall
  
 ```
  
-## 2.2. Explore "survey replicated" `.nc` files in R()
+## 3.2. Explore "survey replicated" `.nc` files in R()
 
 With the workspace setup the following code can be used to explore the ACLIM indices.The first indices we will explore are the survey replicated values for each variable. These are stored in the `ACLIMsurveyrep_B10K-[version_CMIPx_GCM_RCP].nc` in each scenario folder. 
 
@@ -293,8 +321,23 @@ Now let's explore the survey replicated data in more detail and use it to create
                         '2061-2080' = c(2061:2080),
                         '2081-2099' = c(2081:2099))
   
+    # View an individual variable (e.g., Bottom Temp)
+    # -------------------------------------------------------
+    srvy_vars
+    aclim
+    sim <- aclim[2]
+    # open a "region" or strata specific nc file
+    ncfl      <- file.path(sim,paste0(srvy_txt,sim,".nc"))
+    nc        <- nc_open(file.path(data_path,ncfl))
     
-    # Collate mean values across timeperiods and simulations:
+    # convert the nc files into a data.frame
+    tmp_var    <- convert2df(ncIN = nc, type = 2, varIN = "temp_bottom5m")
+    head(tmp_var)
+    nc_close(nc)
+    
+    
+    # Collate mean values across timeperiods and simulations
+    # -------------------------------------------------------
     m_set      <- c(18,19);aclim[m_set]
     mn_var_all <- get_mn_srvy_var(modset = aclim[m_set],varUSE="temp_bottom5m")
     mn_var_sf  <- convert2shp(mn_var_all%>%filter(!is.na(mnval)))
@@ -314,6 +357,7 @@ Now let's explore the survey replicated data in more detail and use it to create
     # This is slow but it works (repeat dev.new() twice if in Rstudio)...
     dev.new()
     p3
+    
     if(update.figs)  ggsave(file="Figs/mn_BT.jpg",width=8,height=5)
   
     graphics.off()
@@ -323,90 +367,76 @@ Now let's explore the survey replicated data in more detail and use it to create
 
 ![Bottom temperature projections under differing SSP126 (top row) and SSP585 (bottom row)](Figs/mn_BT.jpg)  
 
-## 2.3. Explore "weekly strata" `.nc` files in R()
+## 3.3. Explore "weekly strata" `.nc` files in R()
 
 The next set of indices to will explore are the weekly strata-specific values for each variable.These are stored in the `ACLIMregion_B10K-[version_CMIPx_GCM_RCP].nc` in each scenario folder. 
 
 ```{r readncfiles_weekly, eval=F, echo=T}
- 
- # list of the scenario x GCM downscaled ACLIM indices
- for(k in aclim)
-   cat(paste(k,"\n")
+    # list of the scenario x GCM downscaled ACLIM indices
+    for(k in aclim)
+      cat(paste(k,"\n")
 
- # open a "region" or strata specific nc file:
- i       <- 2
- ncfl    <- file.path(aclim[i],paste0(reg_txt,aclim[i],".nc"))
- nc      <- nc_open(file.path(data_path,"roms_for_public",ncfl))
- 
+    # View an individual variable (e.g., Bottom Temp)
+    # -------------------------------------------------------
+    weekly_vars
+    aclim
+    sim <- aclim[2]
+    # open a "region" or strata specific nc file
+    ncfl      <- file.path(sim,paste0(reg_txt,sim,".nc"))
+    nc        <- nc_open(file.path(data_path,ncfl))
+    
+    # convert the nc files into a data.frame
+    tmp_var    <- convert2df(ncIN = nc, type = 1, varIN = "temp_bottom5m")
+    head(tmp_var)
+    nc_close(nc)
+    
+  
+   # now plot the data:
+   
+   p4 <- ggplot(data = tmp_var) + 
+     geom_line(aes(x=time,y=val,color= strata),alpha=.8)+
+     facet_grid(basin~.)+
+     ylab(tmp_var$units[1])+
+     ggtitle(substr( aclim[i],18,nchar( aclim[i])-3))+
+     theme_minimal()
+   p4
+   
+   # To get the average value for a set of strata, weight the val by the area:
+   mn_NEBS <- getAVGnSUM(strataIN = NEBS_strata, dataIN = tmp_var)
+   mn_NEBS$basin = "NEBS"
+   mn_SEBS <-getAVGnSUM(strataIN = SEBS_strata, dataIN = tmp_var)
+   mn_SEBS$basin = "SEBS"
+   
+   p5 <- ggplot(data = rbind(mn_NEBS,mn_SEBS)) + 
+      geom_line(aes(x=time,y=mn_val,color=basin),alpha=.8)+
+      geom_smooth(aes(x=time,y=mn_val,color=basin),
+                  formula = y ~ x, se = T)+
+      facet_grid(basin~.)+
+      scale_color_viridis_d(begin=.4,end=.8)+
+      ylab(tmp_var$units[1])+
+      ggtitle( aclim[2])+
+      theme_minimal()
+  p5
+  if(update.figs)  ggsave(file="Figs/weekly_byreg.jpg",width=8,height=5)
 
- # get the timestep for each value:
- t      <- as.POSIXct(nc$var[[k]]$dim[[2]]$vals, 
-                 origin = substr(nc$var[[k]]$dim[[2]]$units,15,36),
-                 tz = "GMT")
- # get the values as a matrix of strata (22) x time (3908)
- val    <- ncvar_get(nc, varid = vars[k])
-
- for(s in 1:length(strata)){
-   tmp    <- data.frame(
-     #scenario = 
-     strata          = strata[s],
-     strata_area_km2 = area[s],
-     time   = t, 
-     var    = vars[k],
-     val    = val[s,],
-     units  = nc$var[[k]]$units,
-     long_name = nc$var[[k]]$longname)
-   if(s == 1) val_long <- tmp
-   if(s !=1 ) val_long <- rbind(val_long,tmp)
- }
- 
- val_long$basin <- "Other"
- val_long$basin[abs(val_long$strata)%in%NEBS_strata] <- "NEBS"
- val_long$basin[abs(val_long$strata)%in%SEBS_strata] <- "SEBS"
- val_long$basin  <- factor(val_long$basin, levels =c("NEBS","SEBS","Other"))
- val_long$strata <-  factor(val_long$strata,
-                                levels=(unique(strata)))
- 
- # now plot the data:
- 
- ggplot(data = val_long) + 
-   geom_line(aes(x=time,y=val,color= strata),alpha=.8)+
-   facet_grid(basin~.)+
-   ylab(val_long$units[1])+
-   ggtitle(substr( dirlist[i],18,nchar( dirlist[i])-3))+
-   theme_minimal()
- 
- # To get the average value for a set of strata, weight the val by the area:
- 
- 
- mn_NEBS <-getAVGnSUM(strataIN = NEBS_strata, dataIN=val_long)
- mn_NEBS$basin = "NEBS"
- 
- mn_SEBS <-getAVGnSUM(strataIN = SEBS_strata, dataIN=val_long)
- mn_SEBS$basin = "SEBS"
- 
- 
-  ggplot(data = rbind(mn_NEBS,mn_SEBS)) + 
-   geom_line(aes(x=time,y=mn_val,color=basin),alpha=.8)+
-   geom_smooth(aes(x=time,y=mn_val,color=basin),formula = y ~ x, se = T)+
-   facet_grid(basin~.)+
-    scale_color_viridis_d(begin=.4,end=.8)+
-   ylab(val_long$units[1])+
-   ggtitle( dirlist[i])+
-   theme_minimal()
- 
  
 ```
 
-<!-- ### 2.2.4 Create monthly averages -->
-<!-- ```{r} -->
 
-<!-- ``` -->
+![Weekly indcices by sub-region](Figs/weekly_byreg.jpg){ width=65% }
 
-<!-- ### 2.2.5 Create seasonal averages -->
-<!-- ```{r} -->
 
-<!-- ``` -->
+### 2.2.4 Create monthly averages
+TBA
+```{r}
+
+```
+
+### 2.2.5 Create seasonal averages
+TBA
+```{r}
+
+```
 
 <!-- ### 2.2.6 Create the ACLIM annual indices of seasonal and survey replicated values -->
 <!-- ```{r} -->
@@ -420,7 +450,7 @@ The next set of indices to will explore are the weekly strata-specific values fo
 <!-- ``` -->
 
 
-# 3. Funding and acknowledgments (needs updating):
+# 4. Funding and acknowledgments (needs updating):
 
 ### PLEASE Include a statement like the following one in your acknowledgements section:
 
@@ -432,9 +462,9 @@ The next set of indices to will explore are the weekly strata-specific values fo
 
 
 
-# 4. Helpful links and further reading:  
+# 5. Helpful links and further reading:  
 
-## 4.1 Citations for GCMs and carbon scenarios:
+## 5.1 Citations for GCMs and carbon scenarios:
 
 ### CMIP3 (BSIERP global climate model runs):
 Meehl, G. A., C. Covey, T. Delworth, M. Latif, B. McAvaney, J. F. B. Mitchell, R. J. Stouffer, and K. E. Taylor, 2007: The WCRP CMIP3 multimodel dataset: A new era in climate change research. Bull. Amer. Meteor. Soc., 88, 1383–1394.
@@ -447,14 +477,14 @@ ONeill, B. C., C. Tebaldi, D. P. van Vuuren, V. Eyring, P. Friedlingstein, G. Hu
 
 
 
-## 4.2 Weblinks for further reading:
+## 5.2 Weblinks for further reading:
 
 * Explore annual indices of downscaled projections for the EBS: [**ACLIM indices**](https://kholsman.shinyapps.io/aclim/ "ACLIM Shiny tool")
 
 * To view climate change projections from CMIP5 (eventually CMIP6):[**ESRL climate change portal **](https://www.esrl.noaa.gov/psd/ipcc/ocn/ "ESRL climate change portal")
 
 
-## 4.3 Additional information on Hindcast and Projection Models (needs updating)
+## 5.3 Additional information on Hindcast and Projection Models (needs updating)
 
 ### CORE-CFSR (1976-2012) 
 
