@@ -511,10 +511,10 @@ The Model for Interdisciplinary Research on Climate (MIROC)-M model developed by
 This folder contains the most recent queries from the BEAST based on the scripts in [ACLIM_scripts]("https://github.com/kholsman/ACLIM/ACLIM_scripts"). The queries create annual indices (e.g., mean summer bottom temperature for the EBS survey area) which are station specific(Station_modelname) and based on the mean sampling date for each station, or based on weekly values (under folder [weekly]("https://github.com/kholsman/ACLIM/ACLIM_data/ROMS_NPZ_queries/weekly"); are "clipped to the survey area").
 These indices were cleaned and aggregated in the .Rdata file `ROMSNPZ_indices.Rdata` using the script `createROMSNPZ.R`.
 
-```{r mdfile, include=FALSE, eval=F, echo=FALSE}
- source("R/convertmd.R")
+
+```{r makeReadME, echo=FALSE,eval=F}
+ # copy and paste this into R window (won't work within markdown)
+ rmd2md(rmd_fl = "GettingStarted_ACLIM_ROMSNPZ_2021",md_fl = "README")
 ```
-
-
 
 

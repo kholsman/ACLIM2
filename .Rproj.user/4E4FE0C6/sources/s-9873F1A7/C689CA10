@@ -5,20 +5,20 @@
     "type": "r_markdown",
     "hash": "0",
     "contents": "",
-    "dirty": false,
+    "dirty": true,
     "created": 1611247158629.0,
     "source_on_save": false,
     "relative_order": 1,
     "properties": {
-        "cursorPosition": "437,0",
-        "scrollLine": "419"
+        "cursorPosition": "510,424",
+        "scrollLine": "506"
     },
     "folds": "197|56|235|0|\n",
     "lastKnownWriteTime": 1611251102,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1611251102573,
+    "last_content_update": 1611251324391,
     "read_only": false,
     "read_only_alternatives": []
 }
