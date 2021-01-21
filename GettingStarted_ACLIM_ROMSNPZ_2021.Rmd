@@ -52,10 +52,20 @@ output:
 
 # 1. Overview
 
-This is an overview of ACLIM plotting code and "canned" Rdata files generated from the downscaled ROMSNPZ modeling work ACLIM modelers Drs. Hermann, Cheng, Kearney,Pilcher, and Aydin. Dr. Kelly Kearney has recently dedicated significant time and energy towards organizing and documenting the ROMSNPZ output, especially as it pertains to the ACLIM project. We strongly recommend reviewing this documentation before using the data in order to understand the origin of the indices and their present level of skill and validation, which varies considerably across indices and in space and time.
+This is an overview of ACLIM plotting code and "canned" Rdata files generated from the downscaled ROMSNPZ modeling work ACLIM modelers Drs. Hermann, Cheng, Kearney,Pilcher, and Aydin. Dr. Kelly Kearney has recently dedicated significant time and energy towards organizing and documenting the ROMSNPZ output, especially as it pertains to the ACLIM project. We strongly recommend reviewing this [**documentation**](https://beringnpz.github.io/roms-bering-sea/B10K-dataset-docs/) before using the data in order to understand the origin of the indices and their present level of skill and validation, which varies considerably across indices and in space and time.
 
-The following reading is recommended:
+The Bering10K ROMSNPZ documentation can be accessed on the main [**documentation webpage**](https://beringnpz.github.io/roms-bering-sea/B10K-dataset-docs/). The webpage is maintained by Kelly Kearney and regularly updated with new documentation, including the following core documents (also linked in the [**00_ACLIM_shared/02_Data**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk) folder):
 
+[**The Bering10K Dataset documentation**](https://drive.google.com/file/d/1GlITTIvbs2gRBMNIxdDI15cZU6mH4ckg/view): A pdf describing the dataset, including:
+
+1. A description of the various simulations (base model versions, parent model forcing datasets, and biological modules) and the output naming scheme for each.
+
+2. A tutorial on working with the curvilinear, sigma-coordinate ROMS spatial grid, aimed at those who will be working with data on the native grid.
+
+3. An overview of the ACLIM index dataset; this is a set of time series derived from the Bering10K output and intended for Alaska Climate Integrated Modeling (ACLIM) collaborators.
+
+[**Bering10K Simulaton Variables**](https://drive.google.com/file/d/1C1FCxRMBm0uBv2wEKwrGfHmLnjt_gFvG/view): A spreadsheet listing all simulations and the archived output variables associated with each, updated periodically as new simulations are run or new variables are made available. Note that this includes both data available on both public and private servers (see below).
+Please also see the Literature page for a list scientific publications related to the model, including model description and skill assessment.
 
 ## 1.1. Downscaled models and carbon scenarios
 
