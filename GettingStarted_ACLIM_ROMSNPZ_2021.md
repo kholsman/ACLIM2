@@ -612,16 +612,6 @@ first half of the 21st century. See more data the
 <a href="http://portal.aoos.org/bering-sea.php#module-metadata/68ea728a-7d7a-11e3-823b-00219bfe5678/bb0d0b5e-878f-4ebb-8985-0d0e6aefe71f">AOOS:MIROC
 portal</a>.
 
-### ACLIM\_data & ACLIM\_scripts
-
-This folder contains the most recent queries from the BEAST based on the
-scripts in
-[ACLIM\_scripts](%22https://github.com/kholsman/ACLIM/ACLIM_scripts%22).
-The queries create annual indices (e.g., mean summer bottom temperature
-for the EBS survey area) which are station specific(Station\_modelname)
-and based on the mean sampling date for each station, or based on weekly
-values (under folder
-[weekly](%22https://github.com/kholsman/ACLIM/ACLIM_data/ROMS_NPZ_queries/weekly%22);
-are “clipped to the survey area”). These indices were cleaned and
-aggregated in the .Rdata file `ROMSNPZ_indices.Rdata` using the script
-`createROMSNPZ.R`.
+<!-- ### ACLIM_data & ACLIM_scripts -->
+<!-- This folder contains the most recent queries from the BEAST based on the scripts in [ACLIM_scripts]("https://github.com/kholsman/ACLIM/ACLIM_scripts"). The queries create annual indices (e.g., mean summer bottom temperature for the EBS survey area) which are station specific(Station_modelname) and based on the mean sampling date for each station, or based on weekly values (under folder [weekly]("https://github.com/kholsman/ACLIM/ACLIM_data/ROMS_NPZ_queries/weekly"); are "clipped to the survey area"). -->
+<!-- These indices were cleaned and aggregated in the .Rdata file `ROMSNPZ_indices.Rdata` using the script `createROMSNPZ.R`. -->
