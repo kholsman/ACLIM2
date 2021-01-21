@@ -1,0 +1,270 @@
+---
+title: "ACLIM Data exploration and plotting code"
+output:
+  pdf_document:
+    toc: true
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 5
+    highlight: tango
+    keep_tex: no
+    latex_engine: xelatex
+  html_document:
+    df_print: kable
+    fig_caption: yes
+    theme: flatly
+  header-includes:
+  - \usepackage{inputenc}
+  - \usepackage{unicode-math}
+  - \pagenumbering{gobble}
+  word_document:
+    fig_caption: yes
+    fig_width: 4
+    keep_md: yes
+---
+
+```{r setup1, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+***
+
+ACLIM Repo: [**github.com/kholsman/ACLIM**](https://github.com/kholsman/ACLIM "ACLIM Repo")
+
+```{r}
+ #source("R/make.R")       # loads packages, data, setup, etc.
+ thisYr <- format(Sys.time(), "%Y")
+ today  <- format(Sys.time(), "%b %d, %Y")
+ 
+```
+
+#### Repo and data files maintained by:  
+*  Kirstin Holsman  
+   Alaska Fisheries Science Center  
+   NOAA Fisheries, Seattle WA  
+   **<kirstin.holsman@noaa.gov>**  
+   *Last updated: `r thisYr`*
+
+# Overview
+
+This is an overview of ACLIM plotting code and "canned" Rdata files generated from the downscaled ROMSNPZ modeling work ACLIM modelers Drs. Hermann, Cheng, Kearney, and Aydin. The full ACLIM "suite" of models include are summarized in the following table: 
+
+
+CMIPx ARx| GCM    |Scenario    |Def              |Years      |Model |Source
+---------|--------|---------   | ---------------|----------|-----|------|
+CMIP3 AR4| MIROC   |A1B        | Med baseline    |2006 - 2048|H16   |BSIERP    
+CMIP3 AR4| ECHOG   |A1B        | Med baseline    |2006 - 2048|H16   |BSIERP    
+CMIP3 AR4| CCCMA   |A1B        | Med baseline    |2006 - 2048|H16   |BSIERP    
+na       | CORECFS |hindcast   | Hindcast        |1970 - 2012|H16   |BSIERP    
+CMIP5 AR5| GFDL    |RCP 4.5    | Med. mitigation |2006 - 2100|H16   |ACLIM/FATE
+CMIP5 AR5| MIROC   |RCP 4.5    | Med. mitigation |2006 - 2100|H16   |ACLIM/FATE
+CMIP5 AR5| CESM    |RCP 4.5    | Med. mitigation |2006 - 2100|H16   |ACLIM/FATE
+CMIP5 AR5| GFDL    |RCP 8.5    | High baseline   |2006 - 2100|H16   |ACLIM/FATE
+CMIP5 AR5| GFDL    |RCP 8.5bio*| High baseline   |2006 - 2100|H16   |ACLIM/FATE
+CMIP5 AR5| MIROC   |RCP 8.5    | High baseline   |2006 - 2100|H16   |ACLIM/FATE
+CMIP5 AR5| CESM    |RCP 8.5    | High baseline   |2006 - 2080|H16   |ACLIM/FATE
+CMIP5 AR5| CESM    |RCP 8.5bio*| High baseline   |2006 - 2080|H16   |ACLIM/FATE
+na       | CORECFS |hindcast   | Hindcast        |1970 - 2016|H16   |ACLIM     
+na       | CORECFS |hindcast   | new Hindcast    |1970 - 2017|H16   |ACLIM/RTAP
+*CMIP6 AR6| CESM    |SSP585    | High baseline   |2006 - 2100|K20P19   |ACLIM/RTAP
+*CMIP6 AR6| CESM    |SSP126    | High Mitigation |2006 - 2100|K20P19   |ACLIM/RTAP
+* *"_bio" = nutrient forcing on boundary conditions*
+
+# Setup
+```{r setup1, include=FALSE}
+
+source("R/make.R")
+
+```
+
+
+# Accessing data on MOX:
+```{r mox, include=FALSE}
+ source("R/sub_scripts/getACLIM_indices.R")
+```
+
+
+# Accessing data on MOX:
+```{r ACLIM, include=FALSE}
+
+
+
+```
+
+
+# Permission for data use:
+
+## General ACLIM guidance for authorship and data use:
+
+We encourage inclusivity in co-authorship but it is important to identify criteria for co-authors, especially detail roles for each paper, and as such please provide ample time and opportunity for people to be involved in your paper if they are interested.
+ 
+If you are coupling your model to the ACLIM projections and/or ATTACH() function please consider the following approach:
+
+1. The first time a coupling is used, we highly encourage you to invite as co-authors:
+    + ROMSNPZ: Al Hermann and Wei Cheng (ROMS) and Kelly Kearney and Kerim Aydin (NPZ and 2017 hindcast)
+    + ATTACH: Amanda Faig and Alan Haynie
+
+2. Subsequent papers, consider invitation if there is advancements in methods or additional analyses in the coupled approach (or outcomes).
+
+For all papers we suggest inclusivity and broad co-authorship in order to promote synthesis across models and results and to avoid duplicative papers.  As such, here is a list of the ACLIM team and growing list of collaborators:
+
+## ACLIM Team:
+
+### ACLIM Leadership:
+* Anne Hollowed (co-Lead), Kirstin Holsman (co-Lead)
+* Alan Haynie (Lead SocioEcon)
+* Kerim Aydin (Lead-ecosystem)
+* Jonathon Reum (Lead-food-web and ESM modeling)
+* Al Hermann (Lead ROMSNPZ)
+* Andre Punt (UW Lead)
+ 
+### ACLIM Team:
+
+* Amanda Faig, UW : SocioEcon: ABCàCatch/ ATTACH() function
+* Stephen Kasperski, NOAA: SocioEcon Modeling; multispecies bioeconomic model
+* Wei Cheng, UW : ROMSNPZ: downscaling / climate modeling
+* Kelly Kearney, UW: ROMSNPZ: Updated NPZ model (Migo); updated 2017 hindcast
+* Paul Spencer, NOAA: Biological: CE-pollock/atf spatial assessment
+* Jim Ianelli, NOAA : Biological: CE - Pollock assessment; NRock Sole; Flatfish models; ensemble modeling
+* Thomas Wilderbuer, NOAA: Biological: flatfish
+* Jonathan Reum, UW : Biological: Size spectrum model
+* Andy Whitehouse, UW: Awesome modeler of ecopath! 
+* William Stockhausen, NOAA: Biological: snow crab IBM
+* Cody Szuwalski, NOAA: Biological: snow crab MSE
+
+### ACLIM Collaborators:
+
+* Jim Thorson: MICE/spatial + ACLIM
+* Jeremy Sterling: NFS + ACLIM
+* Ivonne Ortiz: indicators and EFH. Lead PI on FATE project # (leveraged for ACLIM)
+* Chris Rooper: EFH and projections – ACLIM?
+* Joshua Abbott: natural capital + ACLIM
+* Christine Stawitz, UW: Biological : snow crab IBM
+* Trond Kristiansen, NOR: collaborator
+
+## Funding and acknowledgments:
+
+### PLEASE Include a statement like the following one in your acknowledgements section:
+
+*This study is part of NOAA’s Alaska Climate Integrated Modeling project (ACLIM) and FATE project XXXX. We would like to that the entire ACLIM team including `[add specific names]` for feedback and discussions on the broader application of this work. Multiple NOAA National Marine Fisheries programs provided support for ACLIM including Fisheries and the Environment (FATE), Stock Assessment Analytical Methods (SAAM) Science and Technology North Pacific Climate Regimes and Ecosystem Productivity, the Integrated Ecosystem Assessment Program (IEA), the NOAA Economics and Social Analysis Division, NOAA Research Transition Acceleration Program (RTAP), the Alaska Fisheries Science Center (ASFC), the Office of Oceanic and Atmospheric Research (OAR) and the National Marine Fisheries Service (NMFS). The scientific views, opinions, and conclusions expressed herein are solely those of the authors and do not represent the views, opinions, or conclusions of NOAA or the Department of Commerce.*
+
+### For some of the integrated papers the following maybe should also be added:
+
+*Additionally, the International Council for the Exploration of the Sea (ICES) and the North Pacific Marine Science Organization (PICES) provided support for Strategic Initiative for the Study of Climate Impacts on Marine Ecosystems (SI-CCME) workshops, which facilitated development of the ideas presented in this paper. The scientific views, opinions, and conclusions expressed herein are solely those of the authors and do not represent the views, opinions, or conclusions of NOAA, the Department of Commerce, ICES, or PICES.*
+
+
+# Data Access:
+
+## Downloading the data and code:
+
+For most applications you can use the aclim indices available on the shared ACLIM drive:
+
+[**00_ACLIM_shared>01_DATA>2019_May_updated**](https://drive.google.com/drive/u/0/folders/1Jn-bX4OuPL6helzXh4arlAmZhMl3Nm6g "00_ACLIM_shared>01_DATA>2019_May_updated") 
+
+Please be sure to coordinate with ROMSNPZ modeling team members to ensure data is applied appropriately. If you need access to the raw ROMSNPZ files (netcdf, non-regridded large files located on MOX). Please contact Dr. Hermann (<albert.j.hermann@noaa.gov>) or Dr. Kerim Aydin (<kerim.aydin@noaa.gov>).
+
+### Step 1: Clone the repo to your local directory:
+
+Select `clone` or downlaod from the upper right hand side of the repo page :[**github.com/kholsman/ACLIM**](https://github.com/kholsman/ACLIM "ACLIM Repo") and save it to your local directory: `~[YOURPATH]/ACLIM`.
+
+![](Figs/clone.jpg){ width=40% }
+
+### Step 2: download data to local directory:
+
+The ACLIM data files include the following four files and should be downloaded from the [**google folder**](https://drive.google.com/drive/u/0/folders/1Jn-bX4OuPL6helzXh4arlAmZhMl3Nm6g "00_ACLIM_shared>01_DATA>2019_May_updated") and copied into the `~[YOURPATH]/ACLIM/Data` folder on your local directory : 
+
+* `ROMS_NPZ.Rdata`
+* `ROMSNPZ_output.Rdata`
+* `all_stations_meta.Rdata`
+* `var_defv2.xlsx` (definitions of each variable in the Rdata files)  
+
+![](Figs/datadir.jpg){ width=40% }
+
+
+# ACLIM indices in Rdata files:
+
+There are 4 types of ACLIM indices included in these files:
+
+## 1. Summer survey replicated values:  
+
+Survey replicated values (using mean location and sampling date for each groundfish survey station) for the most of the ROMSNPZ output variables have been collated in the ROMSNPZ_output.Rdata file. These need to be regridded to lat lon from the native ROMS grid (Xi Eta) and the `scripts/PLOT_spatial_ROMSNPZ.R`script will step you through doing that and creating the following figures in R (note: resampling stations were removed before creating bottom temperature maps).
+
+![Survey replicated stations](Figs/survey_grid.jpg){ width=40% }
+
+![Survey replicated summer bottom temperature](Figs/survy_rep.jpg){ width=60% }
+
+## 2. Weekly - strata-specific timeseries:  
+
+We also ran weekly queries for the 6 major strata in the SEBS and those indices provide timeseries of 
+
+## 2. Monthly - strata-specific timeseries:  
+
+## 4. Annual indices (e.g., Spring Zoop., Cold pool area, etc.):
+
+![Shiny web tool](Figs/shiny.jpg){ width=60% }
+
+The annual indices can be previewed with this interactive graphic at [**kholsman.shinyapps.io/aclim**](https://kholsman.shinyapps.io/aclim/ "ACLIM Shiny tool"). These annual indices are located in the [TBA directory] and can be explored using this vingnette `TBA.pdf`.
+
+TBA
+
+# 4. Helpful links and further reading:  
+
+## Citations for most papers:
+
+### CMIP3 (BSIERP global climate model runs):
+Meehl, G. A., C. Covey, T. Delworth, M. Latif, B. McAvaney, J. F. B. Mitchell, R. J. Stouffer, and K. E. Taylor, 2007: The WCRP CMIP3 multimodel dataset: A new era in climate change research. Bull. Amer. Meteor. Soc., 88, 1383–1394.
+
+### CMIP5 (ACLIM global climate model runs):
+Taylor, K. E., R. J. Stouffer, and G. A. Meehl, 2012:Anoverview of CMIP5 and the experiment design. Bull. Amer. Meteor. Soc., 93, 485–498.
+
+### CMIP6 and SSPs (ACLIM global climate model runs):
+ONeill, B. C., C. Tebaldi, D. P. van Vuuren, V. Eyring, P. Friedlingstein, G. Hurtt, R. Knutti, E. Kriegler, J.-F. Lamarque, J. Lowe, G. A. Meehl, R. Moss, K. Riahi, and B. M. Sanderson. 2016. The Scenario Model Intercomparison Project (ScenarioMIP) for CMIP6. Geoscientific Model Development 9:3461–3482.
+
+### ROMSNPZ:
+
+TBA
+
+## Weblinks for further reading:
+
+* Explore annual indices of downscaled projections for the EBS: [**ACLIM indices**](https://kholsman.shinyapps.io/aclim/ "ACLIM Shiny tool")
+
+* To view climate change projections from CMIP5 (eventually CMIP6):[**ESRL climate change portal **](https://www.esrl.noaa.gov/psd/ipcc/ocn/ "ESRL climate change portal")
+
+
+## Other info:( THIS SECTION IS STILL BEING UPDATED)
+TBA  
+
+### Hindcast and Projection Models
+
+[**NOAA's Pacific Marine Environmental Laboratory (PMEL)**](http://www.pmel.noaa.gov/) produced downscaled hindcasts and projections of Bering Sean ocean conditions using boundary conditions from mulitple global climate models (Hermann et al. 2016,2019; Kearney et al.2020):
+
+
+### CORE-CFSR (1976-2012) 
+
+This is the hindcast for the Bering Sea and is a combination of the reconstructed climatology from the [**CLIVAR**](http://portal.aoos.org/bering-sea.php#module-metadata/5626a0b6-7d79-11e3-ac17-00219bfe5678/0756e6c2-a8e2-40af-aa3d-22051ed68067) Co-ordinated Ocean-Ice Reference Experiments (CORE) Climate Model (1969-2006) the [**NCEP**](http://portal.aoos.org/bering-sea.php#module-metadata/f8cb79f6-7d59-11e3-a6ee-00219bfe5678/2deb2eca-f3f5-4eda-a132-112468711de7) Climate Forecast System Reanalysis is a set of re-forecasts carried out by NOAA's National Center for Environmental Prediction (NCEP). See [**CFS-R**](http://cfs.ncep.noaa.gov/cfsr/) for more info.
+
+### [CCCMA](http://www.cccma.ec.gc.ca/diagnostics/cgcm3/cgcm3.shtml)(2006-2039; AR4 SRES A1B) 
+
+Developed by the Canadian Centre for Climate Modelling and Analysis, this is also known as the CGCM3/T47 model. This model showed the greatest warming over time compared to other models tested by PMEL. See more data the [**AOOS:CCCMA portal**](http://portal.aoos.org/bering-sea.php#module-metadata/4f706756-7d57-11e3-bce5-00219bfe5678/ffa1bcc1-288d-4f8e-912e-500a618b241a).
+
+### [ECHOG](http://www-pcmdi.llnl.gov/ipcc/model_documentation/ECHO-G.pdf)(2006-2039; AR4 SRES A1B)
+The ECHO-G model from the Max Planck Institute in Germany This model showed the least warming over time compared to other models tested by PMEL. See more data the <a href="http://portal.aoos.org/bering-sea.php#module-metadata/18ffa59c-7d7a-11e3-82a4-00219bfe5678/f2e5592b-28d2-483d-8ef8-52aa18f6e3dc">AOOS:ECHO-G portal</a>.
+
+### [GFDL](http://www.gfdl.noaa.gov/earth-system-model) (2006-2100; AR5 RCP 4.5, 8.5, SSP126,SSP585) 
+
+The NOAA Geophysical Fluid Dynamics Laboratory [**GFDL**](http://www.gfdl.noaa.gov) has lead development of the first Earth System Models (ESMs), which like physical climate models, are based on an atmospheric circulation model coupled with an oceanic circulation model, with representations of land, sea ice and iceberg dynamics; ESMs additionally incorporate interactive biogeochemistry, including the carbon cycle. The ESM2M model used in this project is an evolution of the prototype EMS2.1 model, where pressure-based vertical coordinates are used along the developmental path of GFDL's Modular Ocean Model version 4.1 and where the land model is more adavanced (LM3) than in the previous ESM2.1
+
+### [MIROC](www.cger.nies.go.jp/publications/report/i073/I073.pdf)(2006-2039; AR4 SRES A1B; 2006-2100 RCP4.5, RCP8.5, SSP585, SSP126) 
+
+The Model for Interdisciplinary Research on Climate (MIROC)-M model developed by a <a href="www.cger.nies.go.jp">consortium of agencies in Japan</a> []. Compared to other models tested by PMEL, MIROC-M was intermediate in degree of warming over the Bering Sea shelf for the first half of the 21st century. See more data the <a href="http://portal.aoos.org/bering-sea.php#module-metadata/68ea728a-7d7a-11e3-823b-00219bfe5678/bb0d0b5e-878f-4ebb-8985-0d0e6aefe71f">AOOS:MIROC portal</a>.
+
+
+### ACLIM_data & ACLIM_scripts
+  
+This folder contains the most recent queries from the BEAST based on the scripts in [ACLIM_scripts]("https://github.com/kholsman/ACLIM/ACLIM_scripts"). The queries create annual indices (e.g., mean summer bottom temperature for the EBS survey area) which are station specific(Station_modelname) and based on the mean sampling date for each station, or based on weekly values (under folder [weekly]("https://github.com/kholsman/ACLIM/ACLIM_data/ROMS_NPZ_queries/weekly"); are "clipped to the survey area").
+These indices were cleaned and aggregated in the .Rdata file `ROMSNPZ_indices.Rdata` using the script `createROMSNPZ.R`.
+
+```{r mdfile, include=FALSE, eval=F, echo=FALSE}
+ source("R/convertmd.R")
+```
+
+
