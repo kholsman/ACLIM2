@@ -1,2 +1,0 @@
-# getACLIM_indices.R
-
