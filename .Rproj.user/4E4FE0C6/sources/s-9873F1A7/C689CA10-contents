@@ -190,7 +190,9 @@ The ROMSNPZ team has been working with [Roland Schweitzer](roland.schweitzer@noa
 
 ### [ERDAPP ACLIM data access tool](https://data.pmel.noaa.gov/aclim/erddap/)
 
+
 # 3. Exploring the ACLIM indices
+
 
 The following examples show how to access and plot the ACLIM indices from their stored netcdf (.nc) format in the Data folder of the ACLIM shared google drive. Please note that while the CMIP5 set is now public (Hermann et al. 2019) **the CMIP6 suite is under embargo for QAQC and should not be shared outside of the ACLIM group**. Al, Wei, Kelly, Darren, and Kerim are in the process of synthesizing and publishing the CMIP6 data (goal is spring 2021 for submission), following those publications the data will be made accessible to the public via the PMEL data portal, as is the case for the CMIP5 data and public hindcasts. It is strongly recommended that you include at least one (ideally multiple) authors from the ROMSNPZ team as co-author on your paper if you are linking to this data, this is especially the case for the CMIP6 data. There are multiple spatial and temporal caveats that are best described in discussions with the authors of these data and inclusion as co-authors will facilitate appropriate application and interpretation of the ROMSNPZ data.
 
