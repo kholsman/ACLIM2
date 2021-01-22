@@ -18,7 +18,7 @@ convert2df <- function(ncIN, type=1,varIN = "temp_bottom5m"){
         strata          = weekly_strata[s],
         strata_area_km2 = region_area[s],
         time   = t, 
-        var    = srvy_vars[k],
+        var    = weekly_vars[k],
         val    = val[s,],
         units  = ncIN$var[[k]]$units,
         long_name = ncIN$var[[k]]$longname)
