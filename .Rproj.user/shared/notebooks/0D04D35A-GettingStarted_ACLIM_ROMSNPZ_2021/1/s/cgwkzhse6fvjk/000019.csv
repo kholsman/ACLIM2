@@ -1,6 +1,0 @@
-"0","    tmp_var2    <- convert2df(ncIN = nc, type = 1, varIN = ""Cop_integrated"")
-"
-"1","Error in R_nc4_inq_varndims: NetCDF: Not a valid ID
-"
-"2","Error in ncvar_ndims(ncid, varid) : error returned from C call
-"

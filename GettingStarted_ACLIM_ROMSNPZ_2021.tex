@@ -741,7 +741,7 @@ scenario folder.
 \StringTok{      }\KeywordTok{facet_grid}\NormalTok{(basin}\OperatorTok{~}\NormalTok{.)}\OperatorTok{+}
 \StringTok{      }\KeywordTok{scale_color_viridis_d}\NormalTok{(}\DataTypeTok{begin=}\NormalTok{.}\DecValTok{4}\NormalTok{,}\DataTypeTok{end=}\NormalTok{.}\DecValTok{8}\NormalTok{)}\OperatorTok{+}
 \StringTok{      }\KeywordTok{ylab}\NormalTok{(tmp_var}\OperatorTok{$}\NormalTok{units[}\DecValTok{1}\NormalTok{])}\OperatorTok{+}
-\StringTok{      }\KeywordTok{ggtitle}\NormalTok{( aclim[}\DecValTok{2}\NormalTok{])}\OperatorTok{+}
+\StringTok{      }\KeywordTok{ggtitle}\NormalTok{( }\KeywordTok{paste}\NormalTok{(aclim[}\DecValTok{2}\NormalTok{],mn_NEBS}\OperatorTok{$}\NormalTok{var[}\DecValTok{1}\NormalTok{]))}\OperatorTok{+}
 \StringTok{      }\KeywordTok{theme_minimal}\NormalTok{()}
 \NormalTok{  p5}
   \ControlFlowTok{if}\NormalTok{(update.figs)  }\KeywordTok{ggsave}\NormalTok{(}\DataTypeTok{file=}\StringTok{"Figs/weekly_byreg.jpg"}\NormalTok{,}\DataTypeTok{width=}\DecValTok{8}\NormalTok{,}\DataTypeTok{height=}\DecValTok{5}\NormalTok{)}
@@ -754,17 +754,117 @@ scenario folder.
 \caption{Weekly indcices by sub-region}
 \end{figure}
 
-\hypertarget{create-monthly-averages}{%
-\subsubsection{2.2.4 Create monthly
-averages}\label{create-monthly-averages}}
-
-TBA
-
 \hypertarget{create-seasonal-averages}{%
-\subsubsection{2.2.5 Create seasonal
+\subsubsection{2.2.4 Create seasonal
 averages}\label{create-seasonal-averages}}
 
-TBA
+Now using a similar approach get the monthly mean values for a variable:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{# Set up seasons (this follows Holsman et al. 2020)}
+\NormalTok{    seasons <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{mo =} \DecValTok{1}\OperatorTok{:}\DecValTok{12}\NormalTok{, }\DataTypeTok{season =}\KeywordTok{factor}\NormalTok{(}\StringTok{""}\NormalTok{,}\DataTypeTok{levels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Winter"}\NormalTok{,}\StringTok{"Spring"}\NormalTok{,}\StringTok{"Summer"}\NormalTok{,}\StringTok{"Fall"}\NormalTok{)))}
+\NormalTok{      seasons}\OperatorTok{$}\NormalTok{season[}\DecValTok{1}\OperatorTok{:}\DecValTok{3}\NormalTok{]   <-}\StringTok{ "Winter"}
+\NormalTok{      seasons}\OperatorTok{$}\NormalTok{season[}\DecValTok{4}\OperatorTok{:}\DecValTok{6}\NormalTok{]   <-}\StringTok{ "Spring"}
+\NormalTok{      seasons}\OperatorTok{$}\NormalTok{season[}\DecValTok{7}\OperatorTok{:}\DecValTok{9}\NormalTok{]   <-}\StringTok{ "Summer"}
+\NormalTok{      seasons}\OperatorTok{$}\NormalTok{season[}\DecValTok{10}\OperatorTok{:}\DecValTok{12}\NormalTok{] <-}\StringTok{ "Fall"}
+
+    \CommentTok{# open a "region" or strata specific nc file}
+\NormalTok{    ncfl      <-}\StringTok{ }\KeywordTok{file.path}\NormalTok{(sim,}\KeywordTok{paste0}\NormalTok{(reg_txt,sim,}\StringTok{".nc"}\NormalTok{))}
+\NormalTok{    nc        <-}\StringTok{ }\KeywordTok{nc_open}\NormalTok{(}\KeywordTok{file.path}\NormalTok{(data_path,ncfl))}
+    
+    \CommentTok{# convert the nc files into a data.frame}
+\NormalTok{    tmp_var0    <-}\StringTok{ }\KeywordTok{convert2df}\NormalTok{(}\DataTypeTok{ncIN =}\NormalTok{ nc, }\DataTypeTok{type =} \DecValTok{1}\NormalTok{, }\DataTypeTok{varIN =} \StringTok{"temp_bottom5m"}\NormalTok{)}
+\NormalTok{    tmp_var1    <-}\StringTok{ }\KeywordTok{convert2df}\NormalTok{(}\DataTypeTok{ncIN =}\NormalTok{ nc, }\DataTypeTok{type =} \DecValTok{1}\NormalTok{, }\DataTypeTok{varIN =} \StringTok{"NCaS_integrated"}\NormalTok{)  }\CommentTok{# Large Cop}
+\NormalTok{    tmp_var2    <-}\StringTok{ }\KeywordTok{convert2df}\NormalTok{(}\DataTypeTok{ncIN =}\NormalTok{ nc, }\DataTypeTok{type =} \DecValTok{1}\NormalTok{, }\DataTypeTok{varIN =} \StringTok{"Cop_integrated"}\NormalTok{)   }\CommentTok{# Small Cop}
+\NormalTok{    tmp_var3    <-}\StringTok{ }\KeywordTok{convert2df}\NormalTok{(}\DataTypeTok{ncIN =}\NormalTok{ nc, }\DataTypeTok{type =} \DecValTok{1}\NormalTok{, }\DataTypeTok{varIN =} \StringTok{"EupS_integrated"}\NormalTok{)  }\CommentTok{# Euphausiids}
+    
+\NormalTok{    tmp_var     <-}\StringTok{ }\KeywordTok{merge}\NormalTok{(tmp_var1,tmp_var3, }\DataTypeTok{by=}\KeywordTok{c}\NormalTok{(}\StringTok{"strata"}\NormalTok{,}\StringTok{"strata_area_km2"}\NormalTok{,}\StringTok{"time"}\NormalTok{,}\StringTok{"basin"}\NormalTok{))}
+    \CommentTok{# include tmp_var2 if looking at all cop, here we just do largeZoop}
+    \CommentTok{# tmp_var     <- merge(tmp_var,tmp_var2, by=c("strata","strata_area_km2","time","basin"))}
+\NormalTok{    tmp_var     <-}\StringTok{ }\NormalTok{tmp_var}\OperatorTok{%>%}\KeywordTok{group_by}\NormalTok{(time,strata,strata_area_km2,basin)}\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{val      =}\NormalTok{ val.x }\OperatorTok{+}\StringTok{ }\NormalTok{val.y ,}\DataTypeTok{units =}\NormalTok{ units.x,}
+             \DataTypeTok{var       =} \StringTok{"Zoop_integrated"}\NormalTok{,}
+             \DataTypeTok{long_name =}\StringTok{"Total On-shelf large zooplankton concentration, integrated over depth (NCa, Eup)"}\NormalTok{)}\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{select}\NormalTok{(time,strata,strata_area_km2,basin,var,val, units,long_name)}
+    \KeywordTok{head}\NormalTok{(tmp_var)}
+    
+    \KeywordTok{nc_close}\NormalTok{(nc)}
+    
+\NormalTok{    tmp_var}\OperatorTok{$}\NormalTok{yr     <-}\StringTok{ }\KeywordTok{strptime}\NormalTok{(}\KeywordTok{as.Date}\NormalTok{(tmp_var}\OperatorTok{$}\NormalTok{time),}\DataTypeTok{format=}\StringTok{"%Y-%m-%d"}\NormalTok{)}\OperatorTok{$}\NormalTok{year }\OperatorTok{+}\StringTok{ }\DecValTok{1900}
+\NormalTok{    tmp_var}\OperatorTok{$}\NormalTok{mo     <-}\StringTok{ }\KeywordTok{strptime}\NormalTok{(}\KeywordTok{as.Date}\NormalTok{(tmp_var}\OperatorTok{$}\NormalTok{time),}\DataTypeTok{format=}\StringTok{"%Y-%m-%d"}\NormalTok{)}\OperatorTok{$}\NormalTok{mon  }\OperatorTok{+}\StringTok{ }\DecValTok{1}
+\NormalTok{    tmp_var}\OperatorTok{$}\NormalTok{jday   <-}\StringTok{ }\KeywordTok{strptime}\NormalTok{(}\KeywordTok{as.Date}\NormalTok{(tmp_var}\OperatorTok{$}\NormalTok{time),}\DataTypeTok{format=}\StringTok{"%Y-%m-%d"}\NormalTok{)}\OperatorTok{$}\NormalTok{yday }\OperatorTok{+}\StringTok{ }\DecValTok{1}
+\NormalTok{    tmp_var}\OperatorTok{$}\NormalTok{season <-}\StringTok{ }\NormalTok{seasons[tmp_var}\OperatorTok{$}\NormalTok{mo,}\DecValTok{2}\NormalTok{]}
+    
+    \CommentTok{# To get the average value for a set of strata, weight the val by the area: (slow...)}
+\NormalTok{    mn_NEBS_season <-}\StringTok{ }\KeywordTok{getAVGnSUM}\NormalTok{(}\DataTypeTok{strataIN =}\NormalTok{ NEBS_strata, }\DataTypeTok{dataIN =}\NormalTok{ tmp_var,}\DataTypeTok{tblock=}\KeywordTok{c}\NormalTok{(}\StringTok{"yr"}\NormalTok{,}\StringTok{"season"}\NormalTok{))}
+\NormalTok{    mn_NEBS_season}\OperatorTok{$}\NormalTok{basin =}\StringTok{ "NEBS"}
+\NormalTok{    mn_SEBS_season <-}\StringTok{ }\KeywordTok{getAVGnSUM}\NormalTok{(}\DataTypeTok{strataIN =}\NormalTok{ SEBS_strata, }\DataTypeTok{dataIN =}\NormalTok{ tmp_var,}\DataTypeTok{tblock=}\KeywordTok{c}\NormalTok{(}\StringTok{"yr"}\NormalTok{,}\StringTok{"season"}\NormalTok{))}
+\NormalTok{    mn_SEBS_season}\OperatorTok{$}\NormalTok{basin =}\StringTok{ "SEBS"}
+    
+\NormalTok{    plot_data      <-}\StringTok{ }\KeywordTok{rbind}\NormalTok{(mn_NEBS_season,mn_SEBS_season)}
+    
+   \CommentTok{# plot Fall values:}
+\NormalTok{   p6 <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ plot_data}\OperatorTok{%>%}\KeywordTok{filter}\NormalTok{(season}\OperatorTok{==}\StringTok{"Fall"}\NormalTok{) ) }\OperatorTok{+}\StringTok{ }
+\StringTok{      }\KeywordTok{geom_line}\NormalTok{(   }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ yr,}\DataTypeTok{y =}\NormalTok{ mn_val,}\DataTypeTok{color=}\NormalTok{basin),}\DataTypeTok{alpha=}\NormalTok{.}\DecValTok{8}\NormalTok{)}\OperatorTok{+}
+\StringTok{      }\KeywordTok{geom_smooth}\NormalTok{( }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ yr,}\DataTypeTok{y =}\NormalTok{ mn_val,}\DataTypeTok{color=}\NormalTok{basin),}
+                  \DataTypeTok{formula =}\NormalTok{ y }\OperatorTok{~}\StringTok{ }\NormalTok{x, }\DataTypeTok{se =}\NormalTok{ T)}\OperatorTok{+}
+\StringTok{      }\KeywordTok{facet_grid}\NormalTok{(basin}\OperatorTok{~}\NormalTok{.)}\OperatorTok{+}
+\StringTok{      }\KeywordTok{scale_color_viridis_d}\NormalTok{(}\DataTypeTok{begin=}\NormalTok{.}\DecValTok{4}\NormalTok{,}\DataTypeTok{end=}\NormalTok{.}\DecValTok{8}\NormalTok{)}\OperatorTok{+}
+\StringTok{      }\KeywordTok{ylab}\NormalTok{(tmp_var}\OperatorTok{$}\NormalTok{units[}\DecValTok{1}\NormalTok{])}\OperatorTok{+}
+\StringTok{      }\KeywordTok{ggtitle}\NormalTok{( }\KeywordTok{paste}\NormalTok{(aclim[}\DecValTok{2}\NormalTok{],}\StringTok{"Fall"}\NormalTok{,mn_NEBS_season}\OperatorTok{$}\NormalTok{var[}\DecValTok{1}\NormalTok{]))}\OperatorTok{+}
+\StringTok{      }\KeywordTok{theme_minimal}\NormalTok{()}
+\NormalTok{  p6}
+  
+  
+  \ControlFlowTok{if}\NormalTok{(update.figs)  }\KeywordTok{ggsave}\NormalTok{(}\DataTypeTok{file=}\StringTok{"Figs/Fall_large_Zoop.jpg"}\NormalTok{,}\DataTypeTok{width=}\DecValTok{8}\NormalTok{,}\DataTypeTok{height=}\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.65\textwidth,height=\textheight]{Figs/Fall_large_Zoop.jpg}
+\caption{Large fall zooplankton integrated concentration}
+\end{figure}
+
+\hypertarget{create-monthly-averages}{%
+\subsubsection{2.2.5 Create monthly
+averages}\label{create-monthly-averages}}
+
+Using the same approach we can get monthly averages for a given
+variable:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{# To get the average value for a set of strata, weight the val by the area: (slow...)}
+\NormalTok{    mn_NEBS_season <-}\StringTok{ }\KeywordTok{getAVGnSUM}\NormalTok{(}\DataTypeTok{strataIN =}\NormalTok{ NEBS_strata, }\DataTypeTok{dataIN =}\NormalTok{ tmp_var,}\DataTypeTok{tblock=}\KeywordTok{c}\NormalTok{(}\StringTok{"yr"}\NormalTok{,}\StringTok{"mo"}\NormalTok{))}
+\NormalTok{    mn_NEBS_season}\OperatorTok{$}\NormalTok{basin =}\StringTok{ "NEBS"}
+\NormalTok{    mn_SEBS_season <-}\StringTok{ }\KeywordTok{getAVGnSUM}\NormalTok{(}\DataTypeTok{strataIN =}\NormalTok{ SEBS_strata, }\DataTypeTok{dataIN =}\NormalTok{ tmp_var,}\DataTypeTok{tblock=}\KeywordTok{c}\NormalTok{(}\StringTok{"yr"}\NormalTok{,}\StringTok{"mo"}\NormalTok{))}
+\NormalTok{    mn_SEBS_season}\OperatorTok{$}\NormalTok{basin =}\StringTok{ "SEBS"}
+    
+\NormalTok{    plot_data      <-}\StringTok{ }\KeywordTok{rbind}\NormalTok{(mn_NEBS_season,mn_SEBS_season)}
+    
+   \CommentTok{# plot Fall values:}
+\NormalTok{   p7 <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ plot_data}\OperatorTok{%>%}\KeywordTok{filter}\NormalTok{(mo}\OperatorTok{==}\DecValTok{9}\NormalTok{) ) }\OperatorTok{+}\StringTok{ }
+\StringTok{      }\KeywordTok{geom_line}\NormalTok{(   }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ yr,}\DataTypeTok{y =}\NormalTok{ mn_val,}\DataTypeTok{color=}\NormalTok{basin),}\DataTypeTok{alpha=}\NormalTok{.}\DecValTok{8}\NormalTok{)}\OperatorTok{+}
+\StringTok{      }\KeywordTok{geom_smooth}\NormalTok{( }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ yr,}\DataTypeTok{y =}\NormalTok{ mn_val,}\DataTypeTok{color=}\NormalTok{basin),}
+                  \DataTypeTok{formula =}\NormalTok{ y }\OperatorTok{~}\StringTok{ }\NormalTok{x, }\DataTypeTok{se =}\NormalTok{ T)}\OperatorTok{+}
+\StringTok{      }\KeywordTok{facet_grid}\NormalTok{(basin}\OperatorTok{~}\NormalTok{.)}\OperatorTok{+}
+\StringTok{      }\KeywordTok{scale_color_viridis_d}\NormalTok{(}\DataTypeTok{begin=}\NormalTok{.}\DecValTok{4}\NormalTok{,}\DataTypeTok{end=}\NormalTok{.}\DecValTok{8}\NormalTok{)}\OperatorTok{+}
+\StringTok{      }\KeywordTok{ylab}\NormalTok{(tmp_var}\OperatorTok{$}\NormalTok{units[}\DecValTok{1}\NormalTok{])}\OperatorTok{+}
+\StringTok{      }\KeywordTok{ggtitle}\NormalTok{( }\KeywordTok{paste}\NormalTok{(aclim[}\DecValTok{2}\NormalTok{],}\StringTok{"Sept."}\NormalTok{,mn_NEBS_season}\OperatorTok{$}\NormalTok{var[}\DecValTok{1}\NormalTok{]))}\OperatorTok{+}
+\StringTok{      }\KeywordTok{theme_minimal}\NormalTok{()}
+\NormalTok{  p7}
+  
+  \ControlFlowTok{if}\NormalTok{(update.figs)  }\KeywordTok{ggsave}\NormalTok{(}\DataTypeTok{file=}\StringTok{"Figs/Sept_large_Zoop.jpg"}\NormalTok{,}\DataTypeTok{width=}\DecValTok{8}\NormalTok{,}\DataTypeTok{height=}\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.65\textwidth,height=\textheight]{Figs/Sept_large_Zoop.jpg}
+\caption{September large zooplankton integrated concentration}
+\end{figure}
 
 \hypertarget{funding-and-acknowledgments-needs-updating}{%
 \section{4. Funding and acknowledgments (needs

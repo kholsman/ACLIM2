@@ -499,7 +499,7 @@ values for each variable.These are stored in the
       facet_grid(basin~.)+
       scale_color_viridis_d(begin=.4,end=.8)+
       ylab(tmp_var$units[1])+
-      ggtitle( aclim[2])+
+      ggtitle( paste(aclim[2],mn_NEBS$var[1]))+
       theme_minimal()
   p5
   if(update.figs)  ggsave(file="Figs/weekly_byreg.jpg",width=8,height=5)
@@ -509,13 +509,105 @@ values for each variable.These are stored in the
 <img src="Figs/weekly_byreg.jpg" style="width:65.0%" alt="" /><figcaption>Weekly indcices by sub-region</figcaption>
 </figure>
 
-### 2.2.4 Create monthly averages
+### 2.2.4 Create seasonal averages
 
-TBA
+Now using a similar approach get the monthly mean values for a variable:
 
-### 2.2.5 Create seasonal averages
+``` r
+    # Set up seasons (this follows Holsman et al. 2020)
+    seasons <- data.frame(mo = 1:12, season =factor("",levels=c("Winter","Spring","Summer","Fall")))
+      seasons$season[1:3]   <- "Winter"
+      seasons$season[4:6]   <- "Spring"
+      seasons$season[7:9]   <- "Summer"
+      seasons$season[10:12] <- "Fall"
 
-TBA
+    # open a "region" or strata specific nc file
+    ncfl      <- file.path(sim,paste0(reg_txt,sim,".nc"))
+    nc        <- nc_open(file.path(data_path,ncfl))
+    
+    # convert the nc files into a data.frame
+    tmp_var0    <- convert2df(ncIN = nc, type = 1, varIN = "temp_bottom5m")
+    tmp_var1    <- convert2df(ncIN = nc, type = 1, varIN = "NCaS_integrated")  # Large Cop
+    tmp_var2    <- convert2df(ncIN = nc, type = 1, varIN = "Cop_integrated")   # Small Cop
+    tmp_var3    <- convert2df(ncIN = nc, type = 1, varIN = "EupS_integrated")  # Euphausiids
+    
+    tmp_var     <- merge(tmp_var1,tmp_var3, by=c("strata","strata_area_km2","time","basin"))
+    # include tmp_var2 if looking at all cop, here we just do largeZoop
+    # tmp_var     <- merge(tmp_var,tmp_var2, by=c("strata","strata_area_km2","time","basin"))
+    tmp_var     <- tmp_var%>%group_by(time,strata,strata_area_km2,basin)%>%
+      mutate(val      = val.x + val.y ,units = units.x,
+             var       = "Zoop_integrated",
+             long_name ="Total On-shelf large zooplankton concentration, integrated over depth (NCa, Eup)")%>%
+      select(time,strata,strata_area_km2,basin,var,val, units,long_name)
+    head(tmp_var)
+    
+    nc_close(nc)
+    
+    tmp_var$yr     <- strptime(as.Date(tmp_var$time),format="%Y-%m-%d")$year + 1900
+    tmp_var$mo     <- strptime(as.Date(tmp_var$time),format="%Y-%m-%d")$mon  + 1
+    tmp_var$jday   <- strptime(as.Date(tmp_var$time),format="%Y-%m-%d")$yday + 1
+    tmp_var$season <- seasons[tmp_var$mo,2]
+    
+    # To get the average value for a set of strata, weight the val by the area: (slow...)
+    mn_NEBS_season <- getAVGnSUM(strataIN = NEBS_strata, dataIN = tmp_var,tblock=c("yr","season"))
+    mn_NEBS_season$basin = "NEBS"
+    mn_SEBS_season <- getAVGnSUM(strataIN = SEBS_strata, dataIN = tmp_var,tblock=c("yr","season"))
+    mn_SEBS_season$basin = "SEBS"
+    
+    plot_data      <- rbind(mn_NEBS_season,mn_SEBS_season)
+    
+   # plot Fall values:
+   p6 <- ggplot(data = plot_data%>%filter(season=="Fall") ) + 
+      geom_line(   aes(x = yr,y = mn_val,color=basin),alpha=.8)+
+      geom_smooth( aes(x = yr,y = mn_val,color=basin),
+                  formula = y ~ x, se = T)+
+      facet_grid(basin~.)+
+      scale_color_viridis_d(begin=.4,end=.8)+
+      ylab(tmp_var$units[1])+
+      ggtitle( paste(aclim[2],"Fall",mn_NEBS_season$var[1]))+
+      theme_minimal()
+  p6
+  
+  
+  if(update.figs)  ggsave(file="Figs/Fall_large_Zoop.jpg",width=8,height=5)
+```
+
+<figure>
+<img src="Figs/Fall_large_Zoop.jpg" style="width:65.0%" alt="" /><figcaption>Large fall zooplankton integrated concentration</figcaption>
+</figure>
+
+### 2.2.5 Create monthly averages
+
+Using the same approach we can get monthly averages for a given
+variable:
+
+``` r
+    # To get the average value for a set of strata, weight the val by the area: (slow...)
+    mn_NEBS_season <- getAVGnSUM(strataIN = NEBS_strata, dataIN = tmp_var,tblock=c("yr","mo"))
+    mn_NEBS_season$basin = "NEBS"
+    mn_SEBS_season <- getAVGnSUM(strataIN = SEBS_strata, dataIN = tmp_var,tblock=c("yr","mo"))
+    mn_SEBS_season$basin = "SEBS"
+    
+    plot_data      <- rbind(mn_NEBS_season,mn_SEBS_season)
+    
+   # plot Fall values:
+   p7 <- ggplot(data = plot_data%>%filter(mo==9) ) + 
+      geom_line(   aes(x = yr,y = mn_val,color=basin),alpha=.8)+
+      geom_smooth( aes(x = yr,y = mn_val,color=basin),
+                  formula = y ~ x, se = T)+
+      facet_grid(basin~.)+
+      scale_color_viridis_d(begin=.4,end=.8)+
+      ylab(tmp_var$units[1])+
+      ggtitle( paste(aclim[2],"Sept.",mn_NEBS_season$var[1]))+
+      theme_minimal()
+  p7
+  
+  if(update.figs)  ggsave(file="Figs/Sept_large_Zoop.jpg",width=8,height=5)
+```
+
+<figure>
+<img src="Figs/Sept_large_Zoop.jpg" style="width:65.0%" alt="" /><figcaption>September large zooplankton integrated concentration</figcaption>
+</figure>
 
 <!-- ### 2.2.6 Create the ACLIM annual indices of seasonal and survey replicated values -->
 <!-- ```{r} -->
