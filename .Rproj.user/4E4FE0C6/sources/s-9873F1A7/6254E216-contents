@@ -8,9 +8,10 @@ convert2df <- function(ncIN, type=1,varIN = "temp_bottom5m"){
   
   if(type == 1){
     k      <- which(weekly_vars%in%varIN)
-    val    <- ncvar_get(ncIN, varid = weekly_vars[k])
-    t      <- as.POSIXct(ncIN$var[[k]]$dim[[2]]$vals, 
-                       origin = substr(ncIN$var[[k]]$dim[[2]]$units,15,36),
+    val    <- ncvar_get(ncIN, varid = eval(varIN))
+    t      <- as.POSIXct(
+                    ncIN$var[[eval(varIN)]]$dim[[2]]$vals, 
+                       origin = substr(ncIN$var[[eval(varIN)]]$dim[[2]]$units,15,36),
                        tz = "GMT")
     for(s in 1:length(weekly_strata)){
       tmp    <- data.frame(
@@ -20,8 +21,8 @@ convert2df <- function(ncIN, type=1,varIN = "temp_bottom5m"){
         time   = t, 
         var    = weekly_vars[k],
         val    = val[s,],
-        units  = ncIN$var[[k]]$units,
-        long_name = ncIN$var[[k]]$longname)
+        units  = ncIN$var[[eval(varIN)]]$units,
+        long_name = ncIN$var[[eval(varIN)]]$longname)
       if(s == 1) val_long <- tmp
       if(s !=1 ) val_long <- rbind(val_long,tmp)
     }
@@ -33,8 +34,8 @@ convert2df <- function(ncIN, type=1,varIN = "temp_bottom5m"){
                                levels=(unique(weekly_strata)))
   }else{
     k      <- which(srvy_vars%in%varIN)
-    val    <- ncvar_get(ncIN, varid = srvy_vars[k])
-    t      <- ncIN$var[[k]]$dim[[2]]$vals
+    val    <- ncvar_get(ncIN, varid = varIN)
+    t      <- ncIN$var[[eval(varIN)]]$dim[[2]]$vals
     
     for(y in 1:length(t)){
       tmp           <- station_info

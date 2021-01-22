@@ -13,7 +13,7 @@ nc      <- nc_open(file.path(data_path,ncfl))
 region_area   <- ncvar_get(nc, varid = "region_area")
 
 # get the full list of variables (i.e., ACLIM indices):
-weekly_vars    <- names(nc$var)[-1]
+weekly_vars    <- names(nc$var)
 weekly_nvar    <- length(weekly_vars)
 weekly_var_def <- data.frame(name = weekly_vars, units ="", longname = "",stringsAsFactors = FALSE)
 
@@ -59,7 +59,7 @@ ncfl        <- file.path(aclim[i],paste0(srvy_txt,aclim[i],".nc"))
 nc          <- nc_open(file.path(data_path,ncfl))
 
 # get the full list of variables (i.e., ACLIM indices):
-srvy_vars   <- names(nc$var)[-(1:5)]
+srvy_vars   <- names(nc$var)
 srvy_nvar   <- length(srvy_vars)
 
 srvy_var_def <- data.frame(name = srvy_vars, units ="", longname = "",stringsAsFactors = FALSE)
