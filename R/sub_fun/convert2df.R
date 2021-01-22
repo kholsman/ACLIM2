@@ -8,7 +8,7 @@ convert2df <- function(ncIN, type=1,varIN = "temp_bottom5m"){
   
   if(type == 1){
     k      <- which(weekly_vars%in%varIN)
-    val    <- ncvar_get(ncIN, varid = eval(varIN))
+    val    <- ncvar_get(ncIN, varid = varIN)
     t      <- as.POSIXct(
                     ncIN$var[[eval(varIN)]]$dim[[2]]$vals, 
                        origin = substr(ncIN$var[[eval(varIN)]]$dim[[2]]$units,15,36),

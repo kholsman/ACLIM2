@@ -1,4 +1,0 @@
-"0","merge(tmp_var1,tmp_var2, by=c(strata"",""strata_area_km2"",""time"",""basin""))
-"
-"2","Error: unexpected string constant in ""merge(tmp_var1,tmp_var2, by=c(strata"",""""
-"
