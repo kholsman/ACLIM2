@@ -274,7 +274,10 @@ Once the base files and setup are loaded you can explore the index types. Recall
     # list of the scenario x GCM downscaled ACLIM indices
     for(k in aclim)
      cat(paste(k,"\n"))
-  
+    
+    embargoed # not yet public or published
+    public    # published runs (CMIP5)
+    
     # get some info about a scenario:
   
     all_info1 <- info(model_list=aclim,type=1)
