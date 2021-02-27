@@ -9,10 +9,14 @@
 lib_list <- c(
   # these for reshaping and manipulating data:
     "ncdf4",
+   # "ncfd",
+   "magrittr",
+    "httr",
     "reshape",
     "dplyr", 
     "purrr",
     "readxl", 
+    "tidyverse",
     
   # these for ggplot mapping:
     "raster",
@@ -49,4 +53,7 @@ if (length(missing) > 0) install.packages(missing)
 for(lib in lib_list)
        eval(parse(text=paste("library(",lib,")")))
 
+missing <- setdiff("thredds", installed.packages()[, 1])
+if (length(missing) > 0) devtools::install_github("bocinsky/thredds")
+library("thredds")
 

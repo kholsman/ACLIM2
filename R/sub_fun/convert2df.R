@@ -5,7 +5,7 @@
 convert2df <- function(ncIN, type=1,varIN = "temp_bottom5m"){
   
   if(!type%in%1:2) stop("type must be 1 (weekly regional indices) or 2 (survey replicated indices)")
-  
+
   if(type == 1){
     k      <- which(weekly_vars%in%varIN)
     val    <- ncvar_get(ncIN, varid = varIN)

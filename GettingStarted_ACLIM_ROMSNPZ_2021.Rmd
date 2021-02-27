@@ -1,7 +1,14 @@
 ---
-title: "Getting Started with ACLIM Bering10K ROMSNPZ Level3 indices"
+title: "Getting Started with ACLIM Bering10K ROMSNPZ Level3 indices (FOR INTERNAL ACLIM USE ONLY)
+"
 author: "Kirstin Holsman"
 output:
+  html_document:
+    df_print: kable
+    fig_caption: yes
+    theme: flatly
+    toc: true
+    toc_float: true
   pdf_document:
     fig_caption: yes
     fig_height: 4
@@ -10,10 +17,6 @@ output:
     keep_tex: yes
     latex_engine: xelatex
     toc: TRUE
-  html_document:
-    df_print: kable
-    fig_caption: yes
-    theme: flatly
   header-includes:
   - \usepackage{inputenc}
   - \usepackage{unicode-math}
@@ -40,8 +43,9 @@ output:
 
 ![.](Figs/ACLIM_logo.jpg){ width=20%}
 
-
-#### [**ACLIM Repo: github.com/kholsman/ACLIM2**](https://github.com/kholsman/ACLIM2 "ACLIM2 Repo")  
+**Getting Started with ACLIM Bering10K ROMSNPZ Level3 indices**  
+**(FOR INTERNAL ACLIM USE ONLY)**  
+[**ACLIM Repo: github.com/kholsman/ACLIM2**](https://github.com/kholsman/ACLIM2 "ACLIM2 Repo")  
   Repo maintained by:  
   Kirstin Holsman  
   Alaska Fisheries Science Center  
@@ -49,9 +53,7 @@ output:
   **[kirstin.holsman@noaa.gov](kirstin.holsman@noaa.gov)**  
   *Last updated: `r today`*
 
-# FOR INTERNAL ACLIM USE ONLY
-
-# 1. Overview
+# 1. ACLIM data and code Overview
 
 This is an overview of ACLIM plotting code and "canned" Rdata files generated from the downscaled ROMSNPZ modeling work ACLIM modelers Drs. Hermann, Cheng, Kearney,Pilcher, and Aydin. Dr. Kelly Kearney has recently dedicated significant time and energy towards organizing and documenting the ROMSNPZ output, especially as it pertains to the ACLIM project. We strongly recommend reviewing this [**documentation**](https://beringnpz.github.io/roms-bering-sea/B10K-dataset-docs/) before using the data in order to understand the origin of the indices and their present level of skill and validation, which varies considerably across indices and in space and time.
 
@@ -70,9 +72,9 @@ Please also see the Literature page for a list scientific publications related t
 
 ## 1.1. Downscaled models and carbon scenarios
 
-The full ACLIM "suite" of models include are summarized in the following table: 
+The full ACLIM "suite" of models include are summarized in the following table of downscaled models based on boundary conditions forced by General Circulation Models (GCM) run under Coupled Model Intercomparison Project (CMIP) phase 5 (5th IPCCAssessment Report) or phase 6 (6th IPCC Assessment Report; "AR") global carbon mitigation scenarios. For full details see the Kearney 2021 Tech. Memo.
 
-### Table 1: Summary of downscaled model runs based on boundary conditions forced by General Circulation Models (GCM) run under Coupled Model Intercomparison Project (CMIP) phase 5 (5th IPCCAssessment Report) or phase 6 (6th IPCC Assessment Report; "AR") global carbon mitigation scenarios. For full details see the Kearney 2021 Tech. Memo.
+### Table 1: Summary of ROMSNPZ downscaled model runs 
 CMIP| GCM    |Scenario    |Def              |Years      |Model |Status|Source
 --|--|------|--------|---------   | ---------------|----------|------|------|
 5 | GFDL    |RCP 4.5    | Med. mitigation |2006 - 2099|H16      |ACLIM/FATE |Public
@@ -122,13 +124,23 @@ Cheng et al. in prep
 Kearney et al. in prep
 Pilcher et al. in prep (CMIP5 K20 projections) (ACLIM indices avail by permission only)
 
-# 2. Getting started with Level3 ACLIM Indices (google drive)
+# 2. Getting started with Level3 ACLIM Indices
 
-## 2.1. Step 1: Clone the ACLIM2 GitHub code repo to your local directory:
+
+## 2.1 Information about ACLIM Level 3 indices
+
+Level 3 indices can be used to generate seasonal, monthly, and annual indices (like those reported in Reum et al. 2020, Holsman et al. 2020). In section 3 below we explore these indices in more detail using R, including using (2) above to generate weekly, monthly, and seasonal indices (e.g. Fall Zooplankton) for use in biological models. In section 3 below we explore these indices in more detail using R, including using (2) above to generate weekly, monthly, and seasonal indices (e.g. Fall Zooplankton) for use in biological models. 
+
+Please be sure to coordinate with ROMSNPZ modeling team members to ensure data is applied appropriately. If you need access to the raw ROMSNPZ files (netcdf, non-regridded large files located on MOX). Please contact  [**Al Hermann**](albert.j.hermann@noaa.gov) or [**Kelly Kearney**](kelly.kearney@noaa.gov).
+
+**IMPORTANT**  
+The ACLIM indices are stored as netcdf files (.nc) format in the Data folder of the ACLIM shared google drive or available on the new PMEL web-based portal. Please note that while the CMIP5 set is now public (Hermann et al. 2019) **the CMIP6 suite is under embargo for QAQC and should not be shared outside of the ACLIM group**. Al, Wei, Kelly, Darren, and Kerim are in the process of synthesizing and publishing the CMIP6 data (goal is spring 2021 for submission), following those publications the data will be made accessible to the public via the PMEL data portal, as is the case for the CMIP5 data and public hindcasts. It is strongly recommended that you include at least one (ideally multiple) authors from the ROMSNPZ team as co-author on your paper if you are linking to this data, this is especially the case for the CMIP6 data. There are multiple spatial and temporal caveats that are best described in discussions with the authors of these data and inclusion as co-authors will facilitate appropriate application and interpretation of the ROMSNPZ data.
+
+## 2.2. Step 1: Clone the ACLIM2 GitHub code repo to your local directory:
 
 First clone the ACLIM ROMSNPZ repo. This repo will open and explore the netcdf (.nc) files in R and produce plots and standardized outputs for ACLIM analyses. Some standardized tools are included as functions in this repo including spatial averaging for seasonal, monthly and annual indices (e.g., Fall zooplankton biomass), as well as bias correction for projections (see Holsman et al. 2020 and Reum et al. 2020 for ACLIM 1.0 bias correction methods). The repo also includes a Rshiny interactive exploratory graphing tool which can be viewed online [**at this link**](). 
 
-### 2.1.1 R() to download from github:
+### 2.1.1 Option 1: R() to download from github:
 
 ```{r gitdwnld, eval = FALSE,echo =T}
 
@@ -152,33 +164,20 @@ First clone the ACLIM ROMSNPZ repo. This repo will open and explore the netcdf (
 
 If you have Rstudio installed you can double click on the ACLIM2.Rproj and use Rstudio to manage your plotting and files (recommended).
 
-### 2.1.2 Manually download from github repo using:
+### 2.1.2 Option 2: Manually download from github repo using:
 
 Select `Download ZIP` from the upper right hand side of the repo page :[**github.com/kholsman/ACLIM2**](https://github.com/kholsman/ACLIM2 "ACLIM2 Repo") and save it to your local directory: `~[YOURPATH]/ACLIM2`.
 
 ![](Figs/clone.jpg){ width=40% }
 
-## 2.2. Step 2: Download the data from ACLIM google drive:
+## 2.3. Step 2: Download Level 3  indices:
+
+
+### 2.3.1 Option 1: Download from ACLIM google drive (public CMIP5 and embargoed ACLIM CMIP6)
 
 Data files are too large to store in the GitHub repository and are instead saved in the shared ACLIM data folder. For most applications you can use the ACLIM level3 post-processed indices available on the shared ACLIM drive in the root google drive data folder: [**00_ACLIM_shared>02_DATA**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk "00_ACLIM_shared>02_DATA"). 
 
-There are two folders that need to be copied into the ACLIM2 folder on your computer under ``~[YOURPATH]/ACLIM2/Data/in/`:
-
-1) [**00_ACLIM_shared>02_DATA>Newest**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk "00_ACLIM_shared>02_DATA>Newest"). This folder contains a folder called `roms_for_aclim` with all the ACLIM Level3 indices for model simulations available to ACLIM members.
-
-2) [**00_ACLIM_shared>02_DATA>Map_layers.zip**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk "00_ACLIM_shared>02_DATA>Map_layers"). This file needs to be unzipped after you download it to your local folder. It contains (large) base maps for the code below including `shp_files` and `geo_tif` folders.
-
-![Your local `ACLIM2/Data` directory should look something like this when you are done downloading the data and unzipping it.](Figs/data_dir.jpg){ width=65% }
-
-## 2.3 Information about ACLIM Level3 indices
-
-Please be sure to coordinate with ROMSNPZ modeling team members to ensure data is applied appropriately. If you need access to the raw ROMSNPZ files (netcdf, non-regridded large files located on MOX). Please contact  [**Al Hermann**](albert.j.hermann@noaa.gov) or [**Kelly Kearney**](kelly.kearney@noaa.gov).
-
-**IMPORTANT**  
-The ACLIM indices are stored as netcdf files (.nc) format in the Data folder of the ACLIM shared google drive. Please note that while the CMIP5 set is now public (Hermann et al. 2019) **the CMIP6 suite is under embargo for QAQC and should not be shared outside of the ACLIM group**. Al, Wei, Kelly, Darren, and Kerim are in the process of synthesizing and publishing the CMIP6 data (goal is spring 2021 for submission), following those publications the data will be made accessible to the public via the PMEL data portal, as is the case for the CMIP5 data and public hindcasts. It is strongly recommended that you include at least one (ideally multiple) authors from the ROMSNPZ team as co-author on your paper if you are linking to this data, this is especially the case for the CMIP6 data. There are multiple spatial and temporal caveats that are best described in discussions with the authors of these data and inclusion as co-authors will facilitate appropriate application and interpretation of the ROMSNPZ data.
-
-
-These files can be used to generate seasonal, monthly, and annual indices (like those reported in Reum et al. 2020, Holsman et al. 2020). The `Newest` folder is organized by Bering10K version, General Circulation Model (GCM) and carbon scenario, e.g. `B10K-H16_CMIP5_CESM_rcp45`. Within each folder the following subfolders are:
+The `Newest` folder is organized by Bering10K version, General Circulation Model (GCM) and carbon scenario, e.g. `B10K-H16_CMIP5_CESM_rcp45`. Within each folder the following subfolders are:
 
 * `Level1`: (Empty; not copied from Mox)
 * `Level2`: (Empty; not copied from Mox)
@@ -189,17 +188,233 @@ These files can be used to generate seasonal, monthly, and annual indices (like 
 
 <!-- ![](Figs/datadir.jpg){ width=40% } -->
 
-In section 2 below we explore these indices in more detail using R, including using (2) above to generate weekly, monthly, and seasonal indices (e.g. Fall Zooplankton) for use in biological models. 
+There are two folders that need to be copied into the ACLIM2 folder on your computer under ``~[YOURPATH]/ACLIM2/Data/in/`:
 
-## 2.4. (Coming soon) PMEL public web-based database (beta-testing phase; currently limited to CMIP5)
+1) [**00_ACLIM_shared>02_DATA>Newest**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk "00_ACLIM_shared>02_DATA>Newest"). This folder contains a folder called `roms_for_aclim` with all the ACLIM Level3 indices for model simulations available to ACLIM members.
+
+2) [**00_ACLIM_shared>02_DATA>Map_layers.zip**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk "00_ACLIM_shared>02_DATA>Map_layers"). This file needs to be unzipped after you download it to your local folder. It contains (large) base maps for the code below including `shp_files` and `geo_tif` folders.
+
+![Your local `ACLIM2/Data` directory should look something like this when you are done downloading the data and unzipping it.](Figs/data_dir.jpg){ width=65% }
+
+### 2.3.2 Option 2: Download from web-based database
+
+This option is available for Level3 and Level 2 CMIP5 public data, it is not yet available for the embargoed CMIP6 data but eventually will be used to host that as well.
 
 The ROMSNPZ team has been working with [Roland Schweitzer](roland.schweitzer@noaa.gov) and [Peggy Sullivan](peggy.sullivan@noaa.gov) to develop the ACLIM Live Access Server (LAS) to publicly host the published CMIP5 hindcasts and downscaled projections. This server is in beta testing phase and can be accessed at the following links:
 
-### [LAS custom ROMSNPZ data query, mapping, and plotting tool](https://data.pmel.noaa.gov/aclim/las/ "Live Access Server")
+#### [THREDDS ACLIM data access tool](https://data.pmel.noaa.gov/aclim/thredds/)
 
-### [THREDDS ACLIM data access tool](https://data.pmel.noaa.gov/aclim/thredds/)
+Let's try downloading level 3 layers from the Thredds online CMIP5 catalog:
 
-### [ERDAPP ACLIM data access tool](https://data.pmel.noaa.gov/aclim/erddap/)
+```{r thredds,include=TRUE, eval = FALSE,echo = FALSE}
+#paged
+# https://rdrr.io/github/bocinsky/thredds/f/README.md
+# https://publicwiki.deltares.nl/display/OET/OPeNDAP+access+with+R
+
+
+
+    tmstp  <- format(Sys.time(), "%Y_%m_%d")
+    main   <- getwd()  #"~/GitHub_new/ACLIM2"
+    
+    # loads packages, data, setup, etc.
+    source("R/make.R") 
+    
+    year <- 2040
+    as.Date(3907,origin)
+    origin <- "1900-01-01 00:00:00"
+
+    
+    # define the simulation to download:
+    cmip <- "CMIP5"
+    GCM  <- "MIROC"
+    rcp  <- "rcp85"
+    sim  <- paste0("B10K-H16_",cmip,"_",GCM,"_",rcp,"/")
+    base_url_l2 <- "https://data.pmel.noaa.gov/aclim/thredds/dodsC/Level2/"
+       ACLIMsurveyrep_B10K-H16_CMIP5_CESM_rcp45.nc	29.90 Mbytes	2021-01-15T18:58:01Z
+         ACLIMregion_B10K-H16_CMIP5_CESM_rcp45.nc
+         
+         
+    url    <- "https://data.pmel.noaa.gov/aclim/thredds/dodsC/Level2/B10K-H16_CMIP5_CESM_rcp45_bottom5m.nc"
+    sim_url <- basename(url)
+    url_l3 <- "https://data.pmel.noaa.gov/aclim/thredds/dodsC/B10K-H16_CMIP5_CESM_rcp45/Level3/ACLIMsurveyrep_B10K-H16_CMIP5_CESM_rcp45.nc"
+    
+    nc <- nc_open(url)
+nc <- nc_open(url_l3)
+    
+    # define the threddds url
+    aclim_thredds <- "https://data.pmel.noaa.gov/aclim/thredds/"
+    
+    # preview the datasets on the server:
+    url_list <- tds_list_datasets(thredds_url = aclim_thredds)
+    
+    # get the url for the target dataset:
+    sim_url  <- url_list[url_list$dataset == sim,]$path
+    sim_datasets <- tds_list_datasets(thredds_url = sim_url)
+    
+    l2_cat   <- sim_datasets[sim_datasets$dataset == "Level 2/",]$path
+    l3_cat   <- sim_datasets[sim_datasets$dataset == "Level 3/",]$path
+    l2_data  <- tds_list_datasets(l2_cat)
+    
+    l2_url   <- l2_data[l2_data$dataset == "Bottom 5m",]$path
+    vars     <- tds_ncss_list_vars(ncss_url = l2_url)
+    url <- l2_url
+  
+    #l3_data  <- tds_list_datasets(l3_cat)
+
+# open the downloaded nc file:
+grid.nc <- nc_open(nc_file)
+
+
+sim_services <- aclim_list_services(sim_url,lvl=3)
+sim_services
+
+sim_ncss <- aclim_list_services(sim_url,lvl=3)
+sim_ncss <-"https://data.pmel.noaa.gov/aclim/thredds/catalog/B10K-H16_CMIP5_MIROC_rcp85/Level3/dataset.html"
+
+loca_ncss <- loca_services[loca_services$service == "NetcdfSubset",]$path
+loca_ncss
+#> [1] "https://cida.usgs.gov/thredds/ncss/loca_future/dataset.html"
+
+loca_vars <- tds_ncss_list_vars(ncss_url = sim_ncss)
+loca_vars
+
+
+CCSM4 <- tds_ncss_download(ncss_url = loca_ncss,
+                           out_file = paste0(tempdir(),"/CCSM4.nc"),
+                           bbox = sf::st_bbox(c(xmin = -116.5, xmax = -115, ymin = 44.5, ymax = 45)),
+                           vars = c("tasmax_CCSM4_r6i1p1_rcp45","tasmax_CCSM4_r6i1p1_rcp85"),
+                           ncss_args = list(temporal = "all"))
+
+# open the downloaded nc file:
+grid.nc <- nc_open(nc_file)
+
+url_grid <-
+"http://opendap.deltares.nl/thredds/fileServer/opendap/rijkswaterstaat/vaklodingen/vaklodingenKB116_4544.nc" # note: netcdf4 does not work on windows R
+ 
+url_time <-
+"http://opendap.deltares.nl/thredds/fileServer/opendap/rijkswaterstaat/waterbase/concentration_of_suspended_matter_in_sea_water/id410-DELFZBTHVN.nc"
+lvl2_url_grid <- "https://data.pmel.noaa.gov/aclim/thredds/dodsC/Level2/B10K-H16_CMIP5_CESM_BIO_rcp85_bottom5m.nc?Cs_r,hc,lat_rho[0:1:257][0:1:181],lon_rho[0:1:257][0:1:181],s_rho,ocean_time[0:1:4901],temp[0:1:4901][0:1:257][0:1:181]"
+
+lvl2_url_grid <-"https://data.pmel.noaa.gov/aclim/thredds/dodsC/Level2/B10K-H16_CMIP5_CESM_rcp45_bottom5m.nc?temp[0:1:2][0:1:257][0:1:181]"
+
+GET_lv2 <- function( ncss_url, out_file, bbox, vars = NULL, ncss_args = NULL, 
+          overwrite = TRUE
+){
+  
+  base_url <- ncss_url %>% stringr::str_remove("([^/]+$)") %>% 
+    stringr::str_remove("(\\/+$)")
+  if (is.null(vars)) {
+    vars <- tds_ncss_list_vars(ncss_url)
+  }
+  query <- list(var = vars %>% stringr::str_c(collapse = ","), 
+                north = bbox[["ymax"]], west = bbox[["xmin"]], east = bbox[["xmax"]], 
+                south = bbox[["ymin"]])
+  
+  
+}
+query <- "B10K-H16_CMIP5_CESM_rcp45_bottom5m.nc?temp[0:1:2][0:1:257][0:1:181]"
+httr::GET(base_url, query = query, httr::write_disk(out_file,overwrite = overwrite), ...)
+
+
+lvl2_url_grid <-"https://data.pmel.noaa.gov/aclim/thredds/dodsC/Level2/B10K-H16_CMIP5_CESM_rcp45_bottom5m.nc?temp[0:1:1][0:1:257][0:1:181]"
+
+grid<-"https://data.pmel.noaa.gov/aclim/thredds/dodsC/Level2/B10K-H16_CMIP5_CESM_rcp45_surface5m.nc?temp[0:1:2][0:1:257][0:1:181]"
+base_url <- "https://data.pmel.noaa.gov/aclim/thredds/dodsC/Level2/B10K-H16_CMIP5_CESM_rcp45_surface5m.nc"
+query <-"temp[0:1:2][0:1:257][0:1:181]"
+out_file <- nc_file
+overwrite <- TRUE
+httr::GET(base_url, query = query, httr::write_disk(out_file,overwrite = overwrite), ...)
+
+nc <- nc_open(nc_file)
+
+
+download.file(grid, nc_file, method = "auto",
+quiet = FALSE, mode="wb", cacheOK = TRUE)
+ 
+download.file(url_time, "id410-DELFZBTHVN.nc", method = "auto",
+quiet = FALSE, mode="wb", cacheOK = TRUE)
+
+
+
+
+tmstp  <- format(Sys.time(), "%Y_%m_%d")
+main   <- getwd()  #"~/GitHub_new/ACLIM2"
+
+# loads packages, data, setup, etc.
+source("R/make.R")
+if(!dir.exists("Data/in/Thredds")) dir.create("Data/in/Thredds")
+
+ACLIM_data_url <- "https://data.pmel.noaa.gov/aclim/thredds/"
+
+lv3 <- paste0(ACLIM_data_url,"catalog/B10K-H16_CMIP5_CESM_BIO_rcp85/Level3/catalog.html?dataset=B10K-H16_CMIP5_CESM_BIO_rcp85/Level3/ACLIMsurveyrep_B10K-H16_CMIP5_CESM_BIO_rcp85.nc")
+
+lv3 <- " /aclim/thredds/dodsC/B10K-H16_CMIP5_CESM_BIO_rcp85/Level3/ACLIMsurveyrep_B10K-H16_CMIP5_CESM_BIO_rcp85.nc"
+lv3 <- "https://data.pmel.noaa.gov/aclim/thredds/dodsC/B10K-H16_CMIP5_CESM_BIO_rcp85/Level3/ACLIMsurveyrep_B10K-H16_CMIP5_CESM_BIO_rcp85.nc"
+lv3 <- "https://data.pmel.noaa.gov/aclim/thredds/dodsC/B10K-H16_CMIP5_CESM_BIO_rcp85/Level3/ACLIMsurveyrep_B10K-H16_CMIP5_CESM_BIO_rcp85.nc?year[0:1:130],station_id[0:1:508],latitude[0:1:508],longitude[0:1:508],stratum[0:1:508],doy[0:1:508],temp_bottom5m[0:1:130][0:1:508]"
+
+lv3 <- "https://data.pmel.noaa.gov/aclim/erddap/tabledap/B10K-H16_CORECFS_Level3_regions.htmlTable?time%2Cregion%2Cregion_area%2CBen%2CDetBen%2CHsbl%2CIceNH4%2CIceNO3%2CIcePhL%2Caice%2Chice%2Cshflux%2Cssflux%2CCop_integrated%2CCop_surface5m%2CEupO_integrated%2CEupO_surface5m%2CEupS_integrated%2CEupS_surface5m%2CIron_bottom5m%2CIron_integrated%2CIron_surface5m%2CJel_integrated%2CJel_surface5m%2CMZL_integrated%2CMZL_surface5m%2CNCaO_integrated%2CNCaO_surface5m%2CNCaS_integrated%2CNCaS_surface5m%2CNH4_bottom5m%2CNH4_integrated%2CNH4_surface5m%2CNO3_bottom5m%2CNO3_integrated%2CNO3_surface5m%2CPhL_integrated%2CPhL_surface5m%2CPhS_integrated%2CPhS_surface5m%2Cprod_Cop_integrated%2Cprod_EupO_integrated%2Cprod_EupS_integrated%2Cprod_Eup_integrated%2Cprod_Jel_integrated%2Cprod_MZL_integrated%2Cprod_NCaO_integrated%2Cprod_NCaS_integrated%2Cprod_NCa_integrated%2Cprod_PhL_integrated%2Cprod_PhS_integrated%2Csalt_surface5m%2Ctemp_bottom5m%2Ctemp_integrated%2Ctemp_surface5m%2CuEast_bottom5m%2CuEast_surface5m%2CvNorth_bottom5m%2CvNorth_surface5m%2Cfracbelow0%2Cfracbelow1%2Cfracbelow2%2Clongitude%2Clatitude&time%3E=2018-08-05T00%3A00%3A00Z&time%3C=2018-08-12T12%3A00%3A00Z"
+
+
+  
+url_lv3  <- "https://data.pmel.noaa.gov/aclim/thredds/dodsC/B10K-H16_CMIP5_MIROC_rcp85/Level3/ACLIMsurveyrep_B10K-H16_CMIP5_MIROC_rcp85.nc.html"
+nc_file  <- "Data/in/Thredds/B10K-H16_CMIP5_MIROC_rcp45_bottom5m.nc"
+
+
+# Download the file from the online REPO:
+# download.file( lvl2_url_grid,
+#                nc_file,
+#                method="auto",quiet = FALSE, mode = "wb",cacheOK=TRUE)
+junk <- GET(lvl2_url_grid, write_disk(nc_file, overwrite=TRUE), progress())
+
+
+junk <- GET('https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v1_0_monthly.nc?analysed_sst[(2018-01-01T12:00:00Z):1:(2018-12-01T12:00:00Z)][(17):1:(30)][(195):1:(210)]', write_disk("sst.nc", overwrite=TRUE))
+
+
+# open the downloaded nc file:
+grid.nc <- nc_open(nc_file)
+
+# look what's in there...
+grid.nc
+
+# Get grid data
+G.x <- get.var.ncdf(grid.nc,'x')
+G.y <- get.var.ncdf(grid.nc,'y')
+
+# get only first timestep
+G.z <- get.var.ncdf(grid.nc,'z')[,,1]
+
+# to get a black background, and set the scale of depth values to start from 0.
+G.z[G.z == -9999] <- 0
+
+# image.plot needs sorted x- and y-values;
+# as y-values are descending, the order is reversed here...
+G.y <- rev(G.y)
+G.z <- G.z[,length(G.y):1]
+time.nc <- open.ncdf("id410-DELFZBTHVN.nc")
+# look what's in there...
+time.nc
+
+T.t <- get.var.ncdf(time.nc,'time')
+T.eta <-
+  get.var.ncdf(time.nc,'concentration_of_suspended_matter_in_sea_water')
+plot ...
+# R-package fields provides nice image facilities and color schemes
+par (mfrow = c(1,2))
+library(fields)
+image.plot(G.x,G.y,as.matrix(G.z),
+           col = c(tim.colors(),"black"),
+           xlab = "x [m]", ylab = "y [m]")
+plot(as.Date(T.t, origin="1970-01-01"), T.eta, type = "l", ylab = "spm
+[mg/l]")
+
+
+```
+
+
+#### [LAS custom ROMSNPZ data query, mapping, and plotting tool](https://data.pmel.noaa.gov/aclim/las/ "Live Access Server")
+
+#### [ERDAPP ACLIM data access tool](https://data.pmel.noaa.gov/aclim/erddap/)
+
 
 
 # 3. Exploring the ACLIM indices
