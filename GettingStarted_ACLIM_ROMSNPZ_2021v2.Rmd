@@ -1,12 +1,6 @@
 ---
 title: "Getting Started with ACLIM Bering10K ROMSNPZ Level 2 & 3 indices"
 output:
-  html_document:
-    df_print: kable
-    fig_caption: yes
-    theme: flatly
-    toc: true
-    toc_float: true
   pdf_document:
     fig_caption: yes
     fig_height: 4
@@ -15,6 +9,12 @@ output:
     keep_tex: yes
     latex_engine: xelatex
     toc: TRUE
+  html_document:
+    df_print: kable
+    fig_caption: yes
+    theme: flatly
+    toc: true
+    toc_float: true
   header-includes:
   - \usepackage{inputenc}
   - \usepackage{unicode-math}
@@ -55,8 +55,7 @@ output:
 
 ![.](Figs/ACLIM_logo.jpg){ width=20%}
 
-**Getting Started with ACLIM Bering10K ROMSNPZ Level3 indices**  
-**(FOR INTERNAL ACLIM USE ONLY)**  
+ 
 [**ACLIM Repo: github.com/kholsman/ACLIM2**](https://github.com/kholsman/ACLIM2 "ACLIM2 Repo")  
   Repo maintained by:  
   Kirstin Holsman  
@@ -66,7 +65,7 @@ output:
   *Last updated: `r today`*
 
 
-# 1. ACLIM data and code overview
+# 1. ACLIM code and online repo and ROMSNPZ data overview
 
 This is an overview of ACLIM plotting code and "canned" Rdata files generated from the downscaled ROMSNPZ modeling work ACLIM modelers Drs. Hermann, Cheng, Kearney,Pilcher, and Aydin. Dr. Kelly Kearney has recently dedicated significant time and energy towards organizing and documenting the ROMSNPZ output, especially as it pertains to the ACLIM project. We strongly recommend reviewing this [**documentation**](https://beringnpz.github.io/roms-bering-sea/B10K-dataset-docs/) before using the data in order to understand the origin of the indices and their present level of skill and validation, which varies considerably across indices and in space and time.
 
@@ -98,7 +97,7 @@ CMIP| GCM    |Scenario    |Def              |Years      |Model |Source|Status
 5 | CESM    |RCP 4.5    | Med. mitigation |2006 - 2099|H16      |ACLIM/FATE |Public
 5 | CESM    |RCP 8.5    | High baseline   |2006 - 2080|H16      |ACLIM/FATE |Public
 5 | CESM    |RCP 8.5bio*| High baseline   |2006 - 2099|H16      |ACLIM/FATE |Public
- ||CORECFS  | Reanalysis| Hindcast        |1970 - 2018|H16      |ACLIM      |Public
+ ||CORECFS  |Reanalysis| Hindcast        |1970 - 2018|H16       |ACLIM      |Public
  ||CORECFS  |Reanalysis | Hindcast        |1970 - 2020|K20      |ACLIM2/RTAP|Public
 6| CESM     |SSP585     | High baseline   |2014 - 2099|K20P19   |ACLIM2/RTAP|Embargo
 6| CESM     |SSP126     | High Mitigation |2014 - 2099|K20P19   |ACLIM2/RTAP|Embargo
@@ -143,7 +142,6 @@ The Bering10K model was subsequently updated by Kearney et al. 2020 (30 layer an
   Cheng et al. in prep  
   Kearney et al. in prep  
   Pilcher et al. in prep (CMIP5 K20 projections) (ACLIM indices avail by permission only)  
-
 
 
 # 2. Get ACLIM code (Step 1)

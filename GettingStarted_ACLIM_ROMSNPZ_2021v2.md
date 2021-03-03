@@ -7,7 +7,6 @@
 </figure>
 
 **Getting Started with ACLIM Bering10K ROMSNPZ Level3 indices**  
-**(FOR INTERNAL ACLIM USE ONLY)**  
 [**ACLIM Repo:
 github.com/kholsman/ACLIM2**](https://github.com/kholsman/ACLIM2 "ACLIM2 Repo")  
 Repo maintained by:  
@@ -17,8 +16,8 @@ NOAA Fisheries, Seattle WA
 **[kirstin.holsman@noaa.gov](kirstin.holsman@noaa.gov)**  
 *Last updated: Mar 03, 2021*
 
-1. ACLIM data and code overview
-===============================
+1. ACLIM code and online repo and ROMSNPZ data overview
+=======================================================
 
 This is an overview of ACLIM plotting code and “canned” Rdata files
 generated from the downscaled ROMSNPZ modeling work ACLIM modelers Drs.
