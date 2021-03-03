@@ -36,8 +36,7 @@
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
 \hypersetup{
-  pdftitle={Getting Started with ACLIM Bering10K ROMSNPZ Level3 indices (FOR INTERNAL ACLIM USE ONLY)},
-  pdfauthor={Kirstin Holsman},
+  pdftitle={Getting Started with ACLIM Bering10K ROMSNPZ Level 2 \& 3 indices},
   hidelinks,
   pdfcreator={LaTeX via pandoc}}
 \urlstyle{same} % disable monospaced font for URLs
@@ -123,10 +122,9 @@
 \usepackage{makecell}
 \usepackage{xcolor}
 
-\title{Getting Started with ACLIM Bering10K ROMSNPZ Level3 indices (FOR
-INTERNAL ACLIM USE ONLY)}
-\author{Kirstin Holsman}
-\date{}
+\title{Getting Started with ACLIM Bering10K ROMSNPZ Level 2 \& 3 indices}
+\author{}
+\date{\vspace{-2.5em}}
 
 \begin{document}
 \maketitle
@@ -150,11 +148,11 @@ Kirstin Holsman\\
 Alaska Fisheries Science Center\\
 NOAA Fisheries, Seattle WA\\
 \textbf{\url{kirstin.holsman@noaa.gov}}~\\
-\emph{Last updated: Feb 27, 2021}
+\emph{Last updated: Mar 02, 2021}
 
 \hypertarget{aclim-data-and-code-overview}{%
 \section{1. ACLIM data and code
-Overview}\label{aclim-data-and-code-overview}}
+overview}\label{aclim-data-and-code-overview}}
 
 This is an overview of ACLIM plotting code and ``canned'' Rdata files
 generated from the downscaled ROMSNPZ modeling work ACLIM modelers Drs.
@@ -171,38 +169,41 @@ The Bering10K ROMSNPZ documentation can be accessed on the main
 \href{https://beringnpz.github.io/roms-bering-sea/B10K-dataset-docs/}{\textbf{documentation}}
 webpage. The webpage is maintained by Kelly Kearney and regularly
 updated with new documentation, including the following core documents
-(also linked in the
+(ACLIM members can also find these linked in the
 \href{https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk}{\textbf{00\_ACLIM\_shared/02\_Data}}
 folder):
 
-\href{https://drive.google.com/file/d/1GlITTIvbs2gRBMNIxdDI15cZU6mH4ckg/view}{\textbf{The
-Bering10K Dataset documentation}}: A pdf describing the dataset,
-including:
+\begin{itemize}
+\item
+  \href{https://drive.google.com/file/d/1GlITTIvbs2gRBMNIxdDI15cZU6mH4ckg/view}{\textbf{The
+  Bering10K Dataset documentation}}: A pdf describing the dataset,
+  including:
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
+  \begin{enumerate}
+  \def\labelenumi{\arabic{enumi}.}
+  \item
+    A description of the various simulations (base model versions,
+    parent model forcing datasets, and biological modules) and the
+    output naming scheme for each.
+  \item
+    A tutorial on working with the curvilinear, sigma-coordinate ROMS
+    spatial grid, aimed at those who will be working with data on the
+    native grid.
+  \item
+    An overview of the ACLIM index dataset; this is a set of time series
+    derived from the Bering10K output and intended for Alaska Climate
+    Integrated Modeling (ACLIM) collaborators.
+  \end{enumerate}
 \item
-  A description of the various simulations (base model versions, parent
-  model forcing datasets, and biological modules) and the output naming
-  scheme for each.
-\item
-  A tutorial on working with the curvilinear, sigma-coordinate ROMS
-  spatial grid, aimed at those who will be working with data on the
-  native grid.
-\item
-  An overview of the ACLIM index dataset; this is a set of time series
-  derived from the Bering10K output and intended for Alaska Climate
-  Integrated Modeling (ACLIM) collaborators.
-\end{enumerate}
-
-\href{https://drive.google.com/file/d/1C1FCxRMBm0uBv2wEKwrGfHmLnjt_gFvG/view}{\textbf{Bering10K
-Simulaton Variables}}: A spreadsheet listing all simulations and the
-archived output variables associated with each, updated periodically as
-new simulations are run or new variables are made available. Note that
-this includes both data available on both public and private servers
-(see below). Please also see the Literature page for a list scientific
-publications related to the model, including model description and skill
-assessment.
+  \href{https://drive.google.com/file/d/1C1FCxRMBm0uBv2wEKwrGfHmLnjt_gFvG/view}{\textbf{Bering10K
+  Simulaton Variables}}: A spreadsheet listing all simulations and the
+  archived output variables associated with each, updated periodically
+  as new simulations are run or new variables are made available. Note
+  that this includes both data available on both public and private
+  servers (see below). Please also see the Literature page for a list
+  scientific publications related to the model, including model
+  description and skill assessment.
+\end{itemize}
 
 \hypertarget{downscaled-models-and-carbon-scenarios}{%
 \subsection{1.1. Downscaled models and carbon
@@ -221,7 +222,7 @@ runs}\label{table-1-summary-of-romsnpz-downscaled-model-runs}}
 
 \begin{longtable}[]{@{}lllllllll@{}}
 \toprule
-CMIP & GCM & Scenario & Def & Years & Model & Status & Source
+CMIP & GCM & Scenario & Def & Years & Model & Source & Status
 &\tabularnewline
 \midrule
 \endhead
@@ -274,8 +275,8 @@ data}\label{guildlines-for-use-and-citation-of-the-data}}
 
 It is strongly recommended that you include at least one (ideally
 multiple) authors from the ROMSNPZ team (Drs. Hermann, Cheng, Kearney,
-Pilcher) as co-author on your paper if you are linking to this data,
-this is especially the case for the CMIP6 data. There are multiple
+Pilcher) as co-author on your paper if you are linking to this data
+(this is especially the case for the CMIP6 data). There are multiple
 spatial and temporal caveats that are best described in discussions with
 the authors of these data and inclusion as co-authors will facilitate
 appropriate application and interpretation of the ROMSNPZ data.
@@ -286,9 +287,11 @@ layers:}\label{the-bering-10k-model-v.-h16-with-10-depth-layers}}
 
 The H16 model is the original BSIERP era 10 depth layer model with a 10
 Km grid. This version was used in ACLIM1.0 to dynamically downscaled 3
-global circulation models (GCMs) under two CMIP5 representative carbon
-pathways (RCP): RCP 4.5 or ``moderate global carbon mitigation'' and RCP
-8.5 ``high baseline global carbon emissions''. Details of the model and
+global scale general circulation models (GCMs) under two CMIP
+(\href{https://www.wcrp-climate.org/wgcm-cmip}{Coupled Model
+Intercomparison Project}{]}) phase 5 representative carbon pathways
+(RCP): RCP 4.5 or ``moderate global carbon mitigation'' and RCP 8.5
+``high baseline global carbon emissions''. Details of the model and
 projections can be found in:
 
 \begin{itemize}
@@ -316,8 +319,9 @@ and other
 advancements:}\label{the-bering-10k-model-v.-k20-with-30-depth-layers-and-other-advancements}}
 
 The Bering10K model was subsequently updated by Kearney et al.~2020 (30
-layer and other NPZ updates) and Pilcher et al.2019 (OA and O2 dynamics)
-and this version is used for the projections in ACLIM2.0 under CMIP6.
+layer and other NPZ updates) and Pilcher et al .2019 (OA and O2
+dynamics) and this version is used for the projections in ACLIM2.0 under
+the most recent CMIP phase 6.
 
 \begin{itemize}
 \item
@@ -360,19 +364,28 @@ CMIP6 data (goal is spring 2021 for submission), following those
 publications the data will be made accessible to the public via the PMEL
 data portal, as is the case for the CMIP5 data and public hindcasts.
 
-First clone the \href{https://github.com/kholsman/ACLIM2}{\textbf{ACLIM
-ROMSNPZ Repo: github.com/kholsman/ACLIM2}}. This code will load and
-explore the netcdf (.nc) files in R and produce plots and standardized
-outputs for ACLIM analyses. Some standardized tools are included as
-functions in this repo including spatial averaging for seasonal, monthly
-and annual indices (e.g., Fall zooplankton biomass), as well as bias
-correction for projections (see Holsman et al.~2020 and Reum et al.~2020
-for ACLIM 1.0 bias correction methods). The repo also includes a Rshiny
-interactive exploratory graphing tool which can be viewed online
+The code for accessing plotting the data is available in the ACLIM2
+github repository:
+\href{https://github.com/kholsman/ACLIM2}{\textbf{ACLIM ROMSNPZ Repo:
+github.com/kholsman/ACLIM2}}. This code will open the netcdf (.nc) files
+in R and save them on your local drive as .Rdata files. The code also
+will produce plots and standardized outputs for ACLIM analyses. Some
+standardized tools are included as functions in this repo including
+spatial averaging for seasonal, monthly and annual indices (e.g., Fall
+zooplankton biomass), as well as bias correction for projections (see
+Holsman et al.~2020 and Reum et al.~2020 for ACLIM 1.0 bias correction
+methods). The repo also includes a Rshiny() interactive exploratory
+graphing tool which can be viewed online
 \href{https://kholsman.shinyapps.io/aclim/}{\textbf{at this link}}.
 
+There are two ways to put the repo on your local drive 1) use R to
+download it and 2) manually download a zipped version of the repo.
+\textbf{Once you've unzipped the folder, if you have Rstudio installed
+you can double click on the \texttt{ACLIM2/ACLIM2.Rproj} and use Rstudio
+to manage your plotting and files (recommended).}
+
 \hypertarget{option-1-use-r-to-download-from-aclim2-github-repo}{%
-\subsubsection{2.1 Option 1: Use R to download from ACLIM2 github
+\subsection{2.1 Option 1: Use R to download from ACLIM2 github
 repo:}\label{option-1-use-r-to-download-from-aclim2-github-repo}}
 
 \begin{Shaded}
@@ -396,11 +409,8 @@ repo:}\label{option-1-use-r-to-download-from-aclim2-github-repo}}
 \end{Highlighting}
 \end{Shaded}
 
-If you have Rstudio installed you can double click on the ACLIM2.Rproj
-and use Rstudio to manage your plotting and files (recommended).
-
 \hypertarget{option-2-manually-download-from-aclim2-github-repo}{%
-\subsubsection{2.2 Option 2: Manually download from ACLIM2 github
+\subsection{2.2 Option 2: Manually download from ACLIM2 github
 repo}\label{option-2-manually-download-from-aclim2-github-repo}}
 
 Select \texttt{Download\ ZIP} from the upper right hand side of the repo
@@ -411,36 +421,110 @@ and save it to your local directory:
 
 \includegraphics[width=1\textwidth,height=\textheight]{Figs/clone.jpg}
 
-\hypertarget{get-data-step-2}{%
-\section{3. Get Data (Step 2)}\label{get-data-step-2}}
+\hypertarget{get-romsnpz-data-step-2}{%
+\section{3. Get ROMSNPZ data (Step 2)}\label{get-romsnpz-data-step-2}}
 
-The naming convention of the folders is:
-\texttt{B10K-{[}ROMSNPZ\ version{]}\_{[}CMIP{]}\_{[}GCM{]}\_{[}carbon\ scenario{]}}.For
-example, the CMIP5 set of indices was downscaled using the H16 (Hermann
-et al.~2016) version of the ROMSNPZ. Three models were used to force
-boundary conditions( MIROC, CESM, and GFDL) under 2 carbon scenarios RCP
-8.5 and RCP 4.5. So to see an individual trajectory we might look in the
-level3 (timeseries indices) folder under
+\hypertarget{available-data-sources}{%
+\subsection{3.1 Available data sources}\label{available-data-sources}}
+
+There are presently two sources of ROMSNPZ level 2 and level 3
+post-processed datasets:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi})}
+\tightlist
+\item
+  Public web-based ACLIM CMIP5 datasets
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{Level1} : (Empty; data not copied from Mox)
+\item
+  \texttt{Level2} : (full grid, rotated to lat lon from the native
+  ROMSNPZ grid, weekly averages)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{Bottom\ 5m} : subset of variables from the bottom 5 m of the
+    water column
+  \item
+    \texttt{Bottom\ 5m} : subset of variables for the surface 5 m of the
+    water column
+  \item
+    \texttt{Integrated}: watercolumn integrated averages or totals for
+    various variables
+  \item
+    \texttt{Level3}: two post-processed datasets
+
+    \begin{itemize}
+    \tightlist
+    \item
+      \texttt{ACLIMsurveyrep-x.nc.}: Survey replicated (variables
+      ``sampled'' at the average location and date that each groundfish
+      survey is sampled)\emph{(Note that the resampling stations need to
+      be removed before creating bottom temperature maps)}\\
+    \end{itemize}
+  \item
+    \texttt{ACLIMregion-xnc.}:weekly variables averaged for each survey
+    strata \emph{(Note that area (km2) weighting should be used to
+    combine values across multiple strata)}
+  \end{itemize}
+\end{itemize}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi})}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  ACLIM google drive CMIP6 datasets (embargoed; \emph{ACLIM members
+  Only})
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{Level1}: (Empty; data not copied from Mox)
+\item
+  \texttt{Level2}: (Empty; data not copied from Mox)
+\item
+  \texttt{Level3}: two post-processed datasets
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{ACLIMsurveyrep-x.nc.}: Survey replicated (variables
+    ``sampled'' at the average location and date that each groundfish
+    survey is sampled)\emph{(Note that the resampling stations need to
+    be removed before creating bottom temperature maps)}\\
+  \item
+    \texttt{ACLIMregion-xnc.}:weekly variables averaged for each survey
+    strata \emph{(Note that area (km2) weighting should be used to
+    combine values across multiple strata)}
+  \end{itemize}
+\end{itemize}
+
+For all files the general naming convention of the folders is:
+\texttt{B10K-{[}ROMSNPZ\ version{]}\_{[}CMIP{]}\_{[}GCM{]}\_{[}carbon\ scenario{]}}.
+For example, the CMIP5 set of indices was downscaled using the H16
+(Hermann et al.~2016) version of the ROMSNPZ. Three models were used to
+force boundary conditions( MIROC, CESM, and GFDL) under 2 carbon
+scenarios RCP 8.5 and RCP 4.5. So to see an individual trajectory we
+might look in the level3 (timeseries indices) folder under
 \texttt{B10K-H16\_CMIP5\_CESM\_rcp45}, which would be the B10K version
 H16 of the CMIP5 CESM model under RCP4.5.
 
-\hypertarget{public-web-based-aclim-data-hindcasts-cmip5-projections}{%
-\subsection{3.2 Public web-based ACLIM data (hindcasts \& CMIP5
-projections)}\label{public-web-based-aclim-data-hindcasts-cmip5-projections}}
+\hypertarget{option-1-public-web-based-aclim-data-hindcasts-cmip5-projections}{%
+\subsubsection{3.1.1 Option 1: Public web-based ACLIM data (hindcasts \&
+CMIP5
+projections)}\label{option-1-public-web-based-aclim-data-hindcasts-cmip5-projections}}
 
-The naming convention of the folders is:
-\texttt{B10K-{[}ROMSNPZ\ version{]}\_{[}CMIP{]}\_{[}GCM{]}\_{[}carbon\ scenario{]}}.For
-example, the CMIP5 set of indices was downscaled using the H16 (Hermann
-et al.~2016) version of the ROMSNPZ. Three models were used to force
-boundary conditions( MIROC, CESM, and GFDL) under 2 carbon scenarios RCP
-8.5 and RCP 4.5. So to see an individual trajectory we might look in the
-level3 (timeseries indices) folder under
-\texttt{B10K-H16\_CMIP5\_CESM\_rcp45}, which would be the B10K version
-H16 of the CMIP5 CESM model under RCP4.5.
-
-This option is available for Level3 and Level 2 CMIP5 public data, it is
-not yet available for the embargoed CMIP6 data but eventually will be
-used to host that as well.
+The public web-based ACLIM data (hindcasts \& CMIP5 projections) option
+is available for Level3 and Level2 CMIP5 public data, it is not yet
+available for the embargoed CMIP6 data but through ACLIM2.0 will
+eventually be used to host that as well.
 
 The ROMSNPZ team has been working with
 \href{roland.schweitzer@noaa.gov}{Roland Schweitzer} and
@@ -461,370 +545,10 @@ accessed at the following links:
   access to Level 2 and 3 netcdf files}
 \end{itemize}
 
-\hypertarget{grab-l2-and-l3-data-from-aclim-thredds-server}{%
-\subsubsection{2.2.1. Grab L2 and L3 data from ACLIM Thredds
-server}\label{grab-l2-and-l3-data-from-aclim-thredds-server}}
-
-The code below will step through downloading L3 data from the Thredds
-server as well as quering the L2 (large files) on the server and saving
-a subset of the data to your local
-\texttt{\textasciitilde{}/ACLIM2/Data/out} folder.
-
-First let's get the workspace set up, will we step through an example
-downloading the hindcast and a single projection (CMIP5 MIROC rcp8.5)
-but you can loop the code below to download the full set of CMIP5
-projections.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-    \CommentTok{# first load packages and setup:}
-\NormalTok{    tmstp  <-}\StringTok{ }\KeywordTok{format}\NormalTok{(}\KeywordTok{Sys.time}\NormalTok{(), }\StringTok{"%Y_%m_%d"}\NormalTok{)}
-\NormalTok{    main   <-}\StringTok{ }\KeywordTok{getwd}\NormalTok{()    }\CommentTok{# should be your local path e.g., "~/GitHub_new/ACLIM2"}
-    
-    \CommentTok{# loads packages, data, and setup:}
-    \KeywordTok{source}\NormalTok{(}\StringTok{"R/make.R"}\NormalTok{) }
-    
-    \CommentTok{# create a directory for our new indices }
-    \ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{dir.exists}\NormalTok{(}\StringTok{"Data/in/Newest/Rdata"}\NormalTok{)) }\KeywordTok{dir.create}\NormalTok{(}\StringTok{"Data/in/Newest/Rdata"}\NormalTok{)}
-    
-    \CommentTok{# specify the root URL:}
-\NormalTok{    ACLIM_data_url <-}\StringTok{ "https://data.pmel.noaa.gov/aclim/thredds/"}
-    
-    \CommentTok{# define the threddds url}
-\NormalTok{    aclim_thredds <-}\StringTok{ "https://data.pmel.noaa.gov/aclim/thredds/"}
-\end{Highlighting}
-\end{Shaded}
-
-Let's take a look at the availble datasets:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-    \CommentTok{# preview the datasets on the server:}
-\NormalTok{    url_list <-}\StringTok{ }\KeywordTok{tds_list_datasets}\NormalTok{(}\DataTypeTok{thredds_url =}\NormalTok{ ACLIM_data_url)}
-    
-    \CommentTok{#display the full set of datasets:}
-    \KeywordTok{cat}\NormalTok{(}\KeywordTok{paste}\NormalTok{(url_list}\OperatorTok{$}\NormalTok{dataset,}\StringTok{"}\CharTok{\textbackslash{}n}\StringTok{"}\NormalTok{))}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## Constants/ 
-##  B10K-H16_CMIP5_CESM_BIO_rcp85/ 
-##  B10K-H16_CMIP5_CESM_rcp45/ 
-##  B10K-H16_CMIP5_CESM_rcp85/ 
-##  B10K-H16_CMIP5_GFDL_BIO_rcp85/ 
-##  B10K-H16_CMIP5_GFDL_rcp45/ 
-##  B10K-H16_CMIP5_GFDL_rcp85/ 
-##  B10K-H16_CMIP5_MIROC_rcp45/ 
-##  B10K-H16_CMIP5_MIROC_rcp85/ 
-##  B10K-H16_CORECFS/ 
-##  B10K-K20_CORECFS/ 
-##  files/
-\end{verbatim}
-
-First we will explore the Level 2 bottom temperature data on the
-\href{https://data.pmel.noaa.gov/aclim/thredds/}{ACLIM Thredds server}
-using the H16 hindcast and the H16 (CMIP5) projection for MIROC under
-rcp8.5. The first step is to get the data urls:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-   \CommentTok{# define the simulation to download:}
-\NormalTok{    cmip <-}\StringTok{ "CMIP5"}     \CommentTok{# Coupled Model Intercomparison Phase}
-\NormalTok{    GCM  <-}\StringTok{ "MIROC"}     \CommentTok{# Global Circulation Model}
-\NormalTok{    rcp  <-}\StringTok{ "rcp85"}     \CommentTok{# future carbon scenario}
-\NormalTok{    mod  <-}\StringTok{ "B10K-H16"}  \CommentTok{# ROMSNPZ model}
-\NormalTok{    hind <-}\StringTok{ "CORECFS"}   \CommentTok{# Hindcast}
-    
-    \CommentTok{# define the projection simulation:}
-\NormalTok{    proj  <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(mod,}\StringTok{"_"}\NormalTok{,cmip,}\StringTok{"_"}\NormalTok{,GCM,}\StringTok{"_"}\NormalTok{,rcp)}
-\NormalTok{    hind  <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(mod,}\StringTok{"_"}\NormalTok{,hind)}
-    
-    \CommentTok{# get the url for the projection and hindcast datasets:}
-\NormalTok{    proj_url       <-}\StringTok{ }\NormalTok{url_list[url_list}\OperatorTok{$}\NormalTok{dataset }\OperatorTok{==}\StringTok{ }\KeywordTok{paste0}\NormalTok{(proj,}\StringTok{"/"}\NormalTok{),]}\OperatorTok{$}\NormalTok{path}
-\NormalTok{    hind_url       <-}\StringTok{ }\NormalTok{url_list[url_list}\OperatorTok{$}\NormalTok{dataset }\OperatorTok{==}\StringTok{ }\KeywordTok{paste0}\NormalTok{(hind,}\StringTok{"/"}\NormalTok{),]}\OperatorTok{$}\NormalTok{path}
-    
-    \CommentTok{# preview the projection and hindcast data and data catalogs (Level 1, 2, and 3):}
-\NormalTok{    proj_datasets  <-}\StringTok{ }\KeywordTok{tds_list_datasets}\NormalTok{(}\DataTypeTok{thredds_url =}\NormalTok{ proj_url)}
-\NormalTok{    hind_datasets  <-}\StringTok{ }\KeywordTok{tds_list_datasets}\NormalTok{(}\DataTypeTok{thredds_url =}\NormalTok{ hind_url)}
-    
-    \CommentTok{# get url for the projection and hindcast Level 2 and Level 3 catalogs}
-\NormalTok{    proj_l2_cat   <-}\StringTok{ }\NormalTok{proj_datasets[proj_datasets}\OperatorTok{$}\NormalTok{dataset }\OperatorTok{==}\StringTok{ "Level 2/"}\NormalTok{,]}\OperatorTok{$}\NormalTok{path}
-\NormalTok{    proj_l3_cat   <-}\StringTok{ }\NormalTok{proj_datasets[proj_datasets}\OperatorTok{$}\NormalTok{dataset }\OperatorTok{==}\StringTok{ "Level 3/"}\NormalTok{,]}\OperatorTok{$}\NormalTok{path}
-\NormalTok{    hind_l2_cat   <-}\StringTok{ }\NormalTok{hind_datasets[hind_datasets}\OperatorTok{$}\NormalTok{dataset }\OperatorTok{==}\StringTok{ "Level 2/"}\NormalTok{,]}\OperatorTok{$}\NormalTok{path}
-\NormalTok{    hind_l3_cat   <-}\StringTok{ }\NormalTok{hind_datasets[hind_datasets}\OperatorTok{$}\NormalTok{dataset }\OperatorTok{==}\StringTok{ "Level 3/"}\NormalTok{,]}\OperatorTok{$}\NormalTok{path}
-\NormalTok{    hind_l2_cat}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] "https://data.pmel.noaa.gov/aclim/thredds/B10K-H16_CORECFS/Level2.html"
-\end{verbatim}
-
-Now that we have the URLs let's take a look at the available Level2
-datasets (currently temperature only, other variables available by
-request to \href{kelly.kearney@noaa.gov}{Kelly Kearney}:
-
-\begin{itemize}
-\tightlist
-\item
-  \texttt{Bottom\ 5m} : bottom water temperature at 5 meters
-\item
-  \texttt{Surface\ 5m} : surface water temperature in the first 5 meters
-\item
-  \texttt{Integrated} : Integrated water column averages for various NPZ
-  variables
-\end{itemize}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-    \CommentTok{# preview the projection and hindcast Level 2 datasets:}
-\NormalTok{    proj_l2_datasets  <-}\StringTok{ }\KeywordTok{tds_list_datasets}\NormalTok{(proj_l2_cat)}
-\NormalTok{    hind_l2_datasets  <-}\StringTok{ }\KeywordTok{tds_list_datasets}\NormalTok{(hind_l2_cat)}
-\NormalTok{    proj_l2_datasets}\OperatorTok{$}\NormalTok{dataset}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] "Bottom 5m"  "Surface 5m" "Integrated"
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-    \CommentTok{# get url for bottom temperature:}
-\NormalTok{    proj_l2_BT_url   <-}\StringTok{ }\NormalTok{proj_l2_datasets[proj_l2_datasets}\OperatorTok{$}\NormalTok{dataset }\OperatorTok{==}\StringTok{ "Bottom 5m"}\NormalTok{,]}\OperatorTok{$}\NormalTok{path}
-\NormalTok{    hind_l2_BT_url   <-}\StringTok{ }\NormalTok{hind_l2_datasets[hind_l2_datasets}\OperatorTok{$}\NormalTok{dataset }\OperatorTok{==}\StringTok{ "Bottom 5m"}\NormalTok{,]}\OperatorTok{$}\NormalTok{path}
-\NormalTok{    proj_l2_BT_url}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-## [1] "https://data.pmel.noaa.gov/aclim/thredds/B10K-H16_CMIP5_MIROC_rcp85/Level2.html?dataset=B10K-H16_CMIP5_MIROC_rcp85_Level2_bottom5m"
-\end{verbatim}
-
-We can't preview the Level 3 datasets in the same way but they are
-identical to those in the google drive and include two datasets
-
-\begin{itemize}
-\tightlist
-\item
-  \texttt{ACLIMsurveyrep\_B10K-H16\_CMIP5\_CESM\_BIO\_rcp85.nc} : NMFS
-  Groundfish summer NBS and EBS survey replicated values for 60+
-  variables
-\item
-  \texttt{ACLIMregion\_B10K-H16\_CMIP5\_CESM\_BIO\_rcp85.nc} : weekly
-  strata averages for 60+ variables
-\end{itemize}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{    weekly_vars  }\CommentTok{# list of possible variables in the ACLIMregion_ files }
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-##  [1] "region_area"          "Ben"                  "DetBen"              
-##  [4] "Hsbl"                 "IceNH4"               "IceNO3"              
-##  [7] "IcePhL"               "aice"                 "hice"                
-## [10] "shflux"               "ssflux"               "Cop_integrated"      
-## [13] "Cop_surface5m"        "EupO_integrated"      "EupO_surface5m"      
-## [16] "EupS_integrated"      "EupS_surface5m"       "Iron_bottom5m"       
-## [19] "Iron_integrated"      "Iron_surface5m"       "Jel_integrated"      
-## [22] "Jel_surface5m"        "MZL_integrated"       "MZL_surface5m"       
-## [25] "NCaO_integrated"      "NCaO_surface5m"       "NCaS_integrated"     
-## [28] "NCaS_surface5m"       "NH4_bottom5m"         "NH4_integrated"      
-## [31] "NH4_surface5m"        "NO3_bottom5m"         "NO3_integrated"      
-## [34] "NO3_surface5m"        "PhL_integrated"       "PhL_surface5m"       
-## [37] "PhS_integrated"       "PhS_surface5m"        "prod_Cop_integrated" 
-## [40] "prod_EupO_integrated" "prod_EupS_integrated" "prod_Eup_integrated" 
-## [43] "prod_Jel_integrated"  "prod_MZL_integrated"  "prod_NCaO_integrated"
-## [46] "prod_NCaS_integrated" "prod_NCa_integrated"  "prod_PhL_integrated" 
-## [49] "prod_PhS_integrated"  "salt_surface5m"       "temp_bottom5m"       
-## [52] "temp_integrated"      "temp_surface5m"       "uEast_bottom5m"      
-## [55] "uEast_surface5m"      "vNorth_bottom5m"      "vNorth_surface5m"    
-## [58] "fracbelow0"           "fracbelow1"           "fracbelow2"
-\end{verbatim}
-
-Now let's grab some of the Level 3 and Level 2 data and store it in the
-\texttt{Data/in/Newest/Rdata} folder. We'll start with Level 3 since
-those files are already post-processed to be in the ACLIM indices format
-and are relatively small:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-    \CommentTok{# define the dataset sub names:   }
-\NormalTok{    weekly_flnm     <-}\StringTok{ "ACLIMregion"}
-\NormalTok{    survey_rep_flnm <-}\StringTok{ "ACLIMsurveyrep"}
-    
-    \CommentTok{# Tinker:add additional projection scenarios here}
-\NormalTok{    proj_list       <-}\StringTok{ }\NormalTok{proj    }
-
-    
-    \CommentTok{# Tinker:add additional variables to varlist}
-\NormalTok{    varlist         <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}
-                          \StringTok{"temp_bottom5m"}\NormalTok{,    }\CommentTok{# bottom temperature,}
-                          \StringTok{"NCaS_integrated"}\NormalTok{,  }\CommentTok{# Large Cop}
-                          \StringTok{"Cop_integrated"}\NormalTok{,   }\CommentTok{# Small Cop}
-                          \StringTok{"EupS_integrated"}\NormalTok{)  }\CommentTok{# Shelf  euphausiids}
-    
-              
-    \CommentTok{# now grab dattat for the hindcast and projection sets:}
-    \ControlFlowTok{for}\NormalTok{(m }\ControlFlowTok{in} \KeywordTok{c}\NormalTok{(hind, proj))\{}
-      
-\NormalTok{      TYPE <-}\StringTok{ }\DecValTok{1}
-     
-      \CommentTok{# create the simulation Level3 folder (and overwrite it if overwrite is set to T)}
-      \ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{dir.exists}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(}\StringTok{"Data/in/Newest/Rdata/"}\NormalTok{,m)))}
-        \KeywordTok{dir.create}\NormalTok{((}\KeywordTok{paste0}\NormalTok{(}\StringTok{"Data/in/Newest/Rdata/"}\NormalTok{,m)))}
-      \ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{dir.exists}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(}\StringTok{"Data/in/Newest/Rdata/"}\NormalTok{,m,}\StringTok{"/Level3"}\NormalTok{)))}
-        \KeywordTok{dir.create}\NormalTok{((}\KeywordTok{paste0}\NormalTok{(}\StringTok{"Data/in/Newest/Rdata/"}\NormalTok{,m,}\StringTok{"/Level3"}\NormalTok{)))}
-      
-      \ControlFlowTok{for}\NormalTok{(d }\ControlFlowTok{in} \KeywordTok{c}\NormalTok{(weekly_flnm,survey_rep_flnm))\{}
-          
-          \CommentTok{# create filename:}
-\NormalTok{          tmp_fl <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(d,}\StringTok{"_"}\NormalTok{,m)}
-          
-          \CommentTok{# create the temporary URL}
-\NormalTok{          tmpURL <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(ACLIM_data_url,}\StringTok{"dodsC/"}\NormalTok{,m,}\StringTok{"/Level3/"}\NormalTok{),d,}\StringTok{"_"}\NormalTok{,m,}\StringTok{".nc"}\NormalTok{)}
-          
-          \CommentTok{# open the netcdf file remotely}
-\NormalTok{          nc     <-}\StringTok{ }\KeywordTok{nc_open}\NormalTok{(tmpURL)}
-          
-          \CommentTok{# convert the nc files into a long data.frame for each variable}
-\NormalTok{          i <-}\StringTok{ }\DecValTok{0}
-          \ControlFlowTok{for}\NormalTok{(v }\ControlFlowTok{in}\NormalTok{ varlist)\{}
-\NormalTok{            i <-}\StringTok{ }\NormalTok{i }\OperatorTok{+}\StringTok{ }\DecValTok{1}
-\NormalTok{            tmp_var0      <-}\StringTok{ }\KeywordTok{convert2df}\NormalTok{(}\DataTypeTok{ncIN =}\NormalTok{ nc, }\DataTypeTok{type =}\NormalTok{ TYPE, }\DataTypeTok{varIN =}\NormalTok{ v)}
-\NormalTok{            tmp_var0}\OperatorTok{$}\NormalTok{sim  <-}\StringTok{ }\NormalTok{tmp_fl}
-            \ControlFlowTok{if}\NormalTok{(i }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{)}
-\NormalTok{              tmp_var     <-}\StringTok{ }\NormalTok{tmp_var0}
-            \ControlFlowTok{if}\NormalTok{(i }\OperatorTok{!=}\StringTok{ }\DecValTok{1}\NormalTok{)}
-\NormalTok{              tmp_var     <-}\StringTok{ }\KeywordTok{rbind}\NormalTok{(tmp_var,tmp_var0)}
-            \KeywordTok{rm}\NormalTok{(tmp_var0)}
-\NormalTok{          \}}
-          
-          \CommentTok{# close the nc file}
-          \KeywordTok{nc_close}\NormalTok{(nc)}
-          
-          \CommentTok{# rename the object}
-          \KeywordTok{eval}\NormalTok{(}\KeywordTok{parse}\NormalTok{(}\DataTypeTok{text =}\KeywordTok{paste0}\NormalTok{(d,}\StringTok{"<-tmp_var"}\NormalTok{) ))}
-          
-          \CommentTok{# save the nc file in the Data/in/Newest/Rdata/ [ simulation]/Level3 folder}
-\NormalTok{          tmp_path <-}\StringTok{ }\KeywordTok{file.path}\NormalTok{( }\KeywordTok{paste0}\NormalTok{(}\StringTok{"Data/in/Newest/Rdata/"}\NormalTok{,m,}\StringTok{"/Level3"}\NormalTok{),}
-                                 \KeywordTok{paste0}\NormalTok{(tmp_fl,}\StringTok{".Rdata"}\NormalTok{))}
-          \KeywordTok{eval}\NormalTok{(}\KeywordTok{parse}\NormalTok{(}\DataTypeTok{text =}\KeywordTok{paste0}\NormalTok{(}\StringTok{"save("}\NormalTok{,d,}\StringTok{", file=tmp_path)"}\NormalTok{)))}
-\NormalTok{          TYPE     <-}\StringTok{  }\NormalTok{TYPE }\OperatorTok{+}\StringTok{ }\DecValTok{1}
-\NormalTok{      \}}
-\NormalTok{    \}}
-\end{Highlighting}
-\end{Shaded}
-
-Now we can do the same thing and download a subset of the Level2 data
-(full 10KM Lat Lon re-gridded data), here with an example of sampling on
-Aug 1 of each year:
-
-\begin{Shaded}
-\begin{Highlighting}[]
-    \CommentTok{# Tinker:add additional projection scenarios here}
-\NormalTok{    proj_list  <-}\StringTok{ }\NormalTok{proj    }
-
-    \CommentTok{# Currently available Level 2 variables}
-\NormalTok{    ds_list     <-}\StringTok{ }\NormalTok{proj_l2_datasets}\OperatorTok{$}\NormalTok{dataset  }\CommentTok{# datasets}
-\NormalTok{    sub_varlist <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}
-                      \StringTok{"temp"}\NormalTok{,}
-                      \StringTok{"temp"}\NormalTok{,}
-                      \KeywordTok{c}\NormalTok{(}\StringTok{"EupS"}\NormalTok{,}\StringTok{"Cop"}\NormalTok{,}\StringTok{"NCaS"}\NormalTok{) )  }\CommentTok{# variables to pull from each data set}
-    \CommentTok{# Tinker: try subbing in other Integrated variables (3rd in the list) }
-    
-    \CommentTok{# Let's sample the model years as close to Aug 1 as the model timesteps run:}
-\NormalTok{    tr         <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"-08-1 12:00:00 GMT"}\NormalTok{) }
-    
-    \CommentTok{# now grab dattat for the hindcast and projection sets:}
-    \ControlFlowTok{for}\NormalTok{(m }\ControlFlowTok{in} \KeywordTok{c}\NormalTok{(hind, proj))\{}
-      
-      \CommentTok{# create the simulation Level3 folder (and overwrite it if overwrite is set to T)}
-      \ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{dir.exists}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(}\StringTok{"Data/in/Newest/Rdata/"}\NormalTok{,m)))}
-        \KeywordTok{dir.create}\NormalTok{((}\KeywordTok{paste0}\NormalTok{(}\StringTok{"Data/in/Newest/Rdata/"}\NormalTok{,m)))}
-      \ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{dir.exists}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(}\StringTok{"Data/in/Newest/Rdata/"}\NormalTok{,m,}\StringTok{"/Level2"}\NormalTok{)))}
-        \KeywordTok{dir.create}\NormalTok{((}\KeywordTok{paste0}\NormalTok{(}\StringTok{"Data/in/Newest/Rdata/"}\NormalTok{,m,}\StringTok{"/Level2"}\NormalTok{)))}
-        
-      \ControlFlowTok{for}\NormalTok{(d }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\KeywordTok{length}\NormalTok{(ds_list))\{}
-            
-            \CommentTok{# create filename:}
-\NormalTok{            tmp_fl <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(d,}\StringTok{"_"}\NormalTok{,m)}
-            
-            \CommentTok{# get the url for the simulation}
-\NormalTok{            m_url       <-}\StringTok{ }\NormalTok{url_list[url_list}\OperatorTok{$}\NormalTok{dataset }\OperatorTok{==}\StringTok{ }\KeywordTok{paste0}\NormalTok{(m,}\StringTok{"/"}\NormalTok{),]}\OperatorTok{$}\NormalTok{path}
-            
-            \CommentTok{# preview the projection and hindcast data and data catalogs (Level 1, 2, and 3):}
-\NormalTok{            m_datasets  <-}\StringTok{ }\KeywordTok{tds_list_datasets}\NormalTok{(}\DataTypeTok{thredds_url =}\NormalTok{ m_url)}
-            
-            \CommentTok{# get Level 2 .nc file URL}
-\NormalTok{            m_l2_cat       <-}\StringTok{ }\NormalTok{m_datasets[m_datasets}\OperatorTok{$}\NormalTok{dataset }\OperatorTok{==}\StringTok{ "Level 2/"}\NormalTok{,]}\OperatorTok{$}\NormalTok{path}
-\NormalTok{            m_l2_datasets  <-}\StringTok{ }\KeywordTok{tds_list_datasets}\NormalTok{(m_l2_cat)}
-\NormalTok{            m_l2_vT_url    <-}\StringTok{ }\NormalTok{m_l2_datasets[m_l2_datasets}\OperatorTok{$}\NormalTok{dataset }\OperatorTok{==}\StringTok{ }\NormalTok{ds_list[d],]}\OperatorTok{$}\NormalTok{path}
-\NormalTok{            m_flnm         <-}\StringTok{ }\KeywordTok{strsplit}\NormalTok{(m_l2_vT_url,}\DataTypeTok{split=}\StringTok{"dataset="}\NormalTok{)[[}\DecValTok{1}\NormalTok{]][}\DecValTok{2}\NormalTok{]}
-\NormalTok{            m_flnm         <-}\StringTok{ }\NormalTok{stringr}\OperatorTok{::}\KeywordTok{str_replace}\NormalTok{(m_flnm,}\StringTok{"Level2_"}\NormalTok{,}\StringTok{""}\NormalTok{)}
-            \ControlFlowTok{if}\NormalTok{(ds_list[d] }\OperatorTok{==}\StringTok{"Surface 5m"}\NormalTok{) m_flnm         <-}\StringTok{ }\NormalTok{stringr}\OperatorTok{::}\KeywordTok{str_replace}\NormalTok{(m_flnm,}\StringTok{"surface_5m"}\NormalTok{,}\StringTok{"surface5m"}\NormalTok{)}
-\NormalTok{            tmpURL         <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(ACLIM_data_url,}\StringTok{"dodsC/Level2/"}\NormalTok{),m_flnm,}\StringTok{".nc"}\NormalTok{)}
-            
-            \CommentTok{# open the netcdf file remotely}
-\NormalTok{            nc     <-}\StringTok{ }\KeywordTok{nc_open}\NormalTok{(tmpURL)}
-            
-            \CommentTok{# available variables:}
-            \KeywordTok{names}\NormalTok{(nc}\OperatorTok{$}\NormalTok{var)}
-            
-\NormalTok{            time_steps  <-}\StringTok{ }\KeywordTok{as.POSIXct}\NormalTok{(}
-\NormalTok{                    nc}\OperatorTok{$}\NormalTok{var[[ sub_varlist[[d]][}\DecValTok{1}\NormalTok{] ]]}\OperatorTok{$}\NormalTok{dim[[}\DecValTok{3}\NormalTok{]]}\OperatorTok{$}\NormalTok{vals, }
-                    \DataTypeTok{origin =} \KeywordTok{substr}\NormalTok{(ncIN}\OperatorTok{$}\NormalTok{var[[}\StringTok{"temp"}\NormalTok{]]}\OperatorTok{$}\NormalTok{dim[[}\DecValTok{3}\NormalTok{]]}\OperatorTok{$}\NormalTok{units,}\DecValTok{15}\NormalTok{,}\DecValTok{36}\NormalTok{),}
-                    \DataTypeTok{tz =} \StringTok{"GMT"}\NormalTok{) }
-            
-            \CommentTok{# get years in simulation}
-\NormalTok{            yrs    <-}\StringTok{ }\KeywordTok{sort}\NormalTok{(}\KeywordTok{unique}\NormalTok{(}\KeywordTok{substr}\NormalTok{(time_steps,}\DecValTok{1}\NormalTok{,}\DecValTok{4}\NormalTok{)))}
-\NormalTok{            tmp_tr <-}\StringTok{  }\KeywordTok{paste0}\NormalTok{(yrs,tr)}
-            
-            \CommentTok{# subset the lat and lon values}
-\NormalTok{            lat    <-}\StringTok{ }\KeywordTok{ncvar_get}\NormalTok{(nc, }\DataTypeTok{varid =} \StringTok{"lat_rho"}\NormalTok{)}
-\NormalTok{            lon    <-}\StringTok{ }\KeywordTok{ncvar_get}\NormalTok{(nc, }\DataTypeTok{varid =} \StringTok{"lon_rho"}\NormalTok{)}
-            \CommentTok{#M2 <- (56.87°N, -164.06°W)}
-            
-            \ControlFlowTok{for}\NormalTok{(var_get }\ControlFlowTok{in}\NormalTok{ sub_varlist[[d]])\{}
-               \CommentTok{# convert the nc files into a long data.frame for each variable}
-\NormalTok{               tmp_var      <-}\StringTok{ }\KeywordTok{get_level2}\NormalTok{(}
-                                            \DataTypeTok{ncIN =}\NormalTok{ nc, }
-                                            \DataTypeTok{varIN =}\NormalTok{ var_get,     }
-                                            \CommentTok{# Tinker: try extracting other vars like "NO3", or "uEast"}
-                                            \DataTypeTok{xi_range  =} \DecValTok{1}\OperatorTok{:}\DecValTok{182}\NormalTok{,   }
-                                            \DataTypeTok{eta_range =} \DecValTok{1}\OperatorTok{:}\DecValTok{258}\NormalTok{, }
-                                            \DataTypeTok{time_range  =}\NormalTok{ tmp_tr)}
-              
-                \CommentTok{# rename the object}
-                \KeywordTok{eval}\NormalTok{(}\KeywordTok{parse}\NormalTok{(}\DataTypeTok{text =}\KeywordTok{paste0}\NormalTok{(var_get,}\StringTok{"<-tmp_var"}\NormalTok{) ))}
-              
-                \CommentTok{# save the nc file in the Data/in/Newest/Rdata/ [ simulation]/Level3 folder}
-\NormalTok{                tmp_path <-}\StringTok{ }\KeywordTok{file.path}\NormalTok{( }\KeywordTok{paste0}\NormalTok{(}\StringTok{"Data/in/Newest/Rdata/"}\NormalTok{,m,}\StringTok{"/Level2"}\NormalTok{),}\KeywordTok{paste0}\NormalTok{(m_flnm,}\StringTok{"_"}\NormalTok{,var_get,}\StringTok{".Rdata"}\NormalTok{))}
-                \KeywordTok{eval}\NormalTok{(}\KeywordTok{parse}\NormalTok{(}\DataTypeTok{text =}\KeywordTok{paste0}\NormalTok{(}\StringTok{"save("}\NormalTok{,var_get,}\StringTok{", file=tmp_path)"}\NormalTok{)))}
-                \KeywordTok{eval}\NormalTok{(}\KeywordTok{parse}\NormalTok{(}\DataTypeTok{text =}\KeywordTok{paste0}\NormalTok{(}\StringTok{"rm("}\NormalTok{,var_get,}\StringTok{")"}\NormalTok{) ))}
-\NormalTok{            \}}
-            \CommentTok{# close the nc file}
-            \KeywordTok{nc_close}\NormalTok{(nc)}
-\NormalTok{      \}}
-      
-\NormalTok{  \}}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{figure}
-\centering
-\includegraphics[width=1\textwidth,height=\textheight]{Figs/filestructure.jpg}
-\caption{The final folder structure on your local drive in
-\texttt{Data/in/Newest} should look something like this.}
-\end{figure}
-
-\hypertarget{aclim-members-only-access-cmip6-embargoed-l3-data}{%
-\subsection{\texorpdfstring{3.2. (\emph{ACLIM members Only}) Access
-CMIP6 (embargoed) L3
-data}{3.2. (ACLIM members Only) Access CMIP6 (embargoed) L3 data}}\label{aclim-members-only-access-cmip6-embargoed-l3-data}}
+\hypertarget{option-2-aclim-members-only-access-cmip6-embargoed-l3-data}{%
+\subsubsection{\texorpdfstring{3.1.2 Option 2: (\emph{ACLIM members
+Only}) Access CMIP6 (embargoed) L3
+data}{3.1.2 Option 2: (ACLIM members Only) Access CMIP6 (embargoed) L3 data}}\label{option-2-aclim-members-only-access-cmip6-embargoed-l3-data}}
 
 Public CMIP5 and embargoed CMIP6 Level 3 netcdf (.nc) files are saved in
 the shared ACLIM data folder (note: Level 2 files are too large for the
@@ -877,7 +601,7 @@ following subfolders are:
   creating bottom temperature maps)}\\
 \item
   \texttt{ACLIMregion\_B10K-x.nc}: contains weekly ``strata'' values
-  \emph{(Note that area weighting should be used to combine values
+  \emph{(Note that area (km2) weighting should be used to combine values
   across multiple strata)}
 \end{enumerate}
 
@@ -906,102 +630,320 @@ your computer under
 like this when you are done downloading the data and unzipping it.}
 \end{figure}
 
-Now let's convert these to level3 rdata files (as in section 2.2)
+\hypertarget{access-and-save-the-data}{%
+\subsection{3.2 Access and save the
+data}\label{access-and-save-the-data}}
+
+The below code will extract variables from the Level 2 and Level 3
+netcdf files (\texttt{.nc}) and save them as compressed \texttt{.Rdata}
+files on your local Data/in/Newest/Rdata folder.
+
+\hypertarget{setup-up-the-r-worksace}{%
+\subsubsection{3.2.1 Setup up the R
+worksace}\label{setup-up-the-r-worksace}}
+
+First let's get the workspace set up, will we step through an example
+downloading the hindcast and a single projection (CMIP5 MIROC rcp8.5)
+but you can loop the code below to download the full set of CMIP5
+projections.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-    \CommentTok{# first load packages and setup:}
+    \CommentTok{# --------------------------------------}
+    \CommentTok{# SETUP WORKSPACE}
 \NormalTok{    tmstp  <-}\StringTok{ }\KeywordTok{format}\NormalTok{(}\KeywordTok{Sys.time}\NormalTok{(), }\StringTok{"%Y_%m_%d"}\NormalTok{)}
-\NormalTok{    main   <-}\StringTok{ }\KeywordTok{getwd}\NormalTok{()    }\CommentTok{# should be your local path e.g., "~/GitHub_new/ACLIM2"}
-    
-    \CommentTok{# loads packages, data, and setup:}
-    \KeywordTok{source}\NormalTok{(}\StringTok{"R/make.R"}\NormalTok{) }
-    
-    \CommentTok{# create a directory for our new indices }
-    \ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{dir.exists}\NormalTok{(}\StringTok{"Data/in/Newest/Rdata"}\NormalTok{)) }\KeywordTok{dir.create}\NormalTok{(}\StringTok{"Data/in/Newest/Rdata"}\NormalTok{)}
-    
-    \CommentTok{# define the simulation to download:}
-\NormalTok{    cmip <-}\StringTok{ "CMIP6"}     \CommentTok{# Coupled Model Intercomparison Phase}
-\NormalTok{    GCM  <-}\StringTok{ "MIROC"}     \CommentTok{# Global Circulation Model}
-\NormalTok{    rcp  <-}\StringTok{ "ssp585"}     \CommentTok{# future carbon scenario}
-\NormalTok{    mod_h  <-}\StringTok{ "B10K-K20"}  \CommentTok{# ROMSNPZ model}
-\NormalTok{    mod_p  <-}\StringTok{ "B10K-K20P19"}  \CommentTok{# ROMSNPZ model}
-\NormalTok{    hind <-}\StringTok{ "CORECFS"}   \CommentTok{# Hindcast}
-    
-    \CommentTok{# define the projection simulation:}
-\NormalTok{    proj  <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(mod_p,}\StringTok{"_"}\NormalTok{,cmip,}\StringTok{"_"}\NormalTok{,GCM,}\StringTok{"_"}\NormalTok{,rcp)}
-\NormalTok{    hind  <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(mod_h,}\StringTok{"_"}\NormalTok{,hind)}
-    
-    \CommentTok{# define the dataset sub names:   }
-\NormalTok{    weekly_flnm     <-}\StringTok{ "ACLIMregion"}
-\NormalTok{    survey_rep_flnm <-}\StringTok{ "ACLIMsurveyrep"}
-    
-    \CommentTok{# Tinker:add additional projection scenarios here}
-\NormalTok{    proj_list       <-}\StringTok{ }\NormalTok{proj    }
-
-    
-    \CommentTok{# Tinker:add additional variables to varlist}
-\NormalTok{    varlist         <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}
-                          \StringTok{"temp_bottom5m"}\NormalTok{,    }\CommentTok{# bottom temperature,}
-                          \StringTok{"NCaS_integrated"}\NormalTok{,  }\CommentTok{# Large Cop}
-                          \StringTok{"Cop_integrated"}\NormalTok{,   }\CommentTok{# Small Cop}
-                          \StringTok{"EupS_integrated"}\NormalTok{)  }\CommentTok{# Shelf  euphausiids}
-    
-              
-    \CommentTok{# now grab dattat for the hindcast and projection sets:}
-    \ControlFlowTok{for}\NormalTok{(m }\ControlFlowTok{in} \KeywordTok{c}\NormalTok{(hind, proj))\{}
-      
-\NormalTok{      TYPE <-}\StringTok{ }\DecValTok{1}
-     
-      \CommentTok{# create the simulation Level3 folder (and overwrite it if overwrite is set to T)}
-      \ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{dir.exists}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(}\StringTok{"Data/in/Newest/Rdata/"}\NormalTok{,m)))}
-        \KeywordTok{dir.create}\NormalTok{((}\KeywordTok{paste0}\NormalTok{(}\StringTok{"Data/in/Newest/Rdata/"}\NormalTok{,m)))}
-      \ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{dir.exists}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(}\StringTok{"Data/in/Newest/Rdata/"}\NormalTok{,m,}\StringTok{"/Level3"}\NormalTok{)))}
-        \KeywordTok{dir.create}\NormalTok{((}\KeywordTok{paste0}\NormalTok{(}\StringTok{"Data/in/Newest/Rdata/"}\NormalTok{,m,}\StringTok{"/Level3"}\NormalTok{)))}
-      
-      \ControlFlowTok{for}\NormalTok{(d }\ControlFlowTok{in} \KeywordTok{c}\NormalTok{(weekly_flnm,survey_rep_flnm))\{}
-          
-          \CommentTok{# create filename:}
-\NormalTok{          tmp_fl <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(d,}\StringTok{"_"}\NormalTok{,m)}
-          
-          \CommentTok{# create the temporary URL}
-\NormalTok{          tmppath <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(}\StringTok{"Data/in/Newest/roms_for_aclim/"}\NormalTok{,m,}\StringTok{"/Level3/"}\NormalTok{),d,}\StringTok{"_"}\NormalTok{,m,}\StringTok{".nc"}\NormalTok{)}
-          
-          \CommentTok{# open the netcdf file remotely}
-\NormalTok{          nc     <-}\StringTok{ }\KeywordTok{nc_open}\NormalTok{(tmppath)}
-          
-          \CommentTok{# convert the nc files into a long data.frame for each variable}
-\NormalTok{          i <-}\StringTok{ }\DecValTok{0}
-          \ControlFlowTok{for}\NormalTok{(v }\ControlFlowTok{in}\NormalTok{ varlist)\{}
-\NormalTok{            i <-}\StringTok{ }\NormalTok{i }\OperatorTok{+}\StringTok{ }\DecValTok{1}
-\NormalTok{            tmp_var0      <-}\StringTok{ }\KeywordTok{convert2df}\NormalTok{(}\DataTypeTok{ncIN =}\NormalTok{ nc, }\DataTypeTok{type =}\NormalTok{ TYPE, }\DataTypeTok{varIN =}\NormalTok{ v)}
-\NormalTok{            tmp_var0}\OperatorTok{$}\NormalTok{sim  <-}\StringTok{ }\NormalTok{tmp_fl}
-            \ControlFlowTok{if}\NormalTok{(i }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{)}
-\NormalTok{              tmp_var     <-}\StringTok{ }\NormalTok{tmp_var0}
-            \ControlFlowTok{if}\NormalTok{(i }\OperatorTok{!=}\StringTok{ }\DecValTok{1}\NormalTok{)}
-\NormalTok{              tmp_var     <-}\StringTok{ }\KeywordTok{rbind}\NormalTok{(tmp_var,tmp_var0)}
-            \KeywordTok{rm}\NormalTok{(tmp_var0)}
-\NormalTok{          \}}
-          
-          \CommentTok{# close the nc file}
-          \KeywordTok{nc_close}\NormalTok{(nc)}
-          
-          \CommentTok{# rename the object}
-          \KeywordTok{eval}\NormalTok{(}\KeywordTok{parse}\NormalTok{(}\DataTypeTok{text =}\KeywordTok{paste0}\NormalTok{(d,}\StringTok{"<-tmp_var"}\NormalTok{) ))}
-          
-          \CommentTok{# save the nc file in the Data/in/Newest/Rdata/ [ simulation]/Level3 folder}
-\NormalTok{          tmp_path <-}\StringTok{ }\KeywordTok{file.path}\NormalTok{( }\KeywordTok{paste0}\NormalTok{(}\StringTok{"Data/in/Newest/Rdata/"}\NormalTok{,m,}\StringTok{"/Level3"}\NormalTok{),}
-                                 \KeywordTok{paste0}\NormalTok{(tmp_fl,}\StringTok{".Rdata"}\NormalTok{))}
-          \KeywordTok{eval}\NormalTok{(}\KeywordTok{parse}\NormalTok{(}\DataTypeTok{text =}\KeywordTok{paste0}\NormalTok{(}\StringTok{"save("}\NormalTok{,d,}\StringTok{", file=tmp_path)"}\NormalTok{)))}
-\NormalTok{          TYPE     <-}\StringTok{  }\NormalTok{TYPE }\OperatorTok{+}\StringTok{ }\DecValTok{1}
-\NormalTok{      \}}
-\NormalTok{    \}}
+\NormalTok{    main   <-}\StringTok{ }\KeywordTok{getwd}\NormalTok{()  }\CommentTok{#"~/GitHub_new/ACLIM2}
+    \KeywordTok{source}\NormalTok{(}\StringTok{"R/make.R"}\NormalTok{)}
+    \CommentTok{# --------------------------------------}
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{derive-indices-plot-data}{%
-\section{4. Derive indices \& plot
-data}\label{derive-indices-plot-data}}
+Let's take a look at the available online datasets:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{# preview the datasets on the server:}
+\NormalTok{    url_list <-}\StringTok{ }\KeywordTok{tds_list_datasets}\NormalTok{(}\DataTypeTok{thredds_url =}\NormalTok{ ACLIM_data_url)}
+    
+    \CommentTok{#display the full set of datasets:}
+    \KeywordTok{cat}\NormalTok{(}\KeywordTok{paste}\NormalTok{(url_list}\OperatorTok{$}\NormalTok{dataset,}\StringTok{"}\CharTok{\textbackslash{}n}\StringTok{"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Constants/ 
+##  B10K-H16_CMIP5_CESM_BIO_rcp85/ 
+##  B10K-H16_CMIP5_CESM_rcp45/ 
+##  B10K-H16_CMIP5_CESM_rcp85/ 
+##  B10K-H16_CMIP5_GFDL_BIO_rcp85/ 
+##  B10K-H16_CMIP5_GFDL_rcp45/ 
+##  B10K-H16_CMIP5_GFDL_rcp85/ 
+##  B10K-H16_CMIP5_MIROC_rcp45/ 
+##  B10K-H16_CMIP5_MIROC_rcp85/ 
+##  B10K-H16_CORECFS/ 
+##  B10K-K20_CORECFS/ 
+##  files/
+\end{verbatim}
+
+\hypertarget{download-level-2-data}{%
+\subsubsection{3.2.2 Download Level 2
+data}\label{download-level-2-data}}
+
+First we will explore the Level 2 bottom temperature data on the
+\href{https://data.pmel.noaa.gov/aclim/thredds/}{ACLIM Thredds server}
+using the H16 hindcast and the H16 (CMIP5) projection for MIROC under
+rcp8.5. The first step is to get the data urls:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+   \CommentTok{# define the simulation to download:}
+\NormalTok{    cmip <-}\StringTok{ "CMIP5"}     \CommentTok{# Coupled Model Intercomparison Phase}
+\NormalTok{    GCM  <-}\StringTok{ "MIROC"}     \CommentTok{# Global Circulation Model}
+\NormalTok{    rcp  <-}\StringTok{ "rcp85"}     \CommentTok{# future carbon scenario}
+\NormalTok{    mod  <-}\StringTok{ "B10K-H16"}  \CommentTok{# ROMSNPZ model}
+\NormalTok{    hind <-}\StringTok{ "CORECFS"}   \CommentTok{# Hindcast}
+    
+    \CommentTok{# define the projection simulation:}
+\NormalTok{    proj  <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(mod,}\StringTok{"_"}\NormalTok{,cmip,}\StringTok{"_"}\NormalTok{,GCM,}\StringTok{"_"}\NormalTok{,rcp)}
+\NormalTok{    hind  <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(mod,}\StringTok{"_"}\NormalTok{,hind)}
+    
+    \CommentTok{# get the url for the projection and hindcast datasets:}
+\NormalTok{    proj_url       <-}\StringTok{ }\NormalTok{url_list[url_list}\OperatorTok{$}\NormalTok{dataset }\OperatorTok{==}\StringTok{ }\KeywordTok{paste0}\NormalTok{(proj,}\StringTok{"/"}\NormalTok{),]}\OperatorTok{$}\NormalTok{path}
+\NormalTok{    hind_url       <-}\StringTok{ }\NormalTok{url_list[url_list}\OperatorTok{$}\NormalTok{dataset }\OperatorTok{==}\StringTok{ }\KeywordTok{paste0}\NormalTok{(hind,}\StringTok{"/"}\NormalTok{),]}\OperatorTok{$}\NormalTok{path}
+    
+    \CommentTok{# preview the projection and hindcast data and data catalogs (Level 1, 2, and 3):}
+\NormalTok{    proj_datasets  <-}\StringTok{ }\KeywordTok{tds_list_datasets}\NormalTok{(}\DataTypeTok{thredds_url =}\NormalTok{ proj_url)}
+\NormalTok{    hind_datasets  <-}\StringTok{ }\KeywordTok{tds_list_datasets}\NormalTok{(}\DataTypeTok{thredds_url =}\NormalTok{ hind_url)}
+    
+    \CommentTok{# get url for the projection and hindcast Level 2 and Level 3 catalogs}
+\NormalTok{    proj_l2_cat    <-}\StringTok{ }\NormalTok{proj_datasets[proj_datasets}\OperatorTok{$}\NormalTok{dataset }\OperatorTok{==}\StringTok{ "Level 2/"}\NormalTok{,]}\OperatorTok{$}\NormalTok{path}
+\NormalTok{    proj_l3_cat    <-}\StringTok{ }\NormalTok{proj_datasets[proj_datasets}\OperatorTok{$}\NormalTok{dataset }\OperatorTok{==}\StringTok{ "Level 3/"}\NormalTok{,]}\OperatorTok{$}\NormalTok{path}
+\NormalTok{    hind_l2_cat    <-}\StringTok{ }\NormalTok{hind_datasets[hind_datasets}\OperatorTok{$}\NormalTok{dataset }\OperatorTok{==}\StringTok{ "Level 2/"}\NormalTok{,]}\OperatorTok{$}\NormalTok{path}
+\NormalTok{    hind_l3_cat    <-}\StringTok{ }\NormalTok{hind_datasets[hind_datasets}\OperatorTok{$}\NormalTok{dataset }\OperatorTok{==}\StringTok{ "Level 3/"}\NormalTok{,]}\OperatorTok{$}\NormalTok{path}
+\NormalTok{    hind_l2_cat}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "https://data.pmel.noaa.gov/aclim/thredds/B10K-H16_CORECFS/Level2.html"
+\end{verbatim}
+
+Now that we have the URLs let's take a look at the available Level2
+datasets (currently temperature only, other variables available by
+request to \href{kelly.kearney@noaa.gov}{Kelly Kearney}:
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{Bottom\ 5m} : bottom water temperature at 5 meters
+\item
+  \texttt{Surface\ 5m} : surface water temperature in the first 5 meters
+\item
+  \texttt{Integrated} : Integrated water column averages for various NPZ
+  variables
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{# preview the projection and hindcast Level 2 datasets:}
+\NormalTok{    proj_l2_datasets  <-}\StringTok{ }\KeywordTok{tds_list_datasets}\NormalTok{(proj_l2_cat)}
+\NormalTok{    hind_l2_datasets  <-}\StringTok{ }\KeywordTok{tds_list_datasets}\NormalTok{(hind_l2_cat)}
+\NormalTok{    proj_l2_datasets}\OperatorTok{$}\NormalTok{dataset}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Bottom 5m"  "Surface 5m" "Integrated"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{# get url for bottom temperature:}
+\NormalTok{    proj_l2_BT_url    <-}\StringTok{ }\NormalTok{proj_l2_datasets[proj_l2_datasets}\OperatorTok{$}\NormalTok{dataset }\OperatorTok{==}\StringTok{ "Bottom 5m"}\NormalTok{,]}\OperatorTok{$}\NormalTok{path}
+\NormalTok{    hind_l2_BT_url    <-}\StringTok{ }\NormalTok{hind_l2_datasets[hind_l2_datasets}\OperatorTok{$}\NormalTok{dataset }\OperatorTok{==}\StringTok{ "Bottom 5m"}\NormalTok{,]}\OperatorTok{$}\NormalTok{path}
+\NormalTok{    proj_l2_BT_url}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "https://data.pmel.noaa.gov/aclim/thredds/B10K-H16_CMIP5_MIROC_rcp85/Level2.html?dataset=B10K-H16_CMIP5_MIROC_rcp85_Level2_bottom5m"
+\end{verbatim}
+
+We can't preview the Level 3 datasets in the same way but they are
+identical to those in the google drive and include two datasets
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{ACLIMsurveyrep\_B10K-H16\_CMIP5\_CESM\_BIO\_rcp85.nc} : NMFS
+  Groundfish summer NBS and EBS survey replicated values for 60+
+  variables
+\item
+  \texttt{ACLIMregion\_B10K-H16\_CMIP5\_CESM\_BIO\_rcp85.nc} : weekly
+  strata averages for 60+ variables
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{    weekly_vars  }\CommentTok{# list of possible variables in the ACLIMregion_ files }
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  [1] "region_area"          "Ben"                  "DetBen"              
+##  [4] "Hsbl"                 "IceNH4"               "IceNO3"              
+##  [7] "IcePhL"               "aice"                 "hice"                
+## [10] "shflux"               "ssflux"               "Cop_integrated"      
+## [13] "Cop_surface5m"        "EupO_integrated"      "EupO_surface5m"      
+## [16] "EupS_integrated"      "EupS_surface5m"       "Iron_bottom5m"       
+## [19] "Iron_integrated"      "Iron_surface5m"       "Jel_integrated"      
+## [22] "Jel_surface5m"        "MZL_integrated"       "MZL_surface5m"       
+## [25] "NCaO_integrated"      "NCaO_surface5m"       "NCaS_integrated"     
+## [28] "NCaS_surface5m"       "NH4_bottom5m"         "NH4_integrated"      
+## [31] "NH4_surface5m"        "NO3_bottom5m"         "NO3_integrated"      
+## [34] "NO3_surface5m"        "PhL_integrated"       "PhL_surface5m"       
+## [37] "PhS_integrated"       "PhS_surface5m"        "prod_Cop_integrated" 
+## [40] "prod_EupO_integrated" "prod_EupS_integrated" "prod_Eup_integrated" 
+## [43] "prod_Jel_integrated"  "prod_MZL_integrated"  "prod_NCaO_integrated"
+## [46] "prod_NCaS_integrated" "prod_NCa_integrated"  "prod_PhL_integrated" 
+## [49] "prod_PhS_integrated"  "salt_surface5m"       "temp_bottom5m"       
+## [52] "temp_integrated"      "temp_surface5m"       "uEast_bottom5m"      
+## [55] "uEast_surface5m"      "vNorth_bottom5m"      "vNorth_surface5m"    
+## [58] "fracbelow0"           "fracbelow1"           "fracbelow2"
+\end{verbatim}
+
+Now we can download a subset of the Level2 data (full 10KM Lat Lon
+re-gridded data), here with an example of sampling on Aug 1 of each
+year:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{# preview the variables, timesteps, and lat lon in each dataset:}
+\NormalTok{    l2_info <-}\StringTok{ }\KeywordTok{scan_l2}\NormalTok{(}\DataTypeTok{ds_list =}\NormalTok{ dl,}\DataTypeTok{sim_list =} \StringTok{"B10K-H16_CORECFS"}\NormalTok{ )}
+    
+    \KeywordTok{names}\NormalTok{(l2_info)}
+\NormalTok{    l2_info[[}\StringTok{"Bottom 5m"}\NormalTok{]]}\OperatorTok{$}\NormalTok{vars}
+\NormalTok{    l2_info[[}\StringTok{"Surface 5m"}\NormalTok{]]}\OperatorTok{$}\NormalTok{vars}
+\NormalTok{    l2_info[[}\StringTok{"Integrated"}\NormalTok{]]}\OperatorTok{$}\NormalTok{vars}
+    \KeywordTok{max}\NormalTok{(l2_info[[}\StringTok{"Integrated"}\NormalTok{]]}\OperatorTok{$}\NormalTok{time_steps)}
+\NormalTok{    l2_info[[}\StringTok{"Integrated"}\NormalTok{]]}\OperatorTok{$}\NormalTok{years}
+    
+    
+    \CommentTok{# Simulation list:}
+    \CommentTok{# --> --> Tinker:add additional projection scenarios here}
+\NormalTok{    sl <-}\StringTok{ }\KeywordTok{c}\NormalTok{(hind, proj)}
+
+    \CommentTok{# Currently available Level 2 variables}
+\NormalTok{    dl     <-}\StringTok{ }\NormalTok{proj_l2_datasets}\OperatorTok{$}\NormalTok{dataset  }\CommentTok{# datasets}
+    
+    \CommentTok{# variables to pull from each data set}
+    \CommentTok{# --> --> Tinker: try subbing in other Integrated variables }
+    \CommentTok{# (l2_info[["Integrated"]]$vars) into the third list vector }
+\NormalTok{    svl <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}
+      \StringTok{'Bottom 5m'}\NormalTok{ =}\StringTok{ "temp"}\NormalTok{,}
+      \StringTok{'Surface 5m'}\NormalTok{ =}\StringTok{ "temp"}\NormalTok{,}
+      \StringTok{'Integrated'}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"EupS"}\NormalTok{,}\StringTok{"Cop"}\NormalTok{,}\StringTok{"NCaS"}\NormalTok{) ) }
+   
+    
+    \CommentTok{# Let's sample the model years as close to Aug 1 as the model timesteps run:}
+    \CommentTok{# --> --> Tinker - try a different date}
+\NormalTok{    tr          <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"-08-1 12:00:00 GMT"}\NormalTok{) }
+    
+    \CommentTok{# grab nc files from the aclim server and convert to rdatafiles with the ID Aug1}
+    \KeywordTok{get_l2}\NormalTok{(}
+      \DataTypeTok{ID          =} \StringTok{"_Aug1"}\NormalTok{,}
+      \DataTypeTok{ds_list     =}\NormalTok{ dl,}
+      \DataTypeTok{trIN        =}\NormalTok{ tr,}
+      \DataTypeTok{sub_varlist =}\NormalTok{ svl,  }
+      \DataTypeTok{sim_list    =}\NormalTok{ sl  )}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{download-level-3-data}{%
+\subsubsection{3.2.3 Download Level 3
+data}\label{download-level-3-data}}
+
+Now let's grab some of the Level 3 data and store it in the
+Data/in/Newest/Rdata folder. This is comparatively faster because Level
+3 files are already post-processed to be in the ACLIM indices format and
+are relatively small:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{# Simulation list:}
+    \CommentTok{# --> --> Tinker:add additional projection scenarios here}
+\NormalTok{    sl <-}\StringTok{ }\KeywordTok{c}\NormalTok{(hind, proj)}
+    
+    \CommentTok{# variable list}
+    \CommentTok{# --> --> Tinker:add additional variables to varlist}
+\NormalTok{    vl <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}
+              \StringTok{"temp_bottom5m"}\NormalTok{,    }\CommentTok{# bottom temperature,}
+              \StringTok{"NCaS_integrated"}\NormalTok{,  }\CommentTok{# Large Cop}
+              \StringTok{"Cop_integrated"}\NormalTok{,   }\CommentTok{# Small Cop}
+              \StringTok{"EupS_integrated"}\NormalTok{)  }\CommentTok{# Shelf  euphausiids}
+    
+    \CommentTok{# convert  nc files into a long data.frame for each variable}
+    \CommentTok{# three options are:}
+    \CommentTok{# ------------------------------------}
+    
+    \CommentTok{# opt 1: access nc files remotely (fast, less local storage needed)}
+    \KeywordTok{get_l3}\NormalTok{(}\DataTypeTok{web_nc =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{download_nc =}\NormalTok{ F,}
+          \DataTypeTok{varlist =}\NormalTok{ vl,}\DataTypeTok{sim_list =}\NormalTok{ sl)}
+    
+    \CommentTok{# opt 2:  download nc files then access locallly:}
+    \KeywordTok{get_l3}\NormalTok{(}\DataTypeTok{web_nc =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{download_nc =}\NormalTok{ T,}
+          \DataTypeTok{local_path =} \KeywordTok{file.path}\NormalTok{(local_fl,}\StringTok{"aclim_thredds"}\NormalTok{),}
+          \DataTypeTok{varlist =}\NormalTok{ vl,}\DataTypeTok{sim_list =}\NormalTok{ sl)}
+    
+     \CommentTok{# opt 3:  access existing nc files locally:}
+    \KeywordTok{get_l3}\NormalTok{(}\DataTypeTok{web_nc =}\NormalTok{ F, }\DataTypeTok{download_nc =}\NormalTok{ F,}
+          \DataTypeTok{local_path =} \KeywordTok{file.path}\NormalTok{(local_fl,}\StringTok{"aclim_thredds"}\NormalTok{),}
+          \DataTypeTok{varlist =}\NormalTok{ vl,}\DataTypeTok{sim_list =}\NormalTok{ sl)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{aclim-only-convert-cmip6-level-3-.nc-.rdata}{%
+\subsubsection{3.2.4 ACLIM only: Convert CMIP6 Level 3 .nc
+--\textgreater{}
+.Rdata}\label{aclim-only-convert-cmip6-level-3-.nc-.rdata}}
+
+\begin{figure}
+\centering
+\includegraphics[width=1\textwidth,height=\textheight]{Figs/filestructure.jpg}
+\caption{The final folder structure on your local drive in
+\texttt{Data/in/Newest} should look something like this.}
+\end{figure}
+
+Now let's convert the CMIP6 Level3 .nc files to .Rdata files (as in
+section 3.2.3)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{# preview the available CMIP6 data}
+    \KeywordTok{dir}\NormalTok{(}\KeywordTok{file.path}\NormalTok{(local_fl,}\StringTok{"roms_for_aclim"}\NormalTok{))}
+
+  \CommentTok{# define the simulation to download:}
+\NormalTok{    cmip <-}\StringTok{ "CMIP6"}     \CommentTok{# Coupled Model Intercomparison Phase}
+\NormalTok{    GCM  <-}\StringTok{ "MIROC"}     \CommentTok{# Global Circulation Model}
+\NormalTok{    rcp  <-}\StringTok{ "ssp585"}     \CommentTok{# future carbon scenario}
+\NormalTok{    mod  <-}\StringTok{ "B10K-K20P19"}  \CommentTok{# ROMSNPZ model}
+\NormalTok{    hind <-}\StringTok{ "CORECFS"}      \CommentTok{# Hindcast}
+    
+    \CommentTok{# define the projection simulation:}
+\NormalTok{    proj  <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(mod,}\StringTok{"_"}\NormalTok{,cmip,}\StringTok{"_"}\NormalTok{,GCM,}\StringTok{"_"}\NormalTok{,rcp)}
+\NormalTok{    hind  <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(}\StringTok{"B10K-K20"}\NormalTok{,}\StringTok{"_"}\NormalTok{,hind)}
+\NormalTok{    sl    <-}\StringTok{ }\KeywordTok{c}\NormalTok{(hind, proj)}
+    
+    \CommentTok{# opt 3:  convert subset of nc files to rdata files for analysis:}
+    \KeywordTok{get_l3}\NormalTok{(}\DataTypeTok{web_nc =}\NormalTok{ F, }\DataTypeTok{download_nc =}\NormalTok{ F,}
+          \DataTypeTok{local_path =} \KeywordTok{file.path}\NormalTok{(local_fl,}\StringTok{"roms_for_aclim"}\NormalTok{),}
+          \DataTypeTok{varlist =}\NormalTok{ vl,}\DataTypeTok{sim_list =}\NormalTok{ sl)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{explore-indices-plot-the-data}{%
+\section{4. Explore indices \& plot the
+data}\label{explore-indices-plot-the-data}}
 
 \hypertarget{level-3-indices}{%
 \subsection{4.1 Level 3 indices:}\label{level-3-indices}}
@@ -1011,35 +953,23 @@ indices (like those reported in
 \href{https://www.frontiersin.org/articles/10.3389/fmars.2020.00124/full}{Reum
 et al.~2020)},
 \href{http://dx.doi.org/10.1038/s41467-020-18300-3}{Holsman et
-al.~2020)}. In section 3 below we explore these indices in more detail
+al.~2020)}. In the section below we explore these indices in more detail
 using R, including using (2) above to generate weekly, monthly, and
 seasonal indices (e.g.~Fall Zooplankton) for use in biological models.
 In section 3 below we explore these indices in more detail using R,
 including using (2) above to generate weekly, monthly, and seasonal
-indices (e.g.~Fall Zooplankton) for use in biological models.
+indices (e.g.~Fall Zooplankton) for use in biological models. The
+following examples show how to analyze and plot the ACLIM indices from
+the .Rdata files created in the previous step 3.
 
 Please be sure to coordinate with ROMSNPZ modeling team members to
 ensure data is applied appropriately. If you need access to the raw
 ROMSNPZ files (netcdf, non-regridded large files located on MOX). Please
 contact \href{albert.j.hermann@noaa.gov}{\textbf{Al Hermann}} or
-\href{kelly.kearney@noaa.gov}{\textbf{Kelly Kearney}}.
-
-The following examples show how to analyze and plot the ACLIM indices
-from their stored netcdf (.nc) format in the Data folder of the ACLIM
-shared google drive. Please note that while the CMIP5 set is now public
-(Hermann et al.~2019) \textbf{the CMIP6 suite is under embargo for QAQC
-and should not be shared outside of the ACLIM group}. Al, Wei, Kelly,
-Darren, and Kerim are in the process of synthesizing and publishing the
-CMIP6 data (goal is spring 2021 for submission), following those
-publications the data will be made accessible to the public via the PMEL
-data portal, as is the case for the CMIP5 data and public hindcasts. It
-is strongly recommended that you include at least one (ideally multiple)
-authors from the ROMSNPZ team as co-author on your paper if you are
-linking to this data, this is especially the case for the CMIP6 data.
-There are multiple spatial and temporal caveats that are best described
-in discussions with the authors of these data and inclusion as
-co-authors will facilitate appropriate application and interpretation of
-the ROMSNPZ data.
+\href{kelly.kearney@noaa.gov}{\textbf{Kelly Kearney}}. Please note that
+while the CMIP5 set is now public (Hermann et al.~2019) \textbf{the
+CMIP6 suite is under embargo for QAQC and should not be shared outside
+of the ACLIM group}. See Section 1 above for more detail.
 
 \hypertarget{explore-level-3-data-catalog}{%
 \subsubsection{4.1.1 Explore Level 3 data
@@ -1067,11 +997,12 @@ First run the below set of code to set up the workspace:
 
 \begin{Shaded}
 \begin{Highlighting}[]
+    \CommentTok{# --------------------------------------}
+    \CommentTok{# SETUP WORKSPACE}
 \NormalTok{    tmstp  <-}\StringTok{ }\KeywordTok{format}\NormalTok{(}\KeywordTok{Sys.time}\NormalTok{(), }\StringTok{"%Y_%m_%d"}\NormalTok{)}
-\NormalTok{    main   <-}\StringTok{ }\KeywordTok{getwd}\NormalTok{()  }\CommentTok{#"~/GitHub_new/ACLIM2"}
-    
-    \CommentTok{# loads packages, data, setup, etc.}
+\NormalTok{    main   <-}\StringTok{ }\KeywordTok{getwd}\NormalTok{()  }\CommentTok{#"~/GitHub_new/ACLIM2}
     \KeywordTok{source}\NormalTok{(}\StringTok{"R/make.R"}\NormalTok{)}
+    \CommentTok{# --------------------------------------}
     
     \CommentTok{# list of the scenario x GCM downscaled ACLIM indices}
     \ControlFlowTok{for}\NormalTok{(k }\ControlFlowTok{in}\NormalTok{ aclim)}
@@ -1100,9 +1031,9 @@ First run the below set of code to set up the workspace:
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{spatial-indices-survey-replicated}{%
-\subsubsection{4.1.2 Spatial indices (survey
-replicated)}\label{spatial-indices-survey-replicated}}
+\hypertarget{level-3-spatial-indices-survey-replicated}{%
+\subsubsection{4.1.2 Level 3: Spatial indices (survey
+replicated)}\label{level-3-spatial-indices-survey-replicated}}
 
 Let's start b exploring the survey replicated values for each variable.
 Steps 2 and 3 generated the Rdata files that are stored in the
@@ -1121,13 +1052,16 @@ The code segment below will recreate the above figures.
 \NormalTok{   station_sf}\OperatorTok{$}\NormalTok{stratum <-}\StringTok{ }\KeywordTok{factor}\NormalTok{(station_sf}\OperatorTok{$}\NormalTok{stratum)}
    
    \CommentTok{# plot the stations:}
-\NormalTok{   p <-}\StringTok{ }\KeywordTok{plot_stations_basemap}\NormalTok{(}\DataTypeTok{sfIN =}\NormalTok{ station_sf,}\DataTypeTok{fillIN =} \StringTok{"subregion"}\NormalTok{,}\DataTypeTok{colorIN =} \StringTok{"subregion"}\NormalTok{) }\OperatorTok{+}\StringTok{ }
-\StringTok{     }\KeywordTok{scale_color_viridis_d}\NormalTok{(}\DataTypeTok{begin =} \FloatTok{.4}\NormalTok{,}\DataTypeTok{end=}\NormalTok{.}\DecValTok{6}\NormalTok{) }\OperatorTok{+}
-\StringTok{     }\KeywordTok{scale_fill_viridis_d}\NormalTok{(}\DataTypeTok{begin =} \FloatTok{.4}\NormalTok{,}\DataTypeTok{end=}\NormalTok{.}\DecValTok{6}\NormalTok{)}
+\NormalTok{   p <-}\StringTok{ }\KeywordTok{plot_stations_basemap}\NormalTok{(}\DataTypeTok{sfIN =}\NormalTok{ station_sf,}
+                              \DataTypeTok{fillIN =} \StringTok{"subregion"}\NormalTok{,}
+                              \DataTypeTok{colorIN =} \StringTok{"subregion"}\NormalTok{) }\OperatorTok{+}\StringTok{ }
+\StringTok{     }\KeywordTok{scale_color_viridis_d}\NormalTok{(}\DataTypeTok{begin =} \FloatTok{.2}\NormalTok{,}\DataTypeTok{end=}\NormalTok{.}\DecValTok{6}\NormalTok{) }\OperatorTok{+}
+\StringTok{     }\KeywordTok{scale_fill_viridis_d}\NormalTok{(}\DataTypeTok{begin  =} \FloatTok{.2}\NormalTok{,}\DataTypeTok{end=}\NormalTok{.}\DecValTok{6}\NormalTok{)}
   
    \ControlFlowTok{if}\NormalTok{(update.figs)\{}
 \NormalTok{     p}
-     \KeywordTok{ggsave}\NormalTok{(}\DataTypeTok{file=}\StringTok{"Figs/stations_NS.jpg"}\NormalTok{,}\DataTypeTok{width=}\DecValTok{5}\NormalTok{,}\DataTypeTok{height=}\DecValTok{5}\NormalTok{)\}}
+     \KeywordTok{ggsave}\NormalTok{(}\DataTypeTok{file=}\KeywordTok{file.path}\NormalTok{(main,}\StringTok{"Figs/stations_NS.jpg"}\NormalTok{),}\DataTypeTok{width=}\DecValTok{5}\NormalTok{,}\DataTypeTok{height=}\DecValTok{5}\NormalTok{)}
+\NormalTok{    \}}
 
 \NormalTok{   p2 <-}\StringTok{ }\KeywordTok{plot_stations_basemap}\NormalTok{(}\DataTypeTok{sfIN =}\NormalTok{ station_sf,}\DataTypeTok{fillIN =} \StringTok{"stratum"}\NormalTok{,}\DataTypeTok{colorIN =} \StringTok{"stratum"}\NormalTok{) }\OperatorTok{+}\StringTok{ }
 \StringTok{     }\KeywordTok{scale_color_viridis_d}\NormalTok{() }\OperatorTok{+}
@@ -1135,18 +1069,17 @@ The code segment below will recreate the above figures.
    
    \ControlFlowTok{if}\NormalTok{(update.figs)\{}
 \NormalTok{     p2}
-   \KeywordTok{ggsave}\NormalTok{(}\DataTypeTok{file=}\StringTok{"Figs/stations.jpg"}\NormalTok{,}\DataTypeTok{width=}\DecValTok{5}\NormalTok{,}\DataTypeTok{height=}\DecValTok{5}\NormalTok{)\}}
+   \KeywordTok{ggsave}\NormalTok{(}\DataTypeTok{file=}\KeywordTok{file.path}\NormalTok{(main,}\StringTok{"Figs/stations.jpg"}\NormalTok{),}\DataTypeTok{width=}\DecValTok{5}\NormalTok{,}\DataTypeTok{height=}\DecValTok{5}\NormalTok{)\}}
 \end{Highlighting}
 \end{Shaded}
 
-Now let's explore the survey replicated data in more detail and use it
-to create a cold pool index for each simulation and hindcast scenario x
-model x CMIP combination.
+Now let's explore the survey replicated data in more detail and use to
+plot bottom temperature.
 
 \begin{Shaded}
 \begin{Highlighting}[]
     \CommentTok{# now create plots of average BT during four time periods}
-\NormalTok{    time_seg   <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\StringTok{'2010-2020'}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{2010}\OperatorTok{:}\DecValTok{2020}\NormalTok{),}
+\NormalTok{    time_seg   <-}\StringTok{ }\KeywordTok{list}\NormalTok{( }\StringTok{'2010-2020'}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{2010}\OperatorTok{:}\DecValTok{2020}\NormalTok{),}
                         \StringTok{'2021-2040'}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{2021}\OperatorTok{:}\DecValTok{2040}\NormalTok{),}
                         \StringTok{'2041-2060'}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{2041}\OperatorTok{:}\DecValTok{2060}\NormalTok{),}
                         \StringTok{'2061-2080'}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{2061}\OperatorTok{:}\DecValTok{2080}\NormalTok{),}
@@ -1154,29 +1087,36 @@ model x CMIP combination.
   
     \CommentTok{# View an individual variable (e.g., Bottom Temp)}
     \CommentTok{# -------------------------------------------------------}
-\NormalTok{    srvy_vars}
-\NormalTok{    aclim}
-\NormalTok{    sim <-}\StringTok{"B10K-K20P19_CMIP6_miroc_ssp585"} 
-\NormalTok{    Rdata_path <-}\StringTok{ "/Users/kholsman/GitHub_new/ACLIM2/Data/in/Newest/Rdata"}
+    \KeywordTok{head}\NormalTok{(srvy_vars)}
+    \KeywordTok{head}\NormalTok{(aclim)}
+    
+    \CommentTok{# assign the simulation to download}
+    \CommentTok{# --> --> Tinker: try selecting a different set of models to compare}
+\NormalTok{    sim        <-}\StringTok{"B10K-H16_CMIP5_MIROC_rcp85"} 
     
     \CommentTok{# open a "region" or strata specific nc file}
-\NormalTok{    fl      <-}\StringTok{ }\KeywordTok{file.path}\NormalTok{(sim,}\KeywordTok{paste0}\NormalTok{(srvy_txt,sim,}\StringTok{".Rdata"}\NormalTok{))}
+\NormalTok{    fl         <-}\StringTok{ }\KeywordTok{file.path}\NormalTok{(sim,}\KeywordTok{paste0}\NormalTok{(srvy_txt,sim,}\StringTok{".Rdata"}\NormalTok{))}
     
     \CommentTok{# load object 'ACLIMsurveyrep'}
-    \KeywordTok{load}\NormalTok{(}\KeywordTok{file.path}\NormalTok{(Rdata_path,fl))   }
+    \KeywordTok{load}\NormalTok{(}\KeywordTok{file.path}\NormalTok{(main,Rdata_path,fl))   }
     
     \CommentTok{# Collate mean values across timeperiods and simulations}
     \CommentTok{# -------------------------------------------------------}
-\NormalTok{    m_set      <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{18}\NormalTok{,}\DecValTok{19}\NormalTok{)}
+\NormalTok{    m_set      <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{9}\NormalTok{,}\DecValTok{7}\NormalTok{,}\DecValTok{8}\NormalTok{)}
 \NormalTok{    ms         <-}\StringTok{ }\NormalTok{aclim[m_set]}
-\NormalTok{    ms         <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"B10K-H16_CMIP5_miroc_rcp85"}\NormalTok{,}\StringTok{"B10K-K20P19_CMIP6_miroc_ssp585"}\NormalTok{)}
     
-    \CommentTok{# get the mean values for the time blocks}
+    \CommentTok{# create local rdata files (opt 1)}
+    \ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{file.exists}\NormalTok{(fl))}
+      \KeywordTok{get_l3}\NormalTok{(}\DataTypeTok{web_nc =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{download_nc =}\NormalTok{ F,}
+          \DataTypeTok{varlist =}\NormalTok{ vl,}\DataTypeTok{sim_list =}\NormalTok{sim )}
+    
+    \CommentTok{# get the mean values for the time blocks from the rdata versions}
+    \CommentTok{# will throw "implicit NA" errors that can be ignored}
 \NormalTok{    mn_var_all <-}\StringTok{ }\KeywordTok{get_mn_rd}\NormalTok{(}\DataTypeTok{modset =}\NormalTok{ ms ,}\DataTypeTok{varUSE=}\StringTok{"temp_bottom5m"}\NormalTok{)}
     
     \CommentTok{# convert results to a shapefile}
 \NormalTok{    mn_var_sf  <-}\StringTok{ }\KeywordTok{convert2shp}\NormalTok{(mn_var_all}\OperatorTok{%>%}\KeywordTok{filter}\NormalTok{(}\OperatorTok{!}\KeywordTok{is.na}\NormalTok{(mnval)))}
-\NormalTok{    lab_t       <-}\StringTok{ }\NormalTok{ms[}\DecValTok{1}\NormalTok{]}\OperatorTok{%>%}\NormalTok{stringr}\OperatorTok{::}\KeywordTok{str_remove}\NormalTok{(}\StringTok{"([^-])"}\NormalTok{)}
+\NormalTok{    lab_t      <-}\StringTok{ }\NormalTok{ms[}\DecValTok{2}\NormalTok{]}\OperatorTok{%>%}\NormalTok{stringr}\OperatorTok{::}\KeywordTok{str_remove}\NormalTok{(}\StringTok{"([^-])"}\NormalTok{)}
     
 \NormalTok{    p3         <-}\StringTok{ }\KeywordTok{plot_stations_basemap}\NormalTok{(}\DataTypeTok{sfIN =}\NormalTok{ mn_var_sf,}
                                 \DataTypeTok{fillIN =} \StringTok{"mnval"}\NormalTok{,}
@@ -1194,9 +1134,9 @@ model x CMIP combination.
     \KeywordTok{dev.new}\NormalTok{()}
 \NormalTok{    p3}
     
-    \ControlFlowTok{if}\NormalTok{(update.figs)  }\KeywordTok{ggsave}\NormalTok{(}\DataTypeTok{file=}\StringTok{"Figs/mn_BT.jpg"}\NormalTok{,}\DataTypeTok{width=}\DecValTok{8}\NormalTok{,}\DataTypeTok{height=}\DecValTok{5}\NormalTok{)}
+    \ControlFlowTok{if}\NormalTok{(update.figs)  }\KeywordTok{ggsave}\NormalTok{(}\DataTypeTok{file=}\KeywordTok{file.path}\NormalTok{(main,}\StringTok{"Figs/mn_BT.jpg"}\NormalTok{),}\DataTypeTok{width=}\DecValTok{8}\NormalTok{,}\DataTypeTok{height=}\DecValTok{6}\NormalTok{)}
   
-    \KeywordTok{graphics.off}\NormalTok{()}
+    \CommentTok{# graphics.off()}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1207,9 +1147,9 @@ model x CMIP combination.
 and SSP585 (bottom row)}
 \end{figure}
 
-\hypertarget{temporal-indices-weekly-strata-averages}{%
-\subsubsection{4.1.3 Temporal indices (Weekly strata
-averages)}\label{temporal-indices-weekly-strata-averages}}
+\hypertarget{level-3-weekly-strata-averages}{%
+\subsubsection{4.1.3 Level 3: Weekly strata
+averages}\label{level-3-weekly-strata-averages}}
 
 The next set of indices to will explore are the weekly strata-specific
 values for each variable.These are stored in the
@@ -1218,23 +1158,30 @@ scenario folder.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-    \CommentTok{# list of the scenario x GCM downscaled ACLIM indices}
-    \ControlFlowTok{for}\NormalTok{(k }\ControlFlowTok{in}\NormalTok{ aclim)}
-      \KeywordTok{cat}\NormalTok{(}\KeywordTok{paste}\NormalTok{(k,}\StringTok{"}\CharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
-
     \CommentTok{# View an individual variable (e.g., Bottom Temp)}
     \CommentTok{# -------------------------------------------------------}
 \NormalTok{    weekly_vars}
 \NormalTok{    aclim}
-\NormalTok{    sim <-}\StringTok{"B10K-K20P19_CMIP6_miroc_ssp585"} 
-\NormalTok{    Rdata_path <-}\StringTok{ "/Users/kholsman/GitHub_new/ACLIM2/Data/in/Newest/Rdata"}
+\NormalTok{    sim        <-}\StringTok{"B10K-H16_CMIP5_MIROC_rcp85"} 
     
     \CommentTok{# open a "region" or strata specific nc file}
-\NormalTok{    fl      <-}\StringTok{ }\KeywordTok{file.path}\NormalTok{(sim,}\KeywordTok{paste0}\NormalTok{(reg_txt,sim,}\StringTok{".Rdata"}\NormalTok{))}
+\NormalTok{    fl         <-}\StringTok{ }\KeywordTok{file.path}\NormalTok{(sim,}\KeywordTok{paste0}\NormalTok{(reg_txt,sim,}\StringTok{".Rdata"}\NormalTok{))}
+    
+\NormalTok{    var_use   <-}\StringTok{ "temp_bottom5m"}
+\NormalTok{    vl        <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}
+                  \StringTok{"temp_bottom5m"}\NormalTok{,}
+                  \StringTok{"NCaS_integrated"}\NormalTok{, }\CommentTok{# Large Cop}
+                  \StringTok{"Cop_integrated"}\NormalTok{,  }\CommentTok{# Small Cop}
+                  \StringTok{"EupS_integrated"}\NormalTok{) }\CommentTok{# Euphausiids}
+    
+    \CommentTok{# create local rdata files (opt 1)}
+    \ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{file.exists}\NormalTok{(fl))}
+      \KeywordTok{get_l3}\NormalTok{(}\DataTypeTok{web_nc =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{download_nc =}\NormalTok{ F,}
+          \DataTypeTok{varlist =}\NormalTok{ vl,}\DataTypeTok{sim_list =}\NormalTok{ sim)}
     
     \CommentTok{# load object 'ACLIMregion'}
-    \KeywordTok{load}\NormalTok{(}\KeywordTok{file.path}\NormalTok{(Rdata_path,fl))  }
-\NormalTok{    tmp_var <-}\StringTok{ }\NormalTok{ACLIMregion}
+    \KeywordTok{load}\NormalTok{(}\KeywordTok{file.path}\NormalTok{(main,Rdata_path,fl))  }
+\NormalTok{    tmp_var    <-}\StringTok{ }\NormalTok{ACLIMregion}\OperatorTok{%>%}\KeywordTok{filter}\NormalTok{(var }\OperatorTok{==}\StringTok{ }\NormalTok{var_use)}
     
    \CommentTok{# now plot the data:}
    
@@ -1242,15 +1189,17 @@ scenario folder.
 \StringTok{     }\KeywordTok{geom_line}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{time,}\DataTypeTok{y=}\NormalTok{val,}\DataTypeTok{color=}\NormalTok{ strata),}\DataTypeTok{alpha=}\NormalTok{.}\DecValTok{8}\NormalTok{)}\OperatorTok{+}
 \StringTok{     }\KeywordTok{facet_grid}\NormalTok{(basin}\OperatorTok{~}\NormalTok{.)}\OperatorTok{+}
 \StringTok{     }\KeywordTok{ylab}\NormalTok{(tmp_var}\OperatorTok{$}\NormalTok{units[}\DecValTok{1}\NormalTok{])}\OperatorTok{+}
-\StringTok{     }\KeywordTok{ggtitle}\NormalTok{( sim}\OperatorTok{%>%}\NormalTok{stringr}\OperatorTok{::}\KeywordTok{str_remove}\NormalTok{(}\StringTok{"([^-])"}\NormalTok{) )}\OperatorTok{+}
+\StringTok{     }\KeywordTok{ggtitle}\NormalTok{( }\KeywordTok{paste}\NormalTok{(sim,mn_NEBS}\OperatorTok{$}\NormalTok{var[}\DecValTok{1}\NormalTok{]))}\OperatorTok{+}
 \StringTok{     }\KeywordTok{theme_minimal}\NormalTok{()}
 \NormalTok{   p4}
+    \ControlFlowTok{if}\NormalTok{(update.figs)  }\KeywordTok{ggsave}\NormalTok{(}\DataTypeTok{file=}\KeywordTok{file.path}\NormalTok{(main,}\StringTok{"Figs/weekly_bystrata.jpg"}\NormalTok{),}\DataTypeTok{width=}\DecValTok{8}\NormalTok{,}\DataTypeTok{height=}\DecValTok{5}\NormalTok{)}
+
    
    \CommentTok{# To get the average value for a set of strata, weight the val by the area:}
 \NormalTok{   mn_NEBS <-}\StringTok{ }\KeywordTok{getAVGnSUM}\NormalTok{(}\DataTypeTok{strataIN =}\NormalTok{ NEBS_strata, }\DataTypeTok{dataIN =}\NormalTok{ tmp_var)}
-\NormalTok{   mn_NEBS}\OperatorTok{$}\DataTypeTok{basin =} \StringTok{"NEBS"}
+\NormalTok{   mn_NEBS}\OperatorTok{$}\NormalTok{basin =}\StringTok{ "NEBS"}
 \NormalTok{   mn_SEBS <-}\KeywordTok{getAVGnSUM}\NormalTok{(}\DataTypeTok{strataIN =}\NormalTok{ SEBS_strata, }\DataTypeTok{dataIN =}\NormalTok{ tmp_var)}
-\NormalTok{   mn_SEBS}\OperatorTok{$}\DataTypeTok{basin =} \StringTok{"SEBS"}
+\NormalTok{   mn_SEBS}\OperatorTok{$}\NormalTok{basin =}\StringTok{ "SEBS"}
    
 \NormalTok{   p5 <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =} \KeywordTok{rbind}\NormalTok{(mn_NEBS,mn_SEBS)) }\OperatorTok{+}\StringTok{ }
 \StringTok{      }\KeywordTok{geom_line}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{time,}\DataTypeTok{y=}\NormalTok{mn_val,}\DataTypeTok{color=}\NormalTok{basin),}\DataTypeTok{alpha=}\NormalTok{.}\DecValTok{8}\NormalTok{)}\OperatorTok{+}
@@ -1259,12 +1208,19 @@ scenario folder.
 \StringTok{      }\KeywordTok{facet_grid}\NormalTok{(basin}\OperatorTok{~}\NormalTok{.)}\OperatorTok{+}
 \StringTok{      }\KeywordTok{scale_color_viridis_d}\NormalTok{(}\DataTypeTok{begin=}\NormalTok{.}\DecValTok{4}\NormalTok{,}\DataTypeTok{end=}\NormalTok{.}\DecValTok{8}\NormalTok{)}\OperatorTok{+}
 \StringTok{      }\KeywordTok{ylab}\NormalTok{(tmp_var}\OperatorTok{$}\NormalTok{units[}\DecValTok{1}\NormalTok{])}\OperatorTok{+}
-\StringTok{      }\KeywordTok{ggtitle}\NormalTok{( }\KeywordTok{paste}\NormalTok{(aclim[}\DecValTok{2}\NormalTok{],mn_NEBS}\OperatorTok{$}\NormalTok{var[}\DecValTok{1}\NormalTok{]))}\OperatorTok{+}
+\StringTok{      }\KeywordTok{ggtitle}\NormalTok{( }\KeywordTok{paste}\NormalTok{(sim,mn_NEBS}\OperatorTok{$}\NormalTok{var[}\DecValTok{1}\NormalTok{]))}\OperatorTok{+}
+\StringTok{     }
 \StringTok{      }\KeywordTok{theme_minimal}\NormalTok{()}
 \NormalTok{  p5}
-  \ControlFlowTok{if}\NormalTok{(update.figs)  }\KeywordTok{ggsave}\NormalTok{(}\DataTypeTok{file=}\StringTok{"Figs/weekly_byreg.jpg"}\NormalTok{,}\DataTypeTok{width=}\DecValTok{8}\NormalTok{,}\DataTypeTok{height=}\DecValTok{5}\NormalTok{)}
+  \ControlFlowTok{if}\NormalTok{(update.figs)  }\KeywordTok{ggsave}\NormalTok{(}\DataTypeTok{file=}\KeywordTok{file.path}\NormalTok{(main,}\StringTok{"Figs/weekly_byreg.jpg"}\NormalTok{),}\DataTypeTok{width=}\DecValTok{8}\NormalTok{,}\DataTypeTok{height=}\DecValTok{5}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.65\textwidth,height=\textheight]{Figs/weekly_bystrata.jpg}
+\caption{Weekly indcices by sub-region}
+\end{figure}
 
 \begin{figure}
 \centering
@@ -1272,15 +1228,15 @@ scenario folder.
 \caption{Weekly indcices by sub-region}
 \end{figure}
 
-\hypertarget{create-seasonal-averages}{%
-\subsubsection{4.1.4 Create seasonal
-averages}\label{create-seasonal-averages}}
+\hypertarget{level-3-seasonal-averages}{%
+\subsubsection{4.1.4 Level 3: Seasonal
+averages}\label{level-3-seasonal-averages}}
 
 Now using a similar approach get the monthly mean values for a variable:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{    sim <-}\StringTok{"B10K-K20P19_CMIP6_miroc_ssp585"} 
+\NormalTok{     sim <-}\StringTok{"B10K-H16_CMIP5_MIROC_rcp85"} 
 
     \CommentTok{# Set up seasons (this follows Holsman et al. 2020)}
 \NormalTok{      seasons <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{mo =} \DecValTok{1}\OperatorTok{:}\DecValTok{12}\NormalTok{, }
@@ -1292,42 +1248,36 @@ Now using a similar approach get the monthly mean values for a variable:
 \NormalTok{      seasons}\OperatorTok{$}\NormalTok{season[}\DecValTok{10}\OperatorTok{:}\DecValTok{12}\NormalTok{] <-}\StringTok{ "Fall"}
     
        
-\NormalTok{    varlist <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}
+\NormalTok{    vl <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}
                   \StringTok{"temp_bottom5m"}\NormalTok{,}
                   \StringTok{"NCaS_integrated"}\NormalTok{, }\CommentTok{# Large Cop}
                   \StringTok{"Cop_integrated"}\NormalTok{,  }\CommentTok{# Small Cop}
                   \StringTok{"EupS_integrated"}\NormalTok{) }\CommentTok{# Euphausiids}
     
+    \CommentTok{# create local rdata files (opt 1)}
+    \ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{file.exists}\NormalTok{(fl))}
+      \KeywordTok{get_l3}\NormalTok{(}\DataTypeTok{web_nc =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{download_nc =}\NormalTok{ F,}
+          \DataTypeTok{varlist =}\NormalTok{ vl,}\DataTypeTok{sim_list =}\NormalTok{ sim)}
+    
     \CommentTok{# open a "region" or strata specific  file}
 \NormalTok{    fl      <-}\StringTok{ }\KeywordTok{file.path}\NormalTok{(sim,}\KeywordTok{paste0}\NormalTok{(reg_txt,sim,}\StringTok{".Rdata"}\NormalTok{))}
-    \KeywordTok{load}\NormalTok{(}\KeywordTok{file.path}\NormalTok{(Rdata_path,fl))}
+    \KeywordTok{load}\NormalTok{(}\KeywordTok{file.path}\NormalTok{(main,Rdata_path,fl))}
     
-\NormalTok{    tmp_var1     <-}\StringTok{ }\NormalTok{ACLIMregion}\OperatorTok{%>%}
-\StringTok{      }\KeywordTok{filter}\NormalTok{(var}\OperatorTok{%in%}\NormalTok{varlist[}\DecValTok{1}\NormalTok{])}\OperatorTok{%>%}
-\StringTok{      }\KeywordTok{group_by}\NormalTok{(time,strata,strata_area_km2,basin)}
-    
-\NormalTok{     tmp_var3     <-}\StringTok{ }\NormalTok{ACLIMregion}\OperatorTok{%>%}
-\StringTok{      }\KeywordTok{filter}\NormalTok{(var}\OperatorTok{%in%}\NormalTok{varlist[}\DecValTok{3}\NormalTok{])}\OperatorTok{%>%}
-\StringTok{      }\KeywordTok{group_by}\NormalTok{(time,strata,strata_area_km2,basin)}
-    
-\NormalTok{    tmp_var     <-}\KeywordTok{merge}\NormalTok{(tmp_var1,tmp_var3,}
-                        \DataTypeTok{by=}\KeywordTok{c}\NormalTok{(}\StringTok{"strata"}\NormalTok{,}
-                             \StringTok{"strata_area_km2"}
-\NormalTok{                             ,}\StringTok{"time"}\NormalTok{,}\StringTok{"basin"}\NormalTok{))}
-\NormalTok{    tmp_var     <-tmp_var}\OperatorTok{%>%}
-\StringTok{      }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{val      =}\NormalTok{ val.x }\OperatorTok{+}\StringTok{ }\NormalTok{val.y ,}\DataTypeTok{units =}\NormalTok{ units.x,}
-             \DataTypeTok{var       =} \StringTok{"Zoop_integrated"}\NormalTok{,}
-             \DataTypeTok{long_name =}\StringTok{"Total On-shelf }
-\StringTok{             large zooplankton concentration, }
-\StringTok{             integrated over depth (NCa, Eup)"}\NormalTok{)}\OperatorTok{%>%}
-\StringTok{      }\KeywordTok{select}\NormalTok{(time,}
+    \CommentTok{# get large zooplankton as the sum of euph and NCaS}
+\NormalTok{    tmp_var    <-}\StringTok{ }\NormalTok{ACLIMregion}\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{filter}\NormalTok{(var}\OperatorTok{%in%}\NormalTok{vl[}\KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{3}\NormalTok{)])}\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{group_by}\NormalTok{(time,strata,strata_area_km2,basin)}\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{group_by}\NormalTok{(time,}
 \NormalTok{             strata,}
 \NormalTok{             strata_area_km2,}
 \NormalTok{             basin,}
-\NormalTok{             var,}
-\NormalTok{             val, }
-\NormalTok{             units,}
-\NormalTok{             long_name)}
+\NormalTok{             units)}\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{val =}\KeywordTok{sum}\NormalTok{(val))}\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{var       =} \StringTok{"Zoop_integrated"}\NormalTok{,}
+             \DataTypeTok{long_name =}\StringTok{"Total On-shelf }
+\StringTok{             large zooplankton concentration, }
+\StringTok{             integrated over depth (NCa, Eup)"}\NormalTok{)}
+    
     \KeywordTok{rm}\NormalTok{(ACLIMregion)}
     \KeywordTok{head}\NormalTok{(tmp_var)}
     
@@ -1351,7 +1301,7 @@ Now using a similar approach get the monthly mean values for a variable:
       \DataTypeTok{tblock=}\KeywordTok{c}\NormalTok{(}\StringTok{"yr"}\NormalTok{,}\StringTok{"season"}\NormalTok{))}
 \NormalTok{    mn_SEBS_season}\OperatorTok{$}\NormalTok{basin =}\StringTok{ "SEBS"}
     
-\NormalTok{    plot_data      <-}\StringTok{ }\KeywordTok{rbind}\NormalTok{(mn_NEBS_season,mn_SEBS_season)}
+\NormalTok{   plot_data      <-}\StringTok{ }\KeywordTok{rbind}\NormalTok{(mn_NEBS_season,mn_SEBS_season)}
     
    \CommentTok{# plot Fall values:}
 \NormalTok{   p6 <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ plot_data}\OperatorTok{%>%}\KeywordTok{filter}\NormalTok{(season}\OperatorTok{==}\StringTok{"Fall"}\NormalTok{) ) }\OperatorTok{+}\StringTok{ }
@@ -1367,7 +1317,7 @@ Now using a similar approach get the monthly mean values for a variable:
   
   
   \ControlFlowTok{if}\NormalTok{(update.figs)  }
-    \KeywordTok{ggsave}\NormalTok{(}\DataTypeTok{file=}\StringTok{"Figs/Fall_large_Zoop.jpg"}\NormalTok{,}\DataTypeTok{width=}\DecValTok{8}\NormalTok{,}\DataTypeTok{height=}\DecValTok{5}\NormalTok{)}
+    \KeywordTok{ggsave}\NormalTok{(}\DataTypeTok{file=}\KeywordTok{file.path}\NormalTok{(main,}\StringTok{"Figs/Fall_large_Zoop.jpg"}\NormalTok{),}\DataTypeTok{width=}\DecValTok{8}\NormalTok{,}\DataTypeTok{height=}\DecValTok{5}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1377,9 +1327,9 @@ Now using a similar approach get the monthly mean values for a variable:
 \caption{Large fall zooplankton integrated concentration}
 \end{figure}
 
-\hypertarget{create-monthly-averages}{%
-\subsubsection{4.1.5 Create monthly
-averages}\label{create-monthly-averages}}
+\hypertarget{level-3-monthly-averages}{%
+\subsubsection{4.1.5 Level 3: Monthly
+averages}\label{level-3-monthly-averages}}
 
 Using the same approach we can get monthly averages for a given
 variable:
@@ -1413,7 +1363,7 @@ variable:
 \NormalTok{  p7}
   
   \ControlFlowTok{if}\NormalTok{(update.figs)  }
-    \KeywordTok{ggsave}\NormalTok{(}\DataTypeTok{file=}\StringTok{"Figs/Sept_large_Zoop.jpg"}\NormalTok{,}\DataTypeTok{width=}\DecValTok{8}\NormalTok{,}\DataTypeTok{height=}\DecValTok{5}\NormalTok{)}
+    \KeywordTok{ggsave}\NormalTok{(}\DataTypeTok{file=}\KeywordTok{file.path}\NormalTok{(main,}\StringTok{"Figs/Sept_large_Zoop.jpg"}\NormalTok{),}\DataTypeTok{width=}\DecValTok{8}\NormalTok{,}\DataTypeTok{height=}\DecValTok{5}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1423,32 +1373,185 @@ variable:
 \caption{September large zooplankton integrated concentration}
 \end{figure}
 
+Finally we can use this approach to plot the monthly averages and look
+for phenological shifts:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+  \CommentTok{# or average in 4 time slices by mo:}
+  \CommentTok{# now create plots of average BT during four time periods}
+\NormalTok{    time_seg   <-}\StringTok{ }\KeywordTok{list}\NormalTok{( }\StringTok{'2010-2020'}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{2010}\OperatorTok{:}\DecValTok{2020}\NormalTok{),}
+                        \StringTok{'2021-2040'}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{2021}\OperatorTok{:}\DecValTok{2040}\NormalTok{),}
+                        \StringTok{'2041-2060'}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{2041}\OperatorTok{:}\DecValTok{2060}\NormalTok{),}
+                        \StringTok{'2061-2080'}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{2061}\OperatorTok{:}\DecValTok{2080}\NormalTok{),}
+                        \StringTok{'2081-2099'}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{2081}\OperatorTok{:}\DecValTok{2099}\NormalTok{))}
+    
+\NormalTok{    plot_data}\OperatorTok{$}\NormalTok{ts <-}\KeywordTok{names}\NormalTok{(time_seg)[}\DecValTok{1}\NormalTok{]}
+    \ControlFlowTok{for}\NormalTok{(tt }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\KeywordTok{length}\NormalTok{((time_seg)))}
+\NormalTok{      plot_data}\OperatorTok{$}\NormalTok{ts[plot_data}\OperatorTok{$}\NormalTok{yr}\OperatorTok{%in%}\NormalTok{(time_seg[[tt]][}\DecValTok{1}\NormalTok{]}\OperatorTok{:}\NormalTok{time_seg[[tt]][}\DecValTok{2}\NormalTok{])]<-}\KeywordTok{names}\NormalTok{(time_seg)[tt]}
+    
+\NormalTok{    plot_data2 <-}\StringTok{ }\NormalTok{plot_data}\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{group_by}\NormalTok{(var,mo,units,long_name,basin, ts)}\OperatorTok{%>%}
+\StringTok{      }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{mn_val2 =} \KeywordTok{mean}\NormalTok{(mn_val))}
+   
+  \CommentTok{# now plot phenological shift:}
+\NormalTok{   p8 <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ plot_data2 ) }\OperatorTok{+}\StringTok{ }
+\StringTok{      }\KeywordTok{geom_line}\NormalTok{(   }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ mo,}\DataTypeTok{y =}\NormalTok{ mn_val2,}\DataTypeTok{color=}\NormalTok{ts),}\DataTypeTok{alpha=}\NormalTok{.}\DecValTok{8}\NormalTok{,}\DataTypeTok{size=}\DecValTok{0}\NormalTok{)}\OperatorTok{+}
+\StringTok{      }\KeywordTok{geom_smooth}\NormalTok{( }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ mo,}\DataTypeTok{y =}\NormalTok{ mn_val2,}\DataTypeTok{color=}\NormalTok{ts),}
+                  \DataTypeTok{formula =}\NormalTok{ y }\OperatorTok{~}\StringTok{ }\NormalTok{x, }\DataTypeTok{se =}\NormalTok{ F)}\OperatorTok{+}
+\StringTok{      }\KeywordTok{facet_grid}\NormalTok{(basin}\OperatorTok{~}\NormalTok{.)}\OperatorTok{+}
+\StringTok{      }\KeywordTok{scale_color_viridis_d}\NormalTok{(}\DataTypeTok{begin=}\NormalTok{.}\DecValTok{9}\NormalTok{,}\DataTypeTok{end=}\NormalTok{.}\DecValTok{2}\NormalTok{)}\OperatorTok{+}
+\StringTok{      }\KeywordTok{ylab}\NormalTok{(tmp_var}\OperatorTok{$}\NormalTok{units[}\DecValTok{1}\NormalTok{])}\OperatorTok{+}
+\StringTok{      }\KeywordTok{ggtitle}\NormalTok{( }\KeywordTok{paste}\NormalTok{(aclim[}\DecValTok{2}\NormalTok{],mn_NEBS_season}\OperatorTok{$}\NormalTok{var[}\DecValTok{1}\NormalTok{]))}\OperatorTok{+}
+\StringTok{      }\KeywordTok{theme_minimal}\NormalTok{()}
+\NormalTok{  p8}
+  \ControlFlowTok{if}\NormalTok{(update.figs)  }
+    \KeywordTok{ggsave}\NormalTok{(}\DataTypeTok{file=}\KeywordTok{file.path}\NormalTok{(main,}\StringTok{"Figs/PhenShift_large_Zoop.jpg"}\NormalTok{),}\DataTypeTok{width=}\DecValTok{8}\NormalTok{,}\DataTypeTok{height=}\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.65\textwidth,height=\textheight]{Figs/PhenShift_large_Zoop.jpg}
+\caption{September large zooplankton integrated concentration}
+\end{figure}
+
 \hypertarget{level-2}{%
 \subsection{4.2 Level 2:}\label{level-2}}
+
+Level 2 data can be explored in the same way as the above indices but we
+will focus in the section below on a simple spatial plot and temporal
+index. The advantage of Level2 inidces is in the spatial resolution and
+values outside of the survey area.
 
 \hypertarget{explore-level-2-data-catalog}{%
 \subsubsection{3.2.1 Explore Level 2 data
 catalog}\label{explore-level-2-data-catalog}}
 
-\hypertarget{custom-temporal-indices}{%
-\subsubsection{3.2.2 Custom temporal
-indices}\label{custom-temporal-indices}}
-
 \hypertarget{custom-spatial-indices}{%
-\subsubsection{3.2.3 Custom spatial
+\subsubsection{3.2.2 Custom spatial
 indices}\label{custom-spatial-indices}}
 
-\hypertarget{tinker-example-applications}{%
-\section{5. Tinker: example
-applications}\label{tinker-example-applications}}
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{# define four time periods}
+\NormalTok{    time_seg   <-}\StringTok{ }\KeywordTok{list}\NormalTok{( }\StringTok{'2010-2020'}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{2010}\OperatorTok{:}\DecValTok{2020}\NormalTok{),}
+                        \StringTok{'2021-2040'}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{2021}\OperatorTok{:}\DecValTok{2040}\NormalTok{),}
+                        \StringTok{'2041-2060'}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{2041}\OperatorTok{:}\DecValTok{2060}\NormalTok{),}
+                        \StringTok{'2061-2080'}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{2061}\OperatorTok{:}\DecValTok{2080}\NormalTok{),}
+                        \StringTok{'2081-2099'}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{2081}\OperatorTok{:}\DecValTok{2099}\NormalTok{))}
+  
+    \CommentTok{# View an individual variable (e.g., Bottom Temp)}
+    \CommentTok{# -------------------------------------------------------}
+    \KeywordTok{head}\NormalTok{(srvy_vars)}
+    \KeywordTok{head}\NormalTok{(aclim)}
+    
+    \CommentTok{# assign the simulation to download}
+    \CommentTok{# --> --> Tinker: try selecting a different set of models to compare}
+\NormalTok{    sim        <-}\StringTok{"B10K-H16_CMIP5_MIROC_rcp85"} 
+    
+\NormalTok{    svl <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}
+      \StringTok{'Bottom 5m'}\NormalTok{ =}\StringTok{ "temp"}\NormalTok{,}
+      \StringTok{'Surface 5m'}\NormalTok{ =}\StringTok{ "temp"}\NormalTok{,}
+      \StringTok{'Integrated'}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"EupS"}\NormalTok{,}\StringTok{"Cop"}\NormalTok{,}\StringTok{"NCaS"}\NormalTok{) ) }
+   
+    \CommentTok{# Currently available Level 2 variables}
+\NormalTok{    dl     <-}\StringTok{ }\NormalTok{proj_l2_datasets}\OperatorTok{$}\NormalTok{dataset  }\CommentTok{# datasets}
+   
+    
+    \CommentTok{# Let's sample the model years as close to Aug 1 as the model timesteps run:}
+\NormalTok{    tr          <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"-08-1 12:00:00 GMT"}\NormalTok{) }
+    
+    \CommentTok{# the full grid is large and takes a longtime to plot, so let's subsample the grid every 4 cells}
+   
+\NormalTok{    IDin       <-}\StringTok{ "_Aug1_subgrid"}
+\NormalTok{    var_use    <-}\StringTok{ "_bottom5m_temp"}
+    
+    \CommentTok{# open a "region" or strata specific nc file}
+\NormalTok{    fl         <-}\StringTok{ }\KeywordTok{file.path}\NormalTok{(main,Rdata_path,sim,}\StringTok{"Level2"}\NormalTok{,}\KeywordTok{paste0}\NormalTok{(sim,var_use,IDin,}\StringTok{".Rdata"}\NormalTok{))}
+    
+    \CommentTok{# load object 'ACLIMsurveyrep'}
+    \ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{file.exists}\NormalTok{(fl))}
+      \KeywordTok{get_l2}\NormalTok{(}
+        \DataTypeTok{ID          =}\NormalTok{ IDin,}
+        \DataTypeTok{xi_rangeIN  =} \KeywordTok{seq}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{182}\NormalTok{,}\DecValTok{10}\NormalTok{),}
+        \DataTypeTok{eta_rangeIN =} \KeywordTok{seq}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{258}\NormalTok{,}\DecValTok{10}\NormalTok{),}
+        \DataTypeTok{ds_list     =}\NormalTok{ dl,}
+        \DataTypeTok{trIN        =}\NormalTok{ tr,}
+        \DataTypeTok{sub_varlist =}\NormalTok{ svl,  }
+        \DataTypeTok{sim_list    =}\NormalTok{ sim  )}
+    
+    \CommentTok{# load R data file}
+    \KeywordTok{load}\NormalTok{(fl)   }\CommentTok{# temp}
+    
+    \CommentTok{# there are smarter ways to do this;looping because }
+    \CommentTok{# we don't want to mess it up but this is slow...}
+\NormalTok{    i <-}\DecValTok{1}
+\NormalTok{    data_long <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{latitude =} \KeywordTok{as.vector}\NormalTok{(temp}\OperatorTok{$}\NormalTok{lat),}
+                       \DataTypeTok{longitude =} \KeywordTok{as.vector}\NormalTok{(temp}\OperatorTok{$}\NormalTok{lon),}
+                       \DataTypeTok{val =} \KeywordTok{as.vector}\NormalTok{(temp}\OperatorTok{$}\NormalTok{val[,,i]),}
+                       \DataTypeTok{time =}\NormalTok{ temp}\OperatorTok{$}\NormalTok{time[i],}
+                       \DataTypeTok{year =} \KeywordTok{substr}\NormalTok{( temp}\OperatorTok{$}\NormalTok{time[i],}\DecValTok{1}\NormalTok{,}\DecValTok{4}\NormalTok{)}
+\NormalTok{                       )}
+    \ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \DecValTok{2}\OperatorTok{:}\KeywordTok{dim}\NormalTok{(temp}\OperatorTok{$}\NormalTok{val)[}\DecValTok{3}\NormalTok{])}
+\NormalTok{      data_long <-}\StringTok{ }\KeywordTok{rbind}\NormalTok{(data_long,}
+                          \KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{latitude =} \KeywordTok{as.vector}\NormalTok{(temp}\OperatorTok{$}\NormalTok{lat),}
+                           \DataTypeTok{longitude =} \KeywordTok{as.vector}\NormalTok{(temp}\OperatorTok{$}\NormalTok{lon),}
+                           \DataTypeTok{val =} \KeywordTok{as.vector}\NormalTok{(temp}\OperatorTok{$}\NormalTok{val[,,i]),}
+                           \DataTypeTok{time =}\NormalTok{ temp}\OperatorTok{$}\NormalTok{time[i],}
+                           \DataTypeTok{year =} \KeywordTok{substr}\NormalTok{( temp}\OperatorTok{$}\NormalTok{time[i],}\DecValTok{1}\NormalTok{,}\DecValTok{4}\NormalTok{))}
+\NormalTok{                       )}
+    
+    
+    \CommentTok{# get the mean values for the time blocks from the rdata versions}
+    \CommentTok{# will throw "implicit NA" errors that can be ignored}
+\NormalTok{    tmp_var <-data_long }\CommentTok{# get mean var val for each time segment}
+\NormalTok{    j<-}\DecValTok{0}
+    \ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\KeywordTok{length}\NormalTok{(time_seg))\{}
+      \ControlFlowTok{if}\NormalTok{(}\KeywordTok{length}\NormalTok{(}\KeywordTok{which}\NormalTok{(tmp_var}\OperatorTok{$}\NormalTok{year}\OperatorTok{%in%}\NormalTok{time_seg[[i]]))}\OperatorTok{>}\DecValTok{0}\NormalTok{)\{}
+\NormalTok{        j <-}\StringTok{ }\NormalTok{j }\OperatorTok{+}\DecValTok{1}
+\NormalTok{         mn_tmp_var <-}\StringTok{ }\NormalTok{tmp_var}\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{filter}\NormalTok{(year}\OperatorTok{%in%}\NormalTok{time_seg[[i]],}\OperatorTok{!}\KeywordTok{is.na}\NormalTok{(val))}\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{group_by}\NormalTok{(latitude, longitude)}\OperatorTok{%>%}
+\StringTok{          }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{mnval =} \KeywordTok{mean}\NormalTok{(val,}\DataTypeTok{rm.na=}\NormalTok{T))}
+        
+\NormalTok{        mn_tmp_var}\OperatorTok{$}\NormalTok{time_period =}\StringTok{ }\KeywordTok{factor}\NormalTok{(}\KeywordTok{names}\NormalTok{(time_seg)[i],}\DataTypeTok{levels=}\KeywordTok{names}\NormalTok{(time_seg))}
+      \ControlFlowTok{if}\NormalTok{(j }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{) mn_var <-}\StringTok{ }\NormalTok{mn_tmp_var}
+      \ControlFlowTok{if}\NormalTok{(j }\OperatorTok{>}\StringTok{  }\DecValTok{1}\NormalTok{) mn_var <-}\StringTok{ }\KeywordTok{rbind}\NormalTok{(mn_var,mn_tmp_var)}
+       \KeywordTok{rm}\NormalTok{(mn_tmp_var)}
+\NormalTok{      \}}
+\NormalTok{    \}}
+    
+    \CommentTok{# convert results to a shapefile}
+\NormalTok{    L2_sf  <-}\StringTok{ }\KeywordTok{convert2shp}\NormalTok{(mn_var}\OperatorTok{%>%}\KeywordTok{filter}\NormalTok{(}\OperatorTok{!}\KeywordTok{is.na}\NormalTok{(mnval)))}
+    
+\NormalTok{    p9     <-}\StringTok{ }\KeywordTok{plot_stations_basemap}\NormalTok{(}\DataTypeTok{sfIN =}\NormalTok{ L2_sf,}
+                                \DataTypeTok{fillIN =} \StringTok{"mnval"}\NormalTok{,}
+                                \DataTypeTok{colorIN =} \StringTok{"mnval"}\NormalTok{,}
+                                \DataTypeTok{sizeIN=}\NormalTok{.}\DecValTok{6}\NormalTok{) }\OperatorTok{+}
+\StringTok{      }\KeywordTok{facet_grid}\NormalTok{(.}\OperatorTok{~}\NormalTok{time_period)}\OperatorTok{+}
+\StringTok{      }\KeywordTok{scale_color_viridis_c}\NormalTok{()}\OperatorTok{+}
+\StringTok{      }\KeywordTok{scale_fill_viridis_c}\NormalTok{()}\OperatorTok{+}
+\StringTok{      }\KeywordTok{guides}\NormalTok{(}
+        \DataTypeTok{color =}  \KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{title=}\StringTok{"Bottom T (degC)"}\NormalTok{),}
+        \DataTypeTok{fill  =}  \KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{title=}\StringTok{"Bottom T (degC)"}\NormalTok{)) }\OperatorTok{+}
+\StringTok{      }\KeywordTok{ggtitle}\NormalTok{(}\KeywordTok{paste}\NormalTok{(sim,var_use,IDin))}
+   
+    \CommentTok{# This is slow but it works (repeat dev.new() twice if in Rstudio)...}
+    \KeywordTok{dev.new}\NormalTok{()}
+\NormalTok{    p9}
+    
+    \ControlFlowTok{if}\NormalTok{(update.figs)  }\KeywordTok{ggsave}\NormalTok{(}\DataTypeTok{file=}\KeywordTok{file.path}\NormalTok{(main,}\StringTok{"Figs/sub_grid_mn_BT_Aug1.jpg"}\NormalTok{),}\DataTypeTok{width=}\DecValTok{8}\NormalTok{,}\DataTypeTok{height=}\DecValTok{6}\NormalTok{)}
+  
+    \CommentTok{# graphics.off()}
+\end{Highlighting}
+\end{Shaded}
 
-\hypertarget{recruitment-faclim-indices}{%
-\section{5.1 Recruitment \textasciitilde f(ACLIM
-indices)}\label{recruitment-faclim-indices}}
-
-\hypertarget{spatial-overlap-fspp-dist-aclim-indices}{%
-\section{5.2 Spatial overlap \textasciitilde f(spp dist, aclim
-indices)}\label{spatial-overlap-fspp-dist-aclim-indices}}
+\begin{figure}
+\centering
+\includegraphics[width=0.65\textwidth,height=\textheight]{Figs/sub_grid_mn_BT_Aug1.jpg}
+\caption{Aug 1 Bottom temperature from Level 2 dataset}
+\end{figure}
 
 \hypertarget{funding-and-acknowledgments-needs-updating}{%
 \section{6. Funding and acknowledgments (needs

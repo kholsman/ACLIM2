@@ -1,7 +1,12 @@
 ---
-title: "Getting Started with ACLIM Bering10K ROMSNPZ Level3 indices (FOR INTERNAL ACLIM USE ONLY)"
-author: "Kirstin Holsman"
+title: "Getting Started with ACLIM Bering10K ROMSNPZ Level 2 & 3 indices"
 output:
+  html_document:
+    df_print: kable
+    fig_caption: yes
+    theme: flatly
+    toc: true
+    toc_float: true
   pdf_document:
     fig_caption: yes
     fig_height: 4
@@ -10,12 +15,6 @@ output:
     keep_tex: yes
     latex_engine: xelatex
     toc: TRUE
-  html_document:
-    df_print: kable
-    fig_caption: yes
-    theme: flatly
-    toc: true
-    toc_float: true
   header-includes:
   - \usepackage{inputenc}
   - \usepackage{unicode-math}
@@ -26,11 +25,25 @@ output:
     keep_md: yes
 ---
 
-```{r startup, eval=T, echo=F}
+```{r startup, eval=TRUE, echo=FALSE, results='hide',message=FALSE}
+ 
  #source("R/make.R")       # loads packages, data, setup, etc.
  knitr::opts_chunk$set(echo = TRUE, fig.align="center")
  thisYr <- format(Sys.time(), "%Y")
  today  <- format(Sys.time(), "%b %d, %Y")
+ 
+     # --------------------------------------
+    # SETUP WORKSPACE
+
+    tmstp  <- format(Sys.time(), "%Y_%m_%d")
+    main   <- getwd()  #"~/GitHub_new/ACLIM2"
+    
+    # loads packages, data, setup, etc.
+    source("R/make.R")
+    
+    # --------------------------------------
+    
+   
  
 ```
 
@@ -53,21 +66,21 @@ output:
   *Last updated: `r today`*
 
 
-# 1. ACLIM data and code Overview
+# 1. ACLIM data and code overview
 
 This is an overview of ACLIM plotting code and "canned" Rdata files generated from the downscaled ROMSNPZ modeling work ACLIM modelers Drs. Hermann, Cheng, Kearney,Pilcher, and Aydin. Dr. Kelly Kearney has recently dedicated significant time and energy towards organizing and documenting the ROMSNPZ output, especially as it pertains to the ACLIM project. We strongly recommend reviewing this [**documentation**](https://beringnpz.github.io/roms-bering-sea/B10K-dataset-docs/) before using the data in order to understand the origin of the indices and their present level of skill and validation, which varies considerably across indices and in space and time.
 
-The Bering10K ROMSNPZ documentation can be accessed on the main [**documentation**](https://beringnpz.github.io/roms-bering-sea/B10K-dataset-docs/) webpage. The webpage is maintained by Kelly Kearney and regularly updated with new documentation, including the following core documents (also linked in the [**00_ACLIM_shared/02_Data**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk) folder):
+The Bering10K ROMSNPZ documentation can be accessed on the main [**documentation**](https://beringnpz.github.io/roms-bering-sea/B10K-dataset-docs/) webpage. The webpage is maintained by Kelly Kearney and regularly updated with new documentation, including the following core documents (ACLIM members can also find these linked in the [**00_ACLIM_shared/02_Data**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk) folder):
 
-[**The Bering10K Dataset documentation**](https://drive.google.com/file/d/1GlITTIvbs2gRBMNIxdDI15cZU6mH4ckg/view): A pdf describing the dataset, including:
+* [**The Bering10K Dataset documentation**](https://drive.google.com/file/d/1GlITTIvbs2gRBMNIxdDI15cZU6mH4ckg/view): A pdf describing the dataset, including:
 
-1. A description of the various simulations (base model versions, parent model forcing datasets, and biological modules) and the output naming scheme for each.
+  1. A description of the various simulations (base model versions, parent model forcing datasets, and biological modules) and the output naming scheme for each.
+  
+  2. A tutorial on working with the curvilinear, sigma-coordinate ROMS spatial grid, aimed at those who will be working with data on the native grid.
+  
+  3. An overview of the ACLIM index dataset; this is a set of time series derived from the Bering10K output and intended for Alaska Climate Integrated Modeling (ACLIM) collaborators.
 
-2. A tutorial on working with the curvilinear, sigma-coordinate ROMS spatial grid, aimed at those who will be working with data on the native grid.
-
-3. An overview of the ACLIM index dataset; this is a set of time series derived from the Bering10K output and intended for Alaska Climate Integrated Modeling (ACLIM) collaborators.
-
-[**Bering10K Simulaton Variables**](https://drive.google.com/file/d/1C1FCxRMBm0uBv2wEKwrGfHmLnjt_gFvG/view): A spreadsheet listing all simulations and the archived output variables associated with each, updated periodically as new simulations are run or new variables are made available. Note that this includes both data available on both public and private servers (see below).
+* [**Bering10K Simulaton Variables**](https://drive.google.com/file/d/1C1FCxRMBm0uBv2wEKwrGfHmLnjt_gFvG/view): A spreadsheet listing all simulations and the archived output variables associated with each, updated periodically as new simulations are run or new variables are made available. Note that this includes both data available on both public and private servers (see below).
 Please also see the Literature page for a list scientific publications related to the model, including model description and skill assessment.
 
 ## 1.1. Downscaled models and carbon scenarios
@@ -75,7 +88,7 @@ Please also see the Literature page for a list scientific publications related t
 The full ACLIM "suite" of models include are summarized in the following table of downscaled models based on boundary conditions forced by General Circulation Models (GCM) run under Coupled Model Intercomparison Project (CMIP) phase 5 (5th IPCCAssessment Report) or phase 6 (6th IPCC Assessment Report; "AR") global carbon mitigation scenarios. For full details see the Kearney 2021 Tech. Memo.
 
 ### Table 1: Summary of ROMSNPZ downscaled model runs 
-CMIP| GCM    |Scenario    |Def              |Years      |Model |Status|Source
+CMIP| GCM    |Scenario    |Def              |Years      |Model |Source|Status
 --|--|------|--------|---------   | ---------------|----------|------|------|
 5 | GFDL    |RCP 4.5    | Med. mitigation |2006 - 2099|H16      |ACLIM/FATE |Public
 5 | GFDL    |RCP 8.5    | High baseline   |2006 - 2099|H16      |ACLIM/FATE |Public
@@ -99,12 +112,12 @@ CMIP| GCM    |Scenario    |Def              |Years      |Model |Status|Source
 *"bio" = nutrient forcing on boundary conditions
 
 ## 1.2. Guildlines for use and citation of the data
-It is strongly recommended that you include at least one (ideally multiple) authors from the ROMSNPZ team (Drs. Hermann, Cheng, Kearney, Pilcher) as co-author on your paper if you are linking to this data, this is especially the case for the CMIP6 data. There are multiple spatial and temporal caveats that are best described in discussions with the authors of these data and inclusion as co-authors will facilitate appropriate application and interpretation of the ROMSNPZ data.
+It is strongly recommended that you include at least one (ideally multiple) authors from the ROMSNPZ team (Drs. Hermann, Cheng, Kearney, Pilcher) as co-author on your paper if you are linking to this data (this is especially the case for the CMIP6 data). There are multiple spatial and temporal caveats that are best described in discussions with the authors of these data and inclusion as co-authors will facilitate appropriate application and interpretation of the ROMSNPZ data.
 
 
 ### 1.2.1. The Bering 10K Model (v. H16) with 10 depth layers:  
 
-The H16 model is the original BSIERP era 10 depth layer model with a 10 Km grid. This version was used in ACLIM1.0 to dynamically downscaled 3 global circulation models (GCMs) under two CMIP5 representative carbon pathways (RCP): RCP 4.5 or "moderate global carbon mitigation" and RCP 8.5 "high baseline global carbon emissions". Details of the model and projections can be found in:
+The H16 model is the original BSIERP era 10 depth layer model with a 10 Km grid. This version was used in ACLIM1.0 to dynamically downscaled 3 global scale general circulation models (GCMs) under two CMIP ([Coupled Model Intercomparison Project](https://www.wcrp-climate.org/wgcm-cmip)]) phase 5 representative carbon pathways (RCP): RCP 4.5 or "moderate global carbon mitigation" and RCP 8.5 "high baseline global carbon emissions". Details of the model and projections can be found in:
 
 * **Hindcast (1979-2012; updated to 2018 during ACLIM 1.0):**  
 
@@ -116,7 +129,7 @@ The H16 model is the original BSIERP era 10 depth layer model with a 10 Km grid.
 
 ### 1.2.2. The Bering 10K Model (v. K20) with 30 depth layers and other advancements:
 
-The Bering10K model was subsequently updated by Kearney et al. 2020 (30 layer and other NPZ updates) and Pilcher et al.2019 (OA and O2 dynamics) and this version is used for the projections in ACLIM2.0 under CMIP6.
+The Bering10K model was subsequently updated by Kearney et al. 2020 (30 layer and other NPZ updates) and Pilcher et al .2019 (OA and O2 dynamics) and this version is used for the projections in ACLIM2.0 under the most recent CMIP phase 6.
 
 * **Hindcast (1979-2020 hindcast with OA dynamics used in ACLIM 2.0):**  
 
@@ -124,7 +137,6 @@ The Bering10K model was subsequently updated by Kearney et al. 2020 (30 layer an
   
   Pilcher, D. J., D. M. Naiman, J. N. Cross, A. J. Hermann, S. A. Siedlecki, G. A. Gibson, and J. T. Mathis. 2019. Modeled Effect of Coastal Biogeochemical Processes, Climate Variability, and Ocean Acidification on Aragonite Saturation State in the Bering Sea. Frontiers in Marine Science 5:1–18.
   
-
 * **Projections of the K20 30 layer model using CMIP6 scenarios:**
 
   Hermann et al. in prep  
@@ -132,14 +144,19 @@ The Bering10K model was subsequently updated by Kearney et al. 2020 (30 layer an
   Kearney et al. in prep  
   Pilcher et al. in prep (CMIP5 K20 projections) (ACLIM indices avail by permission only)  
 
+
+
 # 2. Get ACLIM code (Step 1)
 
 **IMPORTANT**  
 The ACLIM indices and ROMSNPZ simulations are stored as netcdf files (.nc) format in the Data folder of the ACLIM shared google drive (section 2.3) or available on the new PMEL web-based portal (see section 2.2 below). Please note that while the CMIP5 set is now public (Hermann et al. 2019) **the CMIP6 suite is under embargo for QAQC and should not be shared outside of the ACLIM group**. Al, Wei, Kelly, Darren, and Kerim are in the process of synthesizing and publishing the CMIP6 data (goal is spring 2021 for submission), following those publications the data will be made accessible to the public via the PMEL data portal, as is the case for the CMIP5 data and public hindcasts. 
 
-First clone the [**ACLIM ROMSNPZ Repo: github.com/kholsman/ACLIM2**](https://github.com/kholsman/ACLIM2 "ACLIM2 Repo"). This code will load and explore the netcdf (.nc) files in R and produce plots and standardized outputs for ACLIM analyses. Some standardized tools are included as functions in this repo including spatial averaging for seasonal, monthly and annual indices (e.g., Fall zooplankton biomass), as well as bias correction for projections (see Holsman et al. 2020 and Reum et al. 2020 for ACLIM 1.0 bias correction methods). The repo also includes a Rshiny interactive exploratory graphing tool which can be viewed online [**at this link**](https://kholsman.shinyapps.io/aclim/). 
+The code for accessing plotting the data is available in the ACLIM2 github repository: [**ACLIM ROMSNPZ Repo: github.com/kholsman/ACLIM2**](https://github.com/kholsman/ACLIM2 "ACLIM2 Repo"). This code will open the netcdf (.nc) files in R and save them on your local drive as .Rdata files. The code also will produce plots and standardized outputs for ACLIM analyses. Some standardized tools are included as functions in this repo including spatial averaging for seasonal, monthly and annual indices (e.g., Fall zooplankton biomass), as well as bias correction for projections (see Holsman et al. 2020 and Reum et al. 2020 for ACLIM 1.0 bias correction methods). The repo also includes a Rshiny() interactive exploratory graphing tool which can be viewed online [**at this link**](https://kholsman.shinyapps.io/aclim/). 
 
-### 2.1 Option 1: Use R to download from ACLIM2 github repo:
+There are two ways to put the repo on your local drive 1) use R to download it and 2) manually download a zipped version of the repo.  **Once you've unzipped the folder, if you have Rstudio installed you can double click on the `ACLIM2/ACLIM2.Rproj` and use Rstudio to manage your plotting and files (recommended).**
+
+
+## 2.1 Option 1: Use R to download from ACLIM2 github repo:
 
 ```{r gitdwnld, eval = FALSE,echo =T}
 
@@ -162,25 +179,42 @@ First clone the [**ACLIM ROMSNPZ Repo: github.com/kholsman/ACLIM2**](https://git
     
 ```
 
-If you have Rstudio installed you can double click on the ACLIM2.Rproj and use Rstudio to manage your plotting and files (recommended).
 
-### 2.2 Option 2: Manually download from ACLIM2 github repo
+## 2.2 Option 2: Manually download from ACLIM2 github repo
 
 Select `Download ZIP` from the upper right hand side of the repo page :[**github.com/kholsman/ACLIM2**](https://github.com/kholsman/ACLIM2 "ACLIM2 Repo") and save it to your local directory: `~[YOURPATH]/ACLIM2`.
 
 ![](Figs/clone.jpg){ width=100% }
 
-# 3. Get Data (Step 2)
+# 3. Get ROMSNPZ data (Step 2)
 
-The naming convention of the folders is:
-`B10K-[ROMSNPZ version]_[CMIP]_[GCM]_[carbon scenario]`.For example, the CMIP5 set of indices was downscaled using the H16 (Hermann et al. 2016) version of the ROMSNPZ. Three models were used to force boundary conditions( MIROC, CESM, and GFDL) under 2 carbon scenarios RCP 8.5 and RCP 4.5. So to see an individual trajectory we might look in the level3 (timeseries indices) folder under `B10K-H16_CMIP5_CESM_rcp45`, which would be the B10K version H16 of the CMIP5 CESM model under RCP4.5.
+## 3.1 Available data sources
 
-## 3.2 Public web-based ACLIM data (hindcasts & CMIP5 projections)  
+There are presently two sources of ROMSNPZ level 2 and level 3 post-processed datasets:
 
-The naming convention of the folders is:
-`B10K-[ROMSNPZ version]_[CMIP]_[GCM]_[carbon scenario]`.For example, the CMIP5 set of indices was downscaled using the H16 (Hermann et al. 2016) version of the ROMSNPZ. Three models were used to force boundary conditions( MIROC, CESM, and GFDL) under 2 carbon scenarios RCP 8.5 and RCP 4.5. So to see an individual trajectory we might look in the level3 (timeseries indices) folder under `B10K-H16_CMIP5_CESM_rcp45`, which would be the B10K version H16 of the CMIP5 CESM model under RCP4.5.
+1) Public web-based ACLIM CMIP5 datasets
+  * `Level1` : (Empty; data not copied from Mox)
+  * `Level2` : (full grid, rotated to lat lon from the native ROMSNPZ grid, weekly averages)
+    * `Bottom 5m` : subset of variables from the bottom 5 m of the water column
+    * `Bottom 5m` : subset of variables for the surface 5 m of the water column
+    * `Integrated`: watercolumn integrated averages or totals for various variables
+    * `Level3`: two post-processed datasets 
+      * `ACLIMsurveyrep-x.nc.`: Survey replicated (variables "sampled" at the average location and date that each groundfish survey is sampled)*(Note that the resampling stations need to be removed before creating bottom temperature maps)*  
+     * `ACLIMregion-xnc.`:weekly variables averaged for each survey strata *(Note that area (km2) weighting should be used to combine values across multiple strata)*
+2) ACLIM google drive CMIP6 datasets (embargoed; *ACLIM members Only*) 
+  * `Level1`: (Empty; data not copied from Mox)
+  * `Level2`: (Empty; data not copied from Mox)
+  * `Level3`: two post-processed datasets 
+     * `ACLIMsurveyrep-x.nc.`: Survey replicated (variables "sampled" at the average location and date that each groundfish survey is sampled)*(Note that the resampling stations need to be removed before creating bottom temperature maps)*  
+     * `ACLIMregion-xnc.`:weekly variables averaged for each survey strata *(Note that area (km2) weighting should be used to combine values across multiple strata)*
+     
+For all files the general naming convention of the folders is:
+`B10K-[ROMSNPZ version]_[CMIP]_[GCM]_[carbon scenario]`. For example, the CMIP5 set of indices was downscaled using the H16 (Hermann et al. 2016) version of the ROMSNPZ. Three models were used to force boundary conditions( MIROC, CESM, and GFDL) under 2 carbon scenarios RCP 8.5 and RCP 4.5. So to see an individual trajectory we might look in the level3 (timeseries indices) folder under `B10K-H16_CMIP5_CESM_rcp45`, which would be the B10K version H16 of the CMIP5 CESM model under RCP4.5.
 
-This option is available for Level3 and Level 2 CMIP5 public data, it is not yet available for the embargoed CMIP6 data but eventually will be used to host that as well.
+
+### 3.1.1 Option 1: Public web-based ACLIM data (hindcasts & CMIP5 projections)  
+
+The public web-based ACLIM data (hindcasts & CMIP5 projections) option is available for Level3 and Level2 CMIP5 public data, it is not yet available for the embargoed CMIP6 data but through ACLIM2.0 will eventually be used to host that as well.
 
 The ROMSNPZ team has been working with [Roland Schweitzer](roland.schweitzer@noaa.gov) and [Peggy Sullivan](peggy.sullivan@noaa.gov) to develop the ACLIM Live Access Server (LAS) to publicly host the published CMIP5 hindcasts and downscaled projections. This server is in beta testing phase and can be accessed at the following links:
 
@@ -190,36 +224,58 @@ The ROMSNPZ team has been working with [Roland Schweitzer](roland.schweitzer@noa
 
 * [THREDDS ACLIM direct access to Level 2 and 3 netcdf files](https://data.pmel.noaa.gov/aclim/thredds/)
 
-### 2.2.1. Grab L2 and L3 data from ACLIM Thredds server
 
-The code below will step through downloading L3 data from the Thredds server as well as quering the L2 (large files) on the server and saving a subset of the data to your local `~/ACLIM2/Data/out` folder. 
+### 3.1.2 Option 2: (*ACLIM members Only*) Access CMIP6 (embargoed) L3 data
+
+Public CMIP5 and embargoed CMIP6 Level 3 netcdf (.nc) files are saved in the shared ACLIM data folder (note: Level 2 files are too large for the google drive but are available by request from [Kelly Kearney](kelly.kearney@noaa.gov). 
+
+**IMPORTANT** Please note that while the CMIP5 set is now public (Hermann et al. 2019; section 2.2) **the CMIP6 suite is under embargo for QAQC and should not be shared outside of the ACLIM group**. The ROMSNPZ team (Drs. Hermann, Cheng, Kearney, Pilcher, Adyin) are in the process of synthesizing and publishing the CMIP6 data (goal is spring 2021 for submission), following those publications the data will be made accessible to the public via the PMEL data portal, as is the case for the CMIP5 data and public hindcasts. The ROMSNPZ team has made these runs available to ACLIM2 members in order to accelerate coupling to biological and social and economic models, thus out of professional courtesy please do not publish the data without permission from **all** ROMSNPZ team members, it is strongly advised that some or multiple ROMSNPZ team members be included as co-authors to ensure proper application and use of the ROMSNPZ data.
+
+For most applications you can use the ACLIM level3 post-processed indices available on the shared ACLIM drive in the root google drive data folder: [**00_ACLIM_shared>02_DATA**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk "00_ACLIM_shared>02_DATA"). 
+
+The `Newest` folder is organized by Bering10K version, General Circulation Model (GCM) and carbon scenario, e.g. `B10K-H16_CMIP5_CESM_rcp45`. Within each folder the following subfolders are:
+
+* `Level1`: (Empty; not copied from Mox)
+* `Level2`: (Empty; not copied from Mox)
+* `Level3`: 2 files (`ACLIMsurveyrep_B10K-x.nc` and `ACLIMregion_B10K-x.nc` )
+
+1) `ACLIMsurveyrep_B10K-x.nc` contains summer groundfish trawl "survey replicated" indices (using mean date and lat lon) *(Note that the resampling stations need to be removed before creating bottom temperature maps)*  
+2) `ACLIMregion_B10K-x.nc`: contains weekly "strata" values *(Note that area (km2) weighting should be used to combine values across multiple strata)*
+
+<!-- ![](Figs/datadir.jpg){ width=40% } -->
+
+There are two folders that need to be copied into the ACLIM2 folder on your computer under ``~[YOURPATH]/ACLIM2/Data/in/`:
+
+1) [**00_ACLIM_shared>02_DATA>Newest**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk "00_ACLIM_shared>02_DATA>Newest"). This folder contains a folder called `roms_for_aclim` with all the ACLIM Level3 indices for model simulations available to ACLIM members.
+
+2) [**00_ACLIM_shared>02_DATA>Map_layers.zip**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk "00_ACLIM_shared>02_DATA>Map_layers"). This file needs to be unzipped after you download it to your local folder. It contains (large) base maps for the code below including `shp_files` and `geo_tif` folders.
+
+![Your local `ACLIM2/Data` directory should look something like this when you are done downloading the data and unzipping it.](Figs/data_dir.jpg){ width=100% }
+
+
+## 3.2 Access and save the data
+
+The below code will extract variables from the Level 2 and Level 3 netcdf files (`.nc`) and save them as compressed `.Rdata` files on your local `r Rdata_path` folder. 
+
+### 3.2.1 Setup up the R worksace
 
 First let's get the workspace set up, will we step through an example downloading the hindcast and a single projection (CMIP5 MIROC rcp8.5) but you can loop the code below to download the full set of CMIP5 projections.
 
 ```{r thredds,include=TRUE, eval = TRUE,echo = TRUE, results='hide',message=FALSE}
 
-    # first load packages and setup:
+    # --------------------------------------
+    # SETUP WORKSPACE
     tmstp  <- format(Sys.time(), "%Y_%m_%d")
-    main   <- getwd()    # should be your local path e.g., "~/GitHub_new/ACLIM2"
-    
-    # loads packages, data, and setup:
-    source("R/make.R") 
-    
-    # create a directory for our new indices 
-    if(!dir.exists("Data/in/Newest/Rdata")) dir.create("Data/in/Newest/Rdata")
-    
-    # specify the root URL:
-    ACLIM_data_url <- "https://data.pmel.noaa.gov/aclim/thredds/"
-    
-    # define the threddds url
-    aclim_thredds <- "https://data.pmel.noaa.gov/aclim/thredds/"
-
-    
+    main   <- getwd()  #"~/GitHub_new/ACLIM2
+    source("R/make.R")
+    # --------------------------------------
+  
 ```  
 
-Let's take a look at the availble datasets:
+Let's take a look at the available online datasets:
 
 ```{r preview,include=T, eval=T, echo=T}
+
     # preview the datasets on the server:
     url_list <- tds_list_datasets(thredds_url = ACLIM_data_url)
     
@@ -227,8 +283,11 @@ Let's take a look at the availble datasets:
     cat(paste(url_list$dataset,"\n"))
     
 ```    
-   
- 
+  
+
+
+### 3.2.2 Download Level 2 data
+
 First we will explore the Level 2 bottom temperature data on the [ACLIM Thredds server](https://data.pmel.noaa.gov/aclim/thredds/) using the H16 hindcast and the H16 (CMIP5) projection for MIROC under rcp8.5. The first step is to get the data urls:
    
 ```{r thredds_getURLs, include=T,eval=T,echo=T}
@@ -253,10 +312,10 @@ First we will explore the Level 2 bottom temperature data on the [ACLIM Thredds 
     hind_datasets  <- tds_list_datasets(thredds_url = hind_url)
     
     # get url for the projection and hindcast Level 2 and Level 3 catalogs
-    proj_l2_cat   <- proj_datasets[proj_datasets$dataset == "Level 2/",]$path
-    proj_l3_cat   <- proj_datasets[proj_datasets$dataset == "Level 3/",]$path
-    hind_l2_cat   <- hind_datasets[hind_datasets$dataset == "Level 2/",]$path
-    hind_l3_cat   <- hind_datasets[hind_datasets$dataset == "Level 3/",]$path
+    proj_l2_cat    <- proj_datasets[proj_datasets$dataset == "Level 2/",]$path
+    proj_l3_cat    <- proj_datasets[proj_datasets$dataset == "Level 3/",]$path
+    hind_l2_cat    <- hind_datasets[hind_datasets$dataset == "Level 2/",]$path
+    hind_l3_cat    <- hind_datasets[hind_datasets$dataset == "Level 3/",]$path
     hind_l2_cat
 ```
 
@@ -275,8 +334,8 @@ Now that we have the URLs let's take a look at the available Level2 datasets (cu
     proj_l2_datasets$dataset
     
     # get url for bottom temperature:
-    proj_l2_BT_url   <- proj_l2_datasets[proj_l2_datasets$dataset == "Bottom 5m",]$path
-    hind_l2_BT_url   <- hind_l2_datasets[hind_l2_datasets$dataset == "Bottom 5m",]$path
+    proj_l2_BT_url    <- proj_l2_datasets[proj_l2_datasets$dataset == "Bottom 5m",]$path
+    hind_l2_BT_url    <- hind_l2_datasets[hind_l2_datasets$dataset == "Bottom 5m",]$path
     proj_l2_BT_url
                          
 ```
@@ -292,308 +351,128 @@ We can't preview the Level 3 datasets in the same way but they are identical to 
 
 ```
 
-Now let's grab some of the Level 3 and Level 2 data and store it in the `Data/in/Newest/Rdata` folder. We'll start with Level 3 since those files are already post-processed to be in the ACLIM indices format and are relatively small:
-
-```{r thredds_l3, include=T,echo=T,eval=F}                           
-
-    # define the dataset sub names:   
-    weekly_flnm     <- "ACLIMregion"
-    survey_rep_flnm <- "ACLIMsurveyrep"
-    
-    # Tinker:add additional projection scenarios here
-    proj_list       <- proj    
-
-    
-    # Tinker:add additional variables to varlist
-    varlist         <- c(
-                          "temp_bottom5m",    # bottom temperature,
-                          "NCaS_integrated",  # Large Cop
-                          "Cop_integrated",   # Small Cop
-                          "EupS_integrated")  # Shelf  euphausiids
-    
-              
-    # now grab dattat for the hindcast and projection sets:
-    for(m in c(hind, proj)){
-      
-      TYPE <- 1
-     
-      # create the simulation Level3 folder (and overwrite it if overwrite is set to T)
-      if(!dir.exists(paste0("Data/in/Newest/Rdata/",m)))
-        dir.create((paste0("Data/in/Newest/Rdata/",m)))
-      if(!dir.exists(paste0("Data/in/Newest/Rdata/",m,"/Level3")))
-        dir.create((paste0("Data/in/Newest/Rdata/",m,"/Level3")))
-      
-      for(d in c(weekly_flnm,survey_rep_flnm)){
-          
-          # create filename:
-          tmp_fl <- paste0(d,"_",m)
-          
-          # create the temporary URL
-          tmpURL <- paste0(paste0(ACLIM_data_url,"dodsC/",m,"/Level3/"),d,"_",m,".nc")
-          
-          # open the netcdf file remotely
-          nc     <- nc_open(tmpURL)
-          
-          # convert the nc files into a long data.frame for each variable
-          i <- 0
-          for(v in varlist){
-            i <- i + 1
-            tmp_var0      <- convert2df(ncIN = nc, type = TYPE, varIN = v)
-            tmp_var0$sim  <- tmp_fl
-            if(i == 1)
-              tmp_var     <- tmp_var0
-            if(i != 1)
-              tmp_var     <- rbind(tmp_var,tmp_var0)
-            rm(tmp_var0)
-          }
-          
-          # close the nc file
-          nc_close(nc)
-          
-          # rename the object
-          eval(parse(text =paste0(d,"<-tmp_var") ))
-          
-          # save the nc file in the Data/in/Newest/Rdata/ [ simulation]/Level3 folder
-          tmp_path <- file.path( paste0("Data/in/Newest/Rdata/",m,"/Level3"),
-                                 paste0(tmp_fl,".Rdata"))
-          eval(parse(text =paste0("save(",d,", file=tmp_path)")))
-          TYPE     <-  TYPE + 1
-      }
-    }
-   
-
-```
-
-Now we can do the same thing and download a subset of the Level2 data (full 10KM Lat Lon re-gridded data), here with an example of sampling on Aug 1 of each year:
+Now we can download a subset of the Level2 data (full 10KM Lat Lon re-gridded data), here with an example of sampling on Aug 1 of each year:
 
 ```{r thredds_l2, include=T,echo=T,eval=F}   
     
-    # Tinker:add additional projection scenarios here
-    proj_list  <- proj    
+   
+    # preview the variables, timesteps, and lat lon in each dataset:
+    l2_info <- scan_l2(ds_list = dl,sim_list = "B10K-H16_CORECFS" )
+    
+    names(l2_info)
+    l2_info[["Bottom 5m"]]$vars
+    l2_info[["Surface 5m"]]$vars
+    l2_info[["Integrated"]]$vars
+    max(l2_info[["Integrated"]]$time_steps)
+    l2_info[["Integrated"]]$years
+    
+    
+    # Simulation list:
+    # --> --> Tinker:add additional projection scenarios here
+    sl <- c(hind, proj)
 
     # Currently available Level 2 variables
-    ds_list     <- proj_l2_datasets$dataset  # datasets
-    sub_varlist <- list(
-                      "temp",
-                      "temp",
-                      c("EupS","Cop","NCaS") )  # variables to pull from each data set
-    # Tinker: try subbing in other Integrated variables (3rd in the list) 
+    dl     <- proj_l2_datasets$dataset  # datasets
+    
+    # variables to pull from each data set
+    # --> --> Tinker: try subbing in other Integrated variables 
+    # (l2_info[["Integrated"]]$vars) into the third list vector 
+    svl <- list(
+      'Bottom 5m' = "temp",
+      'Surface 5m' = "temp",
+      'Integrated' = c("EupS","Cop","NCaS") ) 
+   
     
     # Let's sample the model years as close to Aug 1 as the model timesteps run:
-    tr         <- c("-08-1 12:00:00 GMT") 
+    # --> --> Tinker - try a different date
+    tr          <- c("-08-1 12:00:00 GMT") 
     
-    # now grab dattat for the hindcast and projection sets:
-    for(m in c(hind, proj)){
-      
-      # create the simulation Level3 folder (and overwrite it if overwrite is set to T)
-      if(!dir.exists(paste0("Data/in/Newest/Rdata/",m)))
-        dir.create((paste0("Data/in/Newest/Rdata/",m)))
-      if(!dir.exists(paste0("Data/in/Newest/Rdata/",m,"/Level2")))
-        dir.create((paste0("Data/in/Newest/Rdata/",m,"/Level2")))
+    # grab nc files from the aclim server and convert to rdatafiles with the ID Aug1
+    get_l2(
+      ID          = "_Aug1",
+      ds_list     = dl,
+      trIN        = tr,
+      sub_varlist = svl,  
+      sim_list    = sl  )
         
-      for(d in 1:length(ds_list)){
-            
-            # create filename:
-            tmp_fl <- paste0(d,"_",m)
-            
-            # get the url for the simulation
-            m_url       <- url_list[url_list$dataset == paste0(m,"/"),]$path
-            
-            # preview the projection and hindcast data and data catalogs (Level 1, 2, and 3):
-            m_datasets  <- tds_list_datasets(thredds_url = m_url)
-            
-            # get Level 2 .nc file URL
-            m_l2_cat       <- m_datasets[m_datasets$dataset == "Level 2/",]$path
-            m_l2_datasets  <- tds_list_datasets(m_l2_cat)
-            m_l2_vT_url    <- m_l2_datasets[m_l2_datasets$dataset == ds_list[d],]$path
-            m_flnm         <- strsplit(m_l2_vT_url,split="dataset=")[[1]][2]
-            m_flnm         <- stringr::str_replace(m_flnm,"Level2_","")
-            if(ds_list[d] =="Surface 5m") m_flnm         <- stringr::str_replace(m_flnm,"surface_5m","surface5m")
-            tmpURL         <- paste0(paste0(ACLIM_data_url,"dodsC/Level2/"),m_flnm,".nc")
-            
-            # open the netcdf file remotely
-            nc     <- nc_open(tmpURL)
-            
-            # available variables:
-            names(nc$var)
-            
-            time_steps  <- as.POSIXct(
-                    nc$var[[ sub_varlist[[d]][1] ]]$dim[[3]]$vals, 
-                    origin = substr(ncIN$var[["temp"]]$dim[[3]]$units,15,36),
-                    tz = "GMT") 
-            
-            # get years in simulation
-            yrs    <- sort(unique(substr(time_steps,1,4)))
-            tmp_tr <-  paste0(yrs,tr)
-            
-            # subset the lat and lon values
-            lat    <- ncvar_get(nc, varid = "lat_rho")
-            lon    <- ncvar_get(nc, varid = "lon_rho")
-            #M2 <- (56.87°N, -164.06°W)
-            
-            for(var_get in sub_varlist[[d]]){
-               # convert the nc files into a long data.frame for each variable
-               tmp_var      <- get_level2(
-                                            ncIN = nc, 
-                                            varIN = var_get,     
-                                            # Tinker: try extracting other vars like "NO3", or "uEast"
-                                            xi_range  = 1:182,   
-                                            eta_range = 1:258, 
-                                            time_range  = tmp_tr)
-              
-                # rename the object
-                eval(parse(text =paste0(var_get,"<-tmp_var") ))
-              
-                # save the nc file in the Data/in/Newest/Rdata/ [ simulation]/Level3 folder
-                tmp_path <- file.path( paste0("Data/in/Newest/Rdata/",m,"/Level2"),paste0(m_flnm,"_",var_get,".Rdata"))
-                eval(parse(text =paste0("save(",var_get,", file=tmp_path)")))
-                eval(parse(text =paste0("rm(",var_get,")") ))
-            }
-            # close the nc file
-            nc_close(nc)
-      }
-      
-  }
-    
-    
+```
 
+### 3.2.3 Download Level 3 data
 
+Now let's grab some of the Level 3 data and store it in the `r Rdata_path` folder. This is comparatively faster because Level 3 files are already post-processed to be in the ACLIM indices format and are relatively small:
+
+```{r thredds_l3, include=T,echo=T,eval=F}                           
+    
+    # Simulation list:
+    # --> --> Tinker:add additional projection scenarios here
+    sl <- c(hind, proj)
+    
+    # variable list
+    # --> --> Tinker:add additional variables to varlist
+    vl <- c(
+              "temp_bottom5m",    # bottom temperature,
+              "NCaS_integrated",  # Large Cop
+              "Cop_integrated",   # Small Cop
+              "EupS_integrated")  # Shelf  euphausiids
+    
+    # convert  nc files into a long data.frame for each variable
+    # three options are:
+    # ------------------------------------
+    
+    # opt 1: access nc files remotely (fast, less local storage needed)
+    get_l3(web_nc = TRUE, download_nc = F,
+          varlist = vl,sim_list = sl)
+    
+    # opt 2:  download nc files then access locallly:
+    get_l3(web_nc = TRUE, download_nc = T,
+          local_path = file.path(local_fl,"aclim_thredds"),
+          varlist = vl,sim_list = sl)
+    
+     # opt 3:  access existing nc files locally:
+    get_l3(web_nc = F, download_nc = F,
+          local_path = file.path(local_fl,"aclim_thredds"),
+          varlist = vl,sim_list = sl)
 
 ```
+
+### 3.2.4 ACLIM only: Convert CMIP6 Level 3 .nc --> .Rdata
 
 ![The final folder structure on your local drive in `Data/in/Newest` should look something like this. ](Figs/filestructure.jpg){ width=100%}
 
-## 3.2. (*ACLIM members Only*) Access CMIP6 (embargoed) L3 data
+Now let's convert the CMIP6 Level3 .nc files to .Rdata files (as in section 3.2.3)
 
-Public CMIP5 and embargoed CMIP6 Level 3 netcdf (.nc) files are saved in the shared ACLIM data folder (note: Level 2 files are too large for the google drive but are available by request from [Kelly Kearney](kelly.kearney@noaa.gov). 
+```{r thredds_l3rdat, include=T,echo=T,eval=F}
 
-**IMPORTANT** Please note that while the CMIP5 set is now public (Hermann et al. 2019; section 2.2) **the CMIP6 suite is under embargo for QAQC and should not be shared outside of the ACLIM group**. The ROMSNPZ team (Drs. Hermann, Cheng, Kearney, Pilcher, Adyin) are in the process of synthesizing and publishing the CMIP6 data (goal is spring 2021 for submission), following those publications the data will be made accessible to the public via the PMEL data portal, as is the case for the CMIP5 data and public hindcasts. The ROMSNPZ team has made these runs available to ACLIM2 members in order to accelerate coupling to biological and social and economic models, thus out of professional courtesy please do not publish the data without permission from **all** ROMSNPZ team members, it is strongly advised that some or multiple ROMSNPZ team members be included as co-authors to ensure proper application and use of the ROMSNPZ data.
+    # preview the available CMIP6 data
+    dir(file.path(local_fl,"roms_for_aclim"))
 
-For most applications you can use the ACLIM level3 post-processed indices available on the shared ACLIM drive in the root google drive data folder: [**00_ACLIM_shared>02_DATA**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk "00_ACLIM_shared>02_DATA"). 
-
-The `Newest` folder is organized by Bering10K version, General Circulation Model (GCM) and carbon scenario, e.g. `B10K-H16_CMIP5_CESM_rcp45`. Within each folder the following subfolders are:
-
-* `Level1`: (Empty; not copied from Mox)
-* `Level2`: (Empty; not copied from Mox)
-* `Level3`: 2 files (`ACLIMsurveyrep_B10K-x.nc` and `ACLIMregion_B10K-x.nc` )
-
-1) `ACLIMsurveyrep_B10K-x.nc` contains summer groundfish trawl "survey replicated" indices (using mean date and lat lon) *(Note that the resampling stations need to be removed before creating bottom temperature maps)*  
-2) `ACLIMregion_B10K-x.nc`: contains weekly "strata" values *(Note that area weighting should be used to combine values across multiple strata)*
-
-<!-- ![](Figs/datadir.jpg){ width=40% } -->
-
-There are two folders that need to be copied into the ACLIM2 folder on your computer under ``~[YOURPATH]/ACLIM2/Data/in/`:
-
-1) [**00_ACLIM_shared>02_DATA>Newest**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk "00_ACLIM_shared>02_DATA>Newest"). This folder contains a folder called `roms_for_aclim` with all the ACLIM Level3 indices for model simulations available to ACLIM members.
-
-2) [**00_ACLIM_shared>02_DATA>Map_layers.zip**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk "00_ACLIM_shared>02_DATA>Map_layers"). This file needs to be unzipped after you download it to your local folder. It contains (large) base maps for the code below including `shp_files` and `geo_tif` folders.
-
-![Your local `ACLIM2/Data` directory should look something like this when you are done downloading the data and unzipping it.](Figs/data_dir.jpg){ width=100% }
-
-Now let's convert these to level3 rdata files (as in section 2.2)
-```{r thredds_l3rdat, include=T,echo=T,eval=F}                           
-    
-
-    # first load packages and setup:
-    tmstp  <- format(Sys.time(), "%Y_%m_%d")
-    main   <- getwd()    # should be your local path e.g., "~/GitHub_new/ACLIM2"
-    
-    # loads packages, data, and setup:
-    source("R/make.R") 
-    
-    # create a directory for our new indices 
-    if(!dir.exists("Data/in/Newest/Rdata")) dir.create("Data/in/Newest/Rdata")
-    
-    # define the simulation to download:
+  # define the simulation to download:
     cmip <- "CMIP6"     # Coupled Model Intercomparison Phase
     GCM  <- "MIROC"     # Global Circulation Model
     rcp  <- "ssp585"     # future carbon scenario
-    mod_h  <- "B10K-K20"  # ROMSNPZ model
-    mod_p  <- "B10K-K20P19"  # ROMSNPZ model
-    hind <- "CORECFS"   # Hindcast
+    mod  <- "B10K-K20P19"  # ROMSNPZ model
+    hind <- "CORECFS"      # Hindcast
     
     # define the projection simulation:
-    proj  <- paste0(mod_p,"_",cmip,"_",GCM,"_",rcp)
-    hind  <- paste0(mod_h,"_",hind)
+    proj  <- paste0(mod,"_",cmip,"_",GCM,"_",rcp)
+    hind  <- paste0("B10K-K20","_",hind)
+    sl    <- c(hind, proj)
     
-    # define the dataset sub names:   
-    weekly_flnm     <- "ACLIMregion"
-    survey_rep_flnm <- "ACLIMsurveyrep"
-    
-    # Tinker:add additional projection scenarios here
-    proj_list       <- proj    
-
-    
-    # Tinker:add additional variables to varlist
-    varlist         <- c(
-                          "temp_bottom5m",    # bottom temperature,
-                          "NCaS_integrated",  # Large Cop
-                          "Cop_integrated",   # Small Cop
-                          "EupS_integrated")  # Shelf  euphausiids
-    
-              
-    # now grab dattat for the hindcast and projection sets:
-    for(m in c(hind, proj)){
-      
-      TYPE <- 1
-     
-      # create the simulation Level3 folder (and overwrite it if overwrite is set to T)
-      if(!dir.exists(paste0("Data/in/Newest/Rdata/",m)))
-        dir.create((paste0("Data/in/Newest/Rdata/",m)))
-      if(!dir.exists(paste0("Data/in/Newest/Rdata/",m,"/Level3")))
-        dir.create((paste0("Data/in/Newest/Rdata/",m,"/Level3")))
-      
-      for(d in c(weekly_flnm,survey_rep_flnm)){
-          
-          # create filename:
-          tmp_fl <- paste0(d,"_",m)
-          
-          # create the temporary URL
-          tmppath <- paste0(paste0("Data/in/Newest/roms_for_aclim/",m,"/Level3/"),d,"_",m,".nc")
-          
-          # open the netcdf file remotely
-          nc     <- nc_open(tmppath)
-          
-          # convert the nc files into a long data.frame for each variable
-          i <- 0
-          for(v in varlist){
-            i <- i + 1
-            tmp_var0      <- convert2df(ncIN = nc, type = TYPE, varIN = v)
-            tmp_var0$sim  <- tmp_fl
-            if(i == 1)
-              tmp_var     <- tmp_var0
-            if(i != 1)
-              tmp_var     <- rbind(tmp_var,tmp_var0)
-            rm(tmp_var0)
-          }
-          
-          # close the nc file
-          nc_close(nc)
-          
-          # rename the object
-          eval(parse(text =paste0(d,"<-tmp_var") ))
-          
-          # save the nc file in the Data/in/Newest/Rdata/ [ simulation]/Level3 folder
-          tmp_path <- file.path( paste0("Data/in/Newest/Rdata/",m,"/Level3"),
-                                 paste0(tmp_fl,".Rdata"))
-          eval(parse(text =paste0("save(",d,", file=tmp_path)")))
-          TYPE     <-  TYPE + 1
-      }
-    }
-   
+    # opt 3:  convert subset of nc files to rdata files for analysis:
+    get_l3(web_nc = F, download_nc = F,
+          local_path = file.path(local_fl,"roms_for_aclim"),
+          varlist = vl,sim_list = sl)
 
 ```
 
-
-# 4. Derive indices & plot data  
+# 4. Explore indices & plot the data  
 
 ## 4.1 Level 3 indices:
 
-Level 3 indices can be used to generate seasonal, monthly, and annual indices (like those reported in [Reum et al. 2020)](https://www.frontiersin.org/articles/10.3389/fmars.2020.00124/full), [Holsman et al. 2020)](http://dx.doi.org/10.1038/s41467-020-18300-3). In section 3 below we explore these indices in more detail using R, including using (2) above to generate weekly, monthly, and seasonal indices (e.g. Fall Zooplankton) for use in biological models. In section 3 below we explore these indices in more detail using R, including using (2) above to generate weekly, monthly, and seasonal indices (e.g. Fall Zooplankton) for use in biological models. 
+Level 3 indices can be used to generate seasonal, monthly, and annual indices (like those reported in [Reum et al. 2020)](https://www.frontiersin.org/articles/10.3389/fmars.2020.00124/full), [Holsman et al. 2020)](http://dx.doi.org/10.1038/s41467-020-18300-3). In the section below we explore these indices in more detail using R, including using (2) above to generate weekly, monthly, and seasonal indices (e.g. Fall Zooplankton) for use in biological models. In section 3 below we explore these indices in more detail using R, including using (2) above to generate weekly, monthly, and seasonal indices (e.g. Fall Zooplankton) for use in biological models. The following examples show how to analyze and plot the ACLIM indices from the .Rdata files created in the previous step 3. 
 
-Please be sure to coordinate with ROMSNPZ modeling team members to ensure data is applied appropriately. If you need access to the raw ROMSNPZ files (netcdf, non-regridded large files located on MOX). Please contact  [**Al Hermann**](albert.j.hermann@noaa.gov) or [**Kelly Kearney**](kelly.kearney@noaa.gov).
 
-The following examples show how to analyze and plot the ACLIM indices from their stored netcdf (.nc) format in the Data folder of the ACLIM shared google drive. Please note that while the CMIP5 set is now public (Hermann et al. 2019) **the CMIP6 suite is under embargo for QAQC and should not be shared outside of the ACLIM group**. Al, Wei, Kelly, Darren, and Kerim are in the process of synthesizing and publishing the CMIP6 data (goal is spring 2021 for submission), following those publications the data will be made accessible to the public via the PMEL data portal, as is the case for the CMIP5 data and public hindcasts. It is strongly recommended that you include at least one (ideally multiple) authors from the ROMSNPZ team as co-author on your paper if you are linking to this data, this is especially the case for the CMIP6 data. There are multiple spatial and temporal caveats that are best described in discussions with the authors of these data and inclusion as co-authors will facilitate appropriate application and interpretation of the ROMSNPZ data.
+Please be sure to coordinate with ROMSNPZ modeling team members to ensure data is applied appropriately. If you need access to the raw ROMSNPZ files (netcdf, non-regridded large files located on MOX). Please contact  [**Al Hermann**](albert.j.hermann@noaa.gov) or [**Kelly Kearney**](kelly.kearney@noaa.gov). Please note that while the CMIP5 set is now public (Hermann et al. 2019) **the CMIP6 suite is under embargo for QAQC and should not be shared outside of the ACLIM group**. See Section 1 above for more detail.
 
 ### 4.1.1 Explore Level 3 data catalog
 
@@ -605,11 +484,13 @@ Once the base files and setup are loaded you can explore the index types. Recall
 First run the below set of code to set up the workspace:
 
 ```{r explore, eval=T, echo=T,results='hide',message=FALSE}
-    tmstp  <- format(Sys.time(), "%Y_%m_%d")
-    main   <- getwd()  #"~/GitHub_new/ACLIM2"
     
-    # loads packages, data, setup, etc.
+    # --------------------------------------
+    # SETUP WORKSPACE
+    tmstp  <- format(Sys.time(), "%Y_%m_%d")
+    main   <- getwd()  #"~/GitHub_new/ACLIM2
     source("R/make.R")
+    # --------------------------------------
     
     # list of the scenario x GCM downscaled ACLIM indices
     for(k in aclim)
@@ -639,7 +520,7 @@ First run the below set of code to set up the workspace:
  
 ```
 
-### 4.1.2 Spatial indices (survey replicated)
+### 4.1.2 Level 3: Spatial indices (survey replicated)
 
 Let's start b exploring the survey replicated values for each variable. Steps 2 and 3 generated the Rdata files that are stored in the `ACLIMsurveyrep_B10K-[version_CMIPx_GCM_RCP].Rdata` in each corresponding simulation folder. 
 
@@ -654,13 +535,16 @@ The code segment below will recreate the above figures.
    station_sf$stratum <- factor(station_sf$stratum)
    
    # plot the stations:
-   p <- plot_stations_basemap(sfIN = station_sf,fillIN = "subregion",colorIN = "subregion") + 
-     scale_color_viridis_d(begin = .4,end=.6) +
-     scale_fill_viridis_d(begin = .4,end=.6)
+   p <- plot_stations_basemap(sfIN = station_sf,
+                              fillIN = "subregion",
+                              colorIN = "subregion") + 
+     scale_color_viridis_d(begin = .2,end=.6) +
+     scale_fill_viridis_d(begin  = .2,end=.6)
   
    if(update.figs){
      p
-     ggsave(file="Figs/stations_NS.jpg",width=5,height=5)}
+     ggsave(file=file.path(main,"Figs/stations_NS.jpg"),width=5,height=5)
+    }
 
    p2 <- plot_stations_basemap(sfIN = station_sf,fillIN = "stratum",colorIN = "stratum") + 
      scale_color_viridis_d() +
@@ -668,15 +552,15 @@ The code segment below will recreate the above figures.
    
    if(update.figs){
      p2
-   ggsave(file="Figs/stations.jpg",width=5,height=5)}
+   ggsave(file=file.path(main,"Figs/stations.jpg"),width=5,height=5)}
 ```
 
-Now let's explore the survey replicated data in more detail and use it to create a cold pool index for each simulation and hindcast scenario x model x CMIP combination.
+Now let's explore the survey replicated data in more detail and use to plot bottom temperature.
 
 ```{r explore_srvy, eval=F, echo=T}
-
+    
     # now create plots of average BT during four time periods
-    time_seg   <- list('2010-2020' = c(2010:2020),
+    time_seg   <- list( '2010-2020' = c(2010:2020),
                         '2021-2040' = c(2021:2040),
                         '2041-2060' = c(2041:2060),
                         '2061-2080' = c(2061:2080),
@@ -684,29 +568,36 @@ Now let's explore the survey replicated data in more detail and use it to create
   
     # View an individual variable (e.g., Bottom Temp)
     # -------------------------------------------------------
-    srvy_vars
-    aclim
-    sim <-"B10K-K20P19_CMIP6_miroc_ssp585" 
-    Rdata_path <- "/Users/kholsman/GitHub_new/ACLIM2/Data/in/Newest/Rdata"
+    head(srvy_vars)
+    head(aclim)
+    
+    # assign the simulation to download
+    # --> --> Tinker: try selecting a different set of models to compare
+    sim        <-"B10K-H16_CMIP5_MIROC_rcp85" 
     
     # open a "region" or strata specific nc file
-    fl      <- file.path(sim,paste0(srvy_txt,sim,".Rdata"))
+    fl         <- file.path(sim,paste0(srvy_txt,sim,".Rdata"))
     
     # load object 'ACLIMsurveyrep'
-    load(file.path(Rdata_path,fl))   
+    load(file.path(main,Rdata_path,fl))   
     
     # Collate mean values across timeperiods and simulations
     # -------------------------------------------------------
-    m_set      <- c(18,19)
+    m_set      <- c(9,7,8)
     ms         <- aclim[m_set]
-    ms         <- c("B10K-H16_CMIP5_miroc_rcp85","B10K-K20P19_CMIP6_miroc_ssp585")
     
-    # get the mean values for the time blocks
+    # create local rdata files (opt 1)
+    if(!file.exists(fl))
+      get_l3(web_nc = TRUE, download_nc = F,
+          varlist = vl,sim_list =sim )
+    
+    # get the mean values for the time blocks from the rdata versions
+    # will throw "implicit NA" errors that can be ignored
     mn_var_all <- get_mn_rd(modset = ms ,varUSE="temp_bottom5m")
     
     # convert results to a shapefile
     mn_var_sf  <- convert2shp(mn_var_all%>%filter(!is.na(mnval)))
-    lab_t       <- ms[1]%>%stringr::str_remove("([^-])")
+    lab_t      <- ms[2]%>%stringr::str_remove("([^-])")
     
     p3         <- plot_stations_basemap(sfIN = mn_var_sf,
                                 fillIN = "mnval",
@@ -724,37 +615,46 @@ Now let's explore the survey replicated data in more detail and use it to create
     dev.new()
     p3
     
-    if(update.figs)  ggsave(file="Figs/mn_BT.jpg",width=8,height=5)
+    if(update.figs)  ggsave(file=file.path(main,"Figs/mn_BT.jpg"),width=8,height=6)
   
-    graphics.off()
+    # graphics.off()
  
 ```
 
 
 ![Bottom temperature projections under differing SSP126 (top row) and SSP585 (bottom row)](Figs/mn_BT.jpg)  
 
-### 4.1.3 Temporal indices (Weekly strata averages)
+### 4.1.3 Level 3: Weekly strata averages
 
 The next set of indices to will explore are the weekly strata-specific values for each variable.These are stored in the `ACLIMregion_B10K-[version_CMIPx_GCM_RCP].nc` in each scenario folder. 
 
 ```{r readncfiles_weekly, eval=F, echo=T}
-    # list of the scenario x GCM downscaled ACLIM indices
-    for(k in aclim)
-      cat(paste(k,"\n")
-
+    
+   
     # View an individual variable (e.g., Bottom Temp)
     # -------------------------------------------------------
     weekly_vars
     aclim
-    sim <-"B10K-K20P19_CMIP6_miroc_ssp585" 
-    Rdata_path <- "/Users/kholsman/GitHub_new/ACLIM2/Data/in/Newest/Rdata"
+    sim        <-"B10K-H16_CMIP5_MIROC_rcp85" 
     
     # open a "region" or strata specific nc file
-    fl      <- file.path(sim,paste0(reg_txt,sim,".Rdata"))
+    fl         <- file.path(sim,paste0(reg_txt,sim,".Rdata"))
+    
+    var_use   <- "temp_bottom5m"
+    vl        <- c(
+                  "temp_bottom5m",
+                  "NCaS_integrated", # Large Cop
+                  "Cop_integrated",  # Small Cop
+                  "EupS_integrated") # Euphausiids
+    
+    # create local rdata files (opt 1)
+    if(!file.exists(fl))
+      get_l3(web_nc = TRUE, download_nc = F,
+          varlist = vl,sim_list = sim)
     
     # load object 'ACLIMregion'
-    load(file.path(Rdata_path,fl))  
-    tmp_var <- ACLIMregion
+    load(file.path(main,Rdata_path,fl))  
+    tmp_var    <- ACLIMregion%>%filter(var == var_use)
     
    # now plot the data:
    
@@ -762,9 +662,11 @@ The next set of indices to will explore are the weekly strata-specific values fo
      geom_line(aes(x=time,y=val,color= strata),alpha=.8)+
      facet_grid(basin~.)+
      ylab(tmp_var$units[1])+
-     ggtitle( sim%>%stringr::str_remove("([^-])") )+
+     ggtitle( paste(sim,mn_NEBS$var[1]))+
      theme_minimal()
    p4
+    if(update.figs)  ggsave(file=file.path(main,"Figs/weekly_bystrata.jpg"),width=8,height=5)
+
    
    # To get the average value for a set of strata, weight the val by the area:
    mn_NEBS <- getAVGnSUM(strataIN = NEBS_strata, dataIN = tmp_var)
@@ -779,23 +681,25 @@ The next set of indices to will explore are the weekly strata-specific values fo
       facet_grid(basin~.)+
       scale_color_viridis_d(begin=.4,end=.8)+
       ylab(tmp_var$units[1])+
-      ggtitle( paste(aclim[2],mn_NEBS$var[1]))+
+      ggtitle( paste(sim,mn_NEBS$var[1]))+
+     
       theme_minimal()
   p5
-  if(update.figs)  ggsave(file="Figs/weekly_byreg.jpg",width=8,height=5)
+  if(update.figs)  ggsave(file=file.path(main,"Figs/weekly_byreg.jpg"),width=8,height=5)
 
  
 ```
 
+![Weekly indcices by sub-region](Figs/weekly_bystrata.jpg){ width=65% }
 
 ![Weekly indcices by sub-region](Figs/weekly_byreg.jpg){ width=65% }
 
-### 4.1.4 Create seasonal averages  
+### 4.1.4  Level 3: Seasonal averages
 
 Now using a similar approach get the monthly mean values for a variable:
 ```{r seasonal averages, eval=F, include=T,echo=T}
     
-    sim <-"B10K-K20P19_CMIP6_miroc_ssp585" 
+     sim <-"B10K-H16_CMIP5_MIROC_rcp85" 
 
     # Set up seasons (this follows Holsman et al. 2020)
       seasons <- data.frame(mo = 1:12, 
@@ -807,42 +711,36 @@ Now using a similar approach get the monthly mean values for a variable:
       seasons$season[10:12] <- "Fall"
     
        
-    varlist <- c(
+    vl <- c(
                   "temp_bottom5m",
                   "NCaS_integrated", # Large Cop
                   "Cop_integrated",  # Small Cop
                   "EupS_integrated") # Euphausiids
     
+    # create local rdata files (opt 1)
+    if(!file.exists(fl))
+      get_l3(web_nc = TRUE, download_nc = F,
+          varlist = vl,sim_list = sim)
+    
     # open a "region" or strata specific  file
     fl      <- file.path(sim,paste0(reg_txt,sim,".Rdata"))
-    load(file.path(Rdata_path,fl))
+    load(file.path(main,Rdata_path,fl))
     
-    tmp_var1     <- ACLIMregion%>%
-      filter(var%in%varlist[1])%>%
-      group_by(time,strata,strata_area_km2,basin)
-    
-     tmp_var3     <- ACLIMregion%>%
-      filter(var%in%varlist[3])%>%
-      group_by(time,strata,strata_area_km2,basin)
-    
-    tmp_var     <-merge(tmp_var1,tmp_var3,
-                        by=c("strata",
-                             "strata_area_km2"
-                             ,"time","basin"))
-    tmp_var     <-tmp_var%>%
-      mutate(val      = val.x + val.y ,units = units.x,
-             var       = "Zoop_integrated",
-             long_name ="Total On-shelf 
-             large zooplankton concentration, 
-             integrated over depth (NCa, Eup)")%>%
-      select(time,
+    # get large zooplankton as the sum of euph and NCaS
+    tmp_var    <- ACLIMregion%>%
+      filter(var%in%vl[c(2,3)])%>%
+      group_by(time,strata,strata_area_km2,basin)%>%
+      group_by(time,
              strata,
              strata_area_km2,
              basin,
-             var,
-             val, 
-             units,
-             long_name)
+             units)%>%
+      summarise(val =sum(val))%>%
+      mutate(var       = "Zoop_integrated",
+             long_name ="Total On-shelf 
+             large zooplankton concentration, 
+             integrated over depth (NCa, Eup)")
+    
     rm(ACLIMregion)
     head(tmp_var)
     
@@ -866,7 +764,7 @@ Now using a similar approach get the monthly mean values for a variable:
       tblock=c("yr","season"))
     mn_SEBS_season$basin = "SEBS"
     
-    plot_data      <- rbind(mn_NEBS_season,mn_SEBS_season)
+   plot_data      <- rbind(mn_NEBS_season,mn_SEBS_season)
     
    # plot Fall values:
    p6 <- ggplot(data = plot_data%>%filter(season=="Fall") ) + 
@@ -882,13 +780,13 @@ Now using a similar approach get the monthly mean values for a variable:
   
   
   if(update.figs)  
-    ggsave(file="Figs/Fall_large_Zoop.jpg",width=8,height=5)
+    ggsave(file=file.path(main,"Figs/Fall_large_Zoop.jpg"),width=8,height=5)
   
 ```
 
 ![Large fall zooplankton integrated concentration](Figs/Fall_large_Zoop.jpg){ width=65% }
 
-### 4.1.5 Create monthly averages
+### 4.1.5 Level 3: Monthly averages
 Using the same approach we can get monthly averages for a given variable:
 
 ```{r monthly averages, eval=F, include=T,echo=T}
@@ -920,32 +818,179 @@ Using the same approach we can get monthly averages for a given variable:
   p7
   
   if(update.figs)  
-    ggsave(file="Figs/Sept_large_Zoop.jpg",width=8,height=5)
+    ggsave(file=file.path(main,"Figs/Sept_large_Zoop.jpg"),width=8,height=5)
+```
+
+ 
+![September large zooplankton integrated concentration](Figs/Sept_large_Zoop.jpg){ width=65% }
+
+Finally we can use this approach to plot the monthly averages and look for phenological shifts:
+```{r phenology, eval=F, include=T,echo=T}
+
+  # or average in 4 time slices by mo:
+  # now create plots of average BT during four time periods
+    time_seg   <- list( '2010-2020' = c(2010:2020),
+                        '2021-2040' = c(2021:2040),
+                        '2041-2060' = c(2041:2060),
+                        '2061-2080' = c(2061:2080),
+                        '2081-2099' = c(2081:2099))
+    
+    plot_data$ts <-names(time_seg)[1]
+    for(tt in 1:length((time_seg)))
+      plot_data$ts[plot_data$yr%in%(time_seg[[tt]][1]:time_seg[[tt]][2])]<-names(time_seg)[tt]
+    
+    plot_data2 <- plot_data%>%
+      group_by(var,mo,units,long_name,basin, ts)%>%
+      summarize(mn_val2 = mean(mn_val))
+   
+  # now plot phenological shift:
+   p8 <- ggplot(data = plot_data2 ) + 
+      geom_line(   aes(x = mo,y = mn_val2,color=ts),alpha=.8,size=0)+
+      geom_smooth( aes(x = mo,y = mn_val2,color=ts),
+                  formula = y ~ x, se = F)+
+      facet_grid(basin~.)+
+      scale_color_viridis_d(begin=.9,end=.2)+
+      ylab(tmp_var$units[1])+
+      ggtitle( paste(aclim[2],mn_NEBS_season$var[1]))+
+      theme_minimal()
+  p8
+  if(update.figs)  
+    ggsave(file=file.path(main,"Figs/PhenShift_large_Zoop.jpg"),width=8,height=5)
   
 ```
 
-![September large zooplankton integrated concentration](Figs/Sept_large_Zoop.jpg){ width=65% }
-
-
-<!-- ### 2.2.6 Create the ACLIM annual indices of seasonal and survey replicated values -->
-<!-- ```{r} -->
-
-<!-- ``` -->
-
-<!-- ### 2.2.7. Save ACLIM indices as Rdata object in `Data/out` folder. -->
-
-<!-- ```{r} -->
-
-<!-- ``` -->
+![September large zooplankton integrated concentration](Figs/PhenShift_large_Zoop.jpg){ width=65% }
 
 ## 4.2 Level 2:
-### 3.2.1 Explore Level 2 data catalog
-### 3.2.2 Custom temporal indices 
-### 3.2.3 Custom spatial indices 
 
-# 5. Tinker: example applications
-# 5.1 Recruitment ~f(ACLIM indices)
-# 5.2 Spatial overlap ~f(spp dist, aclim indices)
+Level 2 data can be explored in the same way as the above indices but we will focus in the section below on a simple spatial plot and temporal index. The advantage of Level2 inidces is in the spatial resolution and values outside of the survey area. 
+
+### 3.2.1 Explore Level 2 data catalog
+### 3.2.2 Custom spatial indices 
+```{r explore_L2_space, eval=F, echo=T}
+    
+    # define four time periods
+    time_seg   <- list( '2010-2020' = c(2010:2020),
+                        '2021-2040' = c(2021:2040),
+                        '2041-2060' = c(2041:2060),
+                        '2061-2080' = c(2061:2080),
+                        '2081-2099' = c(2081:2099))
+  
+    # View an individual variable (e.g., Bottom Temp)
+    # -------------------------------------------------------
+    head(srvy_vars)
+    head(aclim)
+    
+    # assign the simulation to download
+    # --> --> Tinker: try selecting a different set of models to compare
+    sim        <-"B10K-H16_CMIP5_MIROC_rcp85" 
+    
+    svl <- list(
+      'Bottom 5m' = "temp",
+      'Surface 5m' = "temp",
+      'Integrated' = c("EupS","Cop","NCaS") ) 
+   
+    # Currently available Level 2 variables
+    dl     <- proj_l2_datasets$dataset  # datasets
+   
+    
+    # Let's sample the model years as close to Aug 1 as the model timesteps run:
+    tr          <- c("-08-1 12:00:00 GMT") 
+    
+    # the full grid is large and takes a longtime to plot, so let's subsample the grid every 4 cells
+   
+    IDin       <- "_Aug1_subgrid"
+    var_use    <- "_bottom5m_temp"
+    
+    # open a "region" or strata specific nc file
+    fl         <- file.path(main,Rdata_path,sim,"Level2",paste0(sim,var_use,IDin,".Rdata"))
+    
+    # load object 'ACLIMsurveyrep'
+    if(!file.exists(fl))
+      get_l2(
+        ID          = IDin,
+        xi_rangeIN  = seq(1,182,10),
+        eta_rangeIN = seq(1,258,10),
+        ds_list     = dl,
+        trIN        = tr,
+        sub_varlist = svl,  
+        sim_list    = sim  )
+    
+    # load R data file
+    load(fl)   # temp
+    
+    # there are smarter ways to do this;looping because 
+    # we don't want to mess it up but this is slow...
+    i <-1
+    data_long <- data.frame(latitude = as.vector(temp$lat),
+                       longitude = as.vector(temp$lon),
+                       val = as.vector(temp$val[,,i]),
+                       time = temp$time[i],
+                       year = substr( temp$time[i],1,4)
+                       )
+    for(i in 2:dim(temp$val)[3])
+      data_long <- rbind(data_long,
+                          data.frame(latitude = as.vector(temp$lat),
+                           longitude = as.vector(temp$lon),
+                           val = as.vector(temp$val[,,i]),
+                           time = temp$time[i],
+                           year = substr( temp$time[i],1,4))
+                       )
+    
+    
+    # get the mean values for the time blocks from the rdata versions
+    # will throw "implicit NA" errors that can be ignored
+    tmp_var <-data_long # get mean var val for each time segment
+    j<-0
+    for(i in 1:length(time_seg)){
+      if(length(which(tmp_var$year%in%time_seg[[i]]))>0){
+        j <- j +1
+         mn_tmp_var <- tmp_var%>%
+          filter(year%in%time_seg[[i]],!is.na(val))%>%
+          group_by(latitude, longitude)%>%
+          summarise(mnval = mean(val,rm.na=T))
+        
+        mn_tmp_var$time_period = factor(names(time_seg)[i],levels=names(time_seg))
+      if(j == 1) mn_var <- mn_tmp_var
+      if(j >  1) mn_var <- rbind(mn_var,mn_tmp_var)
+       rm(mn_tmp_var)
+      }
+    }
+    
+    # convert results to a shapefile
+    L2_sf  <- convert2shp(mn_var%>%filter(!is.na(mnval)))
+    
+    p9     <- plot_stations_basemap(sfIN = L2_sf,
+                                fillIN = "mnval",
+                                colorIN = "mnval",
+                                sizeIN=.6) +
+      facet_grid(.~time_period)+
+      scale_color_viridis_c()+
+      scale_fill_viridis_c()+
+      guides(
+        color =  guide_legend(title="Bottom T (degC)"),
+        fill  =  guide_legend(title="Bottom T (degC)")) +
+      ggtitle(paste(sim,var_use,IDin))
+   
+    # This is slow but it works (repeat dev.new() twice if in Rstudio)...
+    dev.new()
+    p9
+    
+    if(update.figs)  ggsave(file=file.path(main,"Figs/sub_grid_mn_BT_Aug1.jpg"),width=8,height=6)
+  
+    # graphics.off()
+ 
+```
+
+
+![Aug 1 Bottom temperature from Level 2 dataset](Figs/sub_grid_mn_BT_Aug1.jpg){ width=65% }
+
+<!-- ### 3.2.2 Custom temporal indices  -->
+
+
+<!-- # 5. Tinker: example applications -->
+<!-- # 5.1 Recruitment ~f(ACLIM indices) -->
+<!-- # 5.2 Spatial overlap ~f(spp dist, aclim indices) -->
 
 # 6. Funding and acknowledgments (needs updating):
 
@@ -1019,12 +1064,16 @@ The Model for Interdisciplinary Research on Climate (MIROC)-M model developed by
 
 ```{R downloadMOX, include=FALSE, echo=FALSE, eval=FALSE}
     
-    # set things up
+    # --------------------------------------
+    # SETUP WORKSPACE
+
     tmstp  <- format(Sys.time(), "%Y_%m_%d")
     main   <- getwd()  #"~/GitHub_new/ACLIM2"
     
     # loads packages, data, setup, etc.
-    source("R/make.R")   
+    source("R/make.R")
+    
+    # --------------------------------------  
   
     ### To re download data from mox (Kirstin) switch "redownload_level3_mox" to TRUE in setup.R
   

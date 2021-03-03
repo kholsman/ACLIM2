@@ -16,6 +16,16 @@
     scaleIN         <-  1      # controls the ratio (relative scaling of window)
     dpiIN           <-  150    # dpi for figures (set to lower res for smaller file size- these will be about 3.5 MB)
     
+    # dataset names:
+    #-------------------------------------------
+    weekly_flnm     <- "ACLIMregion"
+    survey_rep_flnm <- "ACLIMsurveyrep"
+    
+    # URL paths:
+    #-------------------------------------------
+    # specify the root URL:
+    ACLIM_data_url <- "https://data.pmel.noaa.gov/aclim/thredds/"
+    
     # set up directory paths:
     #-------------------------------------------
     remote_fl    <- "roms_for_aclim"
@@ -32,6 +42,12 @@
     
     geotif_dir    <- "Data/in/Map_layers/geo_tif"
     shp_dir       <- "Data/in/Map_layers/shp_files"
+    Rdata_path    <- "Data/in/Newest/Rdata"
+    
+    # create a directory for our new indices 
+    if(!dir.exists("Data/in/Newest/Rdata")) 
+      dir.create("Data/in/Newest/Rdata")
+    
     
     # Identify ACLIM shared models:
     #-------------------------------------------
