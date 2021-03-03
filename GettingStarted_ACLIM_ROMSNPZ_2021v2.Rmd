@@ -1,5 +1,5 @@
 ---
-title: "Getting Started with ACLIM Bering10K ROMSNPZ Level 2 & 3 indices"
+title: "Getting Started with Bering10K ROMSNPZ Level 2 & 3 indices"
 output:
   pdf_document:
     fig_caption: yes

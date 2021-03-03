@@ -6,7 +6,6 @@
 <img src="Figs/ACLIM_logo.jpg" style="width:20.0%" alt="" /><figcaption>.</figcaption>
 </figure>
 
-**Getting Started with ACLIM Bering10K ROMSNPZ Level3 indices**  
 [**ACLIM Repo:
 github.com/kholsman/ACLIM2**](https://github.com/kholsman/ACLIM2 "ACLIM2 Repo")  
 Repo maintained by:  
