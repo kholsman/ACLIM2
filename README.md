@@ -3,7 +3,7 @@
 <!-- ``` -->
 
 <figure>
-<img src="Figs/ACLIM_logo.jpg" style="width:20.0%" alt="" /><figcaption>.</figcaption>
+<img src="Figs/ACLIM_logo.jpg" style="width:2.0%" alt="" /><figcaption>.</figcaption>
 </figure>
 
 [**ACLIM Repo:
