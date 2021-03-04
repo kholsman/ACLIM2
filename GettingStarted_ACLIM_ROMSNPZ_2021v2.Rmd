@@ -808,8 +808,8 @@ Using the same approach we can get monthly averages for a given variable:
     # To get the average value for a set of strata, weight the val by the area: (slow...)
     mn_NEBS_season <- getAVGnSUM(
       strataIN = NEBS_strata,
-      dataIN = tmp_var,
-      tblock=c("yr","mo"))
+      dataIN   = tmp_var,
+      tblock   = c("yr","mo"))
     mn_NEBS_season$basin = "NEBS"
     mn_SEBS_season <- getAVGnSUM(
       strataIN = SEBS_strata, 

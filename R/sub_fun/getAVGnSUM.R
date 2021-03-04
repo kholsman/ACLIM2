@@ -15,6 +15,8 @@ getAVGnSUM <- function(
   tblock   = "time",
   mn       = T,
   tot      = F){
+  
+  
   eval(parse(text = paste0("tmp <- dataIN%>%
       filter(strata%in%strataIN)%>%
       group_by(var,",paste0(tblock,collapse=", "),",units,long_name)%>%
