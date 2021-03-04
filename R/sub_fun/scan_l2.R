@@ -15,6 +15,7 @@ scan_l2 <-function(
   web_nc      = TRUE,
   local_path  = NULL,
   ds_list     = dl,
+  sub_varlist = svl,
   sim_list    = c(hind, proj)
 ) {
   out <- list()
@@ -69,7 +70,7 @@ scan_l2 <-function(
         tz = "GMT") 
       
       # get years in simulation
-      out[[ds_list[d]]]$years    <- sort(unique(substr(time_steps,1,4)))
+      out[[ds_list[d]]]$years    <- sort(unique(substr(out[[ds_list[d]]]$time_steps,1,4)))
      
       # subset the lat and lon values
       out[[ds_list[d]]]$lat    <- ncvar_get(nc, varid = "lat_rho")

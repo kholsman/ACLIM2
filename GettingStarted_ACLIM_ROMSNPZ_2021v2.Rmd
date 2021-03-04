@@ -1,6 +1,20 @@
 ---
 title: "Getting Started with Bering10K ROMSNPZ Level 2 & 3 indices"
 output:
+  html_document:
+    df_print: kable
+    fig_caption: yes
+    theme: flatly
+    toc: true
+    toc_float: true
+  word_document:
+    fig_caption: yes
+    fig_width: 4
+    keep_md: yes
+  header-includes:
+  - \usepackage{inputenc}
+  - \usepackage{unicode-math}
+  - \pagenumbering{gobble}
   pdf_document:
     fig_caption: yes
     fig_height: 4
@@ -9,20 +23,6 @@ output:
     keep_tex: yes
     latex_engine: xelatex
     toc: TRUE
-  html_document:
-    df_print: kable
-    fig_caption: yes
-    theme: flatly
-    toc: true
-    toc_float: true
-  header-includes:
-  - \usepackage{inputenc}
-  - \usepackage{unicode-math}
-  - \pagenumbering{gobble}
-  word_document:
-    fig_caption: yes
-    fig_width: 4
-    keep_md: yes
 ---
 
 ```{r startup, eval=TRUE, echo=FALSE, results='hide',message=FALSE}
@@ -89,6 +89,8 @@ The full ACLIM "suite" of models include are summarized in the following table o
 ### Table 1: Summary of ROMSNPZ downscaled model runs 
 CMIP| GCM    |Scenario    |Def              |Years      |Model |Source|Status
 --|--|------|--------|---------   | ---------------|----------|------|------|
+||CORECFS  |Reanalysis| Hindcast        |1970 - 2018|H16        |IEA/ACLIM      |Public
+||CORECFS  |Reanalysis | Hindcast        |1970 - 2020|K20       |MAPP/IEA/ACLIM|Public
 5 | GFDL    |RCP 4.5    | Med. mitigation |2006 - 2099|H16      |ACLIM/FATE |Public
 5 | GFDL    |RCP 8.5    | High baseline   |2006 - 2099|H16      |ACLIM/FATE |Public
 5 | GFDL    |RCP 8.5bio*| High baseline   |2006 - 2099|H16      |ACLIM/FATE |Public
@@ -97,8 +99,6 @@ CMIP| GCM    |Scenario    |Def              |Years      |Model |Source|Status
 5 | CESM    |RCP 4.5    | Med. mitigation |2006 - 2099|H16      |ACLIM/FATE |Public
 5 | CESM    |RCP 8.5    | High baseline   |2006 - 2080|H16      |ACLIM/FATE |Public
 5 | CESM    |RCP 8.5bio*| High baseline   |2006 - 2099|H16      |ACLIM/FATE |Public
- ||CORECFS  |Reanalysis| Hindcast        |1970 - 2018|H16       |ACLIM      |Public
- ||CORECFS  |Reanalysis | Hindcast        |1970 - 2020|K20      |ACLIM2/RTAP|Public
 6| CESM     |SSP585     | High baseline   |2014 - 2099|K20P19   |ACLIM2/RTAP|Embargo
 6| CESM     |SSP126     | High Mitigation |2014 - 2099|K20P19   |ACLIM2/RTAP|Embargo
 6| CESM     |Historical | Historical      |1980 - 2014|K20P19   |ACLIM2/RTAP|Embargo
@@ -353,7 +353,16 @@ Now we can download a subset of the Level2 data (full 10KM Lat Lon re-gridded da
 
 ```{r thredds_l2, include=T,echo=T,eval=F}   
     
-   
+   # Currently available Level 2 variables
+    dl     <- proj_l2_datasets$dataset  # datasets
+
+   # variable list
+   svl <- list(
+          'Bottom 5m' = "temp",
+          'Surface 5m' = "temp",
+          'Integrated' = c("EupS","Cop","NCaS") ) 
+       
+    
     # preview the variables, timesteps, and lat lon in each dataset:
     l2_info <- scan_l2(ds_list = dl,sim_list = "B10K-H16_CORECFS" )
     
