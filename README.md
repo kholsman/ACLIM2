@@ -2,8 +2,9 @@
 <!-- include_graphics("Figs/ACLIM_logo.jpg") -->
 <!-- ``` -->
 
-<!--<img src="Figs/ACLIM_logo.jpg" style="width:2.0%" alt="" /><figcaption>.</figcaption> -->
-<!--</figure> -->
+<figure>
+<img src="Figs/ACLIM_logo.jpg" style="width:2.0%" alt="" /><figcaption>.</figcaption>
+</figure>
 
 [**ACLIM Repo:
 github.com/kholsman/ACLIM2**](https://github.com/kholsman/ACLIM2 "ACLIM2 Repo")  
