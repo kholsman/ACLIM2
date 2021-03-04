@@ -452,6 +452,13 @@ Now let's convert the CMIP6 Level3 .nc files to .Rdata files (as in section 3.2.
 
     # preview the available CMIP6 data
     dir(file.path(local_fl,"roms_for_aclim"))
+    
+    # variable list
+    vl        <- c(
+                  "temp_bottom5m",
+                  "NCaS_integrated", # Large Cop
+                  "Cop_integrated",  # Small Cop
+                  "EupS_integrated") # Euphausiids
 
   # define the simulation to download:
     cmip <- "CMIP6"     # Coupled Model Intercomparison Phase
@@ -669,7 +676,7 @@ The next set of indices to will explore are the weekly strata-specific values fo
      geom_line(aes(x=time,y=val,color= strata),alpha=.8)+
      facet_grid(basin~.)+
      ylab(tmp_var$units[1])+
-     ggtitle( paste(sim,mn_NEBS$var[1]))+
+     ggtitle( paste(sim,tmp_var$var[1]))+
      theme_minimal()
    p4
     if(update.figs)  ggsave(file=file.path(main,"Figs/weekly_bystrata.jpg"),width=8,height=5)

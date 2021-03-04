@@ -28,8 +28,10 @@ get_mn_rd <-  function(modset = aclim[m_set],varUSE){
     }
     rm(ACLIMsurveyrep)
     
+    
     sims <- strsplit(modset,"_")
-    sims <- sapply(sims, "[[", 4)
+    nl   <- lengths(sims)
+    sims <- unlist(sims)[cumsum(nl)]
     
     mn_var$simulation <- factor(sims[tt],levels=sims)
     if(tt == 1) mn_var_all <- mn_var
