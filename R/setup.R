@@ -10,7 +10,9 @@
     # set this to TRUE to "update" the indices from the original files on mox
     redownload_level3_mox  <- FALSE
     update_base_data       <- FALSE
-    update.figs     <-  FALSE   # set to true to re-save figs
+    
+    load_gis        <-  FALSE   # load mapfiles, note first time through downloading these may take a long time
+    update.figs     <-  FALSE  # set to true to re-save figs
     update.outputs  <-  TRUE   # overwrite the existing Rdatafiles in out_fn
     status          <-  TRUE   # print progress
     scaleIN         <-  1      # controls the ratio (relative scaling of window)
@@ -40,11 +42,12 @@
     if(!dir.exists(file.path(local_fl,remote_fl)))   
       dir.create(file.path(local_fl,remote_fl))
     
+    mapdata_path     <- "Data/in/Map_layers"
     geotif_dir       <- "Data/in/Map_layers/geo_tif"
     shp_dir          <- "Data/in/Map_layers/shp_files"
     Rdata_path       <- "Data/in/Newest/Rdata"
     shareddata_path  <- "Data/shared"
-    mapdata_path     <- "Data/in/Map_layers"
+   
     
     # create a directory for our new indices 
     if(!dir.exists(Rdata_path))       dir.create(Rdata_path)
