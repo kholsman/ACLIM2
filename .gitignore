@@ -1,4 +1,11 @@
-Data/In/*
+Data/In/Newest/aclim_thredds*
+Data/In/Newest/Rdata/*
+Data/In/Newest/roms_for_aclim/*
+Data/In/Map_layers/geo_tif/*
+Data/In/Map_layers/shp_files/*
+Data/In/Map_layers/shp_files/*
+Data/In/Newest.zip
+Data/In/Map_layers.zip
 NotShared
 Data/In/archived
 R/shiny_aclim/01_aclim_indices/*
