@@ -11,7 +11,7 @@
     redownload_level3_mox  <- FALSE
     update_base_data       <- FALSE
     
-    load_gis        <-  FALSE   # load mapfiles, note first time through downloading these may take a long time
+    load_gis        <-  TRUE   # load mapfiles, note first time through downloading these may take a long time
     update.figs     <-  FALSE  # set to true to re-save figs
     update.outputs  <-  TRUE   # overwrite the existing Rdatafiles in out_fn
     status          <-  TRUE   # print progress
