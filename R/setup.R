@@ -42,7 +42,7 @@
     
     geotif_dir    <- "Data/in/Map_layers/geo_tif"
     shp_dir       <- "Data/in/Map_layers/shp_files"
-    Rdata_path    <- "Data/in/Newest/Rdata"
+    Rdata_path    <- "Data/shared/Newest/Rdata"
     
     # create a directory for our new indices 
     if(!dir.exists("Data/in/Newest/Rdata")) 
