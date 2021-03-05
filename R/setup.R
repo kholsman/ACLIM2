@@ -36,19 +36,19 @@
     data_path     <- file.path(local_fl,remote_fl)
     
     
-    if(!dir.exists(local_fl))   
-      dir.create(local_fl)
+    if(!dir.exists(local_fl))       dir.create(local_fl)
     if(!dir.exists(file.path(local_fl,remote_fl)))   
       dir.create(file.path(local_fl,remote_fl))
     
-    geotif_dir    <- "Data/in/Map_layers/geo_tif"
-    shp_dir       <- "Data/in/Map_layers/shp_files"
-    Rdata_path    <- "Data/in/Newest/Rdata"
-    shareddata_path   <-  "Data/shared"
+    geotif_dir       <- "Data/in/Map_layers/geo_tif"
+    shp_dir          <- "Data/in/Map_layers/shp_files"
+    Rdata_path       <- "Data/in/Newest/Rdata"
+    shareddata_path  <- "Data/shared"
+    mapdata_path     <- "Data/in/Map_layers"
     
     # create a directory for our new indices 
-    if(!dir.exists("Data/in/Newest/Rdata")) 
-      dir.create("Data/in/Newest/Rdata")
+    if(!dir.exists(Rdata_path))       dir.create(Rdata_path)
+    if(!dir.exists(mapdata_path))     dir.create(mapdata_path)
     
     
     # Identify ACLIM shared models:
