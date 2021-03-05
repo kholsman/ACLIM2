@@ -11,6 +11,7 @@
   
   if(update_base_data) 
     source("R/sub_scripts/update_base_data.R")
+  
   load(file.path(shareddata_path,"base_data.Rdata"))
   #_______________________________________
   # Read base map layers
