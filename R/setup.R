@@ -35,6 +35,7 @@
     localfolder   <- file.path(local_fl,remote_fl)
     data_path     <- file.path(local_fl,remote_fl)
     
+    
     if(!dir.exists(local_fl))   
       dir.create(local_fl)
     if(!dir.exists(file.path(local_fl,remote_fl)))   
@@ -42,7 +43,8 @@
     
     geotif_dir    <- "Data/in/Map_layers/geo_tif"
     shp_dir       <- "Data/in/Map_layers/shp_files"
-    Rdata_path    <- "Data/shared/Newest/Rdata"
+    Rdata_path    <- "Data/in/Newest/Rdata"
+    shareddata_path   <-  "Data/shared"
     
     # create a directory for our new indices 
     if(!dir.exists("Data/in/Newest/Rdata")) 
