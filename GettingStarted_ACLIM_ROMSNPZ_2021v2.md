@@ -13,7 +13,7 @@ Kirstin Holsman
 Alaska Fisheries Science Center  
 NOAA Fisheries, Seattle WA  
 **[kirstin.holsman@noaa.gov](kirstin.holsman@noaa.gov)**  
-*Last updated: Mar 05, 2021*
+*Last updated: Mar 06, 2021*
 
 1. ACLIM code and online repo and ROMSNPZ data overview
 =======================================================
@@ -389,6 +389,7 @@ projections.
 ``` r
     # --------------------------------------
     # SETUP WORKSPACE
+    rm(list=ls())
     tmstp  <- format(Sys.time(), "%Y_%m_%d")
     main   <- getwd()  #"~/GitHub_new/ACLIM2
     source("R/make.R")
@@ -707,9 +708,6 @@ First run the below set of code to set up the workspace:
     public    # published runs (CMIP5)
     
     # get some info about a scenario:
-  
-    all_info1 <- info(model_list=aclim,type=1)
-    all_info2 <- info(model_list=aclim,type=2)
     all_info1
     all_info2
    
@@ -788,17 +786,28 @@ plot bottom temperature.
     
     # load object 'ACLIMsurveyrep'
     load(file.path(main,Rdata_path,fl))   
-    
-    # Collate mean values across timeperiods and simulations
-    # -------------------------------------------------------
-    m_set      <- c(9,7,8)
-    ms         <- aclim[m_set]
-    
+     
     # create local rdata files (opt 1)
     if(!file.exists(fl))
       get_l3(web_nc = TRUE, download_nc = F,
           varlist = vl,sim_list =sim )
     
+    
+     # Collate mean values across timeperiods and simulations
+    # -------------------------------------------------------
+    m_set      <- c(9,7,8)
+    ms         <- aclim[m_set]
+   
+    
+    # Loop over model set
+    for(sim in ms){
+     fl         <- file.path(sim,paste0(srvy_txt,sim,".Rdata"))
+     
+    if(!file.exists( file.path(Rdata_path,fl)) )
+      get_l3(web_nc = TRUE, download_nc = F,
+          varlist = vl,sim_list =sim )
+    }
+      
     # get the mean values for the time blocks from the rdata versions
     # will throw "implicit NA" errors that can be ignored
     mn_var_all <- get_mn_rd(modset = ms ,varUSE="temp_bottom5m")
@@ -1088,8 +1097,8 @@ values outside of the survey area.
 ### 3.2.2 Custom spatial indices
 
 ``` r
-    # define four time periods
-    time_seg   <- list( '2010-2020' = c(2010:2020),
+   # define four time periods
+    time_seg   <- list( '2010-2020' = c(2000:2020),
                         '2021-2040' = c(2021:2040),
                         '2041-2060' = c(2041:2060),
                         '2061-2080' = c(2061:2080),
@@ -1145,7 +1154,7 @@ values outside of the survey area.
                        longitude = as.vector(temp$lon),
                        val = as.vector(temp$val[,,i]),
                        time = temp$time[i],
-                       year = substr( temp$time[i],1,4)
+                       year = substr( temp$time[i],1,4),stringsAsFactors = F
                        )
     for(i in 2:dim(temp$val)[3])
       data_long <- rbind(data_long,
@@ -1153,7 +1162,7 @@ values outside of the survey area.
                            longitude = as.vector(temp$lon),
                            val = as.vector(temp$val[,,i]),
                            time = temp$time[i],
-                           year = substr( temp$time[i],1,4))
+                           year = substr( temp$time[i],1,4),stringsAsFactors = F)
                        )
     
     
@@ -1162,7 +1171,7 @@ values outside of the survey area.
     tmp_var <-data_long # get mean var val for each time segment
     j<-0
     for(i in 1:length(time_seg)){
-      if(length(which(tmp_var$year%in%time_seg[[i]]))>0){
+      if(length( which(as.numeric(tmp_var$year)%in%time_seg[[i]] ))>0){
         j <- j +1
          mn_tmp_var <- tmp_var%>%
           filter(year%in%time_seg[[i]],!is.na(val))%>%

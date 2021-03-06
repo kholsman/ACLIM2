@@ -146,7 +146,7 @@ Kirstin Holsman\\
 Alaska Fisheries Science Center\\
 NOAA Fisheries, Seattle WA\\
 \textbf{\url{kirstin.holsman@noaa.gov}}~\\
-\emph{Last updated: Mar 05, 2021}
+\emph{Last updated: Mar 06, 2021}
 
 \hypertarget{aclim-code-and-online-repo-and-romsnpz-data-overview}{%
 \section{1. ACLIM code and online repo and ROMSNPZ data
@@ -649,6 +649,7 @@ projections.
 \begin{Highlighting}[]
     \CommentTok{# --------------------------------------}
     \CommentTok{# SETUP WORKSPACE}
+    \KeywordTok{rm}\NormalTok{(}\DataTypeTok{list=}\KeywordTok{ls}\NormalTok{())}
 \NormalTok{    tmstp  <-}\StringTok{ }\KeywordTok{format}\NormalTok{(}\KeywordTok{Sys.time}\NormalTok{(), }\StringTok{"%Y_%m_%d"}\NormalTok{)}
 \NormalTok{    main   <-}\StringTok{ }\KeywordTok{getwd}\NormalTok{()  }\CommentTok{#"~/GitHub_new/ACLIM2}
     \KeywordTok{source}\NormalTok{(}\StringTok{"R/make.R"}\NormalTok{)}
@@ -1027,9 +1028,6 @@ First run the below set of code to set up the workspace:
 \NormalTok{    public    }\CommentTok{# published runs (CMIP5)}
     
     \CommentTok{# get some info about a scenario:}
-  
-\NormalTok{    all_info1 <-}\StringTok{ }\KeywordTok{info}\NormalTok{(}\DataTypeTok{model_list=}\NormalTok{aclim,}\DataTypeTok{type=}\DecValTok{1}\NormalTok{)}
-\NormalTok{    all_info2 <-}\StringTok{ }\KeywordTok{info}\NormalTok{(}\DataTypeTok{model_list=}\NormalTok{aclim,}\DataTypeTok{type=}\DecValTok{2}\NormalTok{)}
 \NormalTok{    all_info1}
 \NormalTok{    all_info2}
    
@@ -1114,17 +1112,28 @@ plot bottom temperature.
     
     \CommentTok{# load object 'ACLIMsurveyrep'}
     \KeywordTok{load}\NormalTok{(}\KeywordTok{file.path}\NormalTok{(main,Rdata_path,fl))   }
-    
-    \CommentTok{# Collate mean values across timeperiods and simulations}
-    \CommentTok{# -------------------------------------------------------}
-\NormalTok{    m_set      <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{9}\NormalTok{,}\DecValTok{7}\NormalTok{,}\DecValTok{8}\NormalTok{)}
-\NormalTok{    ms         <-}\StringTok{ }\NormalTok{aclim[m_set]}
-    
+     
     \CommentTok{# create local rdata files (opt 1)}
     \ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{file.exists}\NormalTok{(fl))}
       \KeywordTok{get_l3}\NormalTok{(}\DataTypeTok{web_nc =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{download_nc =}\NormalTok{ F,}
           \DataTypeTok{varlist =}\NormalTok{ vl,}\DataTypeTok{sim_list =}\NormalTok{sim )}
     
+    
+     \CommentTok{# Collate mean values across timeperiods and simulations}
+    \CommentTok{# -------------------------------------------------------}
+\NormalTok{    m_set      <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{9}\NormalTok{,}\DecValTok{7}\NormalTok{,}\DecValTok{8}\NormalTok{)}
+\NormalTok{    ms         <-}\StringTok{ }\NormalTok{aclim[m_set]}
+   
+    
+    \CommentTok{# Loop over model set}
+    \ControlFlowTok{for}\NormalTok{(sim }\ControlFlowTok{in}\NormalTok{ ms)\{}
+\NormalTok{     fl         <-}\StringTok{ }\KeywordTok{file.path}\NormalTok{(sim,}\KeywordTok{paste0}\NormalTok{(srvy_txt,sim,}\StringTok{".Rdata"}\NormalTok{))}
+     
+    \ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{file.exists}\NormalTok{( }\KeywordTok{file.path}\NormalTok{(Rdata_path,fl)) )}
+      \KeywordTok{get_l3}\NormalTok{(}\DataTypeTok{web_nc =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{download_nc =}\NormalTok{ F,}
+          \DataTypeTok{varlist =}\NormalTok{ vl,}\DataTypeTok{sim_list =}\NormalTok{sim )}
+\NormalTok{    \}}
+      
     \CommentTok{# get the mean values for the time blocks from the rdata versions}
     \CommentTok{# will throw "implicit NA" errors that can be ignored}
 \NormalTok{    mn_var_all <-}\StringTok{ }\KeywordTok{get_mn_rd}\NormalTok{(}\DataTypeTok{modset =}\NormalTok{ ms ,}\DataTypeTok{varUSE=}\StringTok{"temp_bottom5m"}\NormalTok{)}
@@ -1449,8 +1458,8 @@ indices}\label{custom-spatial-indices}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-    \CommentTok{# define four time periods}
-\NormalTok{    time_seg   <-}\StringTok{ }\KeywordTok{list}\NormalTok{( }\StringTok{'2010-2020'}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{2010}\OperatorTok{:}\DecValTok{2020}\NormalTok{),}
+   \CommentTok{# define four time periods}
+\NormalTok{    time_seg   <-}\StringTok{ }\KeywordTok{list}\NormalTok{( }\StringTok{'2010-2020'}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{2000}\OperatorTok{:}\DecValTok{2020}\NormalTok{),}
                         \StringTok{'2021-2040'}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{2021}\OperatorTok{:}\DecValTok{2040}\NormalTok{),}
                         \StringTok{'2041-2060'}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{2041}\OperatorTok{:}\DecValTok{2060}\NormalTok{),}
                         \StringTok{'2061-2080'}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{2061}\OperatorTok{:}\DecValTok{2080}\NormalTok{),}
@@ -1506,7 +1515,7 @@ indices}\label{custom-spatial-indices}}
                        \DataTypeTok{longitude =} \KeywordTok{as.vector}\NormalTok{(temp}\OperatorTok{$}\NormalTok{lon),}
                        \DataTypeTok{val =} \KeywordTok{as.vector}\NormalTok{(temp}\OperatorTok{$}\NormalTok{val[,,i]),}
                        \DataTypeTok{time =}\NormalTok{ temp}\OperatorTok{$}\NormalTok{time[i],}
-                       \DataTypeTok{year =} \KeywordTok{substr}\NormalTok{( temp}\OperatorTok{$}\NormalTok{time[i],}\DecValTok{1}\NormalTok{,}\DecValTok{4}\NormalTok{)}
+                       \DataTypeTok{year =} \KeywordTok{substr}\NormalTok{( temp}\OperatorTok{$}\NormalTok{time[i],}\DecValTok{1}\NormalTok{,}\DecValTok{4}\NormalTok{),}\DataTypeTok{stringsAsFactors =}\NormalTok{ F}
 \NormalTok{                       )}
     \ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \DecValTok{2}\OperatorTok{:}\KeywordTok{dim}\NormalTok{(temp}\OperatorTok{$}\NormalTok{val)[}\DecValTok{3}\NormalTok{])}
 \NormalTok{      data_long <-}\StringTok{ }\KeywordTok{rbind}\NormalTok{(data_long,}
@@ -1514,7 +1523,7 @@ indices}\label{custom-spatial-indices}}
                            \DataTypeTok{longitude =} \KeywordTok{as.vector}\NormalTok{(temp}\OperatorTok{$}\NormalTok{lon),}
                            \DataTypeTok{val =} \KeywordTok{as.vector}\NormalTok{(temp}\OperatorTok{$}\NormalTok{val[,,i]),}
                            \DataTypeTok{time =}\NormalTok{ temp}\OperatorTok{$}\NormalTok{time[i],}
-                           \DataTypeTok{year =} \KeywordTok{substr}\NormalTok{( temp}\OperatorTok{$}\NormalTok{time[i],}\DecValTok{1}\NormalTok{,}\DecValTok{4}\NormalTok{))}
+                           \DataTypeTok{year =} \KeywordTok{substr}\NormalTok{( temp}\OperatorTok{$}\NormalTok{time[i],}\DecValTok{1}\NormalTok{,}\DecValTok{4}\NormalTok{),}\DataTypeTok{stringsAsFactors =}\NormalTok{ F)}
 \NormalTok{                       )}
     
     
@@ -1523,7 +1532,7 @@ indices}\label{custom-spatial-indices}}
 \NormalTok{    tmp_var <-data_long }\CommentTok{# get mean var val for each time segment}
 \NormalTok{    j<-}\DecValTok{0}
     \ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\KeywordTok{length}\NormalTok{(time_seg))\{}
-      \ControlFlowTok{if}\NormalTok{(}\KeywordTok{length}\NormalTok{(}\KeywordTok{which}\NormalTok{(tmp_var}\OperatorTok{$}\NormalTok{year}\OperatorTok{%in%}\NormalTok{time_seg[[i]]))}\OperatorTok{>}\DecValTok{0}\NormalTok{)\{}
+      \ControlFlowTok{if}\NormalTok{(}\KeywordTok{length}\NormalTok{( }\KeywordTok{which}\NormalTok{(}\KeywordTok{as.numeric}\NormalTok{(tmp_var}\OperatorTok{$}\NormalTok{year)}\OperatorTok{%in%}\NormalTok{time_seg[[i]] ))}\OperatorTok{>}\DecValTok{0}\NormalTok{)\{}
 \NormalTok{        j <-}\StringTok{ }\NormalTok{j }\OperatorTok{+}\DecValTok{1}
 \NormalTok{         mn_tmp_var <-}\StringTok{ }\NormalTok{tmp_var}\OperatorTok{%>%}
 \StringTok{          }\KeywordTok{filter}\NormalTok{(year}\OperatorTok{%in%}\NormalTok{time_seg[[i]],}\OperatorTok{!}\KeywordTok{is.na}\NormalTok{(val))}\OperatorTok{%>%}

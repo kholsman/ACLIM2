@@ -93,5 +93,5 @@ all_info2 <- info(model_list=aclim,type=2)
 
 save(list=c("region_area","weekly_vars","weekly_nvar","weekly_var_def","srvy_var_def","weekly_strata","weekly_t",
             "all_info1","all_info2",
-       "srvy_vars","srvy_nvar","srvy_station_num","srvy_nstations","srvy_yrs","station_info"),file="Data/in/base_data.Rdata")
+       "srvy_vars","srvy_nvar","srvy_station_num","srvy_nstations","srvy_yrs","station_info"),file="Data/shared/base_data.Rdata")
 
