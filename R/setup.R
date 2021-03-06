@@ -42,7 +42,7 @@
     if(!dir.exists(file.path(local_fl,remote_fl)))   
       dir.create(file.path(local_fl,remote_fl))
     
-    mapdata_path     <- "Data/in/Map_layers"
+    mapdata_path     <- file.path(main,"Data/in/Map_layers")
     geotif_dir       <- "Data/in/Map_layers/geo_tif"
     shp_dir          <- "Data/in/Map_layers/shp_files"
     Rdata_path       <- "Data/in/Newest/Rdata"
