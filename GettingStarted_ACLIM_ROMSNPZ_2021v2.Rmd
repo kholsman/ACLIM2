@@ -592,17 +592,28 @@ Now let's explore the survey replicated data in more detail and use to plot bott
     
     # load object 'ACLIMsurveyrep'
     load(file.path(main,Rdata_path,fl))   
-    
-    # Collate mean values across timeperiods and simulations
-    # -------------------------------------------------------
-    m_set      <- c(9,7,8)
-    ms         <- aclim[m_set]
-    
+     
     # create local rdata files (opt 1)
     if(!file.exists(fl))
       get_l3(web_nc = TRUE, download_nc = F,
           varlist = vl,sim_list =sim )
     
+    
+     # Collate mean values across timeperiods and simulations
+    # -------------------------------------------------------
+    m_set      <- c(9,7,8)
+    ms         <- aclim[m_set]
+   
+    
+    # Loop over model set
+    for(sim in ms){
+     fl         <- file.path(sim,paste0(srvy_txt,sim,".Rdata"))
+     
+    if(!file.exists( file.path(Rdata_path,fl)) )
+      get_l3(web_nc = TRUE, download_nc = F,
+          varlist = vl,sim_list =sim )
+    }
+      
     # get the mean values for the time blocks from the rdata versions
     # will throw "implicit NA" errors that can be ignored
     mn_var_all <- get_mn_rd(modset = ms ,varUSE="temp_bottom5m")
@@ -881,8 +892,8 @@ Level 2 data can be explored in the same way as the above indices but we will fo
 ### 3.2.2 Custom spatial indices 
 ```{r explore_L2_space, eval=F, echo=T}
     
-    # define four time periods
-    time_seg   <- list( '2010-2020' = c(2010:2020),
+   # define four time periods
+    time_seg   <- list( '2010-2020' = c(2000:2020),
                         '2021-2040' = c(2021:2040),
                         '2041-2060' = c(2041:2060),
                         '2061-2080' = c(2061:2080),
@@ -938,7 +949,7 @@ Level 2 data can be explored in the same way as the above indices but we will fo
                        longitude = as.vector(temp$lon),
                        val = as.vector(temp$val[,,i]),
                        time = temp$time[i],
-                       year = substr( temp$time[i],1,4)
+                       year = substr( temp$time[i],1,4),stringsAsFactors = F
                        )
     for(i in 2:dim(temp$val)[3])
       data_long <- rbind(data_long,
@@ -946,7 +957,7 @@ Level 2 data can be explored in the same way as the above indices but we will fo
                            longitude = as.vector(temp$lon),
                            val = as.vector(temp$val[,,i]),
                            time = temp$time[i],
-                           year = substr( temp$time[i],1,4))
+                           year = substr( temp$time[i],1,4),stringsAsFactors = F)
                        )
     
     
@@ -955,7 +966,7 @@ Level 2 data can be explored in the same way as the above indices but we will fo
     tmp_var <-data_long # get mean var val for each time segment
     j<-0
     for(i in 1:length(time_seg)){
-      if(length(which(tmp_var$year%in%time_seg[[i]]))>0){
+      if(length( which(as.numeric(tmp_var$year)%in%time_seg[[i]] ))>0){
         j <- j +1
          mn_tmp_var <- tmp_var%>%
           filter(year%in%time_seg[[i]],!is.na(val))%>%
