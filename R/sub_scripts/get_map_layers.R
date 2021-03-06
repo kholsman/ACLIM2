@@ -47,7 +47,7 @@
     if(!dir.exists(file.path(mapdata_path,tmp_fldr,"CNTR_RG_03M_2014/CNTR_RG_03M_2014.shp"))){
       getZip( 
         url     = "https://dominicroye.github.io/files/CNTR_RG_03M_2014.zip",
-        destfile = file.path( tmp_fldr,"CNTR_RG_03M_2014.zip") )
+        destfile = file.path( tmp_fldr,"CNTR_RG_03M_2014/CNTR_RG_03M_2014.zip") )
     }
    
     
@@ -65,14 +65,16 @@
     for(nn in c(10,50,110) ){
       
       nm       <-  paste0(nn,"m/physical/",nn,"m_physical.zip")
-      outfl    <-  paste0("natural_earth_vector/",nn,"m_physical.zip")
+      #outfl    <-  paste0("natural_earth_vector/",nn,"m_physical.zip")
       
       if(!dir.exists(file.path(tmp_fldr,paste0("natural_earth_vector/",nn,"m_physical/ne_",nn,"m_coastline.shp")  )))
         if(!dir.exists(file.path(tmp_fldr,paste0("natural_earth_vector/",nn,"m_physical")  )))
-          dir.create(file.path(tmp_fldr,paste0("natural_earth_vector/",nn,"m_physical")  ))
           
+          dir.create(file.path(tmp_fldr,paste0("natural_earth_vector/",nn,"m_physical")  ))
+          outfl    <-  paste0("natural_earth_vector/",nn,"m_physical/",nn,"m_physical.zip")
+      
           getZip( url = paste0(base_url,nm), destfile = file.path(tmp_fldr,outfl) )
-    }
+      }
  
     # natural earth shp downloads:
     # ---------------------------------
