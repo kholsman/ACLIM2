@@ -56,7 +56,7 @@
     # https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/50m/physical/50m_physical.zip
     # https://www.naturalearthdata.com/http//www.naturalearthdata.com/download/110m/physical/110m_physical.zip
     
-    for(nn in c(10.50,110) ){
+    for(nn in c(10,50,110) ){
       
       nm       <-  paste0(nn,"m/physical/",nn,"m_physical.zip")
       outfl    <-  paste0("natural_earth_vector/",nn,"m_physical.zip")
