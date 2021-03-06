@@ -5,7 +5,7 @@ get_level2<- function(ncIN,
                       varIN,
                       xi_range  = 1:182,  # 182
                       eta_range = 1:258,  # 258
-                      origin = originIN,
+                      originIN = originIN,
                       time_range  = c("2006-01-22 12:00:00 GMT","2006-02-05 12:00:00 GMT")){
   
     # get the number of dimensions (time is often the last one)
@@ -13,7 +13,7 @@ get_level2<- function(ncIN,
     
     # convert time_range to POSIXct
     time_range <- as.POSIXct(time_range,
-                             origin =   origin,
+                             origin =   originIN,
                              tz = "GMT")
     
     # get time variable from .nc file

@@ -263,6 +263,7 @@ First let's get the workspace set up, will we step through an example downloadin
 
     # --------------------------------------
     # SETUP WORKSPACE
+    rm(list=ls())
     tmstp  <- format(Sys.time(), "%Y_%m_%d")
     main   <- getwd()  #"~/GitHub_new/ACLIM2
     source("R/make.R")
@@ -514,9 +515,6 @@ First run the below set of code to set up the workspace:
     public    # published runs (CMIP5)
     
     # get some info about a scenario:
-  
-    all_info1 <- info(model_list=aclim,type=1)
-    all_info2 <- info(model_list=aclim,type=2)
     all_info1
     all_info2
    
