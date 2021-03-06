@@ -28,7 +28,7 @@
     #http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/raster/OB_LR.zip
     # /Users/kholsman/GitHub_new/ACLIM2/Data/in/Map_layers/geo_tif/OB_LR
     
-    if(!file.exists(file.path(mapdata_path,"geo_tif/OB_LR") )){
+    if(!file.exists(file.path(mapdata_path,"geo_tif/OB_LR/OB_LR.tif") )){
       
        getZip( 
          urlIN = "http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/raster/OB_LR.zip", 
@@ -43,7 +43,7 @@
     #C NTR_RG_03M_2014
     
     tmp_fldr <-  file.path(mapdata_path,"shp_files/global")
-    if(!dir.exists(file.path(mapdata_path,tmp_fldr,"CNTR_RG_03M_2014"))){
+    if(!dir.exists(file.path(mapdata_path,tmp_fldr,"CNTR_RG_03M_2014/CNTR_RG_03M_2014.shp"))){
       getZip( 
         url     = "https://dominicroye.github.io/files/CNTR_RG_03M_2014.zip",
         destfile = file.path( tmp_fldr,"CNTR_RG_03M_2014.zip") )
@@ -66,7 +66,7 @@
       nm       <-  paste0(nn,"m/physical/",nn,"m_physical.zip")
       outfl    <-  paste0("natural_earth_vector/",nn,"m_physical.zip")
       
-      if(!dir.exists(file.path(tmp_fldr,paste0("natural_earth_vector/",nn,"m_physical")  )))
+      if(!dir.exists(file.path(tmp_fldr,paste0("natural_earth_vector/",nn,"m_physical/ne_",nn,"m_coastline.shp")  )))
         getZip( url = paste0(base_url,nm), destfile = file.path(tmp_fldr,outfl) )
     }
  
@@ -78,7 +78,7 @@
     tmpnms <- c("ne_10m_bathymetry_K_200","ne_10m_bathymetry_J_1000")
    
     for(nm in tmpnms){
-      if(!dir.exists( file.path( tmp_fldr,nm)   ) )
+      if(!dir.exists( file.path( tmp_fldr,paste0(nm,"/",nm,".shp"))   ) )
            getZip( url = paste0(base_url,paste0(nm,".zip" )),
                    destfile = file.path( tmp_fldr,paste0(nm,".zip" )) )
     }
