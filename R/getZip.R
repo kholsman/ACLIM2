@@ -17,8 +17,7 @@ getZip <- function(url,destfile,deletezip=T){
   
   setwd(tmp_wd)
   # cleanup
-  if(deletezip)
-    file.remove(destfile)
+  if(deletezip)  file.remove(destfile)
   
   
 }

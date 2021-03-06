@@ -28,7 +28,14 @@
     #http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/raster/OB_LR.zip
     # /Users/kholsman/GitHub_new/ACLIM2/Data/in/Map_layers/geo_tif/OB_LR
     
-    if(!file.exists(file.path(mapdata_path,"geo_tif/OB_LR") ))
+    if(!file.exists(file.path(mapdata_path,"geo_tif/OB_LR") )){
+       url       <- "http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/raster/OB_LR.zip" 
+       destfile  <- file.path(mapdata_path,"geo_tif/OB_LR.zip") 
+       source("R/getZip2.R")
+      
+    }
+    
+    # getZip function keeps dumping things in the main dir; not
       getZip( url = "http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/raster/OB_LR.zip", 
               destfile = file.path(mapdata_path,"geo_tif/OB_LR.zip") )
       
