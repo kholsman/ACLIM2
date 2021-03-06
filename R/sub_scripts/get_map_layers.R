@@ -6,6 +6,7 @@
     # ---------------------------------
     fldrs<-c(file.path(mapdata_path,"shp_files"),
              file.path(mapdata_path,"shp_files/global"),
+             file.path(mapdata_path,"shp_files/global/CNTR_RG_03M_2014"),
              file.path(mapdata_path,"shp_files/global/natural_earth_vector"),
              file.path(mapdata_path,"geo_tif"),
              file.path(mapdata_path,"geo_tif/OB_LR"))
@@ -67,7 +68,10 @@
       outfl    <-  paste0("natural_earth_vector/",nn,"m_physical.zip")
       
       if(!dir.exists(file.path(tmp_fldr,paste0("natural_earth_vector/",nn,"m_physical/ne_",nn,"m_coastline.shp")  )))
-        getZip( url = paste0(base_url,nm), destfile = file.path(tmp_fldr,outfl) )
+        if(!dir.exists(file.path(tmp_fldr,paste0("natural_earth_vector/",nn,"m_physical")  )))
+          dir.create(file.path(tmp_fldr,paste0("natural_earth_vector/",nn,"m_physical")  ))
+          
+          getZip( url = paste0(base_url,nm), destfile = file.path(tmp_fldr,outfl) )
     }
  
     # natural earth shp downloads:
