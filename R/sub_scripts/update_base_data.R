@@ -88,6 +88,10 @@ station_info$subregion[station_info$stratum%in%NEBS_strata]<-"NEBS"
 station_info$stratum <- factor(station_info$stratum, levels=sort(unique(station_info$stratum)))
 nc_close(nc)
 
+all_info1 <- info(model_list=aclim,type=1)
+all_info2 <- info(model_list=aclim,type=2)
+
 save(list=c("region_area","weekly_vars","weekly_nvar","weekly_var_def","srvy_var_def","weekly_strata","weekly_t",
+            "all_info1","all_info2",
        "srvy_vars","srvy_nvar","srvy_station_num","srvy_nstations","srvy_yrs","station_info"),file="Data/in/base_data.Rdata")
 

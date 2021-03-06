@@ -59,13 +59,33 @@
     reg_txt   <- "Level3/ACLIMregion_"
     srvy_txt  <- "Level3/ACLIMsurveyrep_"
     dirlist    <- dir(data_path)
+    dirlist    <- aclim <- c(
+    "B10K-H16_CMIP5_CESM_BIO_rcp85"  ,  
+     "B10K-H16_CMIP5_CESM_rcp45"       ,  
+     "B10K-H16_CMIP5_CESM_rcp85"        , 
+     "B10K-H16_CMIP5_GFDL_BIO_rcp85"     ,
+     "B10K-H16_CMIP5_GFDL_rcp45"         ,
+     "B10K-H16_CMIP5_GFDL_rcp85"         ,
+     "B10K-H16_CMIP5_MIROC_rcp45"        ,
+     "B10K-H16_CMIP5_MIROC_rcp85"        ,
+     "B10K-H16_CORECFS"                  ,
+     "B10K-K20_CORECFS"                  ,
+     "B10K-K20P19_CMIP6_cesm_historical" ,
+     "B10K-K20P19_CMIP6_cesm_ssp126"     ,
+     "B10K-K20P19_CMIP6_cesm_ssp585"     ,
+     "B10K-K20P19_CMIP6_gfdl_historical" ,
+     "B10K-K20P19_CMIP6_gfdl_ssp126"     ,
+     "B10K-K20P19_CMIP6_gfdl_ssp585"     ,
+    "B10K-K20P19_CMIP6_miroc_historical",
+    "B10K-K20P19_CMIP6_miroc_ssp126"    ,
+   "B10K-K20P19_CMIP6_miroc_ssp585" )
     embargo_n  <- grep("CMIP6",dirlist)
     public_n   <- grep ("B10K-H16_",dirlist)
     pilcher    <- grep("B10K-K20P19_CMIP5",dirlist)
     nobio      <- grep("nobio",dirlist)
-    aclim      <- dirlist
     public     <- dirlist[-c(pilcher,nobio,embargo_n)]
     embargoed  <- dirlist[embargo_n]
+    
     
     # Return some flags:
     #-------------------------------------------
