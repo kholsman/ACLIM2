@@ -9,6 +9,7 @@
 lib_list <- c(
   # these for reshaping and manipulating data:
     "ncdf4",
+    "devtools",
    # "ncfd",
    "magrittr",
     "httr",
@@ -53,7 +54,15 @@ if (length(missing) > 0) install.packages(missing)
 for(lib in lib_list)
        eval(parse(text=paste("library(",lib,")")))
 
-missing <- setdiff("thredds", installed.packages()[, 1])
+## same for git libraries
+lib_list_git <- c(
+  "thredds")
+
+missing <- setdiff(lib_list_git, installed.packages()[, 1])
+
 if (length(missing) > 0) devtools::install_github("bocinsky/thredds")
-library("thredds")
+
+# Load libraries:
+for(lib in lib_list_git)
+  eval(parse(text=paste("library(",lib,")")))
 
