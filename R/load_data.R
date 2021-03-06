@@ -15,7 +15,7 @@
   load(file.path(shareddata_path,"base_data.Rdata"))
   
   if(load_gis){
-    source("R/Get_map_layers.R")
+    source("R/sub_scripts/Get_map_layers.R")
     #_______________________________________
     # Read base map layers
     #_______________________________________
