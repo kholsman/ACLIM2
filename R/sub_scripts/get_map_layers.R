@@ -85,7 +85,7 @@
    
     for(nm in tmpnms){
       if(!dir.exists( file.path( tmp_fldr,paste0(nm,"/",nm,".shp"))   ) )
-        dir.create( file.path( tmp_fldr ) ) 
+        dir.create( file.path( tmp_fldr,nm ) ) 
            getZip( url = paste0(base_url,paste0(nm,".zip" )),
                    destfile = file.path( tmp_fldr,nm,paste0(nm,".zip" )) )
     }
