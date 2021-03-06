@@ -146,7 +146,7 @@ Kirstin Holsman\\
 Alaska Fisheries Science Center\\
 NOAA Fisheries, Seattle WA\\
 \textbf{\url{kirstin.holsman@noaa.gov}}~\\
-\emph{Last updated: Mar 03, 2021}
+\emph{Last updated: Mar 05, 2021}
 
 \hypertarget{aclim-code-and-online-repo-and-romsnpz-data-overview}{%
 \section{1. ACLIM code and online repo and ROMSNPZ data
@@ -224,7 +224,7 @@ CMIP & GCM & Scenario & Def & Years & Model & Source & Status
 &\tabularnewline
 \midrule
 \endhead
-& CORECFS & Reanalysis & Hindcast & 1970 - 2018 & H16 & FATE/IEA/ACLIM &
+& CORECFS & Reanalysis & Hindcast & 1970 - 2018 & H16 & IEA/ACLIM &
 Public &\tabularnewline
 & CORECFS & Reanalysis & Hindcast & 1970 - 2020 & K20 & MAPP/IEA/ACLIM &
 Public &\tabularnewline
@@ -816,6 +816,16 @@ year:
 
 \begin{Shaded}
 \begin{Highlighting}[]
+   \CommentTok{# Currently available Level 2 variables}
+\NormalTok{    dl     <-}\StringTok{ }\NormalTok{proj_l2_datasets}\OperatorTok{$}\NormalTok{dataset  }\CommentTok{# datasets}
+
+   \CommentTok{# variable list}
+\NormalTok{   svl <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}
+          \StringTok{'Bottom 5m'}\NormalTok{ =}\StringTok{ "temp"}\NormalTok{,}
+          \StringTok{'Surface 5m'}\NormalTok{ =}\StringTok{ "temp"}\NormalTok{,}
+          \StringTok{'Integrated'}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"EupS"}\NormalTok{,}\StringTok{"Cop"}\NormalTok{,}\StringTok{"NCaS"}\NormalTok{) ) }
+       
+    
     \CommentTok{# preview the variables, timesteps, and lat lon in each dataset:}
 \NormalTok{    l2_info <-}\StringTok{ }\KeywordTok{scan_l2}\NormalTok{(}\DataTypeTok{ds_list =}\NormalTok{ dl,}\DataTypeTok{sim_list =} \StringTok{"B10K-H16_CORECFS"}\NormalTok{ )}
     
@@ -919,6 +929,13 @@ section 3.2.3)
 \begin{Highlighting}[]
     \CommentTok{# preview the available CMIP6 data}
     \KeywordTok{dir}\NormalTok{(}\KeywordTok{file.path}\NormalTok{(local_fl,}\StringTok{"roms_for_aclim"}\NormalTok{))}
+    
+    \CommentTok{# variable list}
+\NormalTok{    vl        <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}
+                  \StringTok{"temp_bottom5m"}\NormalTok{,}
+                  \StringTok{"NCaS_integrated"}\NormalTok{, }\CommentTok{# Large Cop}
+                  \StringTok{"Cop_integrated"}\NormalTok{,  }\CommentTok{# Small Cop}
+                  \StringTok{"EupS_integrated"}\NormalTok{) }\CommentTok{# Euphausiids}
 
   \CommentTok{# define the simulation to download:}
 \NormalTok{    cmip <-}\StringTok{ "CMIP6"}     \CommentTok{# Coupled Model Intercomparison Phase}
@@ -1187,7 +1204,7 @@ scenario folder.
 \StringTok{     }\KeywordTok{geom_line}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{time,}\DataTypeTok{y=}\NormalTok{val,}\DataTypeTok{color=}\NormalTok{ strata),}\DataTypeTok{alpha=}\NormalTok{.}\DecValTok{8}\NormalTok{)}\OperatorTok{+}
 \StringTok{     }\KeywordTok{facet_grid}\NormalTok{(basin}\OperatorTok{~}\NormalTok{.)}\OperatorTok{+}
 \StringTok{     }\KeywordTok{ylab}\NormalTok{(tmp_var}\OperatorTok{$}\NormalTok{units[}\DecValTok{1}\NormalTok{])}\OperatorTok{+}
-\StringTok{     }\KeywordTok{ggtitle}\NormalTok{( }\KeywordTok{paste}\NormalTok{(sim,mn_NEBS}\OperatorTok{$}\NormalTok{var[}\DecValTok{1}\NormalTok{]))}\OperatorTok{+}
+\StringTok{     }\KeywordTok{ggtitle}\NormalTok{( }\KeywordTok{paste}\NormalTok{(sim,tmp_var}\OperatorTok{$}\NormalTok{var[}\DecValTok{1}\NormalTok{]))}\OperatorTok{+}
 \StringTok{     }\KeywordTok{theme_minimal}\NormalTok{()}
 \NormalTok{   p4}
     \ControlFlowTok{if}\NormalTok{(update.figs)  }\KeywordTok{ggsave}\NormalTok{(}\DataTypeTok{file=}\KeywordTok{file.path}\NormalTok{(main,}\StringTok{"Figs/weekly_bystrata.jpg"}\NormalTok{),}\DataTypeTok{width=}\DecValTok{8}\NormalTok{,}\DataTypeTok{height=}\DecValTok{5}\NormalTok{)}
@@ -1337,8 +1354,8 @@ variable:
     \CommentTok{# To get the average value for a set of strata, weight the val by the area: (slow...)}
 \NormalTok{    mn_NEBS_season <-}\StringTok{ }\KeywordTok{getAVGnSUM}\NormalTok{(}
       \DataTypeTok{strataIN =}\NormalTok{ NEBS_strata,}
-      \DataTypeTok{dataIN =}\NormalTok{ tmp_var,}
-      \DataTypeTok{tblock=}\KeywordTok{c}\NormalTok{(}\StringTok{"yr"}\NormalTok{,}\StringTok{"mo"}\NormalTok{))}
+      \DataTypeTok{dataIN   =}\NormalTok{ tmp_var,}
+      \DataTypeTok{tblock   =} \KeywordTok{c}\NormalTok{(}\StringTok{"yr"}\NormalTok{,}\StringTok{"mo"}\NormalTok{))}
 \NormalTok{    mn_NEBS_season}\OperatorTok{$}\NormalTok{basin =}\StringTok{ "NEBS"}
 \NormalTok{    mn_SEBS_season <-}\StringTok{ }\KeywordTok{getAVGnSUM}\NormalTok{(}
       \DataTypeTok{strataIN =}\NormalTok{ SEBS_strata, }

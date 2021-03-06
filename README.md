@@ -2,9 +2,9 @@
 <!-- include_graphics("Figs/ACLIM_logo.jpg") -->
 <!-- ``` -->
 
-<!-- <figure>
-<img src="Figs/ACLIM_logo.jpg" style="width:2.0%" alt="" /><figcaption>.</figcaption>
-</figure> -->
+<figure>
+<img src="Figs/ACLIM_logo.jpg" style="width:20.0%" alt="" /><figcaption>.</figcaption>
+</figure>
 
 [**ACLIM Repo:
 github.com/kholsman/ACLIM2**](https://github.com/kholsman/ACLIM2 "ACLIM2 Repo")  
@@ -13,7 +13,7 @@ Kirstin Holsman
 Alaska Fisheries Science Center  
 NOAA Fisheries, Seattle WA  
 **[kirstin.holsman@noaa.gov](kirstin.holsman@noaa.gov)**  
-*Last updated: Mar 03, 2021*
+*Last updated: Mar 05, 2021*
 
 1. ACLIM code and online repo and ROMSNPZ data overview
 =======================================================
@@ -75,27 +75,27 @@ details see the Kearney 2021 Tech. Memo.
 
 ### Table 1: Summary of ROMSNPZ downscaled model runs
 
-| CMIP | GCM     | Scenario     | Def             | Years       | Model  | Source      | Status  |     |
-|------|---------|--------------|-----------------|-------------|--------|-------------|---------|-----|
-| 5    | GFDL    | RCP 4.5      | Med. mitigation | 2006 - 2099 | H16    | ACLIM/FATE  | Public  |     |
-| 5    | GFDL    | RCP 8.5      | High baseline   | 2006 - 2099 | H16    | ACLIM/FATE  | Public  |     |
-| 5    | GFDL    | RCP 8.5bio\* | High baseline   | 2006 - 2099 | H16    | ACLIM/FATE  | Public  |     |
-| 5    | MIROC   | RCP 4.5      | Med. mitigation | 2006 - 2099 | H16    | ACLIM/FATE  | Public  |     |
-| 5    | MIROC   | RCP 8.5      | High baseline   | 2006 - 2099 | H16    | ACLIM/FATE  | Public  |     |
-| 5    | CESM    | RCP 4.5      | Med. mitigation | 2006 - 2099 | H16    | ACLIM/FATE  | Public  |     |
-| 5    | CESM    | RCP 8.5      | High baseline   | 2006 - 2080 | H16    | ACLIM/FATE  | Public  |     |
-| 5    | CESM    | RCP 8.5bio\* | High baseline   | 2006 - 2099 | H16    | ACLIM/FATE  | Public  |     |
-|      | CORECFS | Reanalysis   | Hindcast        | 1970 - 2018 | H16    | ACLIM       | Public  |     |
-|      | CORECFS | Reanalysis   | Hindcast        | 1970 - 2020 | K20    | ACLIM2/RTAP | Public  |     |
-| 6    | CESM    | SSP585       | High baseline   | 2014 - 2099 | K20P19 | ACLIM2/RTAP | Embargo |     |
-| 6    | CESM    | SSP126       | High Mitigation | 2014 - 2099 | K20P19 | ACLIM2/RTAP | Embargo |     |
-| 6    | CESM    | Historical   | Historical      | 1980 - 2014 | K20P19 | ACLIM2/RTAP | Embargo |     |
-| 6    | GFDL    | SSP585       | High baseline   | 2014 - 2099 | K20P19 | ACLIM2/RTAP | Embargo |     |
-| 6    | GFDL    | SSP126       | High Mitigation | 2014 - 2099 | K20P19 | ACLIM2/RTAP | Embargo |     |
-| 6    | GFDL    | Historical   | Historical      | 1980 - 2014 | K20P19 | ACLIM2/RTAP | Embargo |     |
-| 6    | MIROC   | SSP585       | High baseline   | 2014 - 2099 | K20P19 | ACLIM2/RTAP | Embargo |     |
-| 6    | MIROC   | SSP126       | High Mitigation | 2014 - 2099 | K20P19 | ACLIM2/RTAP | Embargo |     |
-| 6    | MIROC   | Historical   | Historical      | 1980 - 2014 | K20P19 | ACLIM2/RTAP | Embargo |     |
+| CMIP | GCM     | Scenario     | Def             | Years       | Model  | Source         | Status  |     |
+|------|---------|--------------|-----------------|-------------|--------|----------------|---------|-----|
+|      | CORECFS | Reanalysis   | Hindcast        | 1970 - 2018 | H16    | IEA/ACLIM      | Public  |     |
+|      | CORECFS | Reanalysis   | Hindcast        | 1970 - 2020 | K20    | MAPP/IEA/ACLIM | Public  |     |
+| 5    | GFDL    | RCP 4.5      | Med. mitigation | 2006 - 2099 | H16    | ACLIM/FATE     | Public  |     |
+| 5    | GFDL    | RCP 8.5      | High baseline   | 2006 - 2099 | H16    | ACLIM/FATE     | Public  |     |
+| 5    | GFDL    | RCP 8.5bio\* | High baseline   | 2006 - 2099 | H16    | ACLIM/FATE     | Public  |     |
+| 5    | MIROC   | RCP 4.5      | Med. mitigation | 2006 - 2099 | H16    | ACLIM/FATE     | Public  |     |
+| 5    | MIROC   | RCP 8.5      | High baseline   | 2006 - 2099 | H16    | ACLIM/FATE     | Public  |     |
+| 5    | CESM    | RCP 4.5      | Med. mitigation | 2006 - 2099 | H16    | ACLIM/FATE     | Public  |     |
+| 5    | CESM    | RCP 8.5      | High baseline   | 2006 - 2080 | H16    | ACLIM/FATE     | Public  |     |
+| 5    | CESM    | RCP 8.5bio\* | High baseline   | 2006 - 2099 | H16    | ACLIM/FATE     | Public  |     |
+| 6    | CESM    | SSP585       | High baseline   | 2014 - 2099 | K20P19 | ACLIM2/RTAP    | Embargo |     |
+| 6    | CESM    | SSP126       | High Mitigation | 2014 - 2099 | K20P19 | ACLIM2/RTAP    | Embargo |     |
+| 6    | CESM    | Historical   | Historical      | 1980 - 2014 | K20P19 | ACLIM2/RTAP    | Embargo |     |
+| 6    | GFDL    | SSP585       | High baseline   | 2014 - 2099 | K20P19 | ACLIM2/RTAP    | Embargo |     |
+| 6    | GFDL    | SSP126       | High Mitigation | 2014 - 2099 | K20P19 | ACLIM2/RTAP    | Embargo |     |
+| 6    | GFDL    | Historical   | Historical      | 1980 - 2014 | K20P19 | ACLIM2/RTAP    | Embargo |     |
+| 6    | MIROC   | SSP585       | High baseline   | 2014 - 2099 | K20P19 | ACLIM2/RTAP    | Embargo |     |
+| 6    | MIROC   | SSP126       | High Mitigation | 2014 - 2099 | K20P19 | ACLIM2/RTAP    | Embargo |     |
+| 6    | MIROC   | Historical   | Historical      | 1980 - 2014 | K20P19 | ACLIM2/RTAP    | Embargo |     |
 
 \*“bio” = nutrient forcing on boundary conditions
 
@@ -520,6 +520,16 @@ re-gridded data), here with an example of sampling on Aug 1 of each
 year:
 
 ``` r
+   # Currently available Level 2 variables
+    dl     <- proj_l2_datasets$dataset  # datasets
+
+   # variable list
+   svl <- list(
+          'Bottom 5m' = "temp",
+          'Surface 5m' = "temp",
+          'Integrated' = c("EupS","Cop","NCaS") ) 
+       
+    
     # preview the variables, timesteps, and lat lon in each dataset:
     l2_info <- scan_l2(ds_list = dl,sim_list = "B10K-H16_CORECFS" )
     
@@ -611,6 +621,13 @@ section 3.2.3)
 ``` r
     # preview the available CMIP6 data
     dir(file.path(local_fl,"roms_for_aclim"))
+    
+    # variable list
+    vl        <- c(
+                  "temp_bottom5m",
+                  "NCaS_integrated", # Large Cop
+                  "Cop_integrated",  # Small Cop
+                  "EupS_integrated") # Euphausiids
 
   # define the simulation to download:
     cmip <- "CMIP6"     # Coupled Model Intercomparison Phase
@@ -852,7 +869,7 @@ values for each variable.These are stored in the
      geom_line(aes(x=time,y=val,color= strata),alpha=.8)+
      facet_grid(basin~.)+
      ylab(tmp_var$units[1])+
-     ggtitle( paste(sim,mn_NEBS$var[1]))+
+     ggtitle( paste(sim,tmp_var$var[1]))+
      theme_minimal()
    p4
     if(update.figs)  ggsave(file=file.path(main,"Figs/weekly_bystrata.jpg"),width=8,height=5)
@@ -988,8 +1005,8 @@ variable:
     # To get the average value for a set of strata, weight the val by the area: (slow...)
     mn_NEBS_season <- getAVGnSUM(
       strataIN = NEBS_strata,
-      dataIN = tmp_var,
-      tblock=c("yr","mo"))
+      dataIN   = tmp_var,
+      tblock   = c("yr","mo"))
     mn_NEBS_season$basin = "NEBS"
     mn_SEBS_season <- getAVGnSUM(
       strataIN = SEBS_strata, 
