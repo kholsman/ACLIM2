@@ -13,7 +13,7 @@ getZip <- function(url,destfile,deletezip=F){
   setwd(ex_dir)
   
   # unzip it
-  unzip(zipfile=file.path(tmp_wd,destfile),exdir = ".",overwrite = T)
+  unzip(zipfile=file.path(tmp_wd,destfile),exdir = ex_dir,overwrite = T)
   
   setwd(tmp_wd)
   # cleanup
