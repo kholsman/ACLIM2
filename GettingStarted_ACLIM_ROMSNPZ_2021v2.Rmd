@@ -1,20 +1,6 @@
 ---
 title: "Getting Started with Bering10K ROMSNPZ Level 2 & 3 indices"
 output:
-  html_document:
-    df_print: kable
-    fig_caption: yes
-    theme: flatly
-    toc: true
-    toc_float: true
-  word_document:
-    fig_caption: yes
-    fig_width: 4
-    keep_md: yes
-  header-includes:
-  - \usepackage{inputenc}
-  - \usepackage{unicode-math}
-  - \pagenumbering{gobble}
   pdf_document:
     fig_caption: yes
     fig_height: 4
@@ -23,6 +9,20 @@ output:
     keep_tex: yes
     latex_engine: xelatex
     toc: TRUE
+  word_document:
+    fig_caption: yes
+    fig_width: 4
+    keep_md: yes
+  header-includes:
+  - \usepackage{inputenc}
+  - \usepackage{unicode-math}
+  - \pagenumbering{gobble}
+  html_document:
+    df_print: kable
+    fig_caption: yes
+    theme: flatly
+    toc: true
+    toc_float: true
 ---
 
 ```{r startup, eval=TRUE, echo=FALSE, results='hide',message=FALSE}
@@ -482,10 +482,13 @@ Now let's convert the CMIP6 Level3 .nc files to .Rdata files (as in section 3.2.
 
 # 4. Explore indices & plot the data  
 
-## 4.1 Level 3 indices:
+# 4.1. A quick intro to Level 2 and 3 data
+
+KERIM's text and example here
+
+## 4.2. Level 3 indices:
 
 Level 3 indices can be used to generate seasonal, monthly, and annual indices (like those reported in [Reum et al. 2020)](https://www.frontiersin.org/articles/10.3389/fmars.2020.00124/full), [Holsman et al. 2020)](http://dx.doi.org/10.1038/s41467-020-18300-3). In the section below we explore these indices in more detail using R, including using (2) above to generate weekly, monthly, and seasonal indices (e.g. Fall Zooplankton) for use in biological models. In section 3 below we explore these indices in more detail using R, including using (2) above to generate weekly, monthly, and seasonal indices (e.g. Fall Zooplankton) for use in biological models. The following examples show how to analyze and plot the ACLIM indices from the .Rdata files created in the previous step 3. 
-
 
 Please be sure to coordinate with ROMSNPZ modeling team members to ensure data is applied appropriately. If you need access to the raw ROMSNPZ files (netcdf, non-regridded large files located on MOX). Please contact  [**Al Hermann**](albert.j.hermann@noaa.gov) or [**Kelly Kearney**](kelly.kearney@noaa.gov). Please note that while the CMIP5 set is now public (Hermann et al. 2019) **the CMIP6 suite is under embargo for QAQC and should not be shared outside of the ACLIM group**. See Section 1 above for more detail.
 
@@ -539,9 +542,16 @@ Let's start b exploring the survey replicated values for each variable. Steps 2 
 ![Survey replicated stations, N and S.](Figs/stations_NS.jpg){ width=50%}
 ![Survey replicated stations.](Figs/stations.jpg){ width=50%}
 
-The code segment below will recreate the above figures.
+The code segment below will recreate the above figures.*Note that if this is the first time through it may take 3-5 mins to load the spatial packages and download the files from the web (first time through only).*
 ```{r readncfiles_srvy, eval=T, echo=T, results='hide'}
     
+   # if load_gis is set to FALSE in R/setup.R (default) 
+   # we will need to load the gis layers and packages
+   # if this is the first time through this would be a good time
+   # to grab a coffee...
+
+   source("R/sub_scripts/load_maps.R")
+  
    # first convert the station_info object into a shapefile for mapping:
    station_sf         <- convert2shp(station_info)
    station_sf$stratum <- factor(station_sf$stratum)
@@ -566,6 +576,43 @@ The code segment below will recreate the above figures.
      p2
    ggsave(file=file.path(main,"Figs/stations.jpg"),width=5,height=5)}
 ```
+
+
+# 5. Hindcasts:  
+some text here
+
+## 5.1. Level 3 hindcasts
+
+some text here
+
+### 5.1.1. Level 3 hindcasts: spatial patterns
+
+### 5.1.2. Level 3 hindcasts: Weekly strata averages
+
+### 5.1.2. Level 3 hindcasts: Weekly strata averages
+
+### 5.1.3. Level 3 hindcasts: Seasonal averages
+
+### 5.1.4. Level 3 hindcasts: Monthly averages
+
+## 5.2. Level 2 hindcasts
+
+some text here
+
+## 5.2.1. Level 2 hindcasts: Custom spatial indices 
+
+### 5.2.2. Level 2 hindcasts: M2 mooring comparison
+
+
+
+# 6. Projections:  
+some text here
+
+## 6.1. Level 3 projections
+
+some text here
+
+### 6.1.1. Level 3 projections: spatial patterns
 
 Now let's explore the survey replicated data in more detail and use to plot bottom temperature.
 
@@ -647,7 +694,9 @@ Now let's explore the survey replicated data in more detail and use to plot bott
 
 ![Bottom temperature projections under differing SSP126 (top row) and SSP585 (bottom row)](Figs/mn_BT.jpg)  
 
-### 4.1.3 Level 3: Weekly strata averages
+
+
+### 6.1.2. Level 3 projections: Weekly strata averages
 
 The next set of indices to will explore are the weekly strata-specific values for each variable.These are stored in the `ACLIMregion_B10K-[version_CMIPx_GCM_RCP].nc` in each scenario folder. 
 
@@ -716,8 +765,7 @@ The next set of indices to will explore are the weekly strata-specific values fo
 ![Weekly indcices by sub-region](Figs/weekly_bystrata.jpg){ width=65% }
 
 ![Weekly indcices by sub-region](Figs/weekly_byreg.jpg){ width=65% }
-
-### 4.1.4  Level 3: Seasonal averages
+### 6.1.3. Level 3 projections: Seasonal averages
 
 Now using a similar approach get the monthly mean values for a variable:
 ```{r seasonal averages, eval=F, include=T,echo=T}
@@ -808,8 +856,7 @@ Now using a similar approach get the monthly mean values for a variable:
 ```
 
 ![Large fall zooplankton integrated concentration](Figs/Fall_large_Zoop.jpg){ width=65% }
-
-### 4.1.5 Level 3: Monthly averages
+### 6.1.4. Level 3 Projections: Monthly averages
 Using the same approach we can get monthly averages for a given variable:
 
 ```{r monthly averages, eval=F, include=T,echo=T}
@@ -884,12 +931,13 @@ Finally we can use this approach to plot the monthly averages and look for pheno
 
 ![September large zooplankton integrated concentration](Figs/PhenShift_large_Zoop.jpg){ width=65% }
 
-## 4.2 Level 2:
+## 6.2. Level 2 projections
 
+some text here
+
+### 6.2.1 Level 2 projections: Custom spatial indices 
 Level 2 data can be explored in the same way as the above indices but we will focus in the section below on a simple spatial plot and temporal index. The advantage of Level2 inidces is in the spatial resolution and values outside of the survey area. 
 
-### 3.2.1 Explore Level 2 data catalog
-### 3.2.2 Custom spatial indices 
 ```{r explore_L2_space, eval=F, echo=T}
     
    # define four time periods
@@ -1007,6 +1055,12 @@ Level 2 data can be explored in the same way as the above indices but we will fo
 
 
 ![Aug 1 Bottom temperature from Level 2 dataset](Figs/sub_grid_mn_BT_Aug1.jpg){ width=65% }
+### 6.2.2 Level 2 projections: Projections at M2 mooring
+
+<!-- ## 4.2 Level 2: -->
+<!-- ### 3.2.1 Explore Level 2 data catalog -->
+
+<!-- ### 3.2.2 Custom spatial indices  -->
 
 <!-- ### 3.2.2 Custom temporal indices  -->
 
@@ -1015,7 +1069,9 @@ Level 2 data can be explored in the same way as the above indices but we will fo
 <!-- # 5.1 Recruitment ~f(ACLIM indices) -->
 <!-- # 5.2 Spatial overlap ~f(spp dist, aclim indices) -->
 
-# 6. Funding and acknowledgments (needs updating):
+# 7. Funding and acknowledgments (needs updating):
+
+## 7.1 Acknowledgements suggestion: projections
 
 ### PLEASE Include a statement like the following one in your acknowledgements section:
 
@@ -1027,9 +1083,9 @@ Level 2 data can be explored in the same way as the above indices but we will fo
 
 
 
-# 7. Helpful links and further reading:  
+# 8. Helpful links and further reading:  
 
-## 7.1 Citations for GCMs and carbon scenarios:
+## 8.1 Citations for GCMs and carbon scenarios:
 
 ### CMIP3 (BSIERP global climate model runs):
 Meehl, G. A., C. Covey, T. Delworth, M. Latif, B. McAvaney, J. F. B. Mitchell, R. J. Stouffer, and K. E. Taylor, 2007: The WCRP CMIP3 multimodel dataset: A new era in climate change research. Bull. Amer. Meteor. Soc., 88, 1383–1394.
@@ -1042,14 +1098,14 @@ ONeill, B. C., C. Tebaldi, D. P. van Vuuren, V. Eyring, P. Friedlingstein, G. Hu
 
 
 
-## 7.2 Weblinks for further reading:
+## 8.2 Weblinks for further reading:
 
 * Explore annual indices of downscaled projections for the EBS: [**ACLIM indices**](https://kholsman.shinyapps.io/aclim/ "ACLIM Shiny tool")
 
 * To view climate change projections from CMIP5 (eventually CMIP6):[**ESRL climate change portal **](https://www.esrl.noaa.gov/psd/ipcc/ocn/ "ESRL climate change portal")
 
 
-## 7.3 Additional information on Hindcast and Projection Models (needs updating)
+## 8.3 Additional information on Hindcast and Projection Models (needs updating)
 
 ### CORE-CFSR (1976-2012) 
 

@@ -11,7 +11,7 @@ lib_list <- c(
     "ncdf4",
     "devtools",
    # "ncfd",
-   "magrittr",
+    "magrittr",
     "httr",
     "reshape",
     "dplyr", 
@@ -19,14 +19,14 @@ lib_list <- c(
     "readxl", 
     "tidyverse",
     
-  # these for ggplot mapping:
-    "raster",
-    "ggspatial",             # used for N arrow and scale bar 
-    "sf",                    # used for shapefiles
-    "rnaturalearth",         # has more shapefiles; used to make the "world" object 
-    "maps",                  # has some state shapefiles, need to be converted with st_as_sf
-    "akima",                 # Interpolation of Irregularly and Regularly Spaced Data
-  
+  # # these for ggplot mapping:
+  #   "raster",
+  #   "ggspatial",             # used for N arrow and scale bar 
+  #   "sf",                    # used for shapefiles
+  #   "rnaturalearth",         # has more shapefiles; used to make the "world" object 
+  #   "maps",                  # has some state shapefiles, need to be converted with st_as_sf
+  #   "akima",                 # Interpolation of Irregularly and Regularly Spaced Data
+  # 
     
   # markdown stuff:
     "knitr",
@@ -56,11 +56,15 @@ for(lib in lib_list)
 
 ## same for git libraries
 lib_list_git <- c(
-  "thredds")
+#  "rnaturalearthhires",
+  "thredds"
+  )
+
 
 missing <- setdiff(lib_list_git, installed.packages()[, 1])
 
 if (length(missing) > 0) devtools::install_github("bocinsky/thredds")
+# if ("rnaturalearthhires"%in%missing) devtools::install_github("ropensci/rnaturalearthhires")
 
 # Load libraries:
 for(lib in lib_list_git)

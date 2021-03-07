@@ -146,7 +146,7 @@ Kirstin Holsman\\
 Alaska Fisheries Science Center\\
 NOAA Fisheries, Seattle WA\\
 \textbf{\url{kirstin.holsman@noaa.gov}}~\\
-\emph{Last updated: Mar 06, 2021}
+\emph{Last updated: Mar 07, 2021}
 
 \hypertarget{aclim-code-and-online-repo-and-romsnpz-data-overview}{%
 \section{1. ACLIM code and online repo and ROMSNPZ data
@@ -961,8 +961,14 @@ section 3.2.3)
 \section{4. Explore indices \& plot the
 data}\label{explore-indices-plot-the-data}}
 
+\hypertarget{a-quick-intro-to-level-2-and-3-data}{%
+\section{4.1. A quick intro to Level 2 and 3
+data}\label{a-quick-intro-to-level-2-and-3-data}}
+
+KERIM's text and example here
+
 \hypertarget{level-3-indices}{%
-\subsection{4.1 Level 3 indices:}\label{level-3-indices}}
+\subsection{4.2. Level 3 indices:}\label{level-3-indices}}
 
 Level 3 indices can be used to generate seasonal, monthly, and annual
 indices (like those reported in
@@ -1056,7 +1062,82 @@ each corresponding simulation folder.
 \includegraphics[width=0.5\textwidth,height=\textheight]{Figs/stations_NS.jpg}
 \includegraphics[width=0.5\textwidth,height=\textheight]{Figs/stations.jpg}
 
-The code segment below will recreate the above figures.
+The code segment below will recreate the above figures.\emph{Note that
+if this is the first time through it may take 3-5 mins to load the
+spatial packages and download the files from the web (first time through
+only).}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+   \CommentTok{# if load_gis is set to FALSE in R/setup.R (default) }
+   \CommentTok{# we will need to load the gis layers and packages}
+   \CommentTok{# if this is the first time through this would be a good time}
+   \CommentTok{# to grab a coffee...}
+
+   \KeywordTok{source}\NormalTok{(}\StringTok{"R/sub_scripts/load_maps.R"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: sp
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'raster'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:plotly':
+## 
+##     select
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:nlme':
+## 
+##     getData
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:tidyr':
+## 
+##     extract
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:dplyr':
+## 
+##     select
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:magrittr':
+## 
+##     extract
+\end{verbatim}
+
+\begin{verbatim}
+## Linking to GEOS 3.7.2, GDAL 2.4.2, PROJ 5.2.0
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'maps'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:purrr':
+## 
+##     map
+\end{verbatim}
+
+\begin{verbatim}
+## rgeos version: 0.5-2, (SVN revision 621)
+##  GEOS runtime version: 3.7.2-CAPI-1.11.2 
+##  Linking to sp version: 1.3-1 
+##  Polygon checking: TRUE
+\end{verbatim}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1085,6 +1166,63 @@ The code segment below will recreate the above figures.
    \KeywordTok{ggsave}\NormalTok{(}\DataTypeTok{file=}\KeywordTok{file.path}\NormalTok{(main,}\StringTok{"Figs/stations.jpg"}\NormalTok{),}\DataTypeTok{width=}\DecValTok{5}\NormalTok{,}\DataTypeTok{height=}\DecValTok{5}\NormalTok{)\}}
 \end{Highlighting}
 \end{Shaded}
+
+\hypertarget{hindcasts}{%
+\section{5. Hindcasts:}\label{hindcasts}}
+
+some text here
+
+\hypertarget{level-3-hindcasts}{%
+\subsection{5.1. Level 3 hindcasts}\label{level-3-hindcasts}}
+
+some text here
+
+\hypertarget{level-3-hindcasts-spatial-patterns}{%
+\subsubsection{5.1.1. Level 3 hindcasts: spatial
+patterns}\label{level-3-hindcasts-spatial-patterns}}
+
+\hypertarget{level-3-hindcasts-weekly-strata-averages}{%
+\subsubsection{5.1.2. Level 3 hindcasts: Weekly strata
+averages}\label{level-3-hindcasts-weekly-strata-averages}}
+
+\hypertarget{level-3-hindcasts-weekly-strata-averages-1}{%
+\subsubsection{5.1.2. Level 3 hindcasts: Weekly strata
+averages}\label{level-3-hindcasts-weekly-strata-averages-1}}
+
+\hypertarget{level-3-hindcasts-seasonal-averages}{%
+\subsubsection{5.1.3. Level 3 hindcasts: Seasonal
+averages}\label{level-3-hindcasts-seasonal-averages}}
+
+\hypertarget{level-3-hindcasts-monthly-averages}{%
+\subsubsection{5.1.4. Level 3 hindcasts: Monthly
+averages}\label{level-3-hindcasts-monthly-averages}}
+
+\hypertarget{level-2-hindcasts}{%
+\subsection{5.2. Level 2 hindcasts}\label{level-2-hindcasts}}
+
+some text here
+
+\hypertarget{level-2-hindcasts-custom-spatial-indices}{%
+\subsection{5.2.1. Level 2 hindcasts: Custom spatial
+indices}\label{level-2-hindcasts-custom-spatial-indices}}
+
+\hypertarget{level-2-hindcasts-m2-mooring-comparison}{%
+\subsubsection{5.2.2. Level 2 hindcasts: M2 mooring
+comparison}\label{level-2-hindcasts-m2-mooring-comparison}}
+
+\hypertarget{projections}{%
+\section{6. Projections:}\label{projections}}
+
+some text here
+
+\hypertarget{level-3-projections}{%
+\subsection{6.1. Level 3 projections}\label{level-3-projections}}
+
+some text here
+
+\hypertarget{level-3-projections-spatial-patterns}{%
+\subsubsection{6.1.1. Level 3 projections: spatial
+patterns}\label{level-3-projections-spatial-patterns}}
 
 Now let's explore the survey replicated data in more detail and use to
 plot bottom temperature.
@@ -1171,9 +1309,9 @@ plot bottom temperature.
 and SSP585 (bottom row)}
 \end{figure}
 
-\hypertarget{level-3-weekly-strata-averages}{%
-\subsubsection{4.1.3 Level 3: Weekly strata
-averages}\label{level-3-weekly-strata-averages}}
+\hypertarget{level-3-projections-weekly-strata-averages}{%
+\subsubsection{6.1.2. Level 3 projections: Weekly strata
+averages}\label{level-3-projections-weekly-strata-averages}}
 
 The next set of indices to will explore are the weekly strata-specific
 values for each variable.These are stored in the
@@ -1246,15 +1384,8 @@ scenario folder.
 \caption{Weekly indcices by sub-region}
 \end{figure}
 
-\begin{figure}
-\centering
 \includegraphics[width=0.65\textwidth,height=\textheight]{Figs/weekly_byreg.jpg}
-\caption{Weekly indcices by sub-region}
-\end{figure}
-
-\hypertarget{level-3-seasonal-averages}{%
-\subsubsection{4.1.4 Level 3: Seasonal
-averages}\label{level-3-seasonal-averages}}
+\#\#\# 6.1.3. Level 3 projections: Seasonal averages
 
 Now using a similar approach get the monthly mean values for a variable:
 
@@ -1345,18 +1476,9 @@ Now using a similar approach get the monthly mean values for a variable:
 \end{Highlighting}
 \end{Shaded}
 
-\begin{figure}
-\centering
 \includegraphics[width=0.65\textwidth,height=\textheight]{Figs/Fall_large_Zoop.jpg}
-\caption{Large fall zooplankton integrated concentration}
-\end{figure}
-
-\hypertarget{level-3-monthly-averages}{%
-\subsubsection{4.1.5 Level 3: Monthly
-averages}\label{level-3-monthly-averages}}
-
-Using the same approach we can get monthly averages for a given
-variable:
+\#\#\# 6.1.4. Level 3 Projections: Monthly averages Using the same
+approach we can get monthly averages for a given variable:
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1440,21 +1562,19 @@ for phenological shifts:
 \caption{September large zooplankton integrated concentration}
 \end{figure}
 
-\hypertarget{level-2}{%
-\subsection{4.2 Level 2:}\label{level-2}}
+\hypertarget{level-2-projections}{%
+\subsection{6.2. Level 2 projections}\label{level-2-projections}}
+
+some text here
+
+\hypertarget{level-2-projections-custom-spatial-indices}{%
+\subsubsection{6.2.1 Level 2 projections: Custom spatial
+indices}\label{level-2-projections-custom-spatial-indices}}
 
 Level 2 data can be explored in the same way as the above indices but we
 will focus in the section below on a simple spatial plot and temporal
 index. The advantage of Level2 inidces is in the spatial resolution and
 values outside of the survey area.
-
-\hypertarget{explore-level-2-data-catalog}{%
-\subsubsection{3.2.1 Explore Level 2 data
-catalog}\label{explore-level-2-data-catalog}}
-
-\hypertarget{custom-spatial-indices}{%
-\subsubsection{3.2.2 Custom spatial
-indices}\label{custom-spatial-indices}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1571,15 +1691,16 @@ indices}\label{custom-spatial-indices}}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{figure}
-\centering
 \includegraphics[width=0.65\textwidth,height=\textheight]{Figs/sub_grid_mn_BT_Aug1.jpg}
-\caption{Aug 1 Bottom temperature from Level 2 dataset}
-\end{figure}
+\#\#\# 6.2.2 Level 2 projections: Projections at M2 mooring
 
 \hypertarget{funding-and-acknowledgments-needs-updating}{%
-\section{6. Funding and acknowledgments (needs
+\section{7. Funding and acknowledgments (needs
 updating):}\label{funding-and-acknowledgments-needs-updating}}
+
+\hypertarget{acknowledgements-suggestion-projections}{%
+\subsection{7.1 Acknowledgements suggestion:
+projections}\label{acknowledgements-suggestion-projections}}
 
 \hypertarget{please-include-a-statement-like-the-following-one-in-your-acknowledgements-section}{%
 \subsubsection{PLEASE Include a statement like the following one in your
@@ -1617,11 +1738,11 @@ authors and do not represent the views, opinions, or conclusions of
 NOAA, the Department of Commerce, ICES, or PICES.}
 
 \hypertarget{helpful-links-and-further-reading}{%
-\section{7. Helpful links and further
+\section{8. Helpful links and further
 reading:}\label{helpful-links-and-further-reading}}
 
 \hypertarget{citations-for-gcms-and-carbon-scenarios}{%
-\subsection{7.1 Citations for GCMs and carbon
+\subsection{8.1 Citations for GCMs and carbon
 scenarios:}\label{citations-for-gcms-and-carbon-scenarios}}
 
 \hypertarget{cmip3-bsierp-global-climate-model-runs}{%
@@ -1651,7 +1772,7 @@ Scenario Model Intercomparison Project (ScenarioMIP) for CMIP6.
 Geoscientific Model Development 9:3461--3482.
 
 \hypertarget{weblinks-for-further-reading}{%
-\subsection{7.2 Weblinks for further
+\subsection{8.2 Weblinks for further
 reading:}\label{weblinks-for-further-reading}}
 
 \begin{itemize}
@@ -1665,7 +1786,7 @@ reading:}\label{weblinks-for-further-reading}}
 \end{itemize}
 
 \hypertarget{additional-information-on-hindcast-and-projection-models-needs-updating}{%
-\subsection{7.3 Additional information on Hindcast and Projection Models
+\subsection{8.3 Additional information on Hindcast and Projection Models
 (needs
 updating)}\label{additional-information-on-hindcast-and-projection-models-needs-updating}}
 

@@ -14,83 +14,10 @@
   
   load(file.path(shareddata_path,"base_data.Rdata"))
   
-  if(load_gis){
-    source("R/sub_scripts/Get_map_layers.R")
-    #_______________________________________
-    # Read base map layers
-    #_______________________________________
-    
-    # NASA data files: neo.sci.gsfc.nasa.gov
-    marble       <-  raster::brick(file.path(geotif_dir,"blue_marble.tif"))
-    # limit shapefile:
-    limit        <-  sf::st_read(file.path(shp_dir,"global/CNTR_RG_03M_2014/CNTR_RG_03M_2014.shp"))
-    ocean110     <-  sf::st_read(file.path(shp_dir,"global/natural_earth_vector/110m_physical/ne_110m_ocean.shp"))
-    ocean50      <-  sf::st_read(file.path(shp_dir,"global/natural_earth_vector/50m_physical/ne_50m_ocean.shp"))
-    
-    bathy1000    <-  sf::st_read(file.path(shp_dir,"global/ne_10m_bathymetry_J_1000/ne_10m_bathymetry_J_1000.shp"))
-    bathy200     <-  sf::st_read(file.path(shp_dir,"global/ne_10m_bathymetry_K_200/ne_10m_bathymetry_K_200.shp"))
-    ocean_bot    <-  raster::brick(file.path(geotif_dir,"OB_LR/OB_LR.tif"))
-    
-    # rnaturalearth files
-    world 		   <-  rnaturalearth::ne_countries(scale = "medium", returnclass = "sf") 
-    # class(world)
-    world        <-  sf::st_as_sf(map('world', plot = FALSE, fill = TRUE))
-    #world     
-    world_df     <-  map_data("world")
-    states 		   <-  rnaturalearth::ne_states(country = c('United States of America',"Canada","Mexico"), returnclass = "sf" ) ; class(states)
-    
-    # set up epsg 
-    #-------------------------------------------
-    epsg_bering       <- 3571  #(WGS84)
-    epsg_NAM          <- 4269
-    epsg_arctic       <- 3995
-    epsg_antarctic    <- 3031
-    arctic_lat_lim    <- 45
-    antarctic_lat_lim <- -40
-    
-    crs_bering        <-  paste0("+init=epsg:",epsg_bering)
-    crs_arctic        <-  paste0("+init=epsg:",epsg_arctic)
-    crs_antarctic     <-  paste0("+init=epsg:",epsg_antarctic)
-    
-    arctic_extent     <- c(-180,180,45,90)
-    antarctic_extent  <- c(-180,180,-88,-45)
-    
-    
-    # set up preferred projections
-    #-------------------------------------------
-    polar_proj        <- ""
-    nam_proj          <- ""
-    
-    # coordinate systems
-    #-------------------------------------------
-    bering_coord   <-  CRS("+init=epsg:3571")
-    polar_coord    <-  CRS("+init=epsg:3995")
-    longlat_coord  <-  CRS("+init=epsg:4326")
-    NAM_coord      <-  CRS("+init=epsg:4269")
-    #EPSG           <-  rgdal::make_EPSG()
-    
-    # base maps
-    #-------------------------------------------
-    bering_land       <-  limit[limit$CNTR_ID%in%c("RU", "US", "CA" ),]%>% st_transform(epsg_bering)
-    bering_countries  <-  world[world$ID%in%c("Norway","Sweden", "Finland", "Russia", "USA", "Canada" , "Greenland", "Iceland" ),]
-    bering_land       <- sf::st_buffer(bering_land, dist = 0)
-    
-    bering_ocean110   <- ocean110 %>% st_transform(epsg_bering)
-    bering_ocean110   <- sf::st_buffer(bering_ocean110, dist = 0)
-  #  bering_ocean110   <- st_intersection( st_transform(bering_ocean110,crs=crs_bering),st_transform(ring_N,crs=crs_bering))
-    
-    # Arctic shapfile of land masses:
-    bering_sf         <- sf::st_as_sf(
-      sp::spTransform(
-        raster::crop(ne_countries(scale = "large", type = 'map_units'),
-                     clip_spdt(lon_lim=c(-143,-180),lat_lim=c(52,70)) ), sp::CRS(crs_bering)))
-    #bering_sf         <- st_intersection( st_transform(bering_sf,crs=crs_bering),st_transform(ring_N,crs=crs_bering))
-    
-    
-    # same but as outlines:
-    bering_l          <- bering_sf%>%st_cast("MULTILINESTRING")
-    
-  }
+  if(load_gis) 
+    source("R/sub_scripts/load_maps.R")
+  
+
   #mod_lkup <- readxl::read_xlsx(file.path(in_dir,"aclim_qry_ControlFile.xlsx"),sheet="models")
   #var_lkup <- readxl::read_xlsx(file.path(in_dir,"aclim_qry_ControlFile.xlsx"),sheet="variables")
   

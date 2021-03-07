@@ -11,7 +11,7 @@
     redownload_level3_mox  <- FALSE
     update_base_data       <- FALSE
     
-    load_gis        <-  TRUE   # load mapfiles, note first time through downloading these may take a long time
+    load_gis        <-  FALSE  # load mapfiles, note first time through downloading these may take a long time
     update.figs     <-  FALSE  # set to true to re-save figs
     update.outputs  <-  TRUE   # overwrite the existing Rdatafiles in out_fn
     status          <-  TRUE   # print progress
@@ -89,10 +89,22 @@
     
     # Return some flags:
     #-------------------------------------------
-    cat(paste("main is set to:",main,"\n"))
-    cat(paste("redownload_level3_mox is set to:",redownload_level3_mox,"\n"))
-    cat(paste("data_path is set to:",data_path,"\n"))
-    cat(paste("update.figs is set to:", update.figs,"\n"))
+    cat("------------------------------\n")
+    cat("ALIM2/R/setup.R settings \n")
+    cat("------------------------------\n")
+    cat(paste("main:                :",main,"\n"))
+    cat(paste("data_path            :",data_path,"\n"))
+    cat(paste("redownload_level3_mox:",redownload_level3_mox,"\n"))
+    cat(paste("update.figs          :", update.figs,"\n"))
+    
+    cat(paste("load_gis             :", load_gis,"\n"))
+    cat(paste("update.outputs       :", update.outputs,"\n"))
+    cat(paste("update.figs          :", update.figs,"\n"))
+    cat(paste("dpiIN                :", dpiIN,"\n"))
+    cat(paste("update.figs          :", update.figs,"\n"))
+    
+    cat("------------------------------\n")
+    cat("------------------------------\n")
     cat("\n")
     cat(paste("The following datasets are public, please cite as Hermann et al. 2019 (v.H16) and Kearney et al. 2020 (v.K20) :\n"))
     for(k in public)
