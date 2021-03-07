@@ -135,8 +135,9 @@
 }
 \begin{figure}
 \centering
-\includegraphics[width=0.2\textwidth,height=\textheight]{Figs/ACLIM_logo.jpg}
-\caption{.}
+\includegraphics[width=0.9\textwidth,height=\textheight]{Figs/logos2.jpg}
+\caption{Multiple programs and projects have supported the production
+and sharing of the suite of Bering10K hindcasts and projections.}
 \end{figure}
 
 \href{https://github.com/kholsman/ACLIM2}{\textbf{ACLIM Repo:
@@ -148,22 +149,21 @@ NOAA Fisheries, Seattle WA\\
 \textbf{\url{kirstin.holsman@noaa.gov}}~\\
 \emph{Last updated: Mar 07, 2021}
 
-\hypertarget{aclim-code-and-online-repo-and-romsnpz-data-overview}{%
-\section{1. ACLIM code and online repo and ROMSNPZ data
-overview}\label{aclim-code-and-online-repo-and-romsnpz-data-overview}}
+\hypertarget{overview}{%
+\section{1. Overview}\label{overview}}
 
 This is an overview of ACLIM plotting code and ``canned'' Rdata files
-generated from the downscaled ROMSNPZ modeling work ACLIM modelers Drs.
-Hermann, Cheng, Kearney,Pilcher, and Aydin. Dr.~Kelly Kearney has
-recently dedicated significant time and energy towards organizing and
-documenting the ROMSNPZ output, especially as it pertains to the ACLIM
-project. We strongly recommend reviewing this
+generated from the downscaled ROMSNPZ modeling work of the ROMSNPZ
+Alaska Ocean Modeling (AOM) team; Drs. Hermann, Cheng, Kearney,Pilcher,
+Ortiz, and Aydin. Dr.~Kelly Kearney has recently curated and documented
+the Bering10K ROMSNPZ model output, especially as it pertains to the
+Bering Seasons and ACLIM projects. We strongly recommend reviewing this
 \href{https://beringnpz.github.io/roms-bering-sea/B10K-dataset-docs/}{\textbf{documentation}}
 before using the data in order to understand the origin of the indices
 and their present level of skill and validation, which varies
 considerably across indices and in space and time.
 
-The Bering10K ROMSNPZ documentation can be accessed on the main
+The Bering10K ROMSNPZ model documentation can be accessed on the main
 \href{https://beringnpz.github.io/roms-bering-sea/B10K-dataset-docs/}{\textbf{documentation}}
 webpage. The webpage is maintained by Kelly Kearney and regularly
 updated with new documentation, including the following core documents
@@ -203,16 +203,31 @@ folder):
   description and skill assessment.
 \end{itemize}
 
-\hypertarget{downscaled-models-and-carbon-scenarios}{%
-\subsection{1.1. Downscaled models and carbon
-scenarios}\label{downscaled-models-and-carbon-scenarios}}
+The code within the ACLIM2 github repo is publicly available and canbe
+accessed at \href{https://github.com/kholsman/ACLIM2}{\textbf{ACLIM
+Repo: github.com/kholsman/ACLIM2}}. The repo is maintain by
+\href{kirstin.holsman@noaa.gov}{Kirstin Holsman} within input and
+contributions from the ACLIM PIs and collaborators. More information on
+the ACLIM project can be found on the
+\href{https://www.fisheries.noaa.gov/alaska/ecosystems/alaska-climate-integrated-modeling-project}{\textbf{project
+website}} and in
+\href{https://www.frontiersin.org/articles/10.3389/fmars.2019.00775/full}{Hollowed
+et al.~2020}.
 
-The full ACLIM ``suite'' of models include are summarized in the
-following table of downscaled models based on boundary conditions forced
-by General Circulation Models (GCM) run under Coupled Model
-Intercomparison Project (CMIP) phase 5 (5th IPCCAssessment Report) or
-phase 6 (6th IPCC Assessment Report; ``AR'') global carbon mitigation
-scenarios. For full details see the Kearney 2021 Tech. Memo.
+\hypertarget{aclim-suite-of-downscaled-projections-and-carbon-scenarios}{%
+\subsection{1.1. ACLIM suite of downscaled projections and carbon
+scenarios}\label{aclim-suite-of-downscaled-projections-and-carbon-scenarios}}
+
+The ACLIM project utilizes the full ``suite'' of Bering10K model
+hindcasts and projections, summarized in the following table. These
+represent downscaled models hindcast and projections based whereby
+boundary conditions of the high resolution Bering10K model are forced by
+the coarser resolution General Circulation Models (GCM) run under
+Coupled Model Intercomparison Project (CMIP) phase 5 (5th IPCC
+Assessment Report) or phase 6 (6th IPCC Assessment Report; ``AR'')
+global carbon mitigation scenarios. Hindcasts are similarly forced at
+the boundaries from global scale climate reanalysis CORE and CFS
+products. For full details see the Kearney 2021 Tech. Memo.
 
 \hypertarget{table-1-summary-of-romsnpz-downscaled-model-runs}{%
 \subsubsection{Table 1: Summary of ROMSNPZ downscaled model
@@ -273,11 +288,13 @@ data}\label{guildlines-for-use-and-citation-of-the-data}}
 
 It is strongly recommended that you include at least one (ideally
 multiple) authors from the ROMSNPZ team (Drs. Hermann, Cheng, Kearney,
-Pilcher) as co-author on your paper if you are linking to this data
-(this is especially the case for the CMIP6 data). There are multiple
-spatial and temporal caveats that are best described in discussions with
-the authors of these data and inclusion as co-authors will facilitate
-appropriate application and interpretation of the ROMSNPZ data.
+Pilcher, Aydin, Ortiz) as a co-author on your paper if you are linking
+to this data (this is especially the case for the embargoed CMIP6 data
+(presently only available to ACLIM project PIs and collaborators, public
+release anticipated for 2022). There are multiple spatial and temporal
+caveats that are best described in discussions with the authors of these
+data and inclusion as co-authors will facilitate appropriate application
+and interpretation of the ROMSNPZ data.
 
 \hypertarget{the-bering-10k-model-v.-h16-with-10-depth-layers}{%
 \subsubsection{1.2.1. The Bering 10K Model (v. H16) with 10 depth
@@ -962,7 +979,7 @@ section 3.2.3)
 data}\label{explore-indices-plot-the-data}}
 
 \hypertarget{a-quick-intro-to-level-2-and-3-data}{%
-\section{4.1. A quick intro to Level 2 and 3
+\subsection{4.1. A quick intro to Level 2 and 3
 data}\label{a-quick-intro-to-level-2-and-3-data}}
 
 KERIM's text and example here

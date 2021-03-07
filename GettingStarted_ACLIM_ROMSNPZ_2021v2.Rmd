@@ -1,14 +1,12 @@
 ---
 title: "Getting Started with Bering10K ROMSNPZ Level 2 & 3 indices"
 output:
-  pdf_document:
+  html_document:
+    df_print: kable
     fig_caption: yes
-    fig_height: 4
-    fig_width: 5
-    highlight: tango
-    keep_tex: yes
-    latex_engine: xelatex
-    toc: TRUE
+    theme: flatly
+    toc: true
+    toc_float: true
   word_document:
     fig_caption: yes
     fig_width: 4
@@ -17,12 +15,14 @@ output:
   - \usepackage{inputenc}
   - \usepackage{unicode-math}
   - \pagenumbering{gobble}
-  html_document:
-    df_print: kable
+  pdf_document:
     fig_caption: yes
-    theme: flatly
-    toc: true
-    toc_float: true
+    fig_height: 4
+    fig_width: 5
+    highlight: tango
+    keep_tex: yes
+    latex_engine: xelatex
+    toc: TRUE
 ---
 
 ```{r startup, eval=TRUE, echo=FALSE, results='hide',message=FALSE}
@@ -53,7 +53,7 @@ output:
 <!-- ``` -->
 
 
-![.](Figs/ACLIM_logo.jpg){ width=20%}
+![Multiple programs and projects have supported the production and sharing of the suite of Bering10K hindcasts and projections.](Figs/logos2.jpg){ width=90%}
 
  
 [**ACLIM Repo: github.com/kholsman/ACLIM2**](https://github.com/kholsman/ACLIM2 "ACLIM2 Repo")  
@@ -65,11 +65,11 @@ output:
   *Last updated: `r today`*
 
 
-# 1. ACLIM code and online repo and ROMSNPZ data overview
+# 1. Overview
 
-This is an overview of ACLIM plotting code and "canned" Rdata files generated from the downscaled ROMSNPZ modeling work ACLIM modelers Drs. Hermann, Cheng, Kearney,Pilcher, and Aydin. Dr. Kelly Kearney has recently dedicated significant time and energy towards organizing and documenting the ROMSNPZ output, especially as it pertains to the ACLIM project. We strongly recommend reviewing this [**documentation**](https://beringnpz.github.io/roms-bering-sea/B10K-dataset-docs/) before using the data in order to understand the origin of the indices and their present level of skill and validation, which varies considerably across indices and in space and time.
+This is an overview of ACLIM plotting code and "canned" Rdata files generated from the downscaled ROMSNPZ modeling work of the ROMSNPZ Alaska Ocean Modeling (AOM) team; Drs. Hermann, Cheng, Kearney,Pilcher, Ortiz, and Aydin. Dr. Kelly Kearney has recently curated and documented the Bering10K ROMSNPZ model output, especially as it pertains to the Bering Seasons and ACLIM projects. We strongly recommend reviewing this [**documentation**](https://beringnpz.github.io/roms-bering-sea/B10K-dataset-docs/) before using the data in order to understand the origin of the indices and their present level of skill and validation, which varies considerably across indices and in space and time.
 
-The Bering10K ROMSNPZ documentation can be accessed on the main [**documentation**](https://beringnpz.github.io/roms-bering-sea/B10K-dataset-docs/) webpage. The webpage is maintained by Kelly Kearney and regularly updated with new documentation, including the following core documents (ACLIM members can also find these linked in the [**00_ACLIM_shared/02_Data**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk) folder):
+The Bering10K ROMSNPZ model documentation can be accessed on the main [**documentation**](https://beringnpz.github.io/roms-bering-sea/B10K-dataset-docs/) webpage. The webpage is maintained by Kelly Kearney and regularly updated with new documentation, including the following core documents (ACLIM members can also find these linked in the [**00_ACLIM_shared/02_Data**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk) folder):
 
 * [**The Bering10K Dataset documentation**](https://drive.google.com/file/d/1GlITTIvbs2gRBMNIxdDI15cZU6mH4ckg/view): A pdf describing the dataset, including:
 
@@ -82,9 +82,11 @@ The Bering10K ROMSNPZ documentation can be accessed on the main [**documentation
 * [**Bering10K Simulaton Variables**](https://drive.google.com/file/d/1C1FCxRMBm0uBv2wEKwrGfHmLnjt_gFvG/view): A spreadsheet listing all simulations and the archived output variables associated with each, updated periodically as new simulations are run or new variables are made available. Note that this includes both data available on both public and private servers (see below).
 Please also see the Literature page for a list scientific publications related to the model, including model description and skill assessment.
 
-## 1.1. Downscaled models and carbon scenarios
+The code within the ACLIM2 github repo is publicly available and canbe accessed at [**ACLIM Repo: github.com/kholsman/ACLIM2**](https://github.com/kholsman/ACLIM2 "ACLIM2 Repo"). The repo is maintain by [Kirstin Holsman](kirstin.holsman@noaa.gov) within input and contributions from the ACLIM PIs and collaborators. More information on the ACLIM project can be found on the [**project website**](https://www.fisheries.noaa.gov/alaska/ecosystems/alaska-climate-integrated-modeling-project) and in [Hollowed et al. 2020](https://www.frontiersin.org/articles/10.3389/fmars.2019.00775/full).
 
-The full ACLIM "suite" of models include are summarized in the following table of downscaled models based on boundary conditions forced by General Circulation Models (GCM) run under Coupled Model Intercomparison Project (CMIP) phase 5 (5th IPCCAssessment Report) or phase 6 (6th IPCC Assessment Report; "AR") global carbon mitigation scenarios. For full details see the Kearney 2021 Tech. Memo.
+## 1.1. ACLIM suite of downscaled projections and carbon scenarios
+
+The ACLIM project utilizes the full "suite" of Bering10K model hindcasts and projections, summarized in the following table. These represent downscaled models hindcast and projections based whereby boundary conditions of the high resolution Bering10K model are forced by the coarser resolution General Circulation Models (GCM) run under Coupled Model Intercomparison Project (CMIP) phase 5 (5th IPCC Assessment Report) or phase 6 (6th IPCC Assessment Report; "AR") global carbon mitigation scenarios. Hindcasts are similarly forced at the boundaries from global scale climate reanalysis CORE and CFS products. For full details see the Kearney 2021 Tech. Memo.
 
 ### Table 1: Summary of ROMSNPZ downscaled model runs 
 CMIP| GCM    |Scenario    |Def              |Years      |Model |Source|Status
@@ -111,7 +113,7 @@ CMIP| GCM    |Scenario    |Def              |Years      |Model |Source|Status
 *"bio" = nutrient forcing on boundary conditions
 
 ## 1.2. Guildlines for use and citation of the data
-It is strongly recommended that you include at least one (ideally multiple) authors from the ROMSNPZ team (Drs. Hermann, Cheng, Kearney, Pilcher) as co-author on your paper if you are linking to this data (this is especially the case for the CMIP6 data). There are multiple spatial and temporal caveats that are best described in discussions with the authors of these data and inclusion as co-authors will facilitate appropriate application and interpretation of the ROMSNPZ data.
+It is strongly recommended that you include at least one (ideally multiple) authors from the ROMSNPZ team (Drs. Hermann, Cheng, Kearney, Pilcher, Aydin, Ortiz) as a co-author on your paper if you are linking to this data (this is especially the case for the embargoed CMIP6 data (presently only available to ACLIM project PIs and collaborators, public release anticipated for 2022). There are multiple spatial and temporal caveats that are best described in discussions with the authors of these data and inclusion as co-authors will facilitate appropriate application and interpretation of the ROMSNPZ data.
 
 
 ### 1.2.1. The Bering 10K Model (v. H16) with 10 depth layers:  
@@ -482,7 +484,7 @@ Now let's convert the CMIP6 Level3 .nc files to .Rdata files (as in section 3.2.
 
 # 4. Explore indices & plot the data  
 
-# 4.1. A quick intro to Level 2 and 3 data
+## 4.1. A quick intro to Level 2 and 3 data
 
 KERIM's text and example here
 
