@@ -6,8 +6,8 @@
 <img src="Figs/logos2.jpg" style="width:90.0%" alt="" /><figcaption>The ACLIM Repository <a href="https://github.com/kholsman/ACLIM2" title="ACLIM2 Repo"><strong>github.com/kholsman/ACLIM2</strong></a> is maintained by <strong><a href="kirstin.holsman@noaa.gov">Kirstin Holsman</a></strong>, Alaska Fisheries Science Center, NOAA Fisheries, Seattle WA. Multiple programs and projects have supported the production and sharing of the suite of Bering10K hindcasts and projections. <em>Last updated: Mar 08, 2021</em></figcaption>
 </figure>
 
-1. Overview
-===========
+1. Overview 
+=========== 
 
 This repository contains R code and Rdata files for working with
 netcdf-format data generated from the [**downscaled ROMSNPZ
