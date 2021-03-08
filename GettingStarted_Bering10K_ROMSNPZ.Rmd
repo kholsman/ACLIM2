@@ -108,23 +108,48 @@ The Bering10K model was subsequently updated by Kearney et al. 2020 (30 layer an
   Kearney et al. in prep  
   Pilcher et al. in prep (CMIP5 K20 projections) (ACLIM indices avail by permission only)  
 
+# 2. Installation
 
-# 2. Get ACLIM code (Step 1)
+## 2.1 Minimal Install  
 
-**IMPORTANT**  
-The ACLIM indices and ROMSNPZ simulations are stored as netcdf files (.nc) format in the Data folder of the ACLIM shared google drive (section 2.3) or available on the new PMEL web-based portal (see section 2.2 below). Please note that while the CMIP5 set is now public (Hermann et al. 2019) **the CMIP6 suite is under embargo for QAQC and should not be shared outside of the ACLIM group**. Al, Wei, Kelly, Darren, and Kerim are in the process of synthesizing and publishing the CMIP6 data (goal is spring 2021 for submission), following those publications the data will be made accessible to the public via the PMEL data portal, as is the case for the CMIP5 data and public hindcasts. 
+A minimal R install (for example XXX only) requires installing the `ncdf4`, `devtools` libraries (available on CRAN), and `thredds` R library through its github site:
 
-The code for accessing plotting the data is available in the ACLIM2 github repository: [**ACLIM ROMSNPZ Repo: github.com/kholsman/ACLIM2**](https://github.com/kholsman/ACLIM2 "ACLIM2 Repo"). This code will open the netcdf (.nc) files in R and save them on your local drive as .Rdata files. The code also will produce plots and standardized outputs for ACLIM analyses. Some standardized tools are included as functions in this repo including spatial averaging for seasonal, monthly and annual indices (e.g., Fall zooplankton biomass), as well as bias correction for projections (see Holsman et al. 2020 and Reum et al. 2020 for ACLIM 1.0 bias correction methods). The repo also includes a Rshiny() interactive exploratory graphing tool which can be viewed online [**at this link**](https://kholsman.shinyapps.io/aclim/). 
+``` {r install_light, eval = FALSE,echo =T}
+    install.packages(devtools)
+    install.packages(ncdf4)
+    devtools::install_github("bocinsky/thredds")
+    
+```    
 
-There are two ways to put the repo on your local drive 1) use R to download it and 2) manually download a zipped version of the repo.  **Once you've unzipped the folder, if you have Rstudio installed you can double click on the `ACLIM2/ACLIM2.Rproj` and use Rstudio to manage your plotting and files (recommended).**
+Note that each of these has multiple sub-dependent libraries and may take several minutes to install. *The full install below includes installation of these packages, so you don't need to perform this step if you perform the full install.*
+
+## 2.2 Full install  
+
+The full install consists of the full directory structure in the ACLIM2 Repo; this includes a substantial set of resource files including shape files and data for performing Bering Sea spatial analysis in R.  This will eventually become a library package, but currently requires manual downloading of the full directory structure from github. The full install may take up to **1GB of disk space** (initial download ~12MB).
+
+### Option 1: Clone the repository  
+
+If you have git installed and can work with it, this is the preferred method as it preserves all directory structure and can aid in future updating. Use this from a **terminal command line, not in R**, to clone the full ACLIM2 directory and subdirectories:
+
+```{bash, eval = FALSE,echo =T}
+    git clone https://github.com/kholsman/ACLIM2.git
+```
+
+### Option 2: Download the repository  
+Download the full zip archive directly from the [**ACLIM2 Repo**](https://github.com/kholsman/ACLIM2) using this link: [**https://github.com/kholsman/ACLIM2/archive/main.zip**](https://github.com/kholsman/ACLIM2/archive/main.zip), and unzip its contents while preserving directory structure. ***Important:*** 
+if downloading from zip, please **rename the root folder** from `ACLIM2-main` (in the zipfile) to `ACLIM2` (name used in cloned copies) after unzipping, for consistency in the following examples.
 
 
-## 2.1 Option 1: Use R to download from ACLIM2 github repo:
+### Option 3: Use R to download the repository  
+
+This set of commands, run within R, downloads the ACLIM2 repository and unpacks it, with the ACLIM2 directory structrue being located in the specified `download_path`.  This also performs the folder renaming mentioned in Option 2.
 
 ```{r gitdwnld, eval = FALSE,echo =T}
-
+    
     # Specify the download directory
     main_nm       <- "ACLIM2"
+
+    # Note: Edit download_path for preference
     download_path <- path.expand("~/desktop")
     dest_fldr     <- file.path(download_path,main_nm)
     
@@ -142,12 +167,66 @@ There are two ways to put the repo on your local drive 1) use R to download it a
     
 ```
 
+## 2.3 Set up envionment and get shapefiles (full install)
 
-## 2.2 Option 2: Manually download from ACLIM2 github repo
+The remainder of this tutorial was testing in RStudio. This may work in plain R, but is untested.  If you are using RStudio, open `ACLIM2.Rproj` in Rstudio. If using R, use `setwd()` to get to the main ACLIM2 directory. Then run:
 
-Select `Download ZIP` from the upper right hand side of the repo page :[**github.com/kholsman/ACLIM2**](https://github.com/kholsman/ACLIM2 "ACLIM2 Repo") and save it to your local directory: `~[YOURPATH]/ACLIM2`.
+``` {r setup_main,include=TRUE, eval = TRUE,echo = TRUE, results='hide',message=FALSE}
+    # --------------------------------------
+    # SETUP WORKSPACE
+    # rm(list=ls())
+    tmstp  <- format(Sys.time(), "%Y_%m_%d")
+    main   <- getwd()  #"~/GitHub_new/ACLIM2
+    source("R/make.R")
+    # --------------------------------------
+```
 
-![](Figs/clone.jpg){ width=100% }
+The `R/make.R` command will install missing libraries (including those listed under the minimal install) and download and process multiple shapefiles for geographic analysis, it takes several minutes depending on bandwidth.  
+
+
+
+
+<!-- # 2. Get ACLIM code (Step 1) -->
+
+<!-- **IMPORTANT**   -->
+<!-- The ACLIM indices and ROMSNPZ simulations are stored as netcdf files (.nc) format in the Data folder of the ACLIM shared google drive (section 2.3) or available on the new PMEL web-based portal (see section 2.2 below). Please note that while the CMIP5 set is now public (Hermann et al. 2019) **the CMIP6 suite is under embargo for QAQC and should not be shared outside of the ACLIM group**. Al, Wei, Kelly, Darren, and Kerim are in the process of synthesizing and publishing the CMIP6 data (goal is spring 2021 for submission), following those publications the data will be made accessible to the public via the PMEL data portal, as is the case for the CMIP5 data and public hindcasts.  -->
+
+<!-- The code for accessing plotting the data is available in the ACLIM2 github repository: [**ACLIM ROMSNPZ Repo: github.com/kholsman/ACLIM2**](https://github.com/kholsman/ACLIM2 "ACLIM2 Repo"). This code will open the netcdf (.nc) files in R and save them on your local drive as .Rdata files. The code also will produce plots and standardized outputs for ACLIM analyses. Some standardized tools are included as functions in this repo including spatial averaging for seasonal, monthly and annual indices (e.g., Fall zooplankton biomass), as well as bias correction for projections (see Holsman et al. 2020 and Reum et al. 2020 for ACLIM 1.0 bias correction methods). The repo also includes a Rshiny() interactive exploratory graphing tool which can be viewed online [**at this link**](https://kholsman.shinyapps.io/aclim/).  -->
+
+<!-- There are two ways to put the repo on your local drive 1) use R to download it and 2) manually download a zipped version of the repo.  **Once you've unzipped the folder, if you have Rstudio installed you can double click on the `ACLIM2/ACLIM2.Rproj` and use Rstudio to manage your plotting and files (recommended).** -->
+
+
+<!-- ## 2.1 Option 1: Use R to download from ACLIM2 github repo: -->
+
+<!-- ```{r gitdwnld, eval = FALSE,echo =T} -->
+
+<!--     # Specify the download directory -->
+<!--     main_nm       <- "ACLIM2" -->
+<!--     download_path <- path.expand("~/desktop") -->
+<!--     dest_fldr     <- file.path(download_path,main_nm) -->
+
+<!--     url           <- "https://github.com/kholsman/ACLIM2/archive/main.zip" -->
+<!--     dest_file     <- file.path(download_path,paste0(main_nm,".zip")) -->
+<!--     download.file(url=url, destfile=dest_file) -->
+
+<!--     # unzip the .zip file -->
+<!--     setwd(download_path) -->
+<!--     unzip (dest_file, exdir = "./",overwrite = T) -->
+
+<!--     #rename the unzipped folder from ACLIM2-main to ACLIM2 -->
+<!--     file.rename(paste0(main_nm,"-main"), main_nm) -->
+<!--     setwd(main_nm) -->
+
+<!-- ``` -->
+
+
+<!-- ## 2.2 Option 2: Manually download from ACLIM2 github repo -->
+
+<!-- Select `Download ZIP` from the upper right hand side of the repo page :[**github.com/kholsman/ACLIM2**](https://github.com/kholsman/ACLIM2 "ACLIM2 Repo") and save it to your local directory: `~[YOURPATH]/ACLIM2`. -->
+
+<!-- ![](Figs/clone.jpg){ width=100% } -->
+
+
 
 # 3. Get ROMSNPZ data (Step 2)
 
