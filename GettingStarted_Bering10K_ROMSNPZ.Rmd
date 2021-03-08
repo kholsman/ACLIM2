@@ -1,20 +1,6 @@
 ---
 title: "Getting Started with Bering10K ROMSNPZ Level 2 & 3 indices"
 output:
-  html_document:
-    df_print: kable
-    fig_caption: yes
-    theme: flatly
-    toc: true
-    toc_float: true
-  word_document:
-    fig_caption: yes
-    fig_width: 4
-    keep_md: yes
-  header-includes:
-  - \usepackage{inputenc}
-  - \usepackage{unicode-math}
-  - \pagenumbering{gobble}
   pdf_document:
     fig_caption: yes
     fig_height: 4
@@ -23,6 +9,20 @@ output:
     keep_tex: yes
     latex_engine: xelatex
     toc: TRUE
+  word_document:
+    fig_caption: yes
+    fig_width: 4
+    keep_md: yes
+  header-includes:
+  - \usepackage{inputenc}
+  - \usepackage{unicode-math}
+  - \pagenumbering{gobble}
+  html_document:
+    df_print: kable
+    fig_caption: yes
+    theme: flatly
+    toc: true
+    toc_float: true
 ---
 
 ```{r startup, eval=TRUE, echo=FALSE, results='hide',message=FALSE}
