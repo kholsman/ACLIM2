@@ -169,7 +169,7 @@ This set of commands, run within R, downloads the ACLIM2 repository and unpacks 
 
 ## 2.3 Set up envionment and get shapefiles (full install)
 
-The remainder of this tutorial was testing in RStudio. This may work in plain R, but is untested.  If you are using RStudio, open `ACLIM2.Rproj` in Rstudio. If using R, use `setwd()` to get to the main ACLIM2 directory. Then run:
+The remainder of this tutorial was tested in RStudio. This may work in "plain" R, but is untested.  If you are using RStudio, open `ACLIM2.Rproj` in Rstudio. If using R, use `setwd()` to get to the main ACLIM2 directory. Then run:
 
 ``` {r setup_main,include=TRUE, eval = TRUE,echo = TRUE, results='hide',message=FALSE}
     # --------------------------------------
