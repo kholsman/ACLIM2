@@ -3,128 +3,64 @@
 <!-- ``` -->
 
 <figure>
-<img src="Figs/logos2.jpg" style="width:90.0%" alt="" /><figcaption>Multiple programs and projects have supported the production and sharing of the suite of Bering10K hindcasts and projections.</figcaption>
+<img src="Figs/logos2.jpg" style="width:90.0%" alt="" /><figcaption>The ACLIM Repository <a href="https://github.com/kholsman/ACLIM2" title="ACLIM2 Repo"><strong>github.com/kholsman/ACLIM2</strong></a> is maintained by <strong><a href="kirstin.holsman@noaa.gov">Kirstin Holsman</a></strong>, Alaska Fisheries Science Center, NOAA Fisheries, Seattle WA. Multiple programs and projects have supported the production and sharing of the suite of Bering10K hindcasts and projections. <em>Last updated: Mar 08, 2021</em></figcaption>
 </figure>
-
-[**ACLIM Repo:
-github.com/kholsman/ACLIM2**](https://github.com/kholsman/ACLIM2 "ACLIM2 Repo")  
-Repo maintained by:  
-Kirstin Holsman  
-Alaska Fisheries Science Center  
-NOAA Fisheries, Seattle WA  
-**[kirstin.holsman@noaa.gov](kirstin.holsman@noaa.gov)**  
-*Last updated: Mar 08, 2021*
 
 1. Overview
 ===========
 
-This is an overview of ACLIM plotting code and “canned” Rdata files
-generated from the downscaled ROMSNPZ modeling work of the ROMSNPZ
-Alaska Ocean Modeling (AOM) team; Drs. Hermann, Cheng, Kearney,Pilcher,
-Ortiz, and Aydin. Dr. Kelly Kearney has recently curated and documented
-the Bering10K ROMSNPZ model output, especially as it pertains to the
-Bering Seasons and ACLIM projects. We strongly recommend reviewing this
-[**documentation**](https://beringnpz.github.io/roms-bering-sea/B10K-dataset-docs/)
-before using the data in order to understand the origin of the indices
-and their present level of skill and validation, which varies
-considerably across indices and in space and time.
+This repository contains R code and Rdata files for working with
+netcdf-format data generated from the [**downscaled ROMSNPZ
+modeling**](https://beringnpz.github.io/roms-bering-sea) of the ROMSNPZ
+Bering Sea Ocean Modeling team; Drs. Hermann, Cheng, Kearney,
+Pilcher,Ortiz, and Aydin. The code and R resources described in this
+tutorial are publicly available through the [**ACLIM2 github
+repository**](https://github.com/kholsman/ACLIM2) maintained by [Kirstin
+Holsman](kirstin.holsman@noaa.gov) as part of NOAA’s [**ACLIM
+project**](https://www.fisheries.noaa.gov/alaska/ecosystems/alaska-climate-integrated-modeling-project)
+for the Bering Sea. *See [Hollowed et
+al. 2020](https://www.frontiersin.org/articles/10.3389/fmars.2019.00775/full)
+for more information about the ACLIM project*
 
-The Bering10K ROMSNPZ model documentation can be accessed on the main
-[**documentation**](https://beringnpz.github.io/roms-bering-sea/B10K-dataset-docs/)
-webpage. The webpage is maintained by Kelly Kearney and regularly
-updated with new documentation, including the following core documents
-(ACLIM members can also find these linked in the
-[**00\_ACLIM\_shared/02\_Data**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk)
-folder):
+1.1. Resources
+--------------
+
+We **strongly recommend** reviewing the following documentation before
+using the data in order to understand the origin of the indices and
+their present level of skill and validation, which varies considerably
+across indices and in space and time:
 
 -   [**The Bering10K Dataset
     documentation**](https://drive.google.com/file/d/1GlITTIvbs2gRBMNIxdDI15cZU6mH4ckg/view):
-    A pdf describing the dataset, including:
-
-    1.  A description of the various simulations (base model versions,
-        parent model forcing datasets, and biological modules) and the
-        output naming scheme for each.
-
-    2.  A tutorial on working with the curvilinear, sigma-coordinate
-        ROMS spatial grid, aimed at those who will be working with data
-        on the native grid.
-
-    3.  An overview of the ACLIM index dataset; this is a set of time
-        series derived from the Bering10K output and intended for Alaska
-        Climate Integrated Modeling (ACLIM) collaborators.
+    A pdf describing the dataset, including full model descriptions,
+    inputs for specific results, and a tutorial for working directly
+    with the ROMS native grid (Level 1 outputs).
 
 -   [**Bering10K Simulaton
     Variables**](https://drive.google.com/file/d/1C1FCxRMBm0uBv2wEKwrGfHmLnjt_gFvG/view):
     A spreadsheet listing all simulations and the archived output
     variables associated with each, updated periodically as new
-    simulations are run or new variables are made available. Note that
-    this includes both data available on both public and private servers
-    (see below). Please also see the Literature page for a list
-    scientific publications related to the model, including model
-    description and skill assessment.
+    simulations are run or new variables are made available.
 
-The code within the ACLIM2 github repo is publicly available and canbe
-accessed at [**ACLIM Repo:
-github.com/kholsman/ACLIM2**](https://github.com/kholsman/ACLIM2 "ACLIM2 Repo").
-The repo is maintain by [Kirstin Holsman](kirstin.holsman@noaa.gov)
-within input and contributions from the ACLIM PIs and collaborators.
-More information on the ACLIM project can be found on the [**project
-website**](https://www.fisheries.noaa.gov/alaska/ecosystems/alaska-climate-integrated-modeling-project)
-and in [Hollowed et
-al. 2020](https://www.frontiersin.org/articles/10.3389/fmars.2019.00775/full).
+-   A
+    [**collection**](https://beringnpz.github.io/roms-bering-sea/B10K-dataset-docs/)
+    of Bering10K ROMSNPZ model documentation (including the above files)
+    is maintained by [Kelly Kearney](mailto:kelly.kearney@noaa.gov) and
+    will be regularly updated with new documentation and publications.
 
-1.1. ACLIM suite of downscaled projections and carbon scenarios
----------------------------------------------------------------
+1.2 Guildlines for use and citation of the data
+-----------------------------------------------
 
-The ACLIM project utilizes the full “suite” of Bering10K model hindcasts
-and projections, summarized in the following table. These represent
-downscaled models hindcast and projections based whereby boundary
-conditions of the high resolution Bering10K model are forced by the
-coarser resolution General Circulation Models (GCM) run under Coupled
-Model Intercomparison Project (CMIP) phase 5 (5th IPCC Assessment
-Report) or phase 6 (6th IPCC Assessment Report; “AR”) global carbon
-mitigation scenarios. Hindcasts are similarly forced at the boundaries
-from global scale climate reanalysis CORE and CFS products. For full
-details see the Kearney 2021 Tech. Memo.
+The data described here are published and publicly available for use,
+except as explicitly noted. However, for novel uses of the data, it is
+**strongly recommended** that you consult with and consider including at
+least one author from the ROMSNPZ team (Drs. Hermann, Cheng, Kearney,
+Pilcher, Aydin, Ortiz). There are multiple spatial and temporal caveats
+that are best described in discussions with the authors of these data
+and inclusion as co-authors will facilitate appropriate application and
+interpretation.
 
-### Table 1: Summary of ROMSNPZ downscaled model runs
-
-| CMIP | GCM     | Scenario     | Def             | Years       | Model  | Source         | Status  |     |
-|------|---------|--------------|-----------------|-------------|--------|----------------|---------|-----|
-|      | CORECFS | Reanalysis   | Hindcast        | 1970 - 2018 | H16    | IEA/ACLIM      | Public  |     |
-|      | CORECFS | Reanalysis   | Hindcast        | 1970 - 2020 | K20    | MAPP/IEA/ACLIM | Public  |     |
-| 5    | GFDL    | RCP 4.5      | Med. mitigation | 2006 - 2099 | H16    | ACLIM/FATE     | Public  |     |
-| 5    | GFDL    | RCP 8.5      | High baseline   | 2006 - 2099 | H16    | ACLIM/FATE     | Public  |     |
-| 5    | GFDL    | RCP 8.5bio\* | High baseline   | 2006 - 2099 | H16    | ACLIM/FATE     | Public  |     |
-| 5    | MIROC   | RCP 4.5      | Med. mitigation | 2006 - 2099 | H16    | ACLIM/FATE     | Public  |     |
-| 5    | MIROC   | RCP 8.5      | High baseline   | 2006 - 2099 | H16    | ACLIM/FATE     | Public  |     |
-| 5    | CESM    | RCP 4.5      | Med. mitigation | 2006 - 2099 | H16    | ACLIM/FATE     | Public  |     |
-| 5    | CESM    | RCP 8.5      | High baseline   | 2006 - 2080 | H16    | ACLIM/FATE     | Public  |     |
-| 5    | CESM    | RCP 8.5bio\* | High baseline   | 2006 - 2099 | H16    | ACLIM/FATE     | Public  |     |
-| 6    | CESM    | SSP585       | High baseline   | 2014 - 2099 | K20P19 | ACLIM2/RTAP    | Embargo |     |
-| 6    | CESM    | SSP126       | High Mitigation | 2014 - 2099 | K20P19 | ACLIM2/RTAP    | Embargo |     |
-| 6    | CESM    | Historical   | Historical      | 1980 - 2014 | K20P19 | ACLIM2/RTAP    | Embargo |     |
-| 6    | GFDL    | SSP585       | High baseline   | 2014 - 2099 | K20P19 | ACLIM2/RTAP    | Embargo |     |
-| 6    | GFDL    | SSP126       | High Mitigation | 2014 - 2099 | K20P19 | ACLIM2/RTAP    | Embargo |     |
-| 6    | GFDL    | Historical   | Historical      | 1980 - 2014 | K20P19 | ACLIM2/RTAP    | Embargo |     |
-| 6    | MIROC   | SSP585       | High baseline   | 2014 - 2099 | K20P19 | ACLIM2/RTAP    | Embargo |     |
-| 6    | MIROC   | SSP126       | High Mitigation | 2014 - 2099 | K20P19 | ACLIM2/RTAP    | Embargo |     |
-| 6    | MIROC   | Historical   | Historical      | 1980 - 2014 | K20P19 | ACLIM2/RTAP    | Embargo |     |
-
-\*“bio” = nutrient forcing on boundary conditions
-
-1.2. Guildlines for use and citation of the data
-------------------------------------------------
-
-It is strongly recommended that you include at least one (ideally
-multiple) authors from the ROMSNPZ team (Drs. Hermann, Cheng, Kearney,
-Pilcher, Aydin, Ortiz) as a co-author on your paper if you are linking
-to this data (this is especially the case for the embargoed CMIP6 data
-(presently only available to ACLIM project PIs and collaborators, public
-release anticipated for 2022). There are multiple spatial and temporal
-caveats that are best described in discussions with the authors of these
-data and inclusion as co-authors will facilitate appropriate application
-and interpretation of the ROMSNPZ data.
+***TODO: add specific citations back in here***
 
 ### 1.2.1. The Bering 10K Model (v. H16) with 10 depth layers:
 
@@ -183,46 +119,71 @@ the most recent CMIP phase 6.
     Pilcher et al. in prep (CMIP5 K20 projections) (ACLIM indices avail
     by permission only)
 
-2. Get ACLIM code (Step 1)
-==========================
+2. Installation
+===============
 
-**IMPORTANT**  
-The ACLIM indices and ROMSNPZ simulations are stored as netcdf files
-(.nc) format in the Data folder of the ACLIM shared google drive
-(section 2.3) or available on the new PMEL web-based portal (see section
-2.2 below). Please note that while the CMIP5 set is now public (Hermann
-et al. 2019) **the CMIP6 suite is under embargo for QAQC and should not
-be shared outside of the ACLIM group**. Al, Wei, Kelly, Darren, and
-Kerim are in the process of synthesizing and publishing the CMIP6 data
-(goal is spring 2021 for submission), following those publications the
-data will be made accessible to the public via the PMEL data portal, as
-is the case for the CMIP5 data and public hindcasts.
+2.1 Minimal Install
+-------------------
 
-The code for accessing plotting the data is available in the ACLIM2
-github repository: [**ACLIM ROMSNPZ Repo:
-github.com/kholsman/ACLIM2**](https://github.com/kholsman/ACLIM2 "ACLIM2 Repo").
-This code will open the netcdf (.nc) files in R and save them on your
-local drive as .Rdata files. The code also will produce plots and
-standardized outputs for ACLIM analyses. Some standardized tools are
-included as functions in this repo including spatial averaging for
-seasonal, monthly and annual indices (e.g., Fall zooplankton biomass),
-as well as bias correction for projections (see Holsman et al. 2020 and
-Reum et al. 2020 for ACLIM 1.0 bias correction methods). The repo also
-includes a Rshiny() interactive exploratory graphing tool which can be
-viewed online [**at this link**](https://kholsman.shinyapps.io/aclim/).
+A minimal R install (for example XXX only) requires installing the
+`ncdf4`, `devtools` libraries (available on CRAN), and `thredds` R
+library through its github site:
 
-There are two ways to put the repo on your local drive 1) use R to
-download it and 2) manually download a zipped version of the repo.
-**Once you’ve unzipped the folder, if you have Rstudio installed you can
-double click on the `ACLIM2/ACLIM2.Rproj` and use Rstudio to manage your
-plotting and files (recommended).**
+``` r
+    install.packages(devtools)
+    install.packages(ncdf4)
+    devtools::install_github("bocinsky/thredds")
+```
 
-2.1 Option 1: Use R to download from ACLIM2 github repo:
---------------------------------------------------------
+Note that each of these has multiple sub-dependent libraries and may
+take several minutes to install. *The full install below includes
+installation of these packages, so you don’t need to perform this step
+if you perform the full install.*
+
+2.2 Full install
+----------------
+
+The full install consists of the full directory structure in the ACLIM2
+Repo; this includes a substantial set of resource files including shape
+files and data for performing Bering Sea spatial analysis in R. This
+will eventually become a library package, but currently requires manual
+downloading of the full directory structure from github. The full
+install may take up to **1GB of disk space** (initial download \~12MB).
+
+### Option 1: Clone the repository
+
+If you have git installed and can work with it, this is the preferred
+method as it preserves all directory structure and can aid in future
+updating. Use this from a **terminal command line, not in R**, to clone
+the full ACLIM2 directory and subdirectories:
+
+``` bash
+    git clone https://github.com/kholsman/ACLIM2.git
+```
+
+### Option 2: Download the repository
+
+Download the full zip archive directly from the [**ACLIM2
+Repo**](https://github.com/kholsman/ACLIM2) using this link:
+[**https://github.com/kholsman/ACLIM2/archive/main.zip**](https://github.com/kholsman/ACLIM2/archive/main.zip),
+and unzip its contents while preserving directory structure.
+***Important:*** if downloading from zip, please **rename the root
+folder** from `ACLIM2-main` (in the zipfile) to `ACLIM2` (name used in
+cloned copies) after unzipping, for consistency in the following
+examples.
+
+### Option 3: Use R to download the repository
+
+This set of commands, run within R, downloads the ACLIM2 repository and
+unpacks it, with the ACLIM2 directory structrue being located in the
+specified `download_path`. This also performs the folder renaming
+mentioned in Option 2.
 
 ``` r
     # Specify the download directory
     main_nm       <- "ACLIM2"
+
+    # Note: Edit download_path for preference
     download_path <- path.expand("~/desktop")
     dest_fldr     <- file.path(download_path,main_nm)
     
@@ -239,14 +200,53 @@ plotting and files (recommended).**
     setwd(main_nm)
 ```
 
-2.2 Option 2: Manually download from ACLIM2 github repo
+2.3 Set up envionment and get shapefiles (full install)
 -------------------------------------------------------
 
-Select `Download ZIP` from the upper right hand side of the repo page
-:[**github.com/kholsman/ACLIM2**](https://github.com/kholsman/ACLIM2 "ACLIM2 Repo")
-and save it to your local directory: `~[YOURPATH]/ACLIM2`.
+The remainder of this tutorial was tested in RStudio. This may work in
+“plain” R, but is untested. If you are using RStudio, open
+`ACLIM2.Rproj` in Rstudio. If using R, use `setwd()` to get to the main
+ACLIM2 directory. Then run:
 
-<img src="Figs/clone.jpg" style="width:100.0%" />
+``` r
+    # --------------------------------------
+    # SETUP WORKSPACE
+    # rm(list=ls())
+    tmstp  <- format(Sys.time(), "%Y_%m_%d")
+    main   <- getwd()  #"~/GitHub_new/ACLIM2
+    source("R/make.R")
+    # --------------------------------------
+```
+
+The `R/make.R` command will install missing libraries (including those
+listed under the minimal install) and download and process multiple
+shapefiles for geographic analysis, it takes several minutes depending
+on bandwidth.
+
+<!-- # 2. Get ACLIM code (Step 1) -->
+<!-- **IMPORTANT**   -->
+<!-- The ACLIM indices and ROMSNPZ simulations are stored as netcdf files (.nc) format in the Data folder of the ACLIM shared google drive (section 2.3) or available on the new PMEL web-based portal (see section 2.2 below). Please note that while the CMIP5 set is now public (Hermann et al. 2019) **the CMIP6 suite is under embargo for QAQC and should not be shared outside of the ACLIM group**. Al, Wei, Kelly, Darren, and Kerim are in the process of synthesizing and publishing the CMIP6 data (goal is spring 2021 for submission), following those publications the data will be made accessible to the public via the PMEL data portal, as is the case for the CMIP5 data and public hindcasts.  -->
+<!-- The code for accessing plotting the data is available in the ACLIM2 github repository: [**ACLIM ROMSNPZ Repo: github.com/kholsman/ACLIM2**](https://github.com/kholsman/ACLIM2 "ACLIM2 Repo"). This code will open the netcdf (.nc) files in R and save them on your local drive as .Rdata files. The code also will produce plots and standardized outputs for ACLIM analyses. Some standardized tools are included as functions in this repo including spatial averaging for seasonal, monthly and annual indices (e.g., Fall zooplankton biomass), as well as bias correction for projections (see Holsman et al. 2020 and Reum et al. 2020 for ACLIM 1.0 bias correction methods). The repo also includes a Rshiny() interactive exploratory graphing tool which can be viewed online [**at this link**](https://kholsman.shinyapps.io/aclim/).  -->
+<!-- There are two ways to put the repo on your local drive 1) use R to download it and 2) manually download a zipped version of the repo.  **Once you've unzipped the folder, if you have Rstudio installed you can double click on the `ACLIM2/ACLIM2.Rproj` and use Rstudio to manage your plotting and files (recommended).** -->
+<!-- ## 2.1 Option 1: Use R to download from ACLIM2 github repo: -->
+<!-- ```{r gitdwnld, eval = FALSE,echo =T} -->
+<!--     # Specify the download directory -->
+<!--     main_nm       <- "ACLIM2" -->
+<!--     download_path <- path.expand("~/desktop") -->
+<!--     dest_fldr     <- file.path(download_path,main_nm) -->
+<!--     url           <- "https://github.com/kholsman/ACLIM2/archive/main.zip" -->
+<!--     dest_file     <- file.path(download_path,paste0(main_nm,".zip")) -->
+<!--     download.file(url=url, destfile=dest_file) -->
+<!--     # unzip the .zip file -->
+<!--     setwd(download_path) -->
+<!--     unzip (dest_file, exdir = "./",overwrite = T) -->
+<!--     #rename the unzipped folder from ACLIM2-main to ACLIM2 -->
+<!--     file.rename(paste0(main_nm,"-main"), main_nm) -->
+<!--     setwd(main_nm) -->
+<!-- ``` -->
+<!-- ## 2.2 Option 2: Manually download from ACLIM2 github repo -->
+<!-- Select `Download ZIP` from the upper right hand side of the repo page :[**github.com/kholsman/ACLIM2**](https://github.com/kholsman/ACLIM2 "ACLIM2 Repo") and save it to your local directory: `~[YOURPATH]/ACLIM2`. -->
+<!-- ![](Figs/clone.jpg){ width=100% } -->
 
 3. Get ROMSNPZ data (Step 2)
 ============================
@@ -824,7 +824,43 @@ some text here
 6. Projections:
 ===============
 
-some text here
+The ACLIM project utilizes the full “suite” of Bering10K model hindcasts
+and projections, summarized in the following table. These represent
+downscaled models hindcast and projections based whereby boundary
+conditions of the high resolution Bering10K model are forced by the
+coarser resolution General Circulation Models (GCM) run under Coupled
+Model Intercomparison Project (CMIP) phase 5 (5th IPCC Assessment
+Report) or phase 6 (6th IPCC Assessment Report; “AR”) global carbon
+mitigation scenarios. Hindcasts are similarly forced at the boundaries
+from global scale climate reanalysis CORE and CFS products. For full
+details see the Kearney 2021 Tech. Memo.
+
+Table 1: Summary of ROMSNPZ downscaled model runs
+-------------------------------------------------
+
+| CMIP | GCM     | Scenario     | Def             | Years       | Model  | Source         | Status  |     |
+|------|---------|--------------|-----------------|-------------|--------|----------------|---------|-----|
+|      | CORECFS | Reanalysis   | Hindcast        | 1970 - 2018 | H16    | IEA/ACLIM      | Public  |     |
+|      | CORECFS | Reanalysis   | Hindcast        | 1970 - 2020 | K20    | MAPP/IEA/ACLIM | Public  |     |
+| 5    | GFDL    | RCP 4.5      | Med. mitigation | 2006 - 2099 | H16    | ACLIM/FATE     | Public  |     |
+| 5    | GFDL    | RCP 8.5      | High baseline   | 2006 - 2099 | H16    | ACLIM/FATE     | Public  |     |
+| 5    | GFDL    | RCP 8.5bio\* | High baseline   | 2006 - 2099 | H16    | ACLIM/FATE     | Public  |     |
+| 5    | MIROC   | RCP 4.5      | Med. mitigation | 2006 - 2099 | H16    | ACLIM/FATE     | Public  |     |
+| 5    | MIROC   | RCP 8.5      | High baseline   | 2006 - 2099 | H16    | ACLIM/FATE     | Public  |     |
+| 5    | CESM    | RCP 4.5      | Med. mitigation | 2006 - 2099 | H16    | ACLIM/FATE     | Public  |     |
+| 5    | CESM    | RCP 8.5      | High baseline   | 2006 - 2080 | H16    | ACLIM/FATE     | Public  |     |
+| 5    | CESM    | RCP 8.5bio\* | High baseline   | 2006 - 2099 | H16    | ACLIM/FATE     | Public  |     |
+| 6    | CESM    | SSP585       | High baseline   | 2014 - 2099 | K20P19 | ACLIM2/RTAP    | Embargo |     |
+| 6    | CESM    | SSP126       | High Mitigation | 2014 - 2099 | K20P19 | ACLIM2/RTAP    | Embargo |     |
+| 6    | CESM    | Historical   | Historical      | 1980 - 2014 | K20P19 | ACLIM2/RTAP    | Embargo |     |
+| 6    | GFDL    | SSP585       | High baseline   | 2014 - 2099 | K20P19 | ACLIM2/RTAP    | Embargo |     |
+| 6    | GFDL    | SSP126       | High Mitigation | 2014 - 2099 | K20P19 | ACLIM2/RTAP    | Embargo |     |
+| 6    | GFDL    | Historical   | Historical      | 1980 - 2014 | K20P19 | ACLIM2/RTAP    | Embargo |     |
+| 6    | MIROC   | SSP585       | High baseline   | 2014 - 2099 | K20P19 | ACLIM2/RTAP    | Embargo |     |
+| 6    | MIROC   | SSP126       | High Mitigation | 2014 - 2099 | K20P19 | ACLIM2/RTAP    | Embargo |     |
+| 6    | MIROC   | Historical   | Historical      | 1980 - 2014 | K20P19 | ACLIM2/RTAP    | Embargo |     |
+
+\*“bio” = nutrient forcing on boundary conditions
 
 6.1. Level 3 projections
 ------------------------

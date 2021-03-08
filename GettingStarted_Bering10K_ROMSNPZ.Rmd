@@ -1205,7 +1205,7 @@ The Model for Interdisciplinary Research on Climate (MIROC)-M model developed by
 ```{r makeReadME, echo=FALSE,eval=F, include =F}
 
  # copy and paste this into R window (won't work within markdown)
- rmd2md(rmd_fl = "GettingStarted_ACLIM_ROMSNPZ_2021v2",md_fl = "README")
+ rmd2md(rmd_fl = "GettingStarted_Bering10K_ROMSNPZ",md_fl = "README")
 
 ```
 
