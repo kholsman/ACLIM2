@@ -1033,6 +1033,7 @@ As we did in section 5.1.1. let's create spatial plots of hindcast time periods.
         sim_list    = sim  )
     }
     endTime  = Sys.time()
+    endTime-startTime
     
      # NOTE THIS IS SLOOOOOW......
     startTime2 = Sys.time()
