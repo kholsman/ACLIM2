@@ -5,11 +5,7 @@
   #_______________________________________
   # Load mapping & gis packages
   #_______________________________________
-  cat(" Loading missing packages, may take 5 mins or less ...\n ")
-  cat(" ... \n ")
-  cat("...... \n ")
-  cat("........... \n ")
-  
+
   lib_list <- c(
   # these for ggplot mapping:
   "raster",
@@ -24,7 +20,12 @@
   
   # Install missing libraries:
   missing <- setdiff(lib_list, installed.packages()[, 1])
-  if (length(missing) > 0) install.packages(missing)
+  if (length(missing) > 0) {
+    cat(" Loading missing packages, may take 5 mins or less ...\n ")
+    cat(" ... \n ")
+  
+    install.packages(missing)
+  }
   
   # Load libraries:
   for(lib in lib_list)

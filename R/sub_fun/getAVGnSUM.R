@@ -9,7 +9,7 @@
 #' mn  # calculate area weighted mean val for each timestep?
 #' tot # sum the total for each timestep?
 getAVGnSUM <- function(
-  areaIN   = area,
+  #areaIN   = region_area,
   strataIN = NEBS_strata, 
   dataIN   = val_long,
   tblock   = "time",
@@ -27,10 +27,10 @@ getAVGnSUM <- function(
       mutate(mn_val=tot_val/sumArea)") ))
   
   if(mn & tot)
-    eval(parse(text = paste0("tmp <- tmp%>%select(var,mn_val,tot_val,",paste0(tblock,collapse=", "),",units,long_name)") ))
+    eval(parse(text = paste0("tmp <- tmp%>%dplyr::select(var,mn_val,tot_val,",paste0(tblock,collapse=", "),",units,long_name)") ))
   if(mn & tot == F)
-    eval(parse(text = paste0("tmp <- tmp%>%select(var,mn_val,",paste0(tblock,collapse=", "),",units,long_name)") ))
+    eval(parse(text = paste0("tmp <- tmp%>%dplyr::select(var,mn_val,",paste0(tblock,collapse=", "),",units,long_name)") ))
   if(mn == F & tot)
-    eval(parse(text = paste0("tmp <- tmp%>%select(var,tot_val,",paste0(tblock,collapse=", "),",units,long_name)") ))
+    eval(parse(text = paste0("tmp <- tmp%>%dplyr::select(var,tot_val,",paste0(tblock,collapse=", "),",units,long_name)") ))
   return(tmp)
 }
