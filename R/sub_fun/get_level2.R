@@ -27,16 +27,23 @@ get_level2<- function(ncIN,
     lon    <- ncvar_get(ncIN, varid = "lon_rho")[xi_range,eta_range]
     
     # get the length of the timesteps, and lat, lon
-    subt <- intersect(which(t>=time_range[1]), which(t<=time_range[2]))
+    if(length(time_range)>1){
+        subt <- intersect(which(t>=time_range[1]), which(t<=time_range[2]))
+    }else{
+        subt <- which(t>=time_range[1])[1]
+    }
     nt   <- length(subt)
-    if(!nt>1) message("Invalid time range or format (e.g., '2006-01-22 12:00:00 GMT') ")
+    if(!nt>0) message("Invalid time range or format (e.g., '2006-01-22 12:00:00 GMT') ")
     nlat    <- length(xi_range)
     nlon    <- length(eta_range)
     varsize <- ncIN$var[[eval(varIN)]]$varsize
     
     val <- array(NA,c(nlat,nlon,nt))
-    names(val)
+    cat(paste("getting data for ",nt," timeperiods\n"))
     for( i in 1:nt ) {
+      cat('\r',round(100*i/nt),"%")
+        flush.console() 
+      
       
       # Initialize start and count to read one timestep of the variable.
       start        <- rep(1,ndims)	# begin with start=(1,1,1,...,1)
@@ -45,6 +52,7 @@ get_level2<- function(ncIN,
       count[ndims] <- 1	            # change to count=(nx,ny,nz,...,1) to read 1 tstep
       tmpdat       <- ncvar_get( ncIN, varIN, start=start, count=count )
       val[,,i]     <- tmpdat[xi_range,eta_range]
+      
     }
     return(list(var = varIN, lat =lat, lon = lon ,time = t,val=val ))
     

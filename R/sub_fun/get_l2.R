@@ -22,11 +22,13 @@ get_l2 <-function(
   download_nc = FALSE,
   rd_path     = file.path(main,Rdata_path),
   local_path  = NULL,
+  overwrite   = FALSE,
   xi_rangeIN  = 1:182,   
   eta_rangeIN = 1:258,
   ID          = "",
   ds_list     = dl,
-  originIN      = "1900-01-01 00:00:00",
+  yearsIN     = NULL,
+  originIN    = "1900-01-01 00:00:00",
   trIN        = c("-08-1 12:00:00 GMT"),
   sub_varlist = list(
     "temp",
@@ -39,21 +41,27 @@ get_l2 <-function(
   
   # now grab dattat for the hindcast and projection sets:
   for(m in sim_list){
-    
-    # create the simulation Level3 folder (and overwrite it if overwrite is set to T)
+    cat(paste("get "),m,"\n")
+    # create the simulation Level2 folder (and overwrite it if overwrite is set to T)
     if(!dir.exists(file.path(rd_path,m)))
       dir.create(file.path(rd_path,m))
     if(!dir.exists(file.path(rd_path,m,"/Level2")) )
       dir.create(file.path(rd_path,m,"/Level2"))
     
     for(d in 1:length(ds_list)){
-      
+      cat("------------------\n")
+      cat(paste("get "),ds_list[d],"\n")
+      cat("------------------\n")
       # create filename:
-      tmp_fl  <- paste0(d,"_",m)
-      tmppath <- file.path(local_path,paste0(m,"/Level2/",ds_list[d],"_",m,".nc"))
-      tmppath <- stringr::str_replace(tmppath," 5m","_5m")
+      tmp_fl     <- paste0(d,"_",m)
+      tmppath    <- file.path(rd_path,paste0(m,"/Level2/",ds_list[d],"_",m,".nc"))
+      tmppath    <- stringr::str_replace(tmppath," 5m","_5m")
+      tmp_rdpath <- file.path( main,Rdata_path,m,"Level2",
+                             paste0(m_flnm,"_",var_get,ID,".Rdata"))
       
+     
       if(web_nc){
+        
         # create the temporary URL
         
         # get the url for the simulation
@@ -70,8 +78,11 @@ get_l2 <-function(
         if(length( grep("B10K_K20",m_flnm))>0 )
           m_flnm       <- stringr::str_replace(m_flnm,"B10K_K20","B10K-K20")
         m_flnm         <- stringr::str_replace(m_flnm,"Level2_","")
-        tmppath        <- file.path(local_path,paste0(m,"/Level2/",ds_list[d],"_",m,".nc"))
         
+        
+        
+        tmppath        <- file.path(rd_path,paste0(m,"/Level2/",ds_list[d],"_",m,".nc"))
+        tmppath    <- stringr::str_replace(tmppath," 5m","_5m")
         if(ds_list[d] =="Surface 5m") 
           m_flnm       <- stringr::str_replace(m_flnm,"surface_5m","surface5m")
         
@@ -101,56 +112,75 @@ get_l2 <-function(
           tmpURL         <- paste0(paste0(ACLIM_data_url,"dodsC/Level2/"),m_flnm,".nc")
           
           # open the netcdf file remotely
-          nc             <- nc_open(tmpURL)
+          ncpath      <- tmpURL
+          #nc         <- nc_open(tmpURL)
         }
         
       }else{
-          nc      <- nc_open(tmp_path)
+          ncpath     <- tmp_path
+          #nc         <- nc_open(tmp_path)
       }
       
       
-      # available variables:
-      names(nc$var)
-      
-      time_steps  <- as.POSIXct(
-        nc$var[[ sub_varlist[[d]][1] ]]$dim[[3]]$vals, 
-        origin = originIN,
-        tz = "GMT") 
-      
-      # get years in simulation
-      yrs    <- sort(unique(substr(time_steps,1,4)))
-      tmp_tr <-  paste0(yrs,trIN)
-      
-      # subset the lat and lon values
-      lat    <- ncvar_get(nc, varid = "lat_rho")
-      lon    <- ncvar_get(nc, varid = "lon_rho")
-      #M2 <- (56.87°N, -164.06°W)
+     
       
       for(var_get in sub_varlist[[d]]){
-        # convert the nc files into a long data.frame for each variable
-        # Tinker: try extracting other vars like "NO3", or "uEast"
         
+        # name the rdata out file:
+        tmp_rdpath     <- file.path( main,Rdata_path,m,"Level2",
+                                     paste0(m_flnm,"_",var_get,ID,".Rdata"))
+        
+        if(overwrite | !file.exists(tmp_rdpath)){
+          cat(paste0("get ",sub_varlist[[d]],"...\n"))
+          nc             <- nc_open(ncpath)
+          
+          # available variables:
+          # names(nc$var)
+          
+          time_steps  <- as.POSIXct(
+            nc$var[[ sub_varlist[[d]][1] ]]$dim[[3]]$vals, 
+            origin = originIN,
+            tz = "GMT") 
+          
+          # get years in simulation
+          yrs      <- yearsIN
+          if (is.null(yearsIN))
+            yrs    <- sort(unique(substr(time_steps,1,4)))
+          
+          tmp_tr <-  paste0(yrs,trIN)
+          
+          # subset the lat and lon values
+             cat("get lat...\n")
+          lat    <- ncvar_get(nc, varid = "lat_rho")
+             cat("get lon...\n")
+          lon    <- ncvar_get(nc, varid = "lon_rho")
+          #M2 <- (56.87°N, -164.06°W)
+        
+          cat("get data... (slow)...")
           tmp_var      <- get_level2(
-            ncIN      = nc, 
-            originIN = originIN,
-            varIN     = var_get,
-            xi_range  = xi_rangeIN,   
-            eta_range = eta_rangeIN, 
+            ncIN        = nc, 
+            originIN    = originIN,
+            varIN       = var_get,
+            xi_range    = xi_rangeIN,   
+            eta_range   = eta_rangeIN, 
             time_range  = tmp_tr)
           
+          # rename the object
+          eval(parse(text =paste0(var_get,"<-tmp_var") ))
+          
+          # save the nc file in the Data/in/Newest/Rdata/ [ simulation]/Level3 folder
+          eval(parse(text =paste0("save(",var_get,", file=tmp_rdpath)")))
+          eval(parse(text =paste0("rm(",var_get,")") ))
+          cat(paste("success:",tmp_rdpath, "saved in local folder\n"))
+          
+          # close the nc file
+          nc_close(nc)
+        }else{
+          #skip it
+          cat(paste0("skipping ", sub_varlist[[d]],"; already exists, overwrite = F\n"))
+        }
         
-        # rename the object
-        eval(parse(text =paste0(var_get,"<-tmp_var") ))
-        
-        # save the nc file in the Data/in/Newest/Rdata/ [ simulation]/Level3 folder
-        tmp_path <- file.path( main,Rdata_path,m,"Level2",
-                               paste0(m_flnm,"_",var_get,ID,".Rdata"))
-        eval(parse(text =paste0("save(",var_get,", file=tmp_path)")))
-        eval(parse(text =paste0("rm(",var_get,")") ))
-        cat(paste("success:",tmp_path, "saved in local folder\n"))
-      }
-      # close the nc file
-      nc_close(nc)
-    }
-  }
+      } # each sub var
+    }# each ds_list
+  } # each sim_list
 }
