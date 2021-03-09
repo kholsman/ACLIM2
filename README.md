@@ -3,7 +3,7 @@
 <!-- ``` -->
 
 <figure>
-<img src="Figs/logos2.jpg" style="width:90.0%" alt="" /><figcaption>The ACLIM Repository <a href="https://github.com/kholsman/ACLIM2" title="ACLIM2 Repo"><strong>github.com/kholsman/ACLIM2</strong></a> is maintained by <strong><a href="kirstin.holsman@noaa.gov">Kirstin Holsman</a></strong>, Alaska Fisheries Science Center, NOAA Fisheries, Seattle WA. Multiple programs and projects have supported the production and sharing of the suite of Bering10K hindcasts and projections. <em>Last updated: Mar 08, 2021</em></figcaption>
+<img src="Figs/logos2.jpg" style="width:90.0%" alt="" /><figcaption>The ACLIM Repository <a href="https://github.com/kholsman/ACLIM2" title="ACLIM2 Repo"><strong>github.com/kholsman/ACLIM2</strong></a> is maintained by <strong><a href="kirstin.holsman@noaa.gov">Kirstin Holsman</a></strong>, Alaska Fisheries Science Center, NOAA Fisheries, Seattle WA. Multiple programs and projects have supported the production and sharing of the suite of Bering10K hindcasts and projections. <em>Last updated: Mar 09, 2021</em></figcaption>
 </figure>
 
 1. Overview
@@ -1158,10 +1158,10 @@ values outside of the survey area.
 ### 5.2.1. Level 2 hindcasts: Custom spatial indices
 
 As we did in section 5.1.1. let’s create spatial plots of hindcast time
-periods.
+periods for Aug 1 of each year:
 
 ``` r
-   # run this line if load_gis is set to F in R/setup.R:
+    # run this line if load_gis is set to F in R/setup.R:
     source("R/sub_scripts/load_maps.R")  
 
     # now create plots of average BT during four time periods
@@ -1171,20 +1171,21 @@ periods.
                         '2000-2010' = c(2000:2010),
                         '2010-2020' = c(2010:2020))
     
-   
+     # preview the datasets on the server:
+     tds_list_datasets(thredds_url = ACLIM_data_url)
+  
     # assign the simulation to download
     # --> Tinker: try selecting a different set of models to compare
     sim        <- "B10K-K20_CORECFS" 
     #ms <- c("B10K-H16_CORECFS","B10K-K20_CORECFS" )
-   
-    svl <- list(
-      'Bottom 5m' = "temp",
-      'Surface 5m' = "temp",
-      'Integrated' = c("EupS","Cop","NCaS") ) 
-   
+    
     # Currently available Level 2 variables
     dl     <- proj_l2_datasets$dataset  # datasets
-   
+    
+    svl    <- list(
+                'Bottom 5m' = "temp",
+                'Surface 5m' = "temp",
+                'Integrated' = c("EupS","Cop","NCaS") )
     
     # Let's sample the model years as close to Aug 1 as the model timesteps run:
     tr          <- c("-08-1 12:00:00 GMT") 
@@ -1198,16 +1199,39 @@ periods.
     fl         <- file.path(main,Rdata_path,sim,"Level2",
                             paste0(sim,var_use,IDin,".Rdata"))
     
-    # load object 'ACLIMsurveyrep'
-    if(!file.exists(file.path(Rdata_path,fl)))
+   # load data from level 2 nc files (approx <10sec)
+    startTime = Sys.time()
+    if(!file.exists(file.path(Rdata_path,fl))){
+      get_l2(
+        ID          = "_1990_subgrid",
+        overwrite   = T,
+        xi_rangeIN  = seq(1,182,10),
+        eta_rangeIN = seq(1,258,10),
+        ds_list     = dl[1],  # must be same length as sub_varlist
+        trIN        = tr,
+        yearsIN     = 1990,
+        sub_varlist = list('Bottom 5m' = "temp" ),  
+        sim_list    = sim  )
+    }
+    endTime  = Sys.time()
+    endTime  - startTime
+    
+    # load data from level 2 nc files for all years and vars (yearsIN = NULL by default)
+    #       NOTE: THIS IS SLOOOOOW..~ 2 min
+    startTime2 = Sys.time()
+    if(!file.exists(file.path(Rdata_path,fl))){
       get_l2(
         ID          = IDin,
+        overwrite   = T,
         xi_rangeIN  = seq(1,182,10),
         eta_rangeIN = seq(1,258,10),
         ds_list     = dl,
         trIN        = tr,
         sub_varlist = svl,  
         sim_list    = sim  )
+    }
+    endTime2  = Sys.time()
+    endTime2  - startTime2
     
     # load R data file
     load(fl)   # temp
@@ -1221,6 +1245,7 @@ periods.
                        time = temp$time[i],
                        year = substr( temp$time[i],1,4),stringsAsFactors = F
                        )
+    
     for(i in 2:dim(temp$val)[3])
       data_long <- rbind(data_long,
                           data.frame(latitude = as.vector(temp$lat),
@@ -1232,18 +1257,19 @@ periods.
     
     
     # get the mean values for the time blocks from the rdata versions
-    # will throw "implicit NA" errors that can be ignored
+    # may throw "implicit NA" errors that can be ignored
     tmp_var <-data_long # get mean var val for each time segment
     j<-0
     for(i in 1:length(time_seg)){
       if(length( which(as.numeric(tmp_var$year)%in%time_seg[[i]] ))>0){
         j <- j +1
-         mn_tmp_var <- tmp_var%>%
+        mn_tmp_var <- tmp_var%>%
           filter(year%in%time_seg[[i]],!is.na(val))%>%
           group_by(latitude, longitude)%>%
           summarise(mnval = mean(val,rm.na=T))
         
-        mn_tmp_var$time_period = factor(names(time_seg)[i],levels=names(time_seg))
+        mn_tmp_var$time_period <- factor(names(time_seg)[i],levels=names(time_seg))
+        
       if(j == 1) mn_var <- mn_tmp_var
       if(j >  1) mn_var <- rbind(mn_var,mn_tmp_var)
        rm(mn_tmp_var)
@@ -1253,10 +1279,11 @@ periods.
     # convert results to a shapefile
     L2_sf  <- convert2shp(mn_var%>%filter(!is.na(mnval)))
     
-    p9     <- plot_stations_basemap(sfIN = L2_sf,
+    p9_hind     <- plot_stations_basemap(sfIN = L2_sf,
                                 fillIN = "mnval",
                                 colorIN = "mnval",
                                 sizeIN=.6) +
+      #facet_wrap(.~time_period,nrow=2,ncol=3)+
       facet_grid(.~time_period)+
       scale_color_viridis_c()+
       scale_fill_viridis_c()+
@@ -1267,32 +1294,159 @@ periods.
    
     # This is slow but it works (repeat dev.new() twice if in Rstudio)...
     dev.new()
-    p9
+    p9_hind
     
-    if(update.figs)  ggsave(file=file.path(main,"Figs/sub_grid_mn_BT_Aug1.jpg"),width=8,height=6)
+    if(update.figs)  ggsave(file=file.path(main,"Figs/Hind_sub_grid_mn_BT_Aug1.jpg"),width=8,height=4)
   
     # graphics.off()
 ```
 
 <figure>
-<img src="Figs/sub_grid_mn_BT_Aug1.jpg" style="width:65.0%" alt="" /><figcaption>Aug 1 Bottom temperature from Level 2 dataset</figcaption>
+<img src="Figs/Hind_sub_grid_mn_BT_Aug1.jpg" style="width:65.0%" alt="" /><figcaption>Aug 1 Bottom temperature from Level 2 dataset</figcaption>
 </figure>
 
 ### 5.2.2. Level 2 hindcasts: M2 mooring comparison
+
+As final hindcast comparison, let’s look a surface temperature from
+observations vs the H16 and K20 model versions of the hindcast:
+
+``` r
+    # M2_lat <- (56.87°N, -164.06°W)
+    # 56.877    -164.06 xi = 99    eta= 62
+    IDin       <- "_2013_M2"
+    var_use    <- "_surface5m_temp"
+    
+    # get data from M2 data page:
+      pmelM2_url <-"https://www.ncei.noaa.gov/data/oceans/ncei/ocads/data/0157599/"
+      yr_dat     <- "M2_164W_57N_Apr2019_May2019.csv"
+      yr_dat     <- "M2_164W_57N_May2013_Sep2013.csv"
+        
+    # preview the datasets on the server:
+      temp <- tempfile()
+      download.file(paste0(pmelM2_url,yr_dat),temp)
+      #M2data <- read.csv(temp,skip=4,stringsAsFactors = F)
+      M2data <- read.csv(temp,skip=0,stringsAsFactors = F)
+      
+      unlink(temp)
+
+    # convert date and time to t 
+      M2data$t <-as.POSIXct(paste0(M2data$Date," ",M2data$Time,":00"),"%m/%d/%Y %H:%M:%S",
+                             origin =   "1900-01-01 00:00:00",
+                             tz = "GMT")
+    
+    # open a "region" or strata specific nc file
+    fl         <- file.path(main,Rdata_path,sim,"Level2",
+                            paste0(sim,var_use,IDin,".Rdata"))
+
+    # assign the simulation to download
+    sim        <- "B10K-K20_CORECFS" 
+    
+    # Let's sample the model years as close to Aug 1 as the model timesteps run:
+    #tr          <- c("-08-1 12:00:00 GMT") 
+    tr          <- substring(M2data$t,5,20)
+    # the full grid is large and takes a longtime to plot, so let's subsample the grid every 4 cells
+   
+    
+   # load data from level 2 nc files (approx <10sec)
+    if(!file.exists(file.path(Rdata_path,fl))){
+      get_l2(
+        ID          = IDin,
+        overwrite   = T,
+        xi_rangeIN  = 99,
+        eta_rangeIN = 62,
+        ds_list     = dl[2],  # must be same length as sub_varlist
+        trIN        = tr,
+        yearsIN     = 2013,
+        sub_varlist = list('Surface 5m' = "temp" ),  
+        sim_list    = c("B10K-H16_CORECFS","B10K-K20_CORECFS" )  )
+    }
+    
+    # load R data file
+     # open a "region" or strata specific nc file
+    sim <- "B10K-H16_CORECFS"
+    fl         <- file.path(main,Rdata_path,sim,"Level2",
+                            paste0(sim,var_use,IDin,".Rdata"))
+    load(fl)   # temp
+    
+    # there are smarter ways to do this;looping because 
+    # we don't want to mess it up but this is slow...
+    i <-1
+    data_long <- data.frame(latitude = as.vector(temp$lat),
+                       longitude = as.vector(temp$lon),
+                       val = as.vector(temp$val[,,i]),
+                       sim  = sim,
+                       time = temp$time[i],
+                       year = substr( temp$time[i],1,4),stringsAsFactors = F
+                       )
+    
+    for(i in 2:dim(temp$val)[3])
+      data_long <- rbind(data_long,
+                          data.frame(latitude = as.vector(temp$lat),
+                           longitude = as.vector(temp$lon),
+                           val = as.vector(temp$val[,,i]),
+                           sim  = sim,
+                           time = temp$time[i],
+                           year = substr( temp$time[i],1,4),stringsAsFactors = F)
+                       )
+     # open a "region" or strata specific nc file
+    sim <- "B10K-K20_CORECFS"
+    fl2         <- file.path(main,Rdata_path,sim,"Level2",
+                            paste0(sim,var_use,IDin,".Rdata"))
+    load(fl2)   # temp
+    for(i in 1:dim(temp$val)[3])
+      data_long <- rbind(data_long,
+                          data.frame(latitude = as.vector(temp$lat),
+                           longitude = as.vector(temp$lon),
+                           val = as.vector(temp$val[,,i]),
+                           sim  = sim,
+                           time = temp$time[i],
+                           year = substr( temp$time[i],1,4),stringsAsFactors = F)
+                       )
+    
+    plotM2_dat        <- M2data%>%dplyr::select(SST = SST..C.,Date = t)
+    plotM2_dat$sim    <- factor("Obs",levels=c("Obs","B10K-H16_CORECFS","B10K-K20_CORECFS"))
+    plotM2_dat        <- plotM2_dat%>%filter(SST>-99)
+    plotroms_dat      <- data_long%>%dplyr::select(SST = val,Date = time,sim)
+    plotroms_dat$sim  <- factor(plotroms_dat$sim,levels=c("Obs","B10K-H16_CORECFS","B10K-K20_CORECFS"))
+    plotdat           <- rbind(plotM2_dat,plotroms_dat)
+   
+    p10_hind     <- ggplot(plotdat) +
+      geom_line(   aes(x=Date,y=SST,color=sim),alpha=.8)+
+      # geom_smooth( aes(x = Date,y = SST,color=sim),
+      #             formula = y ~ x, se = T)+
+      scale_color_viridis_d(begin=.9,end=.2)+
+      ylab(tmp_var$units[1])+
+      ggtitle( "Bering M2 Mooring: 2013 SST")+
+      theme_minimal()
+   
+    # This is slow but it works (repeat dev.new() twice if in Rstudio)...
+    dev.new()
+    p10_hind
+    
+    if(update.figs)  
+      ggsave(file=file.path(main,"Figs/Hind_M2_SST.jpg"),width=8,height=4)
+  
+    # graphics.off()
+```
+
+<figure>
+<img src="Figs/Hind_M2_SST.jpg" style="width:90.0%" alt="" /><figcaption>M2 mooring SST in 2013.</figcaption>
+</figure>
 
 6. Projections:
 ===============
 
 The ACLIM project utilizes the full “suite” of Bering10K model hindcasts
 and projections, summarized in the following table. These represent
-downscaled models hindcast and projections based whereby boundary
-conditions of the high resolution Bering10K model are forced by the
-coarser resolution General Circulation Models (GCM) run under Coupled
-Model Intercomparison Project (CMIP) phase 5 (5th IPCC Assessment
-Report) or phase 6 (6th IPCC Assessment Report; “AR”) global carbon
-mitigation scenarios. Hindcasts are similarly forced at the boundaries
-from global scale climate reanalysis CORE and CFS products. For full
-details see the Kearney 2021 Tech. Memo.
+downscaled models hindcast and projections whereby boundary conditions
+of the high resolution Bering10K model are forced by the coarser
+resolution General Circulation Models (GCM) run under Coupled Model
+Intercomparison Project (CMIP) phase 5 (5th IPCC Assessment Report) or
+phase 6 (6th IPCC Assessment Report; “AR”) global carbon mitigation
+scenarios. Hindcasts are similarly forced at the boundaries from global
+scale climate reanalysis CORE and CFS products (see sections 1-5). For
+full details see the [Kearney 2021 Tech.
+Memo](https://beringnpz.github.io/roms-bering-sea/assets/DRAFT_NOAA-TM-AFSC-415.pdf).
 
 Table 1: Summary of ROMSNPZ downscaled model runs
 -------------------------------------------------

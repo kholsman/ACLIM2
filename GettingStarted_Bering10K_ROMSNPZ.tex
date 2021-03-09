@@ -142,7 +142,7 @@ is maintained by \textbf{\href{kirstin.holsman@noaa.gov}{Kirstin
 Holsman}}, Alaska Fisheries Science Center, NOAA Fisheries, Seattle WA.
 Multiple programs and projects have supported the production and sharing
 of the suite of Bering10K hindcasts and projections. \emph{Last updated:
-Mar 08, 2021}}
+Mar 09, 2021}}
 \end{figure}
 
 \hypertarget{overview}{%
@@ -1447,11 +1447,11 @@ values outside of the survey area.
 indices}\label{level-2-hindcasts-custom-spatial-indices}}
 
 As we did in section 5.1.1. let's create spatial plots of hindcast time
-periods.
+periods for Aug 1 of each year:
 
 \begin{Shaded}
 \begin{Highlighting}[]
-   \CommentTok{# run this line if load_gis is set to F in R/setup.R:}
+    \CommentTok{# run this line if load_gis is set to F in R/setup.R:}
     \KeywordTok{source}\NormalTok{(}\StringTok{"R/sub_scripts/load_maps.R"}\NormalTok{)  }
 
     \CommentTok{# now create plots of average BT during four time periods}
@@ -1461,20 +1461,21 @@ periods.
                         \StringTok{'2000-2010'}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{2000}\OperatorTok{:}\DecValTok{2010}\NormalTok{),}
                         \StringTok{'2010-2020'}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{2010}\OperatorTok{:}\DecValTok{2020}\NormalTok{))}
     
-   
+     \CommentTok{# preview the datasets on the server:}
+     \KeywordTok{tds_list_datasets}\NormalTok{(}\DataTypeTok{thredds_url =}\NormalTok{ ACLIM_data_url)}
+  
     \CommentTok{# assign the simulation to download}
     \CommentTok{# --> Tinker: try selecting a different set of models to compare}
 \NormalTok{    sim        <-}\StringTok{ "B10K-K20_CORECFS"} 
     \CommentTok{#ms <- c("B10K-H16_CORECFS","B10K-K20_CORECFS" )}
-   
-\NormalTok{    svl <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}
-      \StringTok{'Bottom 5m'}\NormalTok{ =}\StringTok{ "temp"}\NormalTok{,}
-      \StringTok{'Surface 5m'}\NormalTok{ =}\StringTok{ "temp"}\NormalTok{,}
-      \StringTok{'Integrated'}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"EupS"}\NormalTok{,}\StringTok{"Cop"}\NormalTok{,}\StringTok{"NCaS"}\NormalTok{) ) }
-   
+    
     \CommentTok{# Currently available Level 2 variables}
 \NormalTok{    dl     <-}\StringTok{ }\NormalTok{proj_l2_datasets}\OperatorTok{$}\NormalTok{dataset  }\CommentTok{# datasets}
-   
+    
+\NormalTok{    svl    <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}
+                \StringTok{'Bottom 5m'}\NormalTok{ =}\StringTok{ "temp"}\NormalTok{,}
+                \StringTok{'Surface 5m'}\NormalTok{ =}\StringTok{ "temp"}\NormalTok{,}
+                \StringTok{'Integrated'}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"EupS"}\NormalTok{,}\StringTok{"Cop"}\NormalTok{,}\StringTok{"NCaS"}\NormalTok{) )}
     
     \CommentTok{# Let's sample the model years as close to Aug 1 as the model timesteps run:}
 \NormalTok{    tr          <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"-08-1 12:00:00 GMT"}\NormalTok{) }
@@ -1488,16 +1489,39 @@ periods.
 \NormalTok{    fl         <-}\StringTok{ }\KeywordTok{file.path}\NormalTok{(main,Rdata_path,sim,}\StringTok{"Level2"}\NormalTok{,}
                             \KeywordTok{paste0}\NormalTok{(sim,var_use,IDin,}\StringTok{".Rdata"}\NormalTok{))}
     
-    \CommentTok{# load object 'ACLIMsurveyrep'}
-    \ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{file.exists}\NormalTok{(}\KeywordTok{file.path}\NormalTok{(Rdata_path,fl)))}
+   \CommentTok{# load data from level 2 nc files (approx <10sec)}
+\NormalTok{    startTime =}\StringTok{ }\KeywordTok{Sys.time}\NormalTok{()}
+    \ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{file.exists}\NormalTok{(}\KeywordTok{file.path}\NormalTok{(Rdata_path,fl)))\{}
+      \KeywordTok{get_l2}\NormalTok{(}
+        \DataTypeTok{ID          =} \StringTok{"_1990_subgrid"}\NormalTok{,}
+        \DataTypeTok{overwrite   =}\NormalTok{ T,}
+        \DataTypeTok{xi_rangeIN  =} \KeywordTok{seq}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{182}\NormalTok{,}\DecValTok{10}\NormalTok{),}
+        \DataTypeTok{eta_rangeIN =} \KeywordTok{seq}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{258}\NormalTok{,}\DecValTok{10}\NormalTok{),}
+        \DataTypeTok{ds_list     =}\NormalTok{ dl[}\DecValTok{1}\NormalTok{],  }\CommentTok{# must be same length as sub_varlist}
+        \DataTypeTok{trIN        =}\NormalTok{ tr,}
+        \DataTypeTok{yearsIN     =} \DecValTok{1990}\NormalTok{,}
+        \DataTypeTok{sub_varlist =} \KeywordTok{list}\NormalTok{(}\StringTok{'Bottom 5m'}\NormalTok{ =}\StringTok{ "temp"}\NormalTok{ ),  }
+        \DataTypeTok{sim_list    =}\NormalTok{ sim  )}
+\NormalTok{    \}}
+\NormalTok{    endTime  =}\StringTok{ }\KeywordTok{Sys.time}\NormalTok{()}
+\NormalTok{    endTime  }\OperatorTok{-}\StringTok{ }\NormalTok{startTime}
+    
+    \CommentTok{# load data from level 2 nc files for all years and vars (yearsIN = NULL by default)}
+    \CommentTok{#       }\AlertTok{NOTE}\CommentTok{: THIS IS SLOOOOOW..~ 2 min}
+\NormalTok{    startTime2 =}\StringTok{ }\KeywordTok{Sys.time}\NormalTok{()}
+    \ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{file.exists}\NormalTok{(}\KeywordTok{file.path}\NormalTok{(Rdata_path,fl)))\{}
       \KeywordTok{get_l2}\NormalTok{(}
         \DataTypeTok{ID          =}\NormalTok{ IDin,}
+        \DataTypeTok{overwrite   =}\NormalTok{ T,}
         \DataTypeTok{xi_rangeIN  =} \KeywordTok{seq}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{182}\NormalTok{,}\DecValTok{10}\NormalTok{),}
         \DataTypeTok{eta_rangeIN =} \KeywordTok{seq}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{258}\NormalTok{,}\DecValTok{10}\NormalTok{),}
         \DataTypeTok{ds_list     =}\NormalTok{ dl,}
         \DataTypeTok{trIN        =}\NormalTok{ tr,}
         \DataTypeTok{sub_varlist =}\NormalTok{ svl,  }
         \DataTypeTok{sim_list    =}\NormalTok{ sim  )}
+\NormalTok{    \}}
+\NormalTok{    endTime2  =}\StringTok{ }\KeywordTok{Sys.time}\NormalTok{()}
+\NormalTok{    endTime2  }\OperatorTok{-}\StringTok{ }\NormalTok{startTime2}
     
     \CommentTok{# load R data file}
     \KeywordTok{load}\NormalTok{(fl)   }\CommentTok{# temp}
@@ -1511,6 +1535,7 @@ periods.
                        \DataTypeTok{time =}\NormalTok{ temp}\OperatorTok{$}\NormalTok{time[i],}
                        \DataTypeTok{year =} \KeywordTok{substr}\NormalTok{( temp}\OperatorTok{$}\NormalTok{time[i],}\DecValTok{1}\NormalTok{,}\DecValTok{4}\NormalTok{),}\DataTypeTok{stringsAsFactors =}\NormalTok{ F}
 \NormalTok{                       )}
+    
     \ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \DecValTok{2}\OperatorTok{:}\KeywordTok{dim}\NormalTok{(temp}\OperatorTok{$}\NormalTok{val)[}\DecValTok{3}\NormalTok{])}
 \NormalTok{      data_long <-}\StringTok{ }\KeywordTok{rbind}\NormalTok{(data_long,}
                           \KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{latitude =} \KeywordTok{as.vector}\NormalTok{(temp}\OperatorTok{$}\NormalTok{lat),}
@@ -1522,18 +1547,19 @@ periods.
     
     
     \CommentTok{# get the mean values for the time blocks from the rdata versions}
-    \CommentTok{# will throw "implicit NA" errors that can be ignored}
+    \CommentTok{# may throw "implicit NA" errors that can be ignored}
 \NormalTok{    tmp_var <-data_long }\CommentTok{# get mean var val for each time segment}
 \NormalTok{    j<-}\DecValTok{0}
     \ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\KeywordTok{length}\NormalTok{(time_seg))\{}
       \ControlFlowTok{if}\NormalTok{(}\KeywordTok{length}\NormalTok{( }\KeywordTok{which}\NormalTok{(}\KeywordTok{as.numeric}\NormalTok{(tmp_var}\OperatorTok{$}\NormalTok{year)}\OperatorTok{%in%}\NormalTok{time_seg[[i]] ))}\OperatorTok{>}\DecValTok{0}\NormalTok{)\{}
 \NormalTok{        j <-}\StringTok{ }\NormalTok{j }\OperatorTok{+}\DecValTok{1}
-\NormalTok{         mn_tmp_var <-}\StringTok{ }\NormalTok{tmp_var}\OperatorTok{%>%}
+\NormalTok{        mn_tmp_var <-}\StringTok{ }\NormalTok{tmp_var}\OperatorTok{%>%}
 \StringTok{          }\KeywordTok{filter}\NormalTok{(year}\OperatorTok{%in%}\NormalTok{time_seg[[i]],}\OperatorTok{!}\KeywordTok{is.na}\NormalTok{(val))}\OperatorTok{%>%}
 \StringTok{          }\KeywordTok{group_by}\NormalTok{(latitude, longitude)}\OperatorTok{%>%}
 \StringTok{          }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{mnval =} \KeywordTok{mean}\NormalTok{(val,}\DataTypeTok{rm.na=}\NormalTok{T))}
         
-\NormalTok{        mn_tmp_var}\OperatorTok{$}\NormalTok{time_period =}\StringTok{ }\KeywordTok{factor}\NormalTok{(}\KeywordTok{names}\NormalTok{(time_seg)[i],}\DataTypeTok{levels=}\KeywordTok{names}\NormalTok{(time_seg))}
+\NormalTok{        mn_tmp_var}\OperatorTok{$}\NormalTok{time_period <-}\StringTok{ }\KeywordTok{factor}\NormalTok{(}\KeywordTok{names}\NormalTok{(time_seg)[i],}\DataTypeTok{levels=}\KeywordTok{names}\NormalTok{(time_seg))}
+        
       \ControlFlowTok{if}\NormalTok{(j }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{) mn_var <-}\StringTok{ }\NormalTok{mn_tmp_var}
       \ControlFlowTok{if}\NormalTok{(j }\OperatorTok{>}\StringTok{  }\DecValTok{1}\NormalTok{) mn_var <-}\StringTok{ }\KeywordTok{rbind}\NormalTok{(mn_var,mn_tmp_var)}
        \KeywordTok{rm}\NormalTok{(mn_tmp_var)}
@@ -1543,10 +1569,11 @@ periods.
     \CommentTok{# convert results to a shapefile}
 \NormalTok{    L2_sf  <-}\StringTok{ }\KeywordTok{convert2shp}\NormalTok{(mn_var}\OperatorTok{%>%}\KeywordTok{filter}\NormalTok{(}\OperatorTok{!}\KeywordTok{is.na}\NormalTok{(mnval)))}
     
-\NormalTok{    p9     <-}\StringTok{ }\KeywordTok{plot_stations_basemap}\NormalTok{(}\DataTypeTok{sfIN =}\NormalTok{ L2_sf,}
+\NormalTok{    p9_hind     <-}\StringTok{ }\KeywordTok{plot_stations_basemap}\NormalTok{(}\DataTypeTok{sfIN =}\NormalTok{ L2_sf,}
                                 \DataTypeTok{fillIN =} \StringTok{"mnval"}\NormalTok{,}
                                 \DataTypeTok{colorIN =} \StringTok{"mnval"}\NormalTok{,}
                                 \DataTypeTok{sizeIN=}\NormalTok{.}\DecValTok{6}\NormalTok{) }\OperatorTok{+}
+\StringTok{      }\CommentTok{#facet_wrap(.~time_period,nrow=2,ncol=3)+}
 \StringTok{      }\KeywordTok{facet_grid}\NormalTok{(.}\OperatorTok{~}\NormalTok{time_period)}\OperatorTok{+}
 \StringTok{      }\KeywordTok{scale_color_viridis_c}\NormalTok{()}\OperatorTok{+}
 \StringTok{      }\KeywordTok{scale_fill_viridis_c}\NormalTok{()}\OperatorTok{+}
@@ -1557,9 +1584,9 @@ periods.
    
     \CommentTok{# This is slow but it works (repeat dev.new() twice if in Rstudio)...}
     \KeywordTok{dev.new}\NormalTok{()}
-\NormalTok{    p9}
+\NormalTok{    p9_hind}
     
-    \ControlFlowTok{if}\NormalTok{(update.figs)  }\KeywordTok{ggsave}\NormalTok{(}\DataTypeTok{file=}\KeywordTok{file.path}\NormalTok{(main,}\StringTok{"Figs/sub_grid_mn_BT_Aug1.jpg"}\NormalTok{),}\DataTypeTok{width=}\DecValTok{8}\NormalTok{,}\DataTypeTok{height=}\DecValTok{6}\NormalTok{)}
+    \ControlFlowTok{if}\NormalTok{(update.figs)  }\KeywordTok{ggsave}\NormalTok{(}\DataTypeTok{file=}\KeywordTok{file.path}\NormalTok{(main,}\StringTok{"Figs/Hind_sub_grid_mn_BT_Aug1.jpg"}\NormalTok{),}\DataTypeTok{width=}\DecValTok{8}\NormalTok{,}\DataTypeTok{height=}\DecValTok{4}\NormalTok{)}
   
     \CommentTok{# graphics.off()}
 \end{Highlighting}
@@ -1567,7 +1594,7 @@ periods.
 
 \begin{figure}
 \centering
-\includegraphics[width=0.65\textwidth,height=\textheight]{Figs/sub_grid_mn_BT_Aug1.jpg}
+\includegraphics[width=0.65\textwidth,height=\textheight]{Figs/Hind_sub_grid_mn_BT_Aug1.jpg}
 \caption{Aug 1 Bottom temperature from Level 2 dataset}
 \end{figure}
 
@@ -1575,19 +1602,151 @@ periods.
 \subsubsection{5.2.2. Level 2 hindcasts: M2 mooring
 comparison}\label{level-2-hindcasts-m2-mooring-comparison}}
 
+As final hindcast comparison, let's look a surface temperature from
+observations vs the H16 and K20 model versions of the hindcast:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{# M2_lat <- (56.87°N, -164.06°W)}
+    \CommentTok{# 56.877    -164.06 xi = 99    eta= 62}
+\NormalTok{    IDin       <-}\StringTok{ "_2013_M2"}
+\NormalTok{    var_use    <-}\StringTok{ "_surface5m_temp"}
+    
+    \CommentTok{# get data from M2 data page:}
+\NormalTok{      pmelM2_url <-}\StringTok{"https://www.ncei.noaa.gov/data/oceans/ncei/ocads/data/0157599/"}
+\NormalTok{      yr_dat     <-}\StringTok{ "M2_164W_57N_Apr2019_May2019.csv"}
+\NormalTok{      yr_dat     <-}\StringTok{ "M2_164W_57N_May2013_Sep2013.csv"}
+        
+    \CommentTok{# preview the datasets on the server:}
+\NormalTok{      temp <-}\StringTok{ }\KeywordTok{tempfile}\NormalTok{()}
+      \KeywordTok{download.file}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(pmelM2_url,yr_dat),temp)}
+      \CommentTok{#M2data <- read.csv(temp,skip=4,stringsAsFactors = F)}
+\NormalTok{      M2data <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(temp,}\DataTypeTok{skip=}\DecValTok{0}\NormalTok{,}\DataTypeTok{stringsAsFactors =}\NormalTok{ F)}
+      
+      \KeywordTok{unlink}\NormalTok{(temp)}
+
+    \CommentTok{# convert date and time to t }
+\NormalTok{      M2data}\OperatorTok{$}\NormalTok{t <-}\KeywordTok{as.POSIXct}\NormalTok{(}\KeywordTok{paste0}\NormalTok{(M2data}\OperatorTok{$}\NormalTok{Date,}\StringTok{" "}\NormalTok{,M2data}\OperatorTok{$}\NormalTok{Time,}\StringTok{":00"}\NormalTok{),}\StringTok{"%m/%d/%Y %H:%M:%S"}\NormalTok{,}
+                             \DataTypeTok{origin =}   \StringTok{"1900-01-01 00:00:00"}\NormalTok{,}
+                             \DataTypeTok{tz =} \StringTok{"GMT"}\NormalTok{)}
+    
+    \CommentTok{# open a "region" or strata specific nc file}
+\NormalTok{    fl         <-}\StringTok{ }\KeywordTok{file.path}\NormalTok{(main,Rdata_path,sim,}\StringTok{"Level2"}\NormalTok{,}
+                            \KeywordTok{paste0}\NormalTok{(sim,var_use,IDin,}\StringTok{".Rdata"}\NormalTok{))}
+
+    \CommentTok{# assign the simulation to download}
+\NormalTok{    sim        <-}\StringTok{ "B10K-K20_CORECFS"} 
+    
+    \CommentTok{# Let's sample the model years as close to Aug 1 as the model timesteps run:}
+    \CommentTok{#tr          <- c("-08-1 12:00:00 GMT") }
+\NormalTok{    tr          <-}\StringTok{ }\KeywordTok{substring}\NormalTok{(M2data}\OperatorTok{$}\NormalTok{t,}\DecValTok{5}\NormalTok{,}\DecValTok{20}\NormalTok{)}
+    \CommentTok{# the full grid is large and takes a longtime to plot, so let's subsample the grid every 4 cells}
+   
+    
+   \CommentTok{# load data from level 2 nc files (approx <10sec)}
+    \ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{file.exists}\NormalTok{(}\KeywordTok{file.path}\NormalTok{(Rdata_path,fl)))\{}
+      \KeywordTok{get_l2}\NormalTok{(}
+        \DataTypeTok{ID          =}\NormalTok{ IDin,}
+        \DataTypeTok{overwrite   =}\NormalTok{ T,}
+        \DataTypeTok{xi_rangeIN  =} \DecValTok{99}\NormalTok{,}
+        \DataTypeTok{eta_rangeIN =} \DecValTok{62}\NormalTok{,}
+        \DataTypeTok{ds_list     =}\NormalTok{ dl[}\DecValTok{2}\NormalTok{],  }\CommentTok{# must be same length as sub_varlist}
+        \DataTypeTok{trIN        =}\NormalTok{ tr,}
+        \DataTypeTok{yearsIN     =} \DecValTok{2013}\NormalTok{,}
+        \DataTypeTok{sub_varlist =} \KeywordTok{list}\NormalTok{(}\StringTok{'Surface 5m'}\NormalTok{ =}\StringTok{ "temp"}\NormalTok{ ),  }
+        \DataTypeTok{sim_list    =} \KeywordTok{c}\NormalTok{(}\StringTok{"B10K-H16_CORECFS"}\NormalTok{,}\StringTok{"B10K-K20_CORECFS"}\NormalTok{ )  )}
+\NormalTok{    \}}
+    
+    \CommentTok{# load R data file}
+     \CommentTok{# open a "region" or strata specific nc file}
+\NormalTok{    sim <-}\StringTok{ "B10K-H16_CORECFS"}
+\NormalTok{    fl         <-}\StringTok{ }\KeywordTok{file.path}\NormalTok{(main,Rdata_path,sim,}\StringTok{"Level2"}\NormalTok{,}
+                            \KeywordTok{paste0}\NormalTok{(sim,var_use,IDin,}\StringTok{".Rdata"}\NormalTok{))}
+    \KeywordTok{load}\NormalTok{(fl)   }\CommentTok{# temp}
+    
+    \CommentTok{# there are smarter ways to do this;looping because }
+    \CommentTok{# we don't want to mess it up but this is slow...}
+\NormalTok{    i <-}\DecValTok{1}
+\NormalTok{    data_long <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{latitude =} \KeywordTok{as.vector}\NormalTok{(temp}\OperatorTok{$}\NormalTok{lat),}
+                       \DataTypeTok{longitude =} \KeywordTok{as.vector}\NormalTok{(temp}\OperatorTok{$}\NormalTok{lon),}
+                       \DataTypeTok{val =} \KeywordTok{as.vector}\NormalTok{(temp}\OperatorTok{$}\NormalTok{val[,,i]),}
+                       \DataTypeTok{sim  =}\NormalTok{ sim,}
+                       \DataTypeTok{time =}\NormalTok{ temp}\OperatorTok{$}\NormalTok{time[i],}
+                       \DataTypeTok{year =} \KeywordTok{substr}\NormalTok{( temp}\OperatorTok{$}\NormalTok{time[i],}\DecValTok{1}\NormalTok{,}\DecValTok{4}\NormalTok{),}\DataTypeTok{stringsAsFactors =}\NormalTok{ F}
+\NormalTok{                       )}
+    
+    \ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \DecValTok{2}\OperatorTok{:}\KeywordTok{dim}\NormalTok{(temp}\OperatorTok{$}\NormalTok{val)[}\DecValTok{3}\NormalTok{])}
+\NormalTok{      data_long <-}\StringTok{ }\KeywordTok{rbind}\NormalTok{(data_long,}
+                          \KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{latitude =} \KeywordTok{as.vector}\NormalTok{(temp}\OperatorTok{$}\NormalTok{lat),}
+                           \DataTypeTok{longitude =} \KeywordTok{as.vector}\NormalTok{(temp}\OperatorTok{$}\NormalTok{lon),}
+                           \DataTypeTok{val =} \KeywordTok{as.vector}\NormalTok{(temp}\OperatorTok{$}\NormalTok{val[,,i]),}
+                           \DataTypeTok{sim  =}\NormalTok{ sim,}
+                           \DataTypeTok{time =}\NormalTok{ temp}\OperatorTok{$}\NormalTok{time[i],}
+                           \DataTypeTok{year =} \KeywordTok{substr}\NormalTok{( temp}\OperatorTok{$}\NormalTok{time[i],}\DecValTok{1}\NormalTok{,}\DecValTok{4}\NormalTok{),}\DataTypeTok{stringsAsFactors =}\NormalTok{ F)}
+\NormalTok{                       )}
+     \CommentTok{# open a "region" or strata specific nc file}
+\NormalTok{    sim <-}\StringTok{ "B10K-K20_CORECFS"}
+\NormalTok{    fl2         <-}\StringTok{ }\KeywordTok{file.path}\NormalTok{(main,Rdata_path,sim,}\StringTok{"Level2"}\NormalTok{,}
+                            \KeywordTok{paste0}\NormalTok{(sim,var_use,IDin,}\StringTok{".Rdata"}\NormalTok{))}
+    \KeywordTok{load}\NormalTok{(fl2)   }\CommentTok{# temp}
+    \ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\KeywordTok{dim}\NormalTok{(temp}\OperatorTok{$}\NormalTok{val)[}\DecValTok{3}\NormalTok{])}
+\NormalTok{      data_long <-}\StringTok{ }\KeywordTok{rbind}\NormalTok{(data_long,}
+                          \KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{latitude =} \KeywordTok{as.vector}\NormalTok{(temp}\OperatorTok{$}\NormalTok{lat),}
+                           \DataTypeTok{longitude =} \KeywordTok{as.vector}\NormalTok{(temp}\OperatorTok{$}\NormalTok{lon),}
+                           \DataTypeTok{val =} \KeywordTok{as.vector}\NormalTok{(temp}\OperatorTok{$}\NormalTok{val[,,i]),}
+                           \DataTypeTok{sim  =}\NormalTok{ sim,}
+                           \DataTypeTok{time =}\NormalTok{ temp}\OperatorTok{$}\NormalTok{time[i],}
+                           \DataTypeTok{year =} \KeywordTok{substr}\NormalTok{( temp}\OperatorTok{$}\NormalTok{time[i],}\DecValTok{1}\NormalTok{,}\DecValTok{4}\NormalTok{),}\DataTypeTok{stringsAsFactors =}\NormalTok{ F)}
+\NormalTok{                       )}
+    
+\NormalTok{    plotM2_dat        <-}\StringTok{ }\NormalTok{M2data}\OperatorTok{%>%}\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(}\DataTypeTok{SST =}\NormalTok{ SST..C.,}\DataTypeTok{Date =}\NormalTok{ t)}
+\NormalTok{    plotM2_dat}\OperatorTok{$}\NormalTok{sim    <-}\StringTok{ }\KeywordTok{factor}\NormalTok{(}\StringTok{"Obs"}\NormalTok{,}\DataTypeTok{levels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Obs"}\NormalTok{,}\StringTok{"B10K-H16_CORECFS"}\NormalTok{,}\StringTok{"B10K-K20_CORECFS"}\NormalTok{))}
+\NormalTok{    plotM2_dat        <-}\StringTok{ }\NormalTok{plotM2_dat}\OperatorTok{%>%}\KeywordTok{filter}\NormalTok{(SST}\OperatorTok{>-}\DecValTok{99}\NormalTok{)}
+\NormalTok{    plotroms_dat      <-}\StringTok{ }\NormalTok{data_long}\OperatorTok{%>%}\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(}\DataTypeTok{SST =}\NormalTok{ val,}\DataTypeTok{Date =}\NormalTok{ time,sim)}
+\NormalTok{    plotroms_dat}\OperatorTok{$}\NormalTok{sim  <-}\StringTok{ }\KeywordTok{factor}\NormalTok{(plotroms_dat}\OperatorTok{$}\NormalTok{sim,}\DataTypeTok{levels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Obs"}\NormalTok{,}\StringTok{"B10K-H16_CORECFS"}\NormalTok{,}\StringTok{"B10K-K20_CORECFS"}\NormalTok{))}
+\NormalTok{    plotdat           <-}\StringTok{ }\KeywordTok{rbind}\NormalTok{(plotM2_dat,plotroms_dat)}
+   
+\NormalTok{    p10_hind     <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(plotdat) }\OperatorTok{+}
+\StringTok{      }\KeywordTok{geom_line}\NormalTok{(   }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{Date,}\DataTypeTok{y=}\NormalTok{SST,}\DataTypeTok{color=}\NormalTok{sim),}\DataTypeTok{alpha=}\NormalTok{.}\DecValTok{8}\NormalTok{)}\OperatorTok{+}
+\StringTok{      }\CommentTok{# geom_smooth( aes(x = Date,y = SST,color=sim),}
+\StringTok{      }\CommentTok{#             formula = y ~ x, se = T)+}
+\StringTok{      }\KeywordTok{scale_color_viridis_d}\NormalTok{(}\DataTypeTok{begin=}\NormalTok{.}\DecValTok{9}\NormalTok{,}\DataTypeTok{end=}\NormalTok{.}\DecValTok{2}\NormalTok{)}\OperatorTok{+}
+\StringTok{      }\KeywordTok{ylab}\NormalTok{(tmp_var}\OperatorTok{$}\NormalTok{units[}\DecValTok{1}\NormalTok{])}\OperatorTok{+}
+\StringTok{      }\KeywordTok{ggtitle}\NormalTok{( }\StringTok{"Bering M2 Mooring: 2013 SST"}\NormalTok{)}\OperatorTok{+}
+\StringTok{      }\KeywordTok{theme_minimal}\NormalTok{()}
+   
+    \CommentTok{# This is slow but it works (repeat dev.new() twice if in Rstudio)...}
+    \KeywordTok{dev.new}\NormalTok{()}
+\NormalTok{    p10_hind}
+    
+    \ControlFlowTok{if}\NormalTok{(update.figs)  }
+      \KeywordTok{ggsave}\NormalTok{(}\DataTypeTok{file=}\KeywordTok{file.path}\NormalTok{(main,}\StringTok{"Figs/Hind_M2_SST.jpg"}\NormalTok{),}\DataTypeTok{width=}\DecValTok{8}\NormalTok{,}\DataTypeTok{height=}\DecValTok{4}\NormalTok{)}
+  
+    \CommentTok{# graphics.off()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.9\textwidth,height=\textheight]{Figs/Hind_M2_SST.jpg}
+\caption{M2 mooring SST in 2013.}
+\end{figure}
+
 \hypertarget{projections}{%
 \section{6. Projections:}\label{projections}}
 
 The ACLIM project utilizes the full ``suite'' of Bering10K model
 hindcasts and projections, summarized in the following table. These
-represent downscaled models hindcast and projections based whereby
-boundary conditions of the high resolution Bering10K model are forced by
-the coarser resolution General Circulation Models (GCM) run under
-Coupled Model Intercomparison Project (CMIP) phase 5 (5th IPCC
-Assessment Report) or phase 6 (6th IPCC Assessment Report; ``AR'')
-global carbon mitigation scenarios. Hindcasts are similarly forced at
-the boundaries from global scale climate reanalysis CORE and CFS
-products. For full details see the Kearney 2021 Tech. Memo.
+represent downscaled models hindcast and projections whereby boundary
+conditions of the high resolution Bering10K model are forced by the
+coarser resolution General Circulation Models (GCM) run under Coupled
+Model Intercomparison Project (CMIP) phase 5 (5th IPCC Assessment
+Report) or phase 6 (6th IPCC Assessment Report; ``AR'') global carbon
+mitigation scenarios. Hindcasts are similarly forced at the boundaries
+from global scale climate reanalysis CORE and CFS products (see sections
+1-5). For full details see the
+\href{https://beringnpz.github.io/roms-bering-sea/assets/DRAFT_NOAA-TM-AFSC-415.pdf}{Kearney
+2021 Tech. Memo}.
 
 \hypertarget{table-1-summary-of-romsnpz-downscaled-model-runs}{%
 \subsection{Table 1: Summary of ROMSNPZ downscaled model
