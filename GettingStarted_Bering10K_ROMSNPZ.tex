@@ -203,8 +203,6 @@ temporal caveats that are best described in discussions with the authors
 of these data and inclusion as co-authors will facilitate appropriate
 application and interpretation.
 
-\textbf{\emph{TODO: add specific citations back in here}}
-
 \hypertarget{the-bering-10k-model-v.-h16-with-10-depth-layers}{%
 \subsubsection{1.2.1. The Bering 10K Model (v. H16) with 10 depth
 layers:}\label{the-bering-10k-model-v.-h16-with-10-depth-layers}}
@@ -394,8 +392,8 @@ those listed under the minimal install) and download and process
 multiple shapefiles for geographic analysis, it takes several minutes
 depending on bandwidth.
 
-\hypertarget{get-romsnpz-data-step-2}{%
-\section{3. Get ROMSNPZ data (Step 2)}\label{get-romsnpz-data-step-2}}
+\hypertarget{get-romsnpz-data}{%
+\section{3. Get ROMSNPZ data}\label{get-romsnpz-data}}
 
 \hypertarget{available-data-sources}{%
 \subsection{3.1 Available data sources}\label{available-data-sources}}
@@ -447,38 +445,6 @@ post-processed datasets:
   \end{itemize}
 \end{itemize}
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi})}
-\setcounter{enumi}{1}
-\tightlist
-\item
-  ACLIM google drive CMIP6 datasets (embargoed; \emph{ACLIM members
-  Only})
-\end{enumerate}
-
-\begin{itemize}
-\tightlist
-\item
-  \texttt{Level1}: (Empty; data not copied from Mox)
-\item
-  \texttt{Level2}: (Empty; data not copied from Mox)
-\item
-  \texttt{Level3}: two post-processed datasets
-
-  \begin{itemize}
-  \tightlist
-  \item
-    \texttt{ACLIMsurveyrep-x.nc.}: Survey replicated (variables
-    ``sampled'' at the average location and date that each groundfish
-    survey is sampled)\emph{(Note that the resampling stations need to
-    be removed before creating bottom temperature maps)}\\
-  \item
-    \texttt{ACLIMregion-xnc.}:weekly variables averaged for each survey
-    strata \emph{(Note that area (km2) weighting should be used to
-    combine values across multiple strata)}
-  \end{itemize}
-\end{itemize}
-
 For all files the general naming convention of the folders is:
 \texttt{B10K-{[}ROMSNPZ\ version{]}\_{[}CMIP{]}\_{[}GCM{]}\_{[}carbon\ scenario{]}}.
 For example, the CMIP5 set of indices was downscaled using the H16
@@ -489,13 +455,12 @@ might look in the level3 (timeseries indices) folder under
 \texttt{B10K-H16\_CMIP5\_CESM\_rcp45}, which would be the B10K version
 H16 of the CMIP5 CESM model under RCP4.5.
 
-\hypertarget{option-1-public-web-based-aclim-data-hindcasts-cmip5-projections}{%
-\subsubsection{3.1.1 Option 1: Public web-based ACLIM data (hindcasts \&
-CMIP5
-projections)}\label{option-1-public-web-based-aclim-data-hindcasts-cmip5-projections}}
+\hypertarget{option-1-public-web-based-data-hindcasts-cmip5-projections}{%
+\subsubsection{3.1.1 Option 1: Public web-based data (hindcasts \& CMIP5
+projections)}\label{option-1-public-web-based-data-hindcasts-cmip5-projections}}
 
-The public web-based ACLIM data (hindcasts \& CMIP5 projections) option
-is available for Level3 and Level2 CMIP5 public data, it is not yet
+The public web-based data (hindcasts \& CMIP5 projections) option is
+available for Level3 and Level2 CMIP5 public data, it is not yet
 available for the embargoed CMIP6 data but through ACLIM2.0 will
 eventually be used to host that as well.
 
@@ -517,91 +482,6 @@ accessed at the following links:
   \href{https://data.pmel.noaa.gov/aclim/thredds/}{THREDDS ACLIM direct
   access to Level 2 and 3 netcdf files}
 \end{itemize}
-
-\hypertarget{option-2-aclim-members-only-access-cmip6-embargoed-l3-data}{%
-\subsubsection{\texorpdfstring{3.1.2 Option 2: (\emph{ACLIM members
-Only}) Access CMIP6 (embargoed) L3
-data}{3.1.2 Option 2: (ACLIM members Only) Access CMIP6 (embargoed) L3 data}}\label{option-2-aclim-members-only-access-cmip6-embargoed-l3-data}}
-
-Public CMIP5 and embargoed CMIP6 Level 3 netcdf (.nc) files are saved in
-the shared ACLIM data folder (note: Level 2 files are too large for the
-google drive but are available by request from
-\href{kelly.kearney@noaa.gov}{Kelly Kearney}.
-
-\textbf{IMPORTANT} Please note that while the CMIP5 set is now public
-(Hermann et al.~2019; section 2.2) \textbf{the CMIP6 suite is under
-embargo for QAQC and should not be shared outside of the ACLIM group}.
-The ROMSNPZ team (Drs. Hermann, Cheng, Kearney, Pilcher, Adyin) are in
-the process of synthesizing and publishing the CMIP6 data (goal is
-spring 2021 for submission), following those publications the data will
-be made accessible to the public via the PMEL data portal, as is the
-case for the CMIP5 data and public hindcasts. The ROMSNPZ team has made
-these runs available to ACLIM2 members in order to accelerate coupling
-to biological and social and economic models, thus out of professional
-courtesy please do not publish the data without permission from
-\textbf{all} ROMSNPZ team members, it is strongly advised that some or
-multiple ROMSNPZ team members be included as co-authors to ensure proper
-application and use of the ROMSNPZ data.
-
-For most applications you can use the ACLIM level3 post-processed
-indices available on the shared ACLIM drive in the root google drive
-data folder:
-\href{https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk}{\textbf{00\_ACLIM\_shared\textgreater02\_DATA}}.
-
-The \texttt{Newest} folder is organized by Bering10K version, General
-Circulation Model (GCM) and carbon scenario,
-e.g.~\texttt{B10K-H16\_CMIP5\_CESM\_rcp45}. Within each folder the
-following subfolders are:
-
-\begin{itemize}
-\tightlist
-\item
-  \texttt{Level1}: (Empty; not copied from Mox)
-\item
-  \texttt{Level2}: (Empty; not copied from Mox)
-\item
-  \texttt{Level3}: 2 files (\texttt{ACLIMsurveyrep\_B10K-x.nc} and
-  \texttt{ACLIMregion\_B10K-x.nc} )
-\end{itemize}
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi})}
-\tightlist
-\item
-  \texttt{ACLIMsurveyrep\_B10K-x.nc} contains summer groundfish trawl
-  ``survey replicated'' indices (using mean date and lat lon)
-  \emph{(Note that the resampling stations need to be removed before
-  creating bottom temperature maps)}\\
-\item
-  \texttt{ACLIMregion\_B10K-x.nc}: contains weekly ``strata'' values
-  \emph{(Note that area (km2) weighting should be used to combine values
-  across multiple strata)}
-\end{enumerate}
-
-There are two folders that need to be copied into the ACLIM2 folder on
-your computer under
-`\texttt{\textasciitilde{}{[}YOURPATH{]}/ACLIM2/Data/in/}:
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi})}
-\item
-  \href{https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk}{\textbf{00\_ACLIM\_shared\textgreater02\_DATA\textgreater Newest}}.
-  This folder contains a folder called \texttt{roms\_for\_aclim} with
-  all the ACLIM Level3 indices for model simulations available to ACLIM
-  members.
-\item
-  \href{https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk}{\textbf{00\_ACLIM\_shared\textgreater02\_DATA\textgreater Map\_layers.zip}}.
-  This file needs to be unzipped after you download it to your local
-  folder. It contains (large) base maps for the code below including
-  \texttt{shp\_files} and \texttt{geo\_tif} folders.
-\end{enumerate}
-
-\begin{figure}
-\centering
-\includegraphics[width=1\textwidth,height=\textheight]{Figs/data_dir.jpg}
-\caption{Your local \texttt{ACLIM2/Data} directory should look something
-like this when you are done downloading the data and unzipping it.}
-\end{figure}
 
 \hypertarget{access-and-save-the-data}{%
 \subsection{3.2 Access and save the
@@ -886,10 +766,100 @@ are relatively small:
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{aclim-only-convert-cmip6-level-3-.nc-.rdata}{%
-\subsubsection{3.2.4 ACLIM only: Convert CMIP6 Level 3 .nc
+\hypertarget{aclim-only-convert-cmip6-embargoed-level-3-.nc-.rdata}{%
+\subsubsection{3.2.4 ACLIM only: Convert CMIP6 (embargoed) Level 3 .nc
 --\textgreater{}
-.Rdata}\label{aclim-only-convert-cmip6-level-3-.nc-.rdata}}
+.Rdata}\label{aclim-only-convert-cmip6-embargoed-level-3-.nc-.rdata}}
+
+Public CMIP5 and embargoed CMIP6 Level 3 netcdf (.nc) files are saved in
+the shared ACLIM data folder (note: Level 2 files are too large for the
+google drive but are available by request from
+\href{kelly.kearney@noaa.gov}{Kelly Kearney}.
+
+\textbf{IMPORTANT} Please note that while the CMIP5 set is now public
+(Hermann et al.~2019; section 2.2) \textbf{the CMIP6 suite is under
+embargo for QAQC and should not be shared outside of the ACLIM group}.
+The ROMSNPZ team (Drs. Hermann, Cheng, Kearney, Pilcher, Adyin) are in
+the process of synthesizing and publishing the CMIP6 data (goal is
+spring 2021 for submission), following those publications the data will
+be made accessible to the public via the PMEL data portal, as is the
+case for the CMIP5 data and public hindcasts. The ROMSNPZ team has made
+these runs available to ACLIM2 members in order to accelerate coupling
+to biological and social and economic models, thus out of professional
+courtesy please do not publish the data without permission from
+\textbf{all} ROMSNPZ team members, it is strongly advised that some or
+multiple ROMSNPZ team members be included as co-authors to ensure proper
+application and use of the ROMSNPZ data.
+
+For most applications you can use the ACLIM level3 post-processed
+indices available on the shared ACLIM drive in the root google drive
+data folder:
+\href{https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk}{\textbf{00\_ACLIM\_shared\textgreater02\_DATA}}.
+
+The \texttt{Newest} folder is organized by Bering10K version, General
+Circulation Model (GCM) and carbon scenario,
+e.g.~\texttt{B10K-H16\_CMIP5\_CESM\_rcp45}. Within each folder the
+following subfolders are:
+
+ACLIM google drive CMIP6 datasets (embargoed; \emph{ACLIM2 Only}) *
+\texttt{Level1}: (Empty; data not copied from Mox) * \texttt{Level2}:
+(Empty; data not copied from Mox) * \texttt{Level3}: two post-processed
+datasets * \texttt{ACLIMsurveyrep-x.nc.}: Survey replicated (variables
+``sampled'' at the average location and date that each groundfish survey
+is sampled)\emph{(Note that the resampling stations need to be removed
+before creating bottom temperature maps)}\\
+* \texttt{ACLIMregion-xnc.}:weekly variables averaged for each survey
+strata \emph{(Note that area (km2) weighting should be used to combine
+values across multiple strata)}
+
+For all files the general naming convention of the folders is:
+\texttt{B10K-{[}ROMSNPZ\ version{]}\_{[}CMIP{]}\_{[}GCM{]}\_{[}carbon\ scenario{]}}.
+For example, the CMIP5 set of indices was downscaled using the H16
+(Hermann et al.~2016) version of the ROMSNPZ. Three models were used to
+force boundary conditions( MIROC, CESM, and GFDL) under 2 carbon
+scenarios RCP 8.5 and RCP 4.5. So to see an individual trajectory we
+might look in the level3 (timeseries indices) folder under
+\texttt{B10K-H16\_CMIP5\_CESM\_rcp45}, which would be the B10K version
+H16 of the CMIP5 CESM model under RCP4.5.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi})}
+\tightlist
+\item
+  \texttt{ACLIMsurveyrep\_B10K-x.nc} contains summer groundfish trawl
+  ``survey replicated'' indices (using mean date and lat lon)
+  \emph{(Note that the resampling stations need to be removed before
+  creating bottom temperature maps)}\\
+\item
+  \texttt{ACLIMregion\_B10K-x.nc}: contains weekly ``strata'' values
+  \emph{(Note that area (km2) weighting should be used to combine values
+  across multiple strata)}
+\end{enumerate}
+
+There are two folders that need to be copied into the ACLIM2 folder on
+your computer under
+`\texttt{\textasciitilde{}{[}YOURPATH{]}/ACLIM2/Data/in/}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi})}
+\item
+  \href{https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk}{\textbf{00\_ACLIM\_shared\textgreater02\_DATA\textgreater Newest}}.
+  This folder contains a folder called \texttt{roms\_for\_aclim} with
+  all the ACLIM Level3 indices for model simulations available to ACLIM
+  members.
+\item
+  \href{https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk}{\textbf{00\_ACLIM\_shared\textgreater02\_DATA\textgreater Map\_layers.zip}}.
+  This file needs to be unzipped after you download it to your local
+  folder. It contains (large) base maps for the code below including
+  \texttt{shp\_files} and \texttt{geo\_tif} folders.
+\end{enumerate}
+
+\begin{figure}
+\centering
+\includegraphics[width=1\textwidth,height=\textheight]{Figs/data_dir.jpg}
+\caption{Your local \texttt{ACLIM2/Data} directory should look something
+like this when you are done downloading the data and unzipping it.}
+\end{figure}
 
 \begin{figure}
 \centering
@@ -1155,6 +1125,106 @@ some text here
 \hypertarget{level-3-hindcasts-spatial-patterns}{%
 \subsubsection{5.1.1. Level 3 hindcasts: spatial
 patterns}\label{level-3-hindcasts-spatial-patterns}}
+
+Now let's explore the survey replicated data in more detail and use to
+plot bottom temperature.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{# preview the l3 data for the hindcast:}
+\NormalTok{    all_info1}\OperatorTok{%>%}\KeywordTok{filter}\NormalTok{(name }\OperatorTok{==}\StringTok{"B10K-K20_CORECFS"}\NormalTok{)}
+
+\NormalTok{    tt <-}\StringTok{ }\NormalTok{all_info1}\OperatorTok{%>%}\KeywordTok{filter}\NormalTok{(name }\OperatorTok{==}\StringTok{"B10K-K20_CORECFS"}\NormalTok{)}
+\NormalTok{    tt <-}\StringTok{ }\KeywordTok{seq}\NormalTok{(}\KeywordTok{as.numeric}\NormalTok{(}\KeywordTok{substring}\NormalTok{(tt}\OperatorTok{$}\NormalTok{Start,}\DecValTok{1}\NormalTok{,}\DecValTok{4}\NormalTok{)),}\KeywordTok{as.numeric}\NormalTok{(}\KeywordTok{substring}\NormalTok{(tt}\OperatorTok{$}\NormalTok{End,}\DecValTok{1}\NormalTok{,}\DecValTok{4}\NormalTok{)),}\DecValTok{10}\NormalTok{)}
+    
+    \CommentTok{# now create plots of average BT during four time periods}
+\NormalTok{    time_seg   <-}\StringTok{ }\KeywordTok{list}\NormalTok{( }\StringTok{'1970-1980'}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1970}\OperatorTok{:}\DecValTok{1980}\NormalTok{),}
+                        \StringTok{'1980-1990'}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1980}\OperatorTok{:}\DecValTok{1990}\NormalTok{),}
+                        \StringTok{'1990-2000'}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1990}\OperatorTok{:}\DecValTok{2000}\NormalTok{),}
+                        \StringTok{'2000-2010'}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{2000}\OperatorTok{:}\DecValTok{2010}\NormalTok{),}
+                        \StringTok{'2010-2020'}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{2010}\OperatorTok{:}\DecValTok{2020}\NormalTok{))}
+  
+    \CommentTok{# View an individual variable (e.g., Bottom Temp)}
+    \CommentTok{# -------------------------------------------------------}
+    \KeywordTok{head}\NormalTok{(srvy_vars)}
+    
+    \CommentTok{# specify the variables to plot}
+    
+\NormalTok{    vl        <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}
+                  \StringTok{"temp_bottom5m"}\NormalTok{,}
+                  \StringTok{"NCaS_integrated"}\NormalTok{, }\CommentTok{# Large Cop}
+                  \StringTok{"Cop_integrated"}\NormalTok{,  }\CommentTok{# Small Cop}
+                  \StringTok{"EupS_integrated"}\NormalTok{) }\CommentTok{# Euphausiids}
+    \CommentTok{#var_use   <- "temp_bottom5m"}
+    
+    \CommentTok{# assign the simulation to download}
+    \CommentTok{# --> --> Tinker: try selecting a different set of models to compare}
+\NormalTok{    sim        <-}\StringTok{"B10K-K20_CORECFS"} 
+    
+    \CommentTok{# open a "region" or strata specific nc file}
+\NormalTok{    fl         <-}\StringTok{ }\KeywordTok{file.path}\NormalTok{(sim,}\KeywordTok{paste0}\NormalTok{(srvy_txt,sim,}\StringTok{".Rdata"}\NormalTok{))}
+     
+    \CommentTok{# create local rdata files (opt 1)}
+    \ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{file.exists}\NormalTok{(fl))}
+      \KeywordTok{get_l3}\NormalTok{(}\DataTypeTok{web_nc =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{download_nc =}\NormalTok{ F,}
+          \DataTypeTok{varlist =}\NormalTok{ vl,}\DataTypeTok{sim_list =}\NormalTok{sim )}
+    
+    \CommentTok{# load object 'ACLIMsurveyrep'}
+    \KeywordTok{load}\NormalTok{(}\KeywordTok{file.path}\NormalTok{(main,Rdata_path,fl))   }
+    
+    
+    \CommentTok{# Collate mean values across timeperiods and simulations}
+    \CommentTok{# -------------------------------------------------------}
+\NormalTok{    ms <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"B10K-H16_CORECFS"}\NormalTok{,}\StringTok{"B10K-K20_CORECFS"}\NormalTok{ )}
+   
+    \CommentTok{# Loop over model set}
+    \ControlFlowTok{for}\NormalTok{(sim }\ControlFlowTok{in}\NormalTok{ ms)\{}
+\NormalTok{     fl         <-}\StringTok{ }\KeywordTok{file.path}\NormalTok{(sim,}\KeywordTok{paste0}\NormalTok{(srvy_txt,sim,}\StringTok{".Rdata"}\NormalTok{))}
+     
+    \ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{file.exists}\NormalTok{( }\KeywordTok{file.path}\NormalTok{(Rdata_path,fl)) )}
+      \KeywordTok{get_l3}\NormalTok{(}\DataTypeTok{web_nc =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{download_nc =}\NormalTok{ F,}
+          \DataTypeTok{varlist =}\NormalTok{ vl,}\DataTypeTok{sim_list =}\NormalTok{sim )}
+\NormalTok{    \}}
+      
+    \CommentTok{# get the mean values for the time blocks from the rdata versions}
+    \CommentTok{# will throw "implicit NA" errors that can be ignored}
+\NormalTok{    mn_var_all <-}\StringTok{ }\KeywordTok{get_mn_rd}\NormalTok{(}\DataTypeTok{modset =}\NormalTok{ ms,}
+                            \DataTypeTok{names  =} \KeywordTok{c}\NormalTok{(}\StringTok{"H16"}\NormalTok{,}\StringTok{"K20"}\NormalTok{) ,}
+                            \DataTypeTok{varUSE =} \StringTok{"temp_bottom5m"}\NormalTok{)}
+    
+    \CommentTok{# convert results to a shapefile}
+\NormalTok{    mn_var_sf  <-}\StringTok{ }\KeywordTok{convert2shp}\NormalTok{(mn_var_all}\OperatorTok{%>%}\KeywordTok{filter}\NormalTok{(}\OperatorTok{!}\KeywordTok{is.na}\NormalTok{(mnval)))}
+\NormalTok{    lab_t      <-}\StringTok{ }\CommentTok{# ms[2]%>%stringr::str_remove("([^-])")}
+\StringTok{    }
+\StringTok{    }\NormalTok{p_hind_}\DecValTok{3}\NormalTok{         <-}\StringTok{ }\KeywordTok{plot_stations_basemap}\NormalTok{(}\DataTypeTok{sfIN =}\NormalTok{ mn_var_sf,}
+                                \DataTypeTok{fillIN =} \StringTok{"mnval"}\NormalTok{,}
+                                \DataTypeTok{colorIN =} \StringTok{"mnval"}\NormalTok{,}
+                                \DataTypeTok{sizeIN=}\NormalTok{.}\DecValTok{3}\NormalTok{) }\OperatorTok{+}
+\StringTok{      }\KeywordTok{facet_grid}\NormalTok{(simulation}\OperatorTok{~}\NormalTok{time_period)}\OperatorTok{+}
+\StringTok{      }\KeywordTok{scale_color_viridis_c}\NormalTok{()}\OperatorTok{+}
+\StringTok{      }\KeywordTok{scale_fill_viridis_c}\NormalTok{()}\OperatorTok{+}
+\StringTok{      }\KeywordTok{guides}\NormalTok{(}
+        \DataTypeTok{color =}  \KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{title=}\StringTok{"Bottom T (degC)"}\NormalTok{),}
+        \DataTypeTok{fill  =}  \KeywordTok{guide_legend}\NormalTok{(}\DataTypeTok{title=}\StringTok{"Bottom T (degC)"}\NormalTok{)) }\OperatorTok{+}
+\StringTok{      }\KeywordTok{ggtitle}\NormalTok{(lab_t)}
+   
+    \CommentTok{# This is slow but it works (repeat dev.new() twice if in Rstudio)...}
+    \KeywordTok{dev.new}\NormalTok{()}
+\NormalTok{    p_hind_}\DecValTok{3}
+    
+    \ControlFlowTok{if}\NormalTok{(update.figs)  }
+      \KeywordTok{ggsave}\NormalTok{(}\DataTypeTok{file=}\KeywordTok{file.path}\NormalTok{(main,}\StringTok{"Figs/mn_hindcast_BT.jpg"}\NormalTok{),}\DataTypeTok{width=}\DecValTok{8}\NormalTok{,}\DataTypeTok{height=}\DecValTok{6}\NormalTok{)}
+  
+    \CommentTok{# graphics.off()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+\centering
+\includegraphics{Figs/mn_hindcast_BT.jpg}
+\caption{Decadal averages of bottom temperature from the two hindcast
+models.}
+\end{figure}
 
 \hypertarget{level-3-hindcasts-weekly-strata-averages}{%
 \subsubsection{5.1.2. Level 3 hindcasts: Weekly strata

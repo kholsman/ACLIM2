@@ -1,14 +1,12 @@
 ---
 title: "Getting Started with Bering10K ROMSNPZ Level 2 & 3 indices"
 output:
-  pdf_document:
+  html_document:
+    df_print: kable
     fig_caption: yes
-    fig_height: 4
-    fig_width: 5
-    highlight: tango
-    keep_tex: yes
-    latex_engine: xelatex
-    toc: TRUE
+    theme: flatly
+    toc: true
+    toc_float: true
   word_document:
     fig_caption: yes
     fig_width: 4
@@ -17,12 +15,14 @@ output:
   - \usepackage{inputenc}
   - \usepackage{unicode-math}
   - \pagenumbering{gobble}
-  html_document:
-    df_print: kable
+  pdf_document:
     fig_caption: yes
-    theme: flatly
-    toc: true
-    toc_float: true
+    fig_height: 4
+    fig_width: 5
+    highlight: tango
+    keep_tex: yes
+    latex_engine: xelatex
+    toc: TRUE
 ---
 
 ```{r startup, eval=TRUE, echo=FALSE, results='hide',message=FALSE}
@@ -76,9 +76,6 @@ We **strongly recommend** reviewing the following documentation before using the
 
 The data described here are published and publicly available for use, except as explicitly noted. However, for novel uses of the data, it is **strongly recommended** that you consult with and consider including at least one author from the ROMSNPZ team (Drs. Hermann, Cheng, Kearney, Pilcher, Aydin, Ortiz).  There are multiple spatial and temporal caveats that are best described in discussions with the authors of these data and inclusion as co-authors will facilitate appropriate application and interpretation.
 
-    
-***TODO: add specific citations back in here***
-
 ### 1.2.1. The Bering 10K Model (v. H16) with 10 depth layers:  
 
 The H16 model is the original BSIERP era 10 depth layer model with a 10 Km grid. This version was used in ACLIM1.0 to dynamically downscaled 3 global scale general circulation models (GCMs) under two CMIP ([Coupled Model Intercomparison Project](https://www.wcrp-climate.org/wgcm-cmip)]) phase 5 representative carbon pathways (RCP): RCP 4.5 or "moderate global carbon mitigation" and RCP 8.5 "high baseline global carbon emissions". Details of the model and projections can be found in:
@@ -118,7 +115,6 @@ A minimal R install (for example XXX only) requires installing the `ncdf4`, `dev
     install.packages(devtools)
     install.packages(ncdf4)
     devtools::install_github("bocinsky/thredds")
-    
 ```    
 
 Note that each of these has multiple sub-dependent libraries and may take several minutes to install. *The full install below includes installation of these packages, so you don't need to perform this step if you perform the full install.*
@@ -145,7 +141,6 @@ if downloading from zip, please **rename the root folder** from `ACLIM2-main` (i
 This set of commands, run within R, downloads the ACLIM2 repository and unpacks it, with the ACLIM2 directory structrue being located in the specified `download_path`.  This also performs the folder renaming mentioned in Option 2.
 
 ```{r gitdwnld, eval = FALSE,echo =T}
-    
     # Specify the download directory
     main_nm       <- "ACLIM2"
 
@@ -164,7 +159,6 @@ This set of commands, run within R, downloads the ACLIM2 repository and unpacks 
     #rename the unzipped folder from ACLIM2-main to ACLIM2
     file.rename(paste0(main_nm,"-main"), main_nm)
     setwd(main_nm)
-    
 ```
 
 ## 2.3 Set up envionment and get shapefiles (full install)
@@ -228,7 +222,7 @@ The `R/make.R` command will install missing libraries (including those listed un
 
 
 
-# 3. Get ROMSNPZ data (Step 2)
+# 3. Get ROMSNPZ data
 
 ## 3.1 Available data sources
 
@@ -243,20 +237,13 @@ There are presently two sources of ROMSNPZ level 2 and level 3 post-processed da
     * `Level3`: two post-processed datasets 
       * `ACLIMsurveyrep-x.nc.`: Survey replicated (variables "sampled" at the average location and date that each groundfish survey is sampled)*(Note that the resampling stations need to be removed before creating bottom temperature maps)*  
      * `ACLIMregion-xnc.`:weekly variables averaged for each survey strata *(Note that area (km2) weighting should be used to combine values across multiple strata)*
-2) ACLIM google drive CMIP6 datasets (embargoed; *ACLIM members Only*) 
-  * `Level1`: (Empty; data not copied from Mox)
-  * `Level2`: (Empty; data not copied from Mox)
-  * `Level3`: two post-processed datasets 
-     * `ACLIMsurveyrep-x.nc.`: Survey replicated (variables "sampled" at the average location and date that each groundfish survey is sampled)*(Note that the resampling stations need to be removed before creating bottom temperature maps)*  
-     * `ACLIMregion-xnc.`:weekly variables averaged for each survey strata *(Note that area (km2) weighting should be used to combine values across multiple strata)*
      
 For all files the general naming convention of the folders is:
 `B10K-[ROMSNPZ version]_[CMIP]_[GCM]_[carbon scenario]`. For example, the CMIP5 set of indices was downscaled using the H16 (Hermann et al. 2016) version of the ROMSNPZ. Three models were used to force boundary conditions( MIROC, CESM, and GFDL) under 2 carbon scenarios RCP 8.5 and RCP 4.5. So to see an individual trajectory we might look in the level3 (timeseries indices) folder under `B10K-H16_CMIP5_CESM_rcp45`, which would be the B10K version H16 of the CMIP5 CESM model under RCP4.5.
 
+### 3.1.1 Option 1: Public web-based data (hindcasts & CMIP5 projections)  
 
-### 3.1.1 Option 1: Public web-based ACLIM data (hindcasts & CMIP5 projections)  
-
-The public web-based ACLIM data (hindcasts & CMIP5 projections) option is available for Level3 and Level2 CMIP5 public data, it is not yet available for the embargoed CMIP6 data but through ACLIM2.0 will eventually be used to host that as well.
+The public web-based data (hindcasts & CMIP5 projections) option is available for Level3 and Level2 CMIP5 public data, it is not yet available for the embargoed CMIP6 data but through ACLIM2.0 will eventually be used to host that as well.
 
 The ROMSNPZ team has been working with [Roland Schweitzer](roland.schweitzer@noaa.gov) and [Peggy Sullivan](peggy.sullivan@noaa.gov) to develop the ACLIM Live Access Server (LAS) to publicly host the published CMIP5 hindcasts and downscaled projections. This server is in beta testing phase and can be accessed at the following links:
 
@@ -265,34 +252,6 @@ The ROMSNPZ team has been working with [Roland Schweitzer](roland.schweitzer@noa
 * [ERDAPP ACLIM data access tool](https://data.pmel.noaa.gov/aclim/erddap/)
 
 * [THREDDS ACLIM direct access to Level 2 and 3 netcdf files](https://data.pmel.noaa.gov/aclim/thredds/)
-
-
-### 3.1.2 Option 2: (*ACLIM members Only*) Access CMIP6 (embargoed) L3 data
-
-Public CMIP5 and embargoed CMIP6 Level 3 netcdf (.nc) files are saved in the shared ACLIM data folder (note: Level 2 files are too large for the google drive but are available by request from [Kelly Kearney](kelly.kearney@noaa.gov). 
-
-**IMPORTANT** Please note that while the CMIP5 set is now public (Hermann et al. 2019; section 2.2) **the CMIP6 suite is under embargo for QAQC and should not be shared outside of the ACLIM group**. The ROMSNPZ team (Drs. Hermann, Cheng, Kearney, Pilcher, Adyin) are in the process of synthesizing and publishing the CMIP6 data (goal is spring 2021 for submission), following those publications the data will be made accessible to the public via the PMEL data portal, as is the case for the CMIP5 data and public hindcasts. The ROMSNPZ team has made these runs available to ACLIM2 members in order to accelerate coupling to biological and social and economic models, thus out of professional courtesy please do not publish the data without permission from **all** ROMSNPZ team members, it is strongly advised that some or multiple ROMSNPZ team members be included as co-authors to ensure proper application and use of the ROMSNPZ data.
-
-For most applications you can use the ACLIM level3 post-processed indices available on the shared ACLIM drive in the root google drive data folder: [**00_ACLIM_shared>02_DATA**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk "00_ACLIM_shared>02_DATA"). 
-
-The `Newest` folder is organized by Bering10K version, General Circulation Model (GCM) and carbon scenario, e.g. `B10K-H16_CMIP5_CESM_rcp45`. Within each folder the following subfolders are:
-
-* `Level1`: (Empty; not copied from Mox)
-* `Level2`: (Empty; not copied from Mox)
-* `Level3`: 2 files (`ACLIMsurveyrep_B10K-x.nc` and `ACLIMregion_B10K-x.nc` )
-
-1) `ACLIMsurveyrep_B10K-x.nc` contains summer groundfish trawl "survey replicated" indices (using mean date and lat lon) *(Note that the resampling stations need to be removed before creating bottom temperature maps)*  
-2) `ACLIMregion_B10K-x.nc`: contains weekly "strata" values *(Note that area (km2) weighting should be used to combine values across multiple strata)*
-
-<!-- ![](Figs/datadir.jpg){ width=40% } -->
-
-There are two folders that need to be copied into the ACLIM2 folder on your computer under ``~[YOURPATH]/ACLIM2/Data/in/`:
-
-1) [**00_ACLIM_shared>02_DATA>Newest**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk "00_ACLIM_shared>02_DATA>Newest"). This folder contains a folder called `roms_for_aclim` with all the ACLIM Level3 indices for model simulations available to ACLIM members.
-
-2) [**00_ACLIM_shared>02_DATA>Map_layers.zip**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk "00_ACLIM_shared>02_DATA>Map_layers"). This file needs to be unzipped after you download it to your local folder. It contains (large) base maps for the code below including `shp_files` and `geo_tif` folders.
-
-![Your local `ACLIM2/Data` directory should look something like this when you are done downloading the data and unzipping it.](Figs/data_dir.jpg){ width=100% }
 
 
 ## 3.2 Access and save the data
@@ -487,7 +446,41 @@ Now let's grab some of the Level 3 data and store it in the `r Rdata_path` folde
 
 ```
 
-### 3.2.4 ACLIM only: Convert CMIP6 Level 3 .nc --> .Rdata
+
+
+### 3.2.4 ACLIM only: Convert CMIP6 (embargoed) Level 3 .nc --> .Rdata
+
+Public CMIP5 and embargoed CMIP6 Level 3 netcdf (.nc) files are saved in the shared ACLIM data folder (note: Level 2 files are too large for the google drive but are available by request from [Kelly Kearney](kelly.kearney@noaa.gov). 
+
+**IMPORTANT** Please note that while the CMIP5 set is now public (Hermann et al. 2019; section 2.2) **the CMIP6 suite is under embargo for QAQC and should not be shared outside of the ACLIM group**. The ROMSNPZ team (Drs. Hermann, Cheng, Kearney, Pilcher, Adyin) are in the process of synthesizing and publishing the CMIP6 data (goal is spring 2021 for submission), following those publications the data will be made accessible to the public via the PMEL data portal, as is the case for the CMIP5 data and public hindcasts. The ROMSNPZ team has made these runs available to ACLIM2 members in order to accelerate coupling to biological and social and economic models, thus out of professional courtesy please do not publish the data without permission from **all** ROMSNPZ team members, it is strongly advised that some or multiple ROMSNPZ team members be included as co-authors to ensure proper application and use of the ROMSNPZ data.
+
+For most applications you can use the ACLIM level3 post-processed indices available on the shared ACLIM drive in the root google drive data folder: [**00_ACLIM_shared>02_DATA**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk "00_ACLIM_shared>02_DATA"). 
+
+The `Newest` folder is organized by Bering10K version, General Circulation Model (GCM) and carbon scenario, e.g. `B10K-H16_CMIP5_CESM_rcp45`. Within each folder the following subfolders are:
+
+  ACLIM google drive CMIP6 datasets (embargoed; *ACLIM2 Only*) 
+  * `Level1`: (Empty; data not copied from Mox)
+  * `Level2`: (Empty; data not copied from Mox)
+  * `Level3`: two post-processed datasets 
+     * `ACLIMsurveyrep-x.nc.`: Survey replicated (variables "sampled" at the average location and date that each groundfish survey is sampled)*(Note that the resampling stations need to be removed before creating bottom temperature maps)*  
+     * `ACLIMregion-xnc.`:weekly variables averaged for each survey strata *(Note that area (km2) weighting should be used to combine values across multiple strata)*
+     
+For all files the general naming convention of the folders is:
+`B10K-[ROMSNPZ version]_[CMIP]_[GCM]_[carbon scenario]`. For example, the CMIP5 set of indices was downscaled using the H16 (Hermann et al. 2016) version of the ROMSNPZ. Three models were used to force boundary conditions( MIROC, CESM, and GFDL) under 2 carbon scenarios RCP 8.5 and RCP 4.5. So to see an individual trajectory we might look in the level3 (timeseries indices) folder under `B10K-H16_CMIP5_CESM_rcp45`, which would be the B10K version H16 of the CMIP5 CESM model under RCP4.5.
+
+1) `ACLIMsurveyrep_B10K-x.nc` contains summer groundfish trawl "survey replicated" indices (using mean date and lat lon) *(Note that the resampling stations need to be removed before creating bottom temperature maps)*  
+2) `ACLIMregion_B10K-x.nc`: contains weekly "strata" values *(Note that area (km2) weighting should be used to combine values across multiple strata)*
+
+<!-- ![](Figs/datadir.jpg){ width=40% } -->
+
+There are two folders that need to be copied into the ACLIM2 folder on your computer under ``~[YOURPATH]/ACLIM2/Data/in/`:
+
+1) [**00_ACLIM_shared>02_DATA>Newest**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk "00_ACLIM_shared>02_DATA>Newest"). This folder contains a folder called `roms_for_aclim` with all the ACLIM Level3 indices for model simulations available to ACLIM members.
+
+2) [**00_ACLIM_shared>02_DATA>Map_layers.zip**](https://drive.google.com/drive/u/0/folders/0Bx7wdZllbuF9eDJndkhCS2EwQUk "00_ACLIM_shared>02_DATA>Map_layers"). This file needs to be unzipped after you download it to your local folder. It contains (large) base maps for the code below including `shp_files` and `geo_tif` folders.
+
+![Your local `ACLIM2/Data` directory should look something like this when you are done downloading the data and unzipping it.](Figs/data_dir.jpg){ width=100% }
+
 
 ![The final folder structure on your local drive in `Data/in/Newest` should look something like this. ](Figs/filestructure.jpg){ width=100%}
 
@@ -523,6 +516,7 @@ Now let's convert the CMIP6 Level3 .nc files to .Rdata files (as in section 3.2.
           varlist = vl,sim_list = sl)
 
 ```
+
 
 # 4. Explore indices & plot the data  
 
@@ -593,7 +587,7 @@ The code segment below will recreate the above figures.*Note that if this is the
    # we will need to load the gis layers and packages
    # if this is the first time through this would be a good time
    # to grab a coffee...
-
+   
    source("R/sub_scripts/load_maps.R")
   
    # first convert the station_info object into a shapefile for mapping:
@@ -630,6 +624,100 @@ some text here
 some text here
 
 ### 5.1.1. Level 3 hindcasts: spatial patterns
+
+Now let's explore the survey replicated data in more detail and use to plot bottom temperature.
+
+```{r explore_srvy1, eval=F, echo=T}
+    
+    # preview the l3 data for the hindcast:
+    all_info1%>%filter(name =="B10K-K20_CORECFS")
+
+    tt <- all_info1%>%filter(name =="B10K-K20_CORECFS")
+    tt <- seq(as.numeric(substring(tt$Start,1,4)),as.numeric(substring(tt$End,1,4)),10)
+    
+    # now create plots of average BT during four time periods
+    time_seg   <- list( '1970-1980' = c(1970:1980),
+                        '1980-1990' = c(1980:1990),
+                        '1990-2000' = c(1990:2000),
+                        '2000-2010' = c(2000:2010),
+                        '2010-2020' = c(2010:2020))
+  
+    # View an individual variable (e.g., Bottom Temp)
+    # -------------------------------------------------------
+    head(srvy_vars)
+    
+    # specify the variables to plot
+    
+    vl        <- c(
+                  "temp_bottom5m",
+                  "NCaS_integrated", # Large Cop
+                  "Cop_integrated",  # Small Cop
+                  "EupS_integrated") # Euphausiids
+    #var_use   <- "temp_bottom5m"
+    
+    # assign the simulation to download
+    # --> --> Tinker: try selecting a different set of models to compare
+    sim        <-"B10K-K20_CORECFS" 
+    
+    # open a "region" or strata specific nc file
+    fl         <- file.path(sim,paste0(srvy_txt,sim,".Rdata"))
+     
+    # create local rdata files (opt 1)
+    if(!file.exists(fl))
+      get_l3(web_nc = TRUE, download_nc = F,
+          varlist = vl,sim_list =sim )
+    
+    # load object 'ACLIMsurveyrep'
+    load(file.path(main,Rdata_path,fl))   
+    
+    
+    # Collate mean values across timeperiods and simulations
+    # -------------------------------------------------------
+    ms <- c("B10K-H16_CORECFS","B10K-K20_CORECFS" )
+   
+    # Loop over model set
+    for(sim in ms){
+     fl         <- file.path(sim,paste0(srvy_txt,sim,".Rdata"))
+     
+    if(!file.exists( file.path(Rdata_path,fl)) )
+      get_l3(web_nc = TRUE, download_nc = F,
+          varlist = vl,sim_list =sim )
+    }
+      
+    # get the mean values for the time blocks from the rdata versions
+    # will throw "implicit NA" errors that can be ignored
+    mn_var_all <- get_mn_rd(modset = ms,
+                            names  = c("H16","K20") ,
+                            varUSE = "temp_bottom5m")
+    
+    # convert results to a shapefile
+    mn_var_sf  <- convert2shp(mn_var_all%>%filter(!is.na(mnval)))
+    lab_t      <- # ms[2]%>%stringr::str_remove("([^-])")
+    
+    p_hind_3         <- plot_stations_basemap(sfIN = mn_var_sf,
+                                fillIN = "mnval",
+                                colorIN = "mnval",
+                                sizeIN=.3) +
+      facet_grid(simulation~time_period)+
+      scale_color_viridis_c()+
+      scale_fill_viridis_c()+
+      guides(
+        color =  guide_legend(title="Bottom T (degC)"),
+        fill  =  guide_legend(title="Bottom T (degC)")) +
+      ggtitle(lab_t)
+   
+    # This is slow but it works (repeat dev.new() twice if in Rstudio)...
+    dev.new()
+    p_hind_3
+    
+    if(update.figs)  
+      ggsave(file=file.path(main,"Figs/mn_hindcast_BT.jpg"),width=8,height=6)
+  
+    # graphics.off()
+ 
+```
+
+![Decadal averages of bottom temperature from the two hindcast models.](Figs/mn_hindcast_BT.jpg)
 
 ### 5.1.2. Level 3 hindcasts: Weekly strata averages
 

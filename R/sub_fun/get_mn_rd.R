@@ -2,7 +2,7 @@
 #'get_mn_rd
 #'
 
-get_mn_rd <-  function(modset = aclim[m_set],varUSE){
+get_mn_rd <-  function(modset,names=NULL,varUSE){
   
   
   for(tt in 1:length(modset)){
@@ -28,12 +28,15 @@ get_mn_rd <-  function(modset = aclim[m_set],varUSE){
     }
     rm(ACLIMsurveyrep)
     
+    if(is.null(names)){
+      sims <- strsplit(modset,"_")
+      nl   <- lengths(sims)
+      sims <- unlist(sims)[cumsum(nl)]
+    }else{
+      sims <- names
+    }
     
-    sims <- strsplit(modset,"_")
-    nl   <- lengths(sims)
-    sims <- unlist(sims)[cumsum(nl)]
-    
-    mn_var$simulation <- factor(sims[tt],levels=sims)
+    mn_var$simulation <- factor(sims[tt],levels=unique(sims))
     if(tt == 1) mn_var_all <- mn_var
     if(tt >  1) mn_var_all <- rbind(mn_var_all,mn_var)
     rm(mn_var)
