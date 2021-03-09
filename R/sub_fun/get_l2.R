@@ -67,6 +67,8 @@ get_l2 <-function(
         m_l2_datasets  <- tds_list_datasets(m_l2_cat)
         m_l2_vT_url    <- m_l2_datasets[m_l2_datasets$dataset == ds_list[d],]$path
         m_flnm         <- strsplit(m_l2_vT_url,split="dataset=")[[1]][2]
+        if(length( grep("B10K_K20",m_flnm))>0 )
+          m_flnm       <- stringr::str_replace(m_flnm,"B10K_K20","B10K-K20")
         m_flnm         <- stringr::str_replace(m_flnm,"Level2_","")
         tmppath        <- file.path(local_path,paste0(m,"/Level2/",ds_list[d],"_",m,".nc"))
         
