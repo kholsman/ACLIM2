@@ -148,7 +148,7 @@ get_l2 <-function(
           lat    <- ncvar_get(nc, varid = "lat_rho")
              cat("get lon...\n")
           lon    <- ncvar_get(nc, varid = "lon_rho")
-          #M2 <- (56.87°N, -164.06°W)
+        
         
           cat("get data... (slow)...")
           tmp_var      <- get_level2(

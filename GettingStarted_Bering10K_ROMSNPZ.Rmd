@@ -977,7 +977,7 @@ Level 2 data can be explored in the same way as the above indices but we will fo
 As we did in section 5.1.1. let's create spatial plots of hindcast time periods for Aug 1 of each year:
 
 ```{r explore_L2_space hind, eval=F, echo=T}
-   # run this line if load_gis is set to F in R/setup.R:
+    # run this line if load_gis is set to F in R/setup.R:
     source("R/sub_scripts/load_maps.R")  
 
     # now create plots of average BT during four time periods
@@ -994,8 +994,6 @@ As we did in section 5.1.1. let's create spatial plots of hindcast time periods 
     # --> Tinker: try selecting a different set of models to compare
     sim        <- "B10K-K20_CORECFS" 
     #ms <- c("B10K-H16_CORECFS","B10K-K20_CORECFS" )
-   
-     
     
     # Currently available Level 2 variables
     dl     <- proj_l2_datasets$dataset  # datasets
@@ -1017,7 +1015,6 @@ As we did in section 5.1.1. let's create spatial plots of hindcast time periods 
     fl         <- file.path(main,Rdata_path,sim,"Level2",
                             paste0(sim,var_use,IDin,".Rdata"))
     
-    
    # load data from level 2 nc files (approx <10sec)
     startTime = Sys.time()
     if(!file.exists(file.path(Rdata_path,fl))){
@@ -1036,7 +1033,7 @@ As we did in section 5.1.1. let's create spatial plots of hindcast time periods 
     endTime  - startTime
     
     # load data from level 2 nc files for all years and vars (yearsIN = NULL by default)
-    #       NOTE: THIS IS SLOOOOOW..~ 1 min
+    #       NOTE: THIS IS SLOOOOOW..~ 2 min
     startTime2 = Sys.time()
     if(!file.exists(file.path(Rdata_path,fl))){
       get_l2(
@@ -1102,6 +1099,7 @@ As we did in section 5.1.1. let's create spatial plots of hindcast time periods 
                                 fillIN = "mnval",
                                 colorIN = "mnval",
                                 sizeIN=.6) +
+      #facet_wrap(.~time_period,nrow=2,ncol=3)+
       facet_grid(.~time_period)+
       scale_color_viridis_c()+
       scale_fill_viridis_c()+
@@ -1114,17 +1112,137 @@ As we did in section 5.1.1. let's create spatial plots of hindcast time periods 
     dev.new()
     p9_hind
     
-    if(update.figs)  ggsave(file=file.path(main,"Figs/sub_grid_mn_BT_Aug1.jpg"),width=8,height=6)
+    if(update.figs)  ggsave(file=file.path(main,"Figs/Hind_sub_grid_mn_BT_Aug1.jpg"),width=8,height=4)
   
     # graphics.off()
  
 ```
 
 
-![Aug 1 Bottom temperature from Level 2 dataset](Figs/sub_grid_mn_BT_Aug1.jpg){ width=65% }
+![Aug 1 Bottom temperature from Level 2 dataset](Figs/Hind_sub_grid_mn_BT_Aug1.jpg){ width=65% }
 
 
 ### 5.2.2. Level 2 hindcasts: M2 mooring comparison
+
+As final hindcast comparison, let's look a surface temperature from observations vs the H16 and K20 model versions of the hindcast:
+
+
+```{r explore_L2_space hind, eval=F, echo=T}
+    # M2_lat <- (56.87°N, -164.06°W)
+    # 56.877    -164.06 xi = 99    eta= 62
+    IDin       <- "_2019_M2"
+    var_use    <- "_surface5m_temp"
+    
+    # get data from M2 data page:
+      pmelM2_url <-"https://www.ncei.noaa.gov/data/oceans/ncei/ocads/data/0157599/"
+      yr_dat     <- "M2_164W_57N_Apr2019_May2019.csv"
+        
+    # preview the datasets on the server:
+      temp <- tempfile()
+      download.file(paste0(pmelM2_url,yr_dat),temp)
+      data <- read.csv(temp,skip=4,stringsAsFactors = F)
+      unlink(temp)
+
+    # convert date and time to t 
+      data$t <-as.POSIXct(paste0(data$Date," ",data$Time,":00"),"%m/%d/%Y %H:%M:%S",
+                             origin =   "1900-01-01 00:00:00",
+                             tz = "GMT")
+    
+    # open a "region" or strata specific nc file
+    fl         <- file.path(main,Rdata_path,sim,"Level2",
+                            paste0(sim,var_use,IDin,".Rdata"))
+
+    # assign the simulation to download
+    sim        <- "B10K-K20_CORECFS" 
+    
+    # Let's sample the model years as close to Aug 1 as the model timesteps run:
+    #tr          <- c("-08-1 12:00:00 GMT") 
+    tr          <- substring(data$t,5,20)
+    # the full grid is large and takes a longtime to plot, so let's subsample the grid every 4 cells
+   
+    
+   # load data from level 2 nc files (approx <10sec)
+    if(!file.exists(file.path(Rdata_path,fl))){
+      get_l2(
+        ID          = IDin,
+        overwrite   = T,
+        xi_rangeIN  = seq(1,182,10),
+        eta_rangeIN = seq(1,258,10),
+        ds_list     = dl[2],  # must be same length as sub_varlist
+        trIN        = tr,
+        yearsIN     = 2019,
+        sub_varlist = list('Surface 5m' = "temp" ),  
+        sim_list    = sim  )
+    }
+    
+    # load R data file
+    load(fl)   # temp
+    
+    # there are smarter ways to do this;looping because 
+    # we don't want to mess it up but this is slow...
+    i <-1
+    data_long <- data.frame(latitude = as.vector(temp$lat),
+                       longitude = as.vector(temp$lon),
+                       val = as.vector(temp$val[,,i]),
+                       time = temp$time[i],
+                       year = substr( temp$time[i],1,4),stringsAsFactors = F
+                       )
+    
+    for(i in 2:dim(temp$val)[3])
+      data_long <- rbind(data_long,
+                          data.frame(latitude = as.vector(temp$lat),
+                           longitude = as.vector(temp$lon),
+                           val = as.vector(temp$val[,,i]),
+                           time = temp$time[i],
+                           year = substr( temp$time[i],1,4),stringsAsFactors = F)
+                       )
+    
+    
+    # get the mean values for the time blocks from the rdata versions
+    # may throw "implicit NA" errors that can be ignored
+    tmp_var <-data_long # get mean var val for each time segment
+    j<-0
+    for(i in 1:length(time_seg)){
+      if(length( which(as.numeric(tmp_var$year)%in%time_seg[[i]] ))>0){
+        j <- j +1
+        mn_tmp_var <- tmp_var%>%
+          filter(year%in%time_seg[[i]],!is.na(val))%>%
+          group_by(latitude, longitude)%>%
+          summarise(mnval = mean(val,rm.na=T))
+        
+        mn_tmp_var$time_period <- factor(names(time_seg)[i],levels=names(time_seg))
+        
+      if(j == 1) mn_var <- mn_tmp_var
+      if(j >  1) mn_var <- rbind(mn_var,mn_tmp_var)
+       rm(mn_tmp_var)
+      }
+    }
+    
+    # convert results to a shapefile
+    L2_sf  <- convert2shp(mn_var%>%filter(!is.na(mnval)))
+    
+    p9_hind     <- plot_stations_basemap(sfIN = L2_sf,
+                                fillIN = "mnval",
+                                colorIN = "mnval",
+                                sizeIN=.6) +
+      #facet_wrap(.~time_period,nrow=2,ncol=3)+
+      facet_grid(.~time_period)+
+      scale_color_viridis_c()+
+      scale_fill_viridis_c()+
+      guides(
+        color =  guide_legend(title="Bottom T (degC)"),
+        fill  =  guide_legend(title="Bottom T (degC)")) +
+      ggtitle(paste(sim,var_use,IDin))
+   
+    # This is slow but it works (repeat dev.new() twice if in Rstudio)...
+    dev.new()
+    p9_hind
+    
+    if(update.figs)  ggsave(file=file.path(main,"Figs/Hind_sub_grid_mn_BT_Aug1.jpg"),width=8,height=4)
+  
+    # graphics.off()
+ 
+```
 
 
 
