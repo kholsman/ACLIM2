@@ -1,5 +1,6 @@
 ---
-title: "Getting Started with Bering10K ROMSNPZ Level 2 & 3 indices"
+title: "Getting Started with Bering10K Level 2 & 3 indices"
+author: K. Holsman and K. Aydin (Tutorial), A. Hermann, K. Kearney, W. Cheng, I. Ortiz (Bering10K)
 output:
   pdf_document:
     fig_caption: yes
