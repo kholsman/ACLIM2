@@ -48,15 +48,13 @@ get_level2<- function(ncIN,
     for( i in 1:nt ) {
       cat('\r',round(100*i/nt),"%")
         flush.console() 
-      
-      
+
       # Initialize start and count to read one timestep of the variable.
       start        <- rep(1,ndims)	# begin with start=(1,1,1,...,1)
       start[ndims] <- subt[i]	      # change to start=(1,1,1,...,i) to read timestep i
       count        <- varsize	      # begin w/count=(nx,ny,nz,...,nt), reads entire var
       count[ndims] <- 1	            # change to count=(nx,ny,nz,...,1) to read 1 tstep
       tmpdat       <- ncvar_get( ncIN, varIN, start=start, count=count )
-      time[i]      <- 
       val[,,i]     <- tmpdat[xi_range,eta_range]
       
     }
