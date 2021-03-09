@@ -3,7 +3,7 @@
 <!-- ``` -->
 
 <figure>
-<img src="Figs/logos2.jpg" style="width:90.0%" alt="" /><figcaption>The ACLIM Repository <a href="https://github.com/kholsman/ACLIM2" title="ACLIM2 Repo"><strong>github.com/kholsman/ACLIM2</strong></a> is maintained by <strong><a href="kirstin.holsman@noaa.gov">Kirstin Holsman</a></strong>, Alaska Fisheries Science Center, NOAA Fisheries, Seattle WA. Multiple programs and projects have supported the production and sharing of the suite of Bering10K hindcasts and projections. <em>Last updated: Mar 09, 2021</em></figcaption>
+<img src="Figs/logos2.jpg" style="width:100.0%" alt="" /><figcaption>The ACLIM Repository <a href="https://github.com/kholsman/ACLIM2" title="ACLIM2 Repo"><strong>github.com/kholsman/ACLIM2</strong></a> is maintained by <strong><a href="kirstin.holsman@noaa.gov">Kirstin Holsman</a></strong>, Alaska Fisheries Science Center, NOAA Fisheries, Seattle WA. Multiple programs and projects have supported the production and sharing of the suite of Bering10K hindcasts and projections. <em>Last updated: Mar 09, 2021</em></figcaption>
 </figure>
 
 1. Overview
@@ -937,7 +937,7 @@ that to the average conditions prior to 2010:
 ```
 
 <figure>
-<img src="Figs/mn_hindcast_mhw.jpg" style="width:75.0%" alt="" /><figcaption>Decadal averages of bottom temperature from the two hindcast models.</figcaption>
+<img src="Figs/mn_hindcast_mhw.jpg" style="width:100.0%" alt="" /><figcaption>Decadal averages of bottom temperature from the two hindcast models.</figcaption>
 </figure>
 
 ### 5.1.2. Level 3 hindcasts: Weekly strata averages
@@ -1009,11 +1009,11 @@ values for each variable.These are stored in the
 ```
 
 <figure>
-<img src="Figs/hind_weekly_bystrata.jpg" style="width:65.0%" alt="" /><figcaption>Weekly indcices by sub-region</figcaption>
+<img src="Figs/hind_weekly_bystrata.jpg" style="width:90.0%" alt="" /><figcaption>Weekly indcices by sub-region</figcaption>
 </figure>
 
 <figure>
-<img src="Figs/hind_weekly_byreg.jpg" style="width:65.0%" alt="" /><figcaption>Weekly indcices by sub-region</figcaption>
+<img src="Figs/hind_weekly_byreg.jpg" style="width:90.0%" alt="" /><figcaption>Weekly indcices by sub-region</figcaption>
 </figure>
 
 ### 5.1.3. Level 3 hindcasts: Seasonal averages
@@ -1109,7 +1109,7 @@ Now using a similar approach get the monthly mean values for a variable:
     ggsave(file=file.path(main,"Figs/Hind_Fall_large_Zoop.jpg"),width=8,height=5)
 ```
 
-<img src="Figs/Hind_Fall_large_Zoop.jpg" style="width:65.0%" alt="Large fall zooplankton integrated concentration" />
+<img src="Figs/Hind_Fall_large_Zoop.jpg" style="width:75.0%" alt="Large fall zooplankton integrated concentration" />
 \#\#\# 5.1.4. Level 3 hindcasts: Monthly averages
 
 Using the same approach we can get monthly averages for a given
@@ -1147,7 +1147,7 @@ variable:
     ggsave(file=file.path(main,"Figs/Hind_Sept_large_Zoop.jpg"),width=8,height=5)
 ```
 
-<img src="Figs/Hind_Sept_large_Zoop.jpg" style="width:65.0%" alt="September large zooplankton integrated concentration" />
+<img src="Figs/Hind_Sept_large_Zoop.jpg" style="width:75.0%" alt="September large zooplankton integrated concentration" />
 \#\# 5.2. Level 2 hindcasts
 
 Level 2 data can be explored in the same way as the above indices but we
@@ -1302,7 +1302,7 @@ periods for Aug 1 of each year:
 ```
 
 <figure>
-<img src="Figs/Hind_sub_grid_mn_BT_Aug1.jpg" style="width:65.0%" alt="" /><figcaption>Aug 1 Bottom temperature from Level 2 dataset</figcaption>
+<img src="Figs/Hind_sub_grid_mn_BT_Aug1.jpg" style="width:100.0%" alt="" /><figcaption>Aug 1 Bottom temperature from Level 2 dataset</figcaption>
 </figure>
 
 ### 5.2.2. Level 2 hindcasts: M2 mooring comparison
@@ -1634,10 +1634,10 @@ values for each variable.These are stored in the
 ```
 
 <figure>
-<img src="Figs/weekly_bystrata.jpg" style="width:65.0%" alt="" /><figcaption>Weekly indcices by sub-region</figcaption>
+<img src="Figs/weekly_bystrata.jpg" style="width:90.0%" alt="" /><figcaption>Weekly indcices by sub-region</figcaption>
 </figure>
 
-<img src="Figs/weekly_byreg.jpg" style="width:65.0%" alt="Weekly indcices by sub-region" />
+<img src="Figs/weekly_byreg.jpg" style="width:90.0%" alt="Weekly indcices by sub-region" />
 \#\#\# 6.1.3. Level 3 projections: Seasonal averages
 
 Now using a similar approach get the monthly mean values for a variable:
@@ -1727,7 +1727,7 @@ Now using a similar approach get the monthly mean values for a variable:
     ggsave(file=file.path(main,"Figs/Fall_large_Zoop.jpg"),width=8,height=5)
 ```
 
-<img src="Figs/Fall_large_Zoop.jpg" style="width:65.0%" alt="Large fall zooplankton integrated concentration" />
+<img src="Figs/Fall_large_Zoop.jpg" style="width:90.0%" alt="Large fall zooplankton integrated concentration" />
 \#\#\# 6.1.4. Level 3 Projections: Monthly averages Using the same
 approach we can get monthly averages for a given variable:
 
@@ -1763,7 +1763,7 @@ approach we can get monthly averages for a given variable:
 ```
 
 <figure>
-<img src="Figs/Sept_large_Zoop.jpg" style="width:65.0%" alt="" /><figcaption>September large zooplankton integrated concentration</figcaption>
+<img src="Figs/Sept_large_Zoop.jpg" style="width:90.0%" alt="" /><figcaption>September large zooplankton integrated concentration</figcaption>
 </figure>
 
 Finally we can use this approach to plot the monthly averages and look
@@ -1802,7 +1802,7 @@ for phenological shifts:
 ```
 
 <figure>
-<img src="Figs/PhenShift_large_Zoop.jpg" style="width:65.0%" alt="" /><figcaption>September large zooplankton integrated concentration</figcaption>
+<img src="Figs/PhenShift_large_Zoop.jpg" style="width:90.0%" alt="" /><figcaption>September large zooplankton integrated concentration</figcaption>
 </figure>
 
 6.2. Level 2 projections
