@@ -974,7 +974,7 @@ Level 2 data can be explored in the same way as the above indices but we will fo
 
 ### 5.2.1. Level 2 hindcasts: Custom spatial indices 
 
-As we did in section 5.1.1. let's create spatial plots of hindcast time periods.
+As we did in section 5.1.1. let's create spatial plots of hindcast time periods for Aug 1 of each year:
 
 ```{r explore_L2_space hind, eval=F, echo=T}
    # run this line if load_gis is set to F in R/setup.R:
@@ -1018,7 +1018,7 @@ As we did in section 5.1.1. let's create spatial plots of hindcast time periods.
                             paste0(sim,var_use,IDin,".Rdata"))
     
     
-   # load data from level 2 nc files
+   # load data from level 2 nc files (approx <10sec)
     startTime = Sys.time()
     if(!file.exists(file.path(Rdata_path,fl))){
       get_l2(
@@ -1033,9 +1033,10 @@ As we did in section 5.1.1. let's create spatial plots of hindcast time periods.
         sim_list    = sim  )
     }
     endTime  = Sys.time()
-    endTime-startTime
+    endTime  - startTime
     
-     # NOTE THIS IS SLOOOOOW......
+    # load data from level 2 nc files for all years and vars (yearsIN = NULL by default)
+    #       NOTE: THIS IS SLOOOOOW..~ 1 min
     startTime2 = Sys.time()
     if(!file.exists(file.path(Rdata_path,fl))){
       get_l2(
@@ -1049,7 +1050,7 @@ As we did in section 5.1.1. let's create spatial plots of hindcast time periods.
         sim_list    = sim  )
     }
     endTime2  = Sys.time()
-    
+    endTime2  - startTime2
     
     # load R data file
     load(fl)   # temp
@@ -1063,6 +1064,7 @@ As we did in section 5.1.1. let's create spatial plots of hindcast time periods.
                        time = temp$time[i],
                        year = substr( temp$time[i],1,4),stringsAsFactors = F
                        )
+    
     for(i in 2:dim(temp$val)[3])
       data_long <- rbind(data_long,
                           data.frame(latitude = as.vector(temp$lat),
@@ -1074,7 +1076,7 @@ As we did in section 5.1.1. let's create spatial plots of hindcast time periods.
     
     
     # get the mean values for the time blocks from the rdata versions
-    # will throw "implicit NA" errors that can be ignored
+    # may throw "implicit NA" errors that can be ignored
     tmp_var <-data_long # get mean var val for each time segment
     j<-0
     for(i in 1:length(time_seg)){
@@ -1095,7 +1097,7 @@ As we did in section 5.1.1. let's create spatial plots of hindcast time periods.
     # convert results to a shapefile
     L2_sf  <- convert2shp(mn_var%>%filter(!is.na(mnval)))
     
-    p9     <- plot_stations_basemap(sfIN = L2_sf,
+    p9_hind     <- plot_stations_basemap(sfIN = L2_sf,
                                 fillIN = "mnval",
                                 colorIN = "mnval",
                                 sizeIN=.6) +
@@ -1109,7 +1111,7 @@ As we did in section 5.1.1. let's create spatial plots of hindcast time periods.
    
     # This is slow but it works (repeat dev.new() twice if in Rstudio)...
     dev.new()
-    p9
+    p9_hind
     
     if(update.figs)  ggsave(file=file.path(main,"Figs/sub_grid_mn_BT_Aug1.jpg"),width=8,height=6)
   

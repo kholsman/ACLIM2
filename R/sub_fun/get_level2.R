@@ -27,7 +27,7 @@ get_level2<- function(ncIN,
     lon    <- ncvar_get(ncIN, varid = "lon_rho")[xi_range,eta_range]
     
     # get the length of the timesteps, and lat, lon
-    if(length(time_range)>1){
+    if(!length(time_range)==1){
         subt <- intersect(which(t>=time_range[1]), which(t<=time_range[2]))
     }else{
         subt <- which(t>=time_range[1])[1]
@@ -55,6 +55,6 @@ get_level2<- function(ncIN,
       
     }
     cat("\n")
-    return(list(var = varIN, lat =lat, lon = lon ,time = t,val=val ))
+    return(list(var = varIN, lat =lat, lon = lon ,time = t[subt],val=val ))
     
 }
