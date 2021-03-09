@@ -1082,12 +1082,13 @@ As we did in section 5.1.1. let's create spatial plots of hindcast time periods 
     for(i in 1:length(time_seg)){
       if(length( which(as.numeric(tmp_var$year)%in%time_seg[[i]] ))>0){
         j <- j +1
-         mn_tmp_var <- tmp_var%>%
+        mn_tmp_var <- tmp_var%>%
           filter(year%in%time_seg[[i]],!is.na(val))%>%
           group_by(latitude, longitude)%>%
           summarise(mnval = mean(val,rm.na=T))
         
-        mn_tmp_var$time_period = factor(names(time_seg)[i],levels=names(time_seg))
+        mn_tmp_var$time_period <- factor(names(time_seg)[i],levels=names(time_seg))
+        
       if(j == 1) mn_var <- mn_tmp_var
       if(j >  1) mn_var <- rbind(mn_var,mn_tmp_var)
        rm(mn_tmp_var)
