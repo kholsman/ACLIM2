@@ -54,6 +54,7 @@ get_level2<- function(ncIN,
       val[,,i]     <- tmpdat[xi_range,eta_range]
       
     }
+    cat("\n")
     return(list(var = varIN, lat =lat, lon = lon ,time = t,val=val ))
     
 }
