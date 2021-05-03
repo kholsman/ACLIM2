@@ -190,7 +190,7 @@ Currently, the public data includes hindcasts & CMIP5 climate projections.
   * `Level1` : (full grid, native ROMS coordinates, full suite of variables).
   * `Level2` : (full grid, rotated to lat lon from the native ROMSNPZ grid, weekly averages)
     * `Bottom 5m` : subset of variables from the bottom 5 m of the water column
-    * `Bottom 5m` : subset of variables for the surface 5 m of the water column
+    * `Surface 5m` : subset of variables for the surface 5 m of the water column
     * `Integrated`: watercolumn integrated averages or totals for various variables
   * `Level3`: two post-processed datasets 
       * `ACLIMsurveyrep-x.nc.`: Survey replicated (variables "sampled" at the average location and date that each groundfish survey is sampled)*(Note that the resampling stations need to be removed before creating bottom temperature maps)*  
@@ -450,7 +450,7 @@ Let's look at some data from the Level 2 bottom temperature records, using the t
    opendap  <- "dodsC/Level2/B10K-K20_CORECFS_bottom5m.nc"
    nc       <- nc_open(paste(url_base,opendap,sep=""))
 
-   # Examimation of the nc object shows variables such as temperature (temp)
+   # Examination of the nc object shows variables such as temperature (temp)
    #        float temp[xi_rho,eta_rho,ocean_time]   
    #            long_name: time-averaged potential temperature, bottom 5m mean
    #            units: Celsius
@@ -619,7 +619,8 @@ Now let's explore the survey replicated data in more detail and use to plot bott
 
     # preview the l3 data for the hindcast:
     tt <- all_info1%>%filter(name =="B10K-K20_CORECFS")
-    tt <- seq(as.numeric(substring(tt$Start,1,4)),as.numeric(substring(tt$End,1,4)),10)
+    tt <- seq(as.numeric(substring(tt$Start,1,4)),
+              as.numeric(substring(tt$End,1,4)),10)
     
     # now create plots of average BT during four time periods
     time_seg   <- list( '1970-1980' = c(1970:1980),
