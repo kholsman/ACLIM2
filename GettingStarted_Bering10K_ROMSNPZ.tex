@@ -144,7 +144,7 @@ is maintained by \textbf{\href{mailto:kirstin.holsman@noaa.gov}{Kirstin
 Holsman}}, Alaska Fisheries Science Center, NOAA Fisheries, Seattle WA.
 Multiple programs and projects have supported the production and sharing
 of the suite of Bering10K hindcasts and projections. \emph{Last updated:
-Mar 09, 2021}}
+May 03, 2021}}
 \end{figure}
 
 \hypertarget{overview}{%
@@ -434,8 +434,8 @@ projections.
     \texttt{Bottom\ 5m} : subset of variables from the bottom 5 m of the
     water column
   \item
-    \texttt{Bottom\ 5m} : subset of variables for the surface 5 m of the
-    water column
+    \texttt{Surface\ 5m} : subset of variables for the surface 5 m of
+    the water column
   \item
     \texttt{Integrated}: watercolumn integrated averages or totals for
     various variables
@@ -564,6 +564,22 @@ Let's take a look at the available online datasets:
 \end{Highlighting}
 \end{Shaded}
 
+\begin{verbatim}
+## Constants/ 
+##  B10K Extended Grid/ 
+##  B10K-H16_CMIP5_CESM_BIO_rcp85/ 
+##  B10K-H16_CMIP5_CESM_rcp45/ 
+##  B10K-H16_CMIP5_CESM_rcp85/ 
+##  B10K-H16_CMIP5_GFDL_BIO_rcp85/ 
+##  B10K-H16_CMIP5_GFDL_rcp45/ 
+##  B10K-H16_CMIP5_GFDL_rcp85/ 
+##  B10K-H16_CMIP5_MIROC_rcp45/ 
+##  B10K-H16_CMIP5_MIROC_rcp85/ 
+##  B10K-H16_CORECFS/ 
+##  B10K-K20_CORECFS/ 
+##  files/
+\end{verbatim}
+
 \hypertarget{download-level-2-data}{%
 \subsubsection{3.3.2 Download Level 2
 data}\label{download-level-2-data}}
@@ -603,6 +619,10 @@ rcp8.5. The first step is to get the data urls:
 \end{Highlighting}
 \end{Shaded}
 
+\begin{verbatim}
+## [1] "https://data.pmel.noaa.gov/aclim/thredds/B10K-H16_CORECFS/Level2.html"
+\end{verbatim}
+
 Now that we have the URLs let's take a look at the available Level2
 datasets:
 
@@ -623,13 +643,25 @@ datasets:
 \NormalTok{    proj_l2_datasets  <-}\StringTok{ }\KeywordTok{tds_list_datasets}\NormalTok{(proj_l2_cat)}
 \NormalTok{    hind_l2_datasets  <-}\StringTok{ }\KeywordTok{tds_list_datasets}\NormalTok{(hind_l2_cat)}
 \NormalTok{    proj_l2_datasets}\OperatorTok{$}\NormalTok{dataset}
-    
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "Bottom 5m"  "Surface 5m" "Integrated"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
     \CommentTok{# get url for bottom temperature:}
 \NormalTok{    proj_l2_BT_url    <-}\StringTok{ }\NormalTok{proj_l2_datasets[proj_l2_datasets}\OperatorTok{$}\NormalTok{dataset }\OperatorTok{==}\StringTok{ "Bottom 5m"}\NormalTok{,]}\OperatorTok{$}\NormalTok{path}
 \NormalTok{    hind_l2_BT_url    <-}\StringTok{ }\NormalTok{hind_l2_datasets[hind_l2_datasets}\OperatorTok{$}\NormalTok{dataset }\OperatorTok{==}\StringTok{ "Bottom 5m"}\NormalTok{,]}\OperatorTok{$}\NormalTok{path}
 \NormalTok{    proj_l2_BT_url}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+## [1] "https://data.pmel.noaa.gov/aclim/thredds/B10K-H16_CMIP5_MIROC_rcp85/Level2.html?dataset=B10K-H16_CMIP5_MIROC_rcp85_Level2_bottom5m"
+\end{verbatim}
 
 We can't preview the Level 3 datasets in the same way but they are
 identical to those in the google drive and include two datasets
@@ -752,6 +784,18 @@ are relatively small:
 \end{Highlighting}
 \end{Shaded}
 
+\hypertarget{download-level-3-cmip6-aclim-only-for-now}{%
+\subsubsection{3.3.4 Download Level 3 CMIP6 (ACLIM only for
+now)}\label{download-level-3-cmip6-aclim-only-for-now}}
+
+Go to the shared google drive and dowload the CMIP6 data into your
+ACLIM2 local folder:
+
+\href{https://drive.google.com/drive/folders/1ljACM6cgMD7M14lzvozZyTP4tMBnf_S4}{00\_ACLIM\_shared\textgreater02\_Data\textgreater Newest\textgreater roms\_for\_aclim}
+and put in your local folder under: \texttt{Data/in/roms\_for\_aclim}
+
+\includegraphics{Figs/filestructure2.jpg}
+
 \hypertarget{explore-indices-plot-the-data}{%
 \section{4. Explore indices \& plot the
 data}\label{explore-indices-plot-the-data}}
@@ -773,7 +817,7 @@ using the threadds and ncdf4 libraries:
 \NormalTok{   opendap  <-}\StringTok{ "dodsC/Level2/B10K-K20_CORECFS_bottom5m.nc"}
 \NormalTok{   nc       <-}\StringTok{ }\KeywordTok{nc_open}\NormalTok{(}\KeywordTok{paste}\NormalTok{(url_base,opendap,}\DataTypeTok{sep=}\StringTok{""}\NormalTok{))}
 
-   \CommentTok{# Examimation of the nc object shows variables such as temperature (temp)}
+   \CommentTok{# Examination of the nc object shows variables such as temperature (temp)}
    \CommentTok{#        float temp[xi_rho,eta_rho,ocean_time]   }
    \CommentTok{#            long_name: time-averaged potential temperature, bottom 5m mean}
    \CommentTok{#            units: Celsius}
@@ -997,7 +1041,8 @@ plot bottom temperature.
 
     \CommentTok{# preview the l3 data for the hindcast:}
 \NormalTok{    tt <-}\StringTok{ }\NormalTok{all_info1}\OperatorTok{%>%}\KeywordTok{filter}\NormalTok{(name }\OperatorTok{==}\StringTok{"B10K-K20_CORECFS"}\NormalTok{)}
-\NormalTok{    tt <-}\StringTok{ }\KeywordTok{seq}\NormalTok{(}\KeywordTok{as.numeric}\NormalTok{(}\KeywordTok{substring}\NormalTok{(tt}\OperatorTok{$}\NormalTok{Start,}\DecValTok{1}\NormalTok{,}\DecValTok{4}\NormalTok{)),}\KeywordTok{as.numeric}\NormalTok{(}\KeywordTok{substring}\NormalTok{(tt}\OperatorTok{$}\NormalTok{End,}\DecValTok{1}\NormalTok{,}\DecValTok{4}\NormalTok{)),}\DecValTok{10}\NormalTok{)}
+\NormalTok{    tt <-}\StringTok{ }\KeywordTok{seq}\NormalTok{(}\KeywordTok{as.numeric}\NormalTok{(}\KeywordTok{substring}\NormalTok{(tt}\OperatorTok{$}\NormalTok{Start,}\DecValTok{1}\NormalTok{,}\DecValTok{4}\NormalTok{)),}
+              \KeywordTok{as.numeric}\NormalTok{(}\KeywordTok{substring}\NormalTok{(tt}\OperatorTok{$}\NormalTok{End,}\DecValTok{1}\NormalTok{,}\DecValTok{4}\NormalTok{)),}\DecValTok{10}\NormalTok{)}
     
     \CommentTok{# now create plots of average BT during four time periods}
 \NormalTok{    time_seg   <-}\StringTok{ }\KeywordTok{list}\NormalTok{( }\StringTok{'1970-1980'}\NormalTok{ =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{1970}\OperatorTok{:}\DecValTok{1980}\NormalTok{),}
@@ -1859,6 +1904,8 @@ scenario folder.
 \NormalTok{    fl         <-}\StringTok{ }\KeywordTok{file.path}\NormalTok{(sim,}\KeywordTok{paste0}\NormalTok{(reg_txt,sim,}\StringTok{".Rdata"}\NormalTok{))}
     
 \NormalTok{    var_use   <-}\StringTok{ "temp_bottom5m"}
+    \CommentTok{# tinker: var_use <- "Cop_integrated"}
+    
 \NormalTok{    vl        <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}
                   \StringTok{"temp_bottom5m"}\NormalTok{,}
                   \StringTok{"NCaS_integrated"}\NormalTok{, }\CommentTok{# Large Cop}
@@ -1911,13 +1958,13 @@ scenario folder.
 \begin{figure}
 \centering
 \includegraphics[width=0.9\textwidth,height=\textheight]{Figs/weekly_bystrata.jpg}
-\caption{Weekly indcices by sub-region}
+\caption{Weekly indices by sub-region}
 \end{figure}
 
 \begin{figure}
 \centering
 \includegraphics[width=0.9\textwidth,height=\textheight]{Figs/weekly_byreg.jpg}
-\caption{Weekly indcices by sub-region}
+\caption{Weekly indices by sub-region}
 \end{figure}
 
 \hypertarget{level-3-projections-seasonal-averages}{%
@@ -1946,13 +1993,14 @@ Now using a similar approach get the monthly mean values for a variable:
                   \StringTok{"Cop_integrated"}\NormalTok{,  }\CommentTok{# Small Cop}
                   \StringTok{"EupS_integrated"}\NormalTok{) }\CommentTok{# Euphausiids}
     
+    \CommentTok{# open a "region" or strata specific  file}
+\NormalTok{    fl      <-}\StringTok{ }\KeywordTok{file.path}\NormalTok{(sim,}\KeywordTok{paste0}\NormalTok{(reg_txt,sim,}\StringTok{".Rdata"}\NormalTok{))}
+    
     \CommentTok{# create local rdata files (opt 1)}
     \ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{file.exists}\NormalTok{(}\KeywordTok{file.path}\NormalTok{(Rdata_path,fl)))}
       \KeywordTok{get_l3}\NormalTok{(}\DataTypeTok{web_nc =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{download_nc =}\NormalTok{ F,}
           \DataTypeTok{varlist =}\NormalTok{ vl,}\DataTypeTok{sim_list =}\NormalTok{ sim)}
     
-    \CommentTok{# open a "region" or strata specific  file}
-\NormalTok{    fl      <-}\StringTok{ }\KeywordTok{file.path}\NormalTok{(sim,}\KeywordTok{paste0}\NormalTok{(reg_txt,sim,}\StringTok{".Rdata"}\NormalTok{))}
     \KeywordTok{load}\NormalTok{(}\KeywordTok{file.path}\NormalTok{(main,Rdata_path,fl))}
     
     \CommentTok{# get large zooplankton as the sum of euph and NCaS}
@@ -2013,10 +2061,122 @@ Now using a similar approach get the monthly mean values for a variable:
 \end{Highlighting}
 \end{Shaded}
 
+\includegraphics[width=0.9\textwidth,height=\textheight]{Figs/Fall_large_Zoop.jpg}
+Now using a similar approach get the monthly mean values for a variable
+across CMIP6 ssps:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{sim_set <-}\KeywordTok{c}\NormalTok{(}\StringTok{"B10K-K20_CORECFS"}\NormalTok{,}
+            \StringTok{"B10K-K20P19_CMIP6_miroc_historical"}\NormalTok{,}
+            \StringTok{"B10K-K20P19_CMIP6_miroc_ssp126"}\NormalTok{,}
+            \StringTok{"B10K-K20P19_CMIP6_miroc_ssp585"}\NormalTok{)}
+
+\CommentTok{# Set up seasons (this follows Holsman et al. 2020)}
+\NormalTok{seasons <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{mo =} \DecValTok{1}\OperatorTok{:}\DecValTok{12}\NormalTok{, }
+                      \DataTypeTok{season =}\KeywordTok{factor}\NormalTok{(}\StringTok{""}\NormalTok{,}
+                                     \DataTypeTok{levels=}\KeywordTok{c}\NormalTok{(}\StringTok{"Winter"}\NormalTok{,}\StringTok{"Spring"}\NormalTok{,}\StringTok{"Summer"}\NormalTok{,}\StringTok{"Fall"}\NormalTok{)))}
+\NormalTok{seasons}\OperatorTok{$}\NormalTok{season[}\DecValTok{1}\OperatorTok{:}\DecValTok{3}\NormalTok{]   <-}\StringTok{ "Winter"}
+\NormalTok{seasons}\OperatorTok{$}\NormalTok{season[}\DecValTok{4}\OperatorTok{:}\DecValTok{6}\NormalTok{]   <-}\StringTok{ "Spring"}
+\NormalTok{seasons}\OperatorTok{$}\NormalTok{season[}\DecValTok{7}\OperatorTok{:}\DecValTok{9}\NormalTok{]   <-}\StringTok{ "Summer"}
+\NormalTok{seasons}\OperatorTok{$}\NormalTok{season[}\DecValTok{10}\OperatorTok{:}\DecValTok{12}\NormalTok{] <-}\StringTok{ "Fall"}
+
+
+\NormalTok{vl <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}
+  \StringTok{"temp_bottom5m"}\NormalTok{,}
+  \StringTok{"NCaS_integrated"}\NormalTok{, }\CommentTok{# Large Cop}
+  \StringTok{"Cop_integrated"}\NormalTok{,  }\CommentTok{# Small Cop}
+  \StringTok{"EupS_integrated"}\NormalTok{) }\CommentTok{# Euphausiids}
+
+\NormalTok{ii<-}\DecValTok{0}
+\CommentTok{# open a "region" or strata specific  file}
+\ControlFlowTok{for}\NormalTok{(sim }\ControlFlowTok{in}\NormalTok{ sim_set)\{}
+\NormalTok{  ii <-}\StringTok{ }\NormalTok{ii }\OperatorTok{+}\StringTok{ }\DecValTok{1}
+\NormalTok{  fl      <-}\StringTok{ }\KeywordTok{file.path}\NormalTok{(sim,}\KeywordTok{paste0}\NormalTok{(reg_txt,sim,}\StringTok{".Rdata"}\NormalTok{))}
+  
+  \CommentTok{# get local files from CMIP6 google drive folder copied to local Data/in}
+  \ControlFlowTok{if}\NormalTok{(}\OperatorTok{!}\KeywordTok{file.exists}\NormalTok{(}\KeywordTok{file.path}\NormalTok{(Rdata_path,fl)))}
+    \KeywordTok{get_l3}\NormalTok{(}\DataTypeTok{web_nc =} \OtherTok{FALSE}\NormalTok{, }\DataTypeTok{download_nc =}\NormalTok{ F,}
+           \DataTypeTok{local_path =} \KeywordTok{file.path}\NormalTok{(local_fl,}\StringTok{"roms_for_aclim"}\NormalTok{),}
+           \DataTypeTok{varlist =}\NormalTok{ vl,}\DataTypeTok{sim_list =}\NormalTok{ sim)}
+  \KeywordTok{load}\NormalTok{(}\KeywordTok{file.path}\NormalTok{(main,Rdata_path,fl))}
+
+  \CommentTok{# get large zooplankton as the sum of euph and NCaS}
+\NormalTok{  tmp_var    <-}\StringTok{ }\NormalTok{ACLIMregion}\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{filter}\NormalTok{(var}\OperatorTok{%in%}\NormalTok{vl[}\KeywordTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{3}\NormalTok{)])}\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{group_by}\NormalTok{(time,strata,strata_area_km2,basin)}\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{group_by}\NormalTok{(time,}
+\NormalTok{             strata,}
+\NormalTok{             strata_area_km2,}
+\NormalTok{             basin,}
+\NormalTok{             units)}\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{summarise}\NormalTok{(}\DataTypeTok{val =}\KeywordTok{sum}\NormalTok{(val))}\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{var       =} \StringTok{"Zoop_integrated"}\NormalTok{,}
+           \DataTypeTok{long_name =}\StringTok{"Total On-shelf }
+\StringTok{               large zooplankton concentration, }
+\StringTok{               integrated over depth (NCa, Eup)"}\NormalTok{)}
+  
+  \KeywordTok{rm}\NormalTok{(ACLIMregion)}
+  \KeywordTok{head}\NormalTok{(tmp_var)}
+  
+\NormalTok{  tmp_var}\OperatorTok{$}\NormalTok{yr     <-}\StringTok{ }\KeywordTok{strptime}\NormalTok{(}\KeywordTok{as.Date}\NormalTok{(tmp_var}\OperatorTok{$}\NormalTok{time),}
+                             \DataTypeTok{format=}\StringTok{"%Y-%m-%d"}\NormalTok{)}\OperatorTok{$}\NormalTok{year }\OperatorTok{+}\StringTok{ }\DecValTok{1900}
+\NormalTok{  tmp_var}\OperatorTok{$}\NormalTok{mo     <-}\StringTok{ }\KeywordTok{strptime}\NormalTok{(}\KeywordTok{as.Date}\NormalTok{(tmp_var}\OperatorTok{$}\NormalTok{time),}
+                             \DataTypeTok{format=}\StringTok{"%Y-%m-%d"}\NormalTok{)}\OperatorTok{$}\NormalTok{mon  }\OperatorTok{+}\StringTok{ }\DecValTok{1}
+\NormalTok{  tmp_var}\OperatorTok{$}\NormalTok{jday   <-}\StringTok{ }\KeywordTok{strptime}\NormalTok{(}\KeywordTok{as.Date}\NormalTok{(tmp_var}\OperatorTok{$}\NormalTok{time),}
+                             \DataTypeTok{format=}\StringTok{"%Y-%m-%d"}\NormalTok{)}\OperatorTok{$}\NormalTok{yday }\OperatorTok{+}\StringTok{ }\DecValTok{1}
+\NormalTok{  tmp_var}\OperatorTok{$}\NormalTok{season <-}\StringTok{ }\NormalTok{seasons[tmp_var}\OperatorTok{$}\NormalTok{mo,}\DecValTok{2}\NormalTok{]}
+  
+\NormalTok{  tmp_var}\OperatorTok{$}\NormalTok{sim    <-}\StringTok{ }\NormalTok{sim}
+  \ControlFlowTok{if}\NormalTok{(ii }\OperatorTok{==}\StringTok{ }\DecValTok{1}\NormalTok{)}
+\NormalTok{    plot_data <-}\StringTok{ }\NormalTok{tmp_var}
+  \ControlFlowTok{if}\NormalTok{(ii }\OperatorTok{>}\StringTok{ }\DecValTok{1}\NormalTok{)}
+\NormalTok{    plot_data <-}\StringTok{ }\KeywordTok{rbind}\NormalTok{(plot_data, tmp_var)}
+  \KeywordTok{rm}\NormalTok{(tmp_var)}
+\NormalTok{\}}
+
+\CommentTok{# To get the average value for a set of strata, weight the val by the area: (slow...)}
+\NormalTok{mn_NEBS_season <-}\StringTok{ }\KeywordTok{getAVGnSUM}\NormalTok{(}
+  \DataTypeTok{bysim =}\NormalTok{ T,}
+  \DataTypeTok{strataIN =}\NormalTok{ NEBS_strata,}
+  \DataTypeTok{dataIN =}\NormalTok{ plot_data,}
+  \DataTypeTok{tblock=}\KeywordTok{c}\NormalTok{(}\StringTok{"yr"}\NormalTok{,}\StringTok{"season"}\NormalTok{))}
+\NormalTok{mn_NEBS_season}\OperatorTok{$}\NormalTok{basin =}\StringTok{ "NEBS"}
+
+\NormalTok{mn_SEBS_season <-}\StringTok{ }\KeywordTok{getAVGnSUM}\NormalTok{(}
+  \DataTypeTok{bysim =}\NormalTok{ T,}
+  \DataTypeTok{strataIN =}\NormalTok{ SEBS_strata, }
+  \DataTypeTok{dataIN =}\NormalTok{ plot_data,}
+  \DataTypeTok{tblock=}\KeywordTok{c}\NormalTok{(}\StringTok{"yr"}\NormalTok{,}\StringTok{"season"}\NormalTok{))}
+\NormalTok{mn_SEBS_season}\OperatorTok{$}\NormalTok{basin =}\StringTok{ "SEBS"}
+
+\NormalTok{plot_data_}\DecValTok{2}\NormalTok{      <-}\StringTok{ }\KeywordTok{rbind}\NormalTok{(mn_NEBS_season,mn_SEBS_season)}
+
+\CommentTok{# plot Fall values:}
+\NormalTok{p6v2 <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ plot_data_}\DecValTok{2}\OperatorTok{%>%}\KeywordTok{filter}\NormalTok{(season}\OperatorTok{==}\StringTok{"Fall"}\NormalTok{) ) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_line}\NormalTok{(   }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ yr,}\DataTypeTok{y =}\NormalTok{ mn_val,}\DataTypeTok{color=}\NormalTok{sim),}\DataTypeTok{alpha=}\NormalTok{.}\DecValTok{8}\NormalTok{)}\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_smooth}\NormalTok{( }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x =}\NormalTok{ yr,}\DataTypeTok{y =}\NormalTok{ mn_val,}\DataTypeTok{color=}\NormalTok{sim),}
+               \DataTypeTok{formula =}\NormalTok{ y }\OperatorTok{~}\StringTok{ }\NormalTok{x, }\DataTypeTok{se =}\NormalTok{ T)}\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_grid}\NormalTok{(basin}\OperatorTok{~}\NormalTok{.)}\OperatorTok{+}
+\StringTok{  }\KeywordTok{scale_color_viridis_d}\NormalTok{(}\DataTypeTok{begin=}\NormalTok{.}\DecValTok{2}\NormalTok{,}\DataTypeTok{end=}\NormalTok{.}\DecValTok{8}\NormalTok{)}\OperatorTok{+}
+\StringTok{  }\KeywordTok{ylab}\NormalTok{(plot_data_}\DecValTok{2}\OperatorTok{$}\NormalTok{units[}\DecValTok{1}\NormalTok{])}\OperatorTok{+}
+\StringTok{  }\KeywordTok{ggtitle}\NormalTok{( }\KeywordTok{paste}\NormalTok{(sim,}\StringTok{"Fall"}\NormalTok{,mn_NEBS_season}\OperatorTok{$}\NormalTok{var[}\DecValTok{1}\NormalTok{]))}\OperatorTok{+}
+\StringTok{  }\KeywordTok{theme_minimal}\NormalTok{()}
+\NormalTok{p6v2}
+
+
+\ControlFlowTok{if}\NormalTok{(update.figs)  }
+  \KeywordTok{ggsave}\NormalTok{(}\DataTypeTok{file=}\KeywordTok{file.path}\NormalTok{(main,}\StringTok{"Figs/Fall_large_Zoop_bySSP.jpg"}\NormalTok{),}\DataTypeTok{width=}\DecValTok{8}\NormalTok{,}\DataTypeTok{height=}\DecValTok{5}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+These results demonstrate the importance and challenge of bias
+correcting projections to hindcasts or historical runs.
+
 \begin{figure}
 \centering
-\includegraphics[width=0.9\textwidth,height=\textheight]{Figs/Fall_large_Zoop.jpg}
-\caption{Large fall zooplankton integrated concentration}
+\includegraphics[width=0.9\textwidth,height=\textheight]{Figs/Fall_large_Zoop_bySSP.jpg}
+\caption{September large zooplankton integrated concentration}
 \end{figure}
 
 \hypertarget{level-3-projections-monthly-averages}{%
@@ -2239,7 +2399,7 @@ indices}\label{level-2-projections-custom-spatial-indices}}
 
 \begin{figure}
 \centering
-\includegraphics[width=0.65\textwidth,height=\textheight]{Figs/sub_grid_mn_BT_Aug1.jpg}
+\includegraphics[width=1\textwidth,height=\textheight]{Figs/sub_grid_mn_BT_Aug1.jpg}
 \caption{Aug 1 Bottom temperature from Level 2 dataset}
 \end{figure}
 

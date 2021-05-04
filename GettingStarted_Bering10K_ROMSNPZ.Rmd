@@ -263,7 +263,7 @@ First let's get the workspace set up, will we step through an example downloadin
 
 Let's take a look at the available online datasets:
 
-```{r preview,include=T, eval=F, echo=T}
+```{r preview,include=T, eval=T, echo=T}
 
     # preview the datasets on the server:
     url_list <- tds_list_datasets(thredds_url = ACLIM_data_url)
@@ -279,7 +279,7 @@ Let's take a look at the available online datasets:
 
 First we will explore the Level 2 bottom temperature data on the [ACLIM Thredds server](https://data.pmel.noaa.gov/aclim/thredds/) using the H16 hindcast and the H16 (CMIP5) projection for MIROC under rcp8.5. The first step is to get the data urls:
    
-```{r thredds_getURLs, include=T,eval=F,echo=T}
+```{r thredds_getURLs, include=T,eval=T,echo=T}
                            
    # define the simulation to download:
     cmip <- "CMIP5"     # Coupled Model Intercomparison Phase
@@ -315,7 +315,7 @@ Now that we have the URLs let's take a look at the available Level2 datasets:
 * `Surface 5m`  : surface water temperature in the first 5 meters
 * `Integrated`  : Integrated water column averages for various NPZ variables
 
-```{r thredds_l2_url, include=T,eval=F,echo=T}
+```{r thredds_l2_url, include=T,eval=T,echo=T}
     
     # preview the projection and hindcast Level 2 datasets:
     proj_l2_datasets  <- tds_list_datasets(proj_l2_cat)
@@ -433,6 +433,17 @@ Now let's grab some of the Level 3 data and store it in the `r Rdata_path` folde
           varlist = vl,sim_list = sl)
 
 ```
+
+### 3.3.4 Download Level 3 CMIP6 (ACLIM only for now)
+
+Go to the shared google drive and dowload the CMIP6 data into your ACLIM2 local folder:
+
+[00_ACLIM_shared>02_Data>Newest>roms_for_aclim](https://drive.google.com/drive/folders/1ljACM6cgMD7M14lzvozZyTP4tMBnf_S4)
+and put in your local folder under:
+`Data/in/roms_for_aclim`
+
+![](Figs/filestructure2.jpg)
+
 
 # 4. Explore indices & plot the data  
 
@@ -1376,6 +1387,8 @@ The next set of indices to will explore are the weekly strata-specific values fo
     fl         <- file.path(sim,paste0(reg_txt,sim,".Rdata"))
     
     var_use   <- "temp_bottom5m"
+    # tinker: var_use <- "Cop_integrated"
+    
     vl        <- c(
                   "temp_bottom5m",
                   "NCaS_integrated", # Large Cop
@@ -1426,9 +1439,9 @@ The next set of indices to will explore are the weekly strata-specific values fo
  
 ```
 
-![Weekly indcices by sub-region](Figs/weekly_bystrata.jpg){ width=90% }
+![Weekly indices by sub-region](Figs/weekly_bystrata.jpg){ width=90% }
 
-![Weekly indcices by sub-region](Figs/weekly_byreg.jpg){ width=90% }
+![Weekly indices by sub-region](Figs/weekly_byreg.jpg){ width=90% }
 
 ### 6.1.3. Level 3 projections: Seasonal averages
 
@@ -1453,13 +1466,14 @@ Now using a similar approach get the monthly mean values for a variable:
                   "Cop_integrated",  # Small Cop
                   "EupS_integrated") # Euphausiids
     
+    # open a "region" or strata specific  file
+    fl      <- file.path(sim,paste0(reg_txt,sim,".Rdata"))
+    
     # create local rdata files (opt 1)
     if(!file.exists(file.path(Rdata_path,fl)))
       get_l3(web_nc = TRUE, download_nc = F,
           varlist = vl,sim_list = sim)
     
-    # open a "region" or strata specific  file
-    fl      <- file.path(sim,paste0(reg_txt,sim,".Rdata"))
     load(file.path(main,Rdata_path,fl))
     
     # get large zooplankton as the sum of euph and NCaS
@@ -1521,6 +1535,115 @@ Now using a similar approach get the monthly mean values for a variable:
 ```
 
 ![Large fall zooplankton integrated concentration](Figs/Fall_large_Zoop.jpg){ width=90% }
+Now using a similar approach get the monthly mean values for a variable across CMIP6 ssps:
+
+```{r seasonal averages proj ssp, eval=F, include=T,echo=T}
+
+sim_set <-c("B10K-K20_CORECFS",
+            "B10K-K20P19_CMIP6_miroc_historical",
+            "B10K-K20P19_CMIP6_miroc_ssp126",
+            "B10K-K20P19_CMIP6_miroc_ssp585")
+
+# Set up seasons (this follows Holsman et al. 2020)
+seasons <- data.frame(mo = 1:12, 
+                      season =factor("",
+                                     levels=c("Winter","Spring","Summer","Fall")))
+seasons$season[1:3]   <- "Winter"
+seasons$season[4:6]   <- "Spring"
+seasons$season[7:9]   <- "Summer"
+seasons$season[10:12] <- "Fall"
+
+
+vl <- c(
+  "temp_bottom5m",
+  "NCaS_integrated", # Large Cop
+  "Cop_integrated",  # Small Cop
+  "EupS_integrated") # Euphausiids
+
+ii<-0
+# open a "region" or strata specific  file
+for(sim in sim_set){
+  ii <- ii + 1
+  fl      <- file.path(sim,paste0(reg_txt,sim,".Rdata"))
+  
+  # get local files from CMIP6 google drive folder copied to local Data/in
+  if(!file.exists(file.path(Rdata_path,fl)))
+    get_l3(web_nc = FALSE, download_nc = F,
+           local_path = file.path(local_fl,"roms_for_aclim"),
+           varlist = vl,sim_list = sim)
+  load(file.path(main,Rdata_path,fl))
+
+  # get large zooplankton as the sum of euph and NCaS
+  tmp_var    <- ACLIMregion%>%
+    filter(var%in%vl[c(2,3)])%>%
+    group_by(time,strata,strata_area_km2,basin)%>%
+    group_by(time,
+             strata,
+             strata_area_km2,
+             basin,
+             units)%>%
+    summarise(val =sum(val))%>%
+    mutate(var       = "Zoop_integrated",
+           long_name ="Total On-shelf 
+               large zooplankton concentration, 
+               integrated over depth (NCa, Eup)")
+  
+  rm(ACLIMregion)
+  head(tmp_var)
+  
+  tmp_var$yr     <- strptime(as.Date(tmp_var$time),
+                             format="%Y-%m-%d")$year + 1900
+  tmp_var$mo     <- strptime(as.Date(tmp_var$time),
+                             format="%Y-%m-%d")$mon  + 1
+  tmp_var$jday   <- strptime(as.Date(tmp_var$time),
+                             format="%Y-%m-%d")$yday + 1
+  tmp_var$season <- seasons[tmp_var$mo,2]
+  
+  tmp_var$sim    <- sim
+  if(ii == 1)
+    plot_data <- tmp_var
+  if(ii > 1)
+    plot_data <- rbind(plot_data, tmp_var)
+  rm(tmp_var)
+}
+
+# To get the average value for a set of strata, weight the val by the area: (slow...)
+mn_NEBS_season <- getAVGnSUM(
+  bysim = T,
+  strataIN = NEBS_strata,
+  dataIN = plot_data,
+  tblock=c("yr","season"))
+mn_NEBS_season$basin = "NEBS"
+
+mn_SEBS_season <- getAVGnSUM(
+  bysim = T,
+  strataIN = SEBS_strata, 
+  dataIN = plot_data,
+  tblock=c("yr","season"))
+mn_SEBS_season$basin = "SEBS"
+
+plot_data_2      <- rbind(mn_NEBS_season,mn_SEBS_season)
+
+# plot Fall values:
+p6v2 <- ggplot(data = plot_data_2%>%filter(season=="Fall") ) + 
+  geom_line(   aes(x = yr,y = mn_val,color=sim),alpha=.8)+
+  geom_smooth( aes(x = yr,y = mn_val,color=sim),
+               formula = y ~ x, se = T)+
+  facet_grid(basin~.)+
+  scale_color_viridis_d(begin=.2,end=.8)+
+  ylab(plot_data_2$units[1])+
+  ggtitle( paste(sim,"Fall",mn_NEBS_season$var[1]))+
+  theme_minimal()
+p6v2
+
+
+if(update.figs)  
+  ggsave(file=file.path(main,"Figs/Fall_large_Zoop_bySSP.jpg"),width=8,height=5)
+```
+
+These results demonstrate the importance and challenge of bias correcting projections to hindcasts or historical runs.
+
+![September large zooplankton integrated concentration](Figs/Fall_large_Zoop_bySSP.jpg){ width=90% }
 
 ### 6.1.4. Level 3 Projections: Monthly averages
 Using the same approach we can get monthly averages for a given variable:
@@ -1557,7 +1680,6 @@ Using the same approach we can get monthly averages for a given variable:
     ggsave(file=file.path(main,"Figs/Sept_large_Zoop.jpg"),width=8,height=5)
 ```
 
- 
 ![September large zooplankton integrated concentration](Figs/Sept_large_Zoop.jpg){ width=90% }
 
 Finally we can use this approach to plot the monthly averages and look for phenological shifts:
@@ -1721,7 +1843,7 @@ Level 2 data can be explored in the same way as the above indices but we will fo
 ```
 
 
-![Aug 1 Bottom temperature from Level 2 dataset](Figs/sub_grid_mn_BT_Aug1.jpg){ width=65% }
+![Aug 1 Bottom temperature from Level 2 dataset](Figs/sub_grid_mn_BT_Aug1.jpg){ width=100% }
 
 <!-- ## 4.2 Level 2: -->
 <!-- ### 3.2.1 Explore Level 2 data catalog -->
