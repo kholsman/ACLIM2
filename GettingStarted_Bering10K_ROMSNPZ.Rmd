@@ -1587,7 +1587,7 @@ for(sim in sim_set){
            long_name ="Total On-shelf 
                large zooplankton concentration, 
                integrated over depth (NCa, Eup)")
-  
+  rm(fl)
   rm(ACLIMregion)
   head(tmp_var)
   
@@ -1605,8 +1605,21 @@ for(sim in sim_set){
   if(ii > 1)
     plot_data <- rbind(plot_data, tmp_var)
   rm(tmp_var)
+  
 }
 
+ # # To get the average value for a set of strata by week, weight the val by the area:
+ #   mn_NEBS <- getAVGnSUM( bysim = T,
+ #      strataIN = NEBS_strata,
+ #      dataIN = plot_data)
+ #   mn_NEBS$basin = "NEBS"
+ #  
+ #  mn_SEBS <-getAVGnSUM( bysim = T,
+ #      strataIN = SEBS_strata,
+ #      dataIN = plot_data)
+ #   mn_SEBS$basin = "SEBS"
+ # 
+   
 # To get the average value for a set of strata, weight the val by the area: (slow...)
 mn_NEBS_season <- getAVGnSUM(
   bysim = T,
