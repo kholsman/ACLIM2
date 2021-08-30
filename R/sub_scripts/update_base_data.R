@@ -4,13 +4,40 @@
 #_______________________________________
 # Open nc files and extract global objects
 #_______________________________________
+# get the grid:
+nc      <- nc_open(file.path(data_path,"Bering10K_extended_grid.nc"))
+stations_regions       <- ncvar_get(nc, varid = "stations_regions")
+surveystrata_original  <- ncvar_get(nc, varid = "surveystrata_original")
+surveystrata_updated   <- ncvar_get(nc, varid = "surveystrata_updated")
+surveystrata_comboeast <-  ncvar_get(nc, varid = "surveystrata_comboeast")
+area_feast             <- ncvar_get(nc, varid = "area_feast")
+bsierp_marine_regions  <- ncvar_get(nc, varid = "bsierp_marine_regions")
+shelf_mismatch        <- ncvar_get(nc, varid = "shelf_mismatch")
+nc_close(nc)
+
+region_area <- region_area_name  <- unique(na.omit(as.vector(surveystrata_comboeast)))
+region_area <- region_area*NA
+for(i in 1:length(region_area_name))
+  region_area[i]     <- sum(area_feast[surveystrata_comboeast==region_area_name[i]],na.rm=T)
+
+strata_grid <- surveystrata_comboeast
+basin_grid  <- strata_grid*0
+basin_grid  <- factor(basin_grid,levels=c("SEBS","NEBS","Other"))
+
+basin_grid[which(strata_grid%in%NEBS_strata)]   <- factor("NEBS",levels=c("SEBS","NEBS","Other"))
+basin_grid[which(strata_grid%in%SEBS_strata)]   <- factor("SEBS",levels=c("SEBS","NEBS","Other"))
+basin_grid[!which(strata_grid%in%c(NEBS_strata,SEBS_strata))]   <- factor("Other",levels=c("SEBS","NEBS","Other"))
 
 i       <- 2
 ncfl    <- file.path(aclim[i],paste0(reg_txt,aclim[i],".nc"))
 nc      <- nc_open(file.path(data_path,ncfl))
 
 # get the area for each region:
-region_area   <- ncvar_get(nc, varid = "region_area")
+region_area_old      <- ncvar_get(nc, varid = "region_area")
+region_area_name_old <- nc$var[["region_area"]]$dim[[1]]$vals
+
+strata_areas <- merge(data.frame(area = region_area,    strata = region_area_name),
+      data.frame(area_old = region_area_old,strata = region_area_name_old),by=c("strata"),all.x=T,all.y=T)
 
 # get the full list of variables (i.e., ACLIM indices):
 weekly_vars    <- names(nc$var)
@@ -91,7 +118,19 @@ nc_close(nc)
 all_info1 <- info(model_list=aclim,type=1)
 all_info2 <- info(model_list=aclim,type=2)
 
-save(list=c("region_area","weekly_vars","weekly_nvar","weekly_var_def","srvy_var_def","weekly_strata","weekly_t",
+save(list=c("region_area","region_area_name",
+            "stations_regions"       ,
+            "surveystrata_original"  ,
+            "surveystrata_updated"   ,
+            "surveystrata_comboeast" ,
+            "area_feast"             ,
+            "bsierp_marine_regions"  ,
+            "shelf_mismatch"         ,
+            "strata_areas"           ,
+            "basin_grid"             ,
+            "strata_grid"            ,
+            
+            "weekly_vars","weekly_nvar","weekly_var_def","srvy_var_def","weekly_strata","weekly_t",
             "all_info1","all_info2",
        "srvy_vars","srvy_nvar","srvy_station_num","srvy_nstations","srvy_yrs","station_info"),file="Data/shared/base_data.Rdata")
 

@@ -1308,20 +1308,21 @@ Now let's explore the survey replicated data in more detail and use to plot bott
     # assign the simulation to download
     # --> Tinker: try selecting a different set of models to compare
     sim        <-"B10K-H16_CMIP5_MIROC_rcp85" 
+     sim        <-"B10K-H16_CMIP5_CESM_rcp85"
     
     # open a "region" or strata specific nc file
     fl         <- file.path(sim,paste0(srvy_txt,sim,".Rdata"))
     
-    # load object 'ACLIMsurveyrep'
-    load(file.path(main,Rdata_path,fl))   
-     
     # create local rdata files 
     if(!file.exists(file.path(Rdata_path,fl)))
       get_l3(web_nc = TRUE, download_nc = F,
           varlist = vl,sim_list =sim )
     
+    # load object 'ACLIMsurveyrep'
+    load(file.path(main,Rdata_path,fl))   
+     
     
-     # Collate mean values across timeperiods and simulations
+    # Collate mean values across timeperiods and simulations
     # -------------------------------------------------------
     m_set      <- c(9,7,8)
     ms         <- aclim[m_set]
@@ -1330,10 +1331,12 @@ Now let's explore the survey replicated data in more detail and use to plot bott
     for(sim in ms){
      fl         <- file.path(sim,paste0(srvy_txt,sim,".Rdata"))
     
-    # download & convert .nc files that are not already in Rdata folder
-    if(!file.exists( file.path(Rdata_path,fl)) )
-      get_l3(web_nc = TRUE, download_nc = F,
-          varlist = vl,sim_list =sim )
+      # download & convert .nc files that are not already in Rdata folder
+      if(!file.exists( file.path(Rdata_path,fl)) )
+        get_l3(web_nc = TRUE, download_nc = F,
+            varlist = vl,sim_list =sim )
+       
+      
     }
       
     # get the mean values for the time blocks from the rdata versions
@@ -1669,6 +1672,7 @@ Using the same approach we can get monthly averages for a given variable:
       dataIN   = tmp_var,
       tblock   = c("yr","mo"))
     mn_NEBS_season$basin = "NEBS"
+    
     mn_SEBS_season <- getAVGnSUM(
       strataIN = SEBS_strata, 
       dataIN = tmp_var,
@@ -1687,7 +1691,7 @@ Using the same approach we can get monthly averages for a given variable:
       ylab(tmp_var$units[1])+
       ggtitle( paste(aclim[2],"Sept.",mn_NEBS_season$var[1]))+
       theme_minimal()
-  p7
+  print(p7)
   
   if(update.figs)  
     ggsave(file=file.path(main,"Figs/Sept_large_Zoop.jpg"),width=8,height=5)
@@ -1952,30 +1956,69 @@ The Model for Interdisciplinary Research on Climate (MIROC)-M model developed by
     # Accessing ROMSNPZ on mox (hyak UW)
     # If you have a UW ID and are authorized on 
     # hyak (can do this through myUW.com, under settings>computing):
-  
+    
     remote_main  <- "/gscratch/bumblereem/roms_for_public"  
     remotefolder  <- paste0("kkari@mox.hyak.uw.edu:",remote_main) 
+    fldr_mox      <- read.csv("Data/in/fldr_mox_list.csv",header=F,stringsAsFactors=F)
    
     if(redownload_level3_mox){
+      if(dir.exists(remote_main)){
+        #copy current folder to archived, delete folder, and make new empty one
+        system (paste0("cp -R ",
+                       localfolder,"  ",
+                       localfolder,"/../../archived/",
+                       remote_fl,tmstp))
+        
+        txt<- paste0( "rm -r ",localfolder)
+        system(txt)  
+        dir.create(localfolder)
+        
+      }
     # This file downloads the .nc level 3 indices from MOX to the local drive
     #in terminal:
     # open new screen (ctrl A+D to exit; screen -r to return screen -ls to see list)
     ## screen 
     ## ssh kkari@mox.hyak.uw.edu
     ## password : J bday + Josie’s dog (cap S on both) +!! 
+    ## ls ../../bumblereem/roms_for_public  #publically available files
+    ## ls ../../bumblereem/roms_for_public/B10K-K20_CORECFS/Level3
   
     # open terminal (faster) and copy the last line or run it in system
   
-    # cat((paste0("rsync -avz --progress --include='**/Level*/*ACLIM*.nc' --include='*/' --exclude='*' ",remotefolder," ",localfolder)))
-    # cat( (paste0("rsync -avz --progress --include='**/Level*/*ACLIM*.nc' --include='*/' --exclude='*' ",remotefolder," ",localfolder)))
+    cat((paste0("rsync -avz --progress --include='**/Level*/*ACLIM*.nc' --include='*/' --exclude='*' ",remotefolder," ",local_fl)))
+    cat( (paste0("rsync -avz --progress --include='**/Level3/*coldpool*.nc' --include='*/' --exclude='*' ",remotefolder," ",local_fl)))
+      cat( (paste0("rsync -avz --progress --include='**/Level3/*forecast*.nc' --include='*/' --exclude='*' ",remotefolder," ",local_fl)))
+      
+    # -------------------------------------  
+    # IN TERMINAL:
+    # -------------------------------------  
+      # copy paste into local terminal (from cat above)
+    rsync -avz --progress --include='**/Level*/*ACLIM*.nc' --include='*/' --exclude='*' kkari@mox.hyak.uw.edu:/gscratch/bumblereem/roms_for_public /Users/kholsman/GitHub_new/ACLIM2/Data/in/Newest
    
-    # doesn't like this in R (use copy paste into mox above)
-     system( (paste0("rsync -avz --dry-run --include='**/Level*/*ACLIM*.nc' --include='*/' --exclude='*' ",remotefolder," ",localfolder)) )
+     rsync -avz --progress --include='**/Level3/*coldpool*.nc' --include='*/' --exclude='*' kkari@mox.hyak.uw.edu:/gscratch/bumblereem/roms_for_public /Users/kholsman/GitHub_new/ACLIM2/Data/in/Newest
+   
+     rsync -avz --progress --include='**/Level3/*forecast*.nc' --include='*/' --exclude='*' kkari@mox.hyak.uw.edu:/gscratch/bumblereem/roms_for_public /Users/kholsman/GitHub_new/ACLIM2/Data/in/Newest
+     .xlsx
+     rsync -avz --progress --include='*Bering10K_simulation_variables*.xlsx' --include='*/' --exclude='*' kkari@mox.hyak.uw.edu:/gscratch/bumblereem/roms_for_public /Users/kholsman/GitHub_new/ACLIM2/Data/in/Newest
+     rsync -avz --progress --include='*AFSC_groundfish_survey*.xlsx' --include='*/' --exclude='*' kkari@mox.hyak.uw.edu:/gscratch/bumblereem/roms_for_public /Users/kholsman/GitHub_new/ACLIM2/Data/in/Newest
+     
+    # -------------------------------------  
+    #
+    # ------------------------------------- 
     
-   # system( (paste0("rsync -avz --progress ",remotefolder," ",localfolder)))
-    
-    system( (paste0("rsync -avz --progress --include='**/Level*/*ACLIM*.nc' --include='*/' --exclude='*' ",remotefolder," ",localfolder)))
+    # Now rename the roms_for_public to roms_for_aclim
+      
+      remote_fl
+      file.rename(file.path(local_fl,remote_fl),localfolder)
+      
+   #  # R doesn't like this  (use copy paste into terminal above)
+   #   system( (paste0("rsync -avz --dry-run --include='**/Level*/*ACLIM*.nc' --include='*/' --exclude='*' ",remotefolder," ",localfolder)) )
+   # 
+   # # system( (paste0("rsync -avz --progress ",remotefolder," ",localfolder)))
+   # 
+   #  system( (paste0("rsync -avz --progress --include='**/Level*/*ACLIM*.nc' --include='*/' --exclude='*' ",remotefolder," ",localfolder)))
   
+    
   }
  
 ```

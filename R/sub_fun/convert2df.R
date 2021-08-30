@@ -7,17 +7,23 @@ convert2df <- function(ncIN, type=1,varIN = "temp_bottom5m"){
   if(!type%in%1:2) stop("type must be 1 (weekly regional indices) or 2 (survey replicated indices)")
 
   if(type == 1){
-    k      <- which(weekly_vars%in%varIN)
-    val    <- ncvar_get(ncIN, varid = varIN)
-    t      <- as.POSIXct(
-                    ncIN$var[[eval(varIN)]]$dim[[2]]$vals, 
-                       origin = substr(ncIN$var[[eval(varIN)]]$dim[[2]]$units,15,36),
+    k        <- which(weekly_vars%in%varIN)
+    val      <- ncvar_get(ncIN, varid = varIN)
+    unit_txt <- ncIN$var[[eval(varIN)]]$dim[[2]]$units
+    mlt      <- get_mlt(unit_txt)$mlt
+    ntxt     <-  get_mlt(unit_txt)$ntxt
+    t        <- as.POSIXct(
+                    ncIN$var[[eval(varIN)]]$dim[[2]]$vals*mlt, 
+                       origin = substr(unit_txt,ntxt+1,ntxt+10),
                        tz = "GMT")
-    for(s in 1:length(weekly_strata)){
+    area_nc   <- ncvar_get(ncIN, varid = "region_area") 
+    strata_nc <- ncIN$var[["region_area"]]$dim[[1]]$vals
+    
+    for(s in 1:length(strata_nc)){
       tmp    <- data.frame(
         #scenario = 
-        strata          = weekly_strata[s],
-        strata_area_km2 = region_area[s],
+        strata          = strata_nc[s],
+        strata_area_km2 = area_nc[s],
         time   = t, 
         var    = weekly_vars[k],
         val    = val[s,],

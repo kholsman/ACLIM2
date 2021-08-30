@@ -4,6 +4,15 @@
 # kirstin.holsman@noaa.gov
 # updated 2020
 # ----------------------------------------
+
+  seasons <- data.frame(mo = 1:12, 
+                        season =factor("",
+                                       levels=c("Winter","Spring","Summer","Fall")))
+  seasons$season[1:3]   <- "Winter"
+  seasons$season[4:6]   <- "Spring"
+  seasons$season[7:9]   <- "Summer"
+  seasons$season[10:12] <- "Fall"
+
   #cat("loading data, this may take a few mins...")
   NEBS_strata <- c(71,70,81,82,90)
   SEBS_strata <- c(10,20,31,32,50,
@@ -12,7 +21,10 @@
   if(update_base_data) 
     source("R/sub_scripts/update_base_data.R")
   
+ 
+  
   load(file.path(shareddata_path,"base_data.Rdata"))
+  load(file.path(shareddata_path,"grid_list.Rdata"))
   
   if(load_gis) 
     source("R/sub_scripts/load_maps.R")

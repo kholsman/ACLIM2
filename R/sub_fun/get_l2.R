@@ -32,7 +32,6 @@ get_l2 <-function(
   trIN        = c("-08-1 12:00:00 GMT"),
   sub_varlist = list(
     "temp",
-    "temp",
     c("EupS","Cop","NCaS") ),  
   sim_list  ) {
     
