@@ -1,0 +1,299 @@
+---
+title: "Regional temperature index for EBS salmon"
+author: K. K. Holsman & E. Yasumiishi
+output:
+  pdf_document:
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 5
+    highlight: tango
+    keep_tex: yes
+    latex_engine: xelatex
+    toc: TRUE
+  word_document:
+    fig_caption: yes
+    fig_width: 4
+    keep_md: yes
+  header-includes:
+  - \usepackage{inputenc}
+  - \usepackage{unicode-math}
+  - \pagenumbering{gobble}
+  html_document:
+    df_print: kable
+    fig_caption: yes
+    theme: flatly
+    toc: true
+    toc_float: true
+---
+
+```{r startup, eval=TRUE, echo=FALSE, results='hide',message=FALSE}
+ 
+ #source("R/make.R")       # loads packages, data, setup, etc.
+ knitr::opts_chunk$set(echo = T, fig.align="center")
+ thisYr <- format(Sys.time(), "%Y")
+ today  <- format(Sys.time(), "%b %d, %Y")
+ 
+     # --------------------------------------
+    # SETUP WORKSPACE
+
+    tmstp  <- format(Sys.time(), "%Y_%m_%d")
+    main   <- getwd()  #"~/GitHub_new/ACLIM2"
+    
+    setwd("../")
+    # loads packages, data, setup, etc.
+    suppressWarnings(source("R/make.R"))
+    setwd(main)
+    
+    # --------------------------------------
+    
+ 
+```
+
+Last updated:  `r today`
+
+
+# Overview
+
+The code below steps through generating temperature indices from the Bering10K ROMSNPZ model hindcast and projections under NOAA's [**ACLIM project**](https://www.fisheries.noaa.gov/alaska/ecosystems/alaska-climate-integrated-modeling-project) for the Bering Sea. For more information see the ![The ACLIM Repository [**github.com/kholsman/ACLIM2**](https://github.com/kholsman/ACLIM2 "ACLIM2 Repo") which contains R code and Rdata files for working with data generated from the [**downscaled ROMSNPZ modeling**](https://beringnpz.github.io/roms-bering-sea) of the ROMSNPZ Bering Sea Ocean Modeling team; Drs. Hermann, Cheng, Kearney, Pilcher,Ortiz, and Aydin. *See [Hollowed et al. 2020](https://www.frontiersin.org/articles/10.3389/fmars.2019.00775/full) for more information about the ACLIM project.*
+
+The goal of this vignette is to outline the steps taken to develop the temperature indices used as covariates in EBS salmon population dynamics models. 
+
+# Creating covariates (annual indices; bias corrected & z-scored)
+
+## 1) Create hindcast and historical indices
+
+```{r annual_aclim_indices, eval=F, include=T,echo=T}
+    
+    # Create annual indices 
+    # the code below creates annual indices and 
+    # bias corrects them to a reference period or historical runs
+
+    tmstamp1  <- format(Sys.time(), "%Y%m%d")
+    tmstamp1  <- "20211104"
+    update_hind  <- TRUE   # set to true to update hind and hindS; needed annually
+    update_proj  <- TRUE   # set to true to update proj and projS; not needed
+    update_hist  <- TRUE   # set to true to update proj and projS; not needed
+    # identify the year to z-score scale / delta
+    deltayrs     <- 1970:2000
+
+    cat("making annual indices, please wait....\n")
+     # now create annual indices from the regional polygon weekly values:
+     # this step is slow.....about 4 mins per simulation
+    
+    # remove these variables:
+    vl <- srvy_vars[!srvy_vars%in%c("station_id","latitude","longitude","stratum","doy",
+                                      "Iron_bottom5m","Iron_integrated","Iron_surface5m",
+                                      "prod_Eup_integrated","prod_NCa_integrated")]
+    
+      # Identify which variables would be normally distributed
+     normvl <- c("shflux","ssflux","temp_bottom5m",
+      "temp_integrated","temp_surface5m",
+      "uEast_bottom5m","uEast_surface5m",
+      "vNorth_bottom5m","vNorth_surface5m")
+    
+    normlist <- data.frame(var = vl, lognorm = TRUE)
+    normlist$lognorm[normlist$var%in%normvl] <- FALSE
+
+    if(update_hind){
+       source("R/sub_scripts/make_hind.R")
+    }else{
+      load(file.path(main,"Data/out",paste0("hind_",tmstamp1,".Rdata")))
+      head(hind)
+    }
+    
+    if(update_hist){
+       source("R/sub_scripts/make_hist.R")
+    }else{
+     load(file.path(main,"Data/out",paste0("hist_CMIP6_raw_",tmstamp1,".Rdata")))
+      hist_raw <- hist2; rm(hist2)
+      load(file.path(main,"Data/out",paste0("hist_CMIP6_BiasCorr_",tmstamp1,".Rdata")))
+      hist <- hist2; rm(hist2); head(hist)
+    }
+```
+
+
+## 2) Create proj indices
+
+
+```{r annual_aclim_indices_proj, eval=F, include=T,echo=T}
+    
+   if(update_proj){
+     source("R/sub_scripts/make_proj.R")
+   }else{
+     load(file.path(main,"Data/out",paste0("proj_CMIP6_BiasCorr_",tmstamp1,".Rdata")))
+     projCMIP6 <- proj; rm(proj)
+     load(file.path(main,"Data/out",paste0("proj_CMIP6_raw_",tmstamp1,".Rdata")))
+     proj_raw<-proj; rm(proj)
+     load(file.path(main,"Data/out",paste0("proj_CMIP5n6_BiasCorr_",tmstamp1,".Rdata")))
+     head(proj)
+   }
+  
+    # now add gcm and ssp:
+   proj      <- add_gcmssp(proj)
+   proj_raw  <- add_gcmssp(proj_raw)
+   projCMIP6 <- add_gcmssp(projCMIP6)
+   
+   
+   hind$cmip     <- "hindcast"
+   hind$scenario <- "hindcast"
+   hind$gcm      <- "CORECFS"
+   hind$ssp      <- "hindcast"
+  
+   
+```
+
+## 3) Z-score & bias correc the data
+
+```{r annual_aclim_indices_zscore, eval=F, include=T,echo=T}
+   
+   # Zscore-scale  the data
+   # -------------------------------------
+      hindS <- ScaleIT(proj_dat = hind,
+                     ref_dat  = hind,
+                     ref_yrs  = deltayrs)
+    
+      tmpfl <- file.path("Data/out/",paste0("hind_delta_",tmstamp1,".Rdata"))
+      if(file.exists(tmpfl)) file.remove(tmpfl)    
+      save(hindS, file=tmpfl)
+      rm(tmpfl)
+    
+      projS <- ScaleIT(proj_dat = proj,
+                     ref_dat  = hind,
+                     ref_yrs  = deltayrs)
+     
+      tmpfl <- file.path("Data/out/",paste0("proj_CMIP6_BiasCorr_delta_",tmstamp1,".Rdata"))
+      if(file.exists(tmpfl)) file.remove(tmpfl)    
+      save(projS, file=tmpfl)
+      rm(tmpfl)
+    
+     
+    # now add gcm and ssp:
+    # -------------------------------------
+    simset <- data.frame(sim=unique(proj$sim),stringsAsFactors =  FALSE)
+    ttp   <- strsplit(
+      sapply(strsplit(simset$sim,split=
+                      "_B10K-K20P19_"),"[[",2),"_")
+    simset$cmip <- sapply(ttp,"[[",1)
+    simset$gcm  <- sapply(ttp,"[[",2)
+    simset$ssp  <- sapply(ttp,"[[",3)
+    
+    CMIP6set    <- simset$sim[simset$cmip =="CMIP6"]
+    
+    
+     # Now make files for .dat input:
+    # -----------------------------
+    shortvars <- c("Cop_integrated","PhL_integrated",
+    "EupS_integrated","largeZoop_integrated","NCaS_integrated",
+    "salt_surface5m","temp_bottom5m","temp_surface5m")
+
+    longvars <- c("Ben","Cop_integrated","DetBen","EupO_integrated", 
+    "EupS_integrated", "hice","Jel_integrated","largeZoop_integrated",
+    "MZL_integrated","NCaO_integrated"  ,"NCaS_integrated"  , "PhL_integrated",
+    "PhS_integrated"    ,"salt_surface5m","shflux","ssflux","temp_bottom5m",
+    "temp_integrated","temp_surface5m" ,"uEast_bottom5m","uEast_surface5m",
+    "vNorth_bottom5m","vNorth_surface5m")
+    
+    short_vars <- makeROMSNPZdat(outfldr = "Data/out",
+                   hind_fl    = projS,
+                   proj_fl    = hindS,
+                   hind_sheetnames = c("K20_CORECFS"), 
+                   hinddat    = "hind",
+                   projdat    = "proj",
+                   hind_years = 1979:thisYr,
+                   proj_years = (thisYr+1):2099,
+                   varsIN     = shortvars,
+                   nsppIN     = 3,
+                   write2dat  = T,
+                   seasonsIN  = c("Winter","Spring","srvy_rep","Fall"),
+                   datfile    = paste("_romspz",thisYr,"_short.dat"))
+    
+    # now make some plots:
+    # ----------------------
+    
+    if(update.figs)
+      #source(file.path(main,"R/sub_scripts/make_annual_plots.R"))
+    
+    if(update.figs)
+      source(file.path(main,"R/sub_scripts/make_summary_plots.R"))
+    
+    # plot Fall values:
+    # -----------------------------
+  
+   
+    pfall_BT_fut
+     if(update.figs){
+        sclr <- 1.2
+        jpeg(file=file.path(main,"Figs/Fall_temperature_fut.jpg"),
+             width=7*sclr,height=5*sclr, res=150, units="in")
+        print(pfall_BT_fut)
+        dev.off()
+     }
+    
+    psrvy_BT_fut
+     if(update.figs){
+        sclr <- 1.2
+        jpeg(file=file.path(main,"Figs/Srvy_temperature_fut.jpg"),
+             width=7*sclr,height=5*sclr, res=150, units="in")
+        print(psrvy_BT_fut)
+        dev.off()
+     }
+    
+    pfall_BT_fut_raw
+     if(update.figs){
+        sclr <- 1.2
+        jpeg(file=file.path(main,"Figs/Fall_temperature_raw_fut.jpg"),
+             width=7*sclr,height=5*sclr, res=150, units="in")
+        print(pfall_BT_fut_raw)
+        dev.off()
+     }
+
+   pfall_BT_fut_scaled
+   if(update.figs){
+      sclr <- 1.2
+      jpeg(file=file.path(main,"Figs/Fall_temperature_scaled_fut.jpg"),
+           width=7*sclr,height=5*sclr, res=150, units="in")
+      print(pfall_BT_fut_scaled)
+      dev.off()
+   }
+  
+   z6_fut2 <- plotROMZ(
+                      hindIN = hind%>%filter(season=="Fall",
+                          var%in%c("EupS_surface5m"),
+                          year<=thisYr),
+                      futIN  = proj%>%filter(season=="Fall",
+                         var%in%c("EupS_surface5m"),
+                         sim%in%CMIP6set,
+                         year>=thisYr),
+                      plotval  = "value",
+                      refYrsIN = deltayrs,
+                      scalesIN ="free",
+                      simsetIN = simset%>%filter(sim%in%CMIP6set),
+                      titleIN  = "Surface EuphS (srvy_rep) ")
+    z6_fut2
+Euhp_Fall_fut
+     if(update.figs){
+        sclr <- 1.2
+        jpeg(file=file.path(main,"Figs/Fall_EuphSIntg_fut.jpg"),
+             width=7*sclr,height=4*sclr, res=150, units="in")
+        print(Euhp_Fall_fut)
+        dev.off()
+     }
+    Euhp_Fall_fut_raw
+    
+     if(update.figs){
+        sclr <- 1.2
+        jpeg(file=file.path(main,"Figs/Fall_EuphSIntg_fut_raw.jpg"),
+             width=7*sclr,height=4*sclr, res=150, units="in")
+        print(Euhp_Fall_fut_raw)
+        dev.off()
+     }
+  # 
+
+```
+
+
+# Recentering and bias correcting covariates
+
+# Plotting covariate results
+
+
