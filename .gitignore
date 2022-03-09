@@ -6,6 +6,7 @@ Data/In/Map_layers/shp_files/*
 Data/In/Map_layers/shp_files/*
 Data/In/Newest.zip
 Data/In/Map_layers.zip
+Data/In/*
 NotShared
 Data/In/archived
 R/shiny_aclim/01_aclim_indices/*
