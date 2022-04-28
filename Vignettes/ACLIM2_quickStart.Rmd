@@ -59,7 +59,7 @@ This set of commands, run within R, downloads the ACLIM2 repository and unpacks 
     main_nm       <- "ACLIM2"
 
     # Note: Edit download_path for preference
-    download_path <- path.expand("~/Desktop")
+    download_path <-  path.expand("~")
     dest_fldr     <- file.path(download_path,main_nm)
     
     url           <- "https://github.com/kholsman/ACLIM2/archive/main.zip"
