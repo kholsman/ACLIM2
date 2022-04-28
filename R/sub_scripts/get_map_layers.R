@@ -29,7 +29,7 @@
     #http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/raster/OB_LR.zip
     # /Users/kholsman/GitHub_new/ACLIM2/Data/in/Map_layers/geo_tif/OB_LR
     
-    if(!file.exists(file.path(mapdata_path,"geo_tif/OB_LR/OB_LR.tif") )){
+    if(!file.exists(file.path(mapdata_path,"geo_tif/OB_LR.tif") )){
       
        getZip( 
          urlIN = "http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/raster/OB_LR.zip", 

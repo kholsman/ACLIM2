@@ -2,20 +2,6 @@
 title: "Getting Started with Bering10K Level 2 & 3 indices"
 author: K. Holsman and K. Aydin (Tutorial), A. Hermann, K. Kearney, W. Cheng, I. Ortiz (Bering10K)
 output:
-  html_document:
-    df_print: kable
-    fig_caption: yes
-    theme: flatly
-    toc: true
-    toc_float: true
-  word_document:
-    fig_caption: yes
-    fig_width: 4
-    keep_md: yes
-  header-includes:
-  - \usepackage{inputenc}
-  - \usepackage{unicode-math}
-  - \pagenumbering{gobble}
   pdf_document:
     fig_caption: yes
     fig_height: 4
@@ -24,6 +10,20 @@ output:
     keep_tex: yes
     latex_engine: xelatex
     toc: TRUE
+  word_document:
+    fig_caption: yes
+    fig_width: 4
+    keep_md: yes
+  header-includes:
+  - \usepackage{inputenc}
+  - \usepackage{unicode-math}
+  - \pagenumbering{gobble}
+  html_document:
+    df_print: kable
+    fig_caption: yes
+    theme: flatly
+    toc: true
+    toc_float: true
 ---
 
 ```{r startup, eval=TRUE, echo=FALSE, results='hide',message=FALSE}
@@ -53,10 +53,10 @@ output:
 <!-- ``` -->
 
 
-![The ACLIM Repository [**github.com/kholsman/ACLIM2**](https://github.com/kholsman/ACLIM2 "ACLIM2 Repo") is maintained by **[Kirstin Holsman](mailto:kirstin.holsman@noaa.gov)**, Alaska Fisheries Science Center, NOAA Fisheries, Seattle WA. Multiple programs and projects have supported the production and sharing of the suite of Bering10K hindcasts and projections. *Last updated: `r today`*](Figs/logos2.jpg){ width=100%}
+![The ACLIM2 Repository [**github.com/kholsman/ACLIM2**](https://github.com/kholsman/ACLIM2 "ACLIM2 Repo") is maintained by **[Kirstin Holsman](mailto:kirstin.holsman@noaa.gov)**, Alaska Fisheries Science Center, NOAA Fisheries, Seattle WA. Multiple programs and projects have supported the production and sharing of the suite of Bering10K hindcasts and projections. *Last updated: `r today`*](Figs/logos2.jpg){ width=100%}
 
 
-# 1. Overview
+# 1. Overview {.tabset}
 
 This repository contains R code and Rdata files for working with netcdf-format data generated from the [**downscaled ROMSNPZ modeling**](https://beringnpz.github.io/roms-bering-sea) of the ROMSNPZ Bering Sea Ocean Modeling team; Drs. Hermann, Cheng, Kearney, Pilcher,Ortiz, and Aydin. The code and R resources described in this tutorial are publicly available through the [**ACLIM2 github repository**](https://github.com/kholsman/ACLIM2) maintained by [Kirstin Holsman](mailto:kirstin.holsman@noaa.gov) as part of NOAA's [**ACLIM project**](https://www.fisheries.noaa.gov/alaska/ecosystems/alaska-climate-integrated-modeling-project) for the Bering Sea. *See [Hollowed et al. 2020](https://www.frontiersin.org/articles/10.3389/fmars.2019.00775/full) for more information about the ACLIM project.*
 
@@ -98,7 +98,7 @@ The Bering10K model was subsequently updated by Kearney et al. 2020 (30 layer an
   
   Pilcher, D. J., D. M. Naiman, J. N. Cross, A. J. Hermann, S. A. Siedlecki, G. A. Gibson, and J. T. Mathis. 2019. Modeled Effect of Coastal Biogeochemical Processes, Climate Variability, and Ocean Acidification on Aragonite Saturation State in the Bering Sea. Frontiers in Marine Science 5:1–18. [doi: 10.3389/fmars.2018.00508](https://www.frontiersin.org/articles/10.3389/fmars.2018.00508/full)
   
-# 2. Installation
+# 2. Installation {.tabset}
 
 ## 2.1 Minimal Install  
 
@@ -163,8 +163,8 @@ The remainder of this tutorial was tested in RStudio. This may work in "plain" R
     # SETUP WORKSPACE
     tmstp  <- format(Sys.time(), "%Y_%m_%d")
     main   <- getwd()  #"~/GitHub_new/ACLIM2
-    source("R/make.R")
-    source("R/sub_scripts/load_maps.R")  # skip this for faster load
+    suppressWarnings(source("R/make.R"))
+    suppressWarnings(source("R/sub_scripts/load_maps.R")) # skip this for faster load
     # --------------------------------------
 ```
 
@@ -172,7 +172,7 @@ The `R/make.R` command will install missing libraries (including those listed un
 
 
 
-# 3. Get ROMSNPZ data
+# 3. Get ROMSNPZ data {.tabset}
 
 The ROMSNPZ team has been working with [Roland Schweitzer](mailto:roland.schweitzer@noaa.gov) and [Peggy Sullivan](mailto:peggy.sullivan@noaa.gov) to develop the ACLIM Live Access Server (LAS) to publicly host the published CMIP5 hindcasts and downscaled projections. This server is in beta testing phase and can be accessed at the following links:
 
@@ -444,7 +444,7 @@ and put in your local folder under:
 ![](Figs/filestructure2.jpg)
 
 
-# 4. Explore indices & plot the data  
+# 4. Explore indices & plot the data  {.tabset}
 
 ## 4.1. Data exploration with the minimal installation
 
@@ -521,7 +521,7 @@ Let's look at some data from the Level 2 bottom temperature records, using the t
 ```
 ![Bottom temperature <2 degrees C (blue) and >=2 degrees C (green).](Figs/minimal_coldpool.jpg){ width=100%}
 
-## 4.2. Level 3 indices
+## 4.2. Level 3 indices {.tabset}
 
 Level 3 indices can be used to generate seasonal, monthly, and annual indices (like those reported in [Reum et al. 2020)](https://www.frontiersin.org/articles/10.3389/fmars.2020.00124/full), [Holsman et al. 2020)](http://dx.doi.org/10.1038/s41467-020-18300-3). In the section below we explore these indices in more detail using R, including using (2) above to generate weekly, monthly, and seasonal indices (e.g. Fall Zooplankton) for use in biological models. In section 3 below we explore these indices in more detail using R, including using (2) above to generate weekly, monthly, and seasonal indices (e.g. Fall Zooplankton) for use in biological models. The following examples show how to analyze and plot the ACLIM indices from the .Rdata files created in the previous step 3. Please be sure to coordinate with ROMSNPZ modeling team members to ensure data is applied appropriately. 
 
@@ -611,11 +611,11 @@ The code segment below will recreate the above figures.*Note that if this is the
 ```
 
 
-# 5. Hindcasts  
+# 5. Hindcasts {.tabset}
 
 There are two model versions of hindcasts available for comparison. The Hermann et al. 2016 H16 10 depth layer model and the Kearney et al. 2020 30 depth layer model. Both are resolved spatially at a ~10km grid cell. 
 
-## 5.1. Level 3 hindcasts
+## 5.1. Level 3 hindcasts {.tabset}
 
 Level 3 hindcast products inculde survey replicated station data and strata averaged weekly values. The code below will explore these in more detail.
 
@@ -966,7 +966,7 @@ Using the same approach we can get monthly averages for a given variable:
  
 ![September large zooplankton integrated concentration](Figs/Hind_Sept_large_Zoop.jpg){ width=75% }
 
-## 5.2. Level 2 hindcasts
+## 5.2. Level 2 hindcasts{.tabset}
 
 Level 2 data can be explored in the same way as the above indices but we will focus in the section below on a simple spatial plot and temporal index. The advantage of Level2 inidces is in the spatial resolution and values outside of the survey area. 
 
@@ -1248,7 +1248,7 @@ As final hindcast comparison, let's look a surface temperature from observations
 
 ![M2 mooring SST in 2013.](Figs/Hind_M2_SST.jpg){width=90%}
 
-# 6. Projections  
+# 6. Projections  {.tabset}
 
 The ACLIM project utilizes the full "suite" of Bering10K model hindcasts and projections, summarized in the following table. These represent downscaled models hindcast and projections whereby boundary conditions of the high resolution Bering10K model are forced by the coarser resolution General Circulation Models (GCM) run under Coupled Model Intercomparison Project (CMIP) phase 5 (5th IPCC Assessment Report) or phase 6 (6th IPCC Assessment Report; "AR") global carbon mitigation scenarios. Hindcasts are similarly forced at the boundaries from global scale climate reanalysis CORE and CFS products (see sections 1-5). For full details see the [Kearney 2021 Tech. Memo](https://beringnpz.github.io/roms-bering-sea/assets/DRAFT_NOAA-TM-AFSC-415.pdf).
 
@@ -1276,7 +1276,7 @@ CMIP| GCM    |Scenario    |Def              |Years      |Model |Source|Status
 6| MIROC    |Historical | Historical      |1980 - 2014|K20P19   |ACLIM2/RTAP|Embargo  
 *"bio" = nutrient forcing on boundary conditions
 
-## 6.1. Level 3 projections
+## 6.1. Level 3 projections {.tabset}
 
 ### 6.1.1. Level 3 projections: spatial patterns
 
@@ -1735,7 +1735,7 @@ Finally we can use this approach to plot the monthly averages and look for pheno
 
 ![September large zooplankton integrated concentration](Figs/PhenShift_large_Zoop.jpg){ width=90% }
 
-## 6.2. Level 2 projections
+## 6.2. Level 2 projections{.tabset}
 
 Level 2 data can be explored in the same way as the above indices but we will focus in the section below on a simple spatial plot and temporal index. The advantage of Level2 inidces is in the spatial resolution and values outside of the survey area. 
 
@@ -1879,7 +1879,7 @@ Multiple NOAA programs provided support for ACLIM and Bering Seasons projects in
 
 This repository is a scientific product and is not official communication of the National Oceanic and Atmospheric Administration, or the United States Department of Commerce. All NOAA GitHub project code is provided on an ‘as is’ basis and the user assumes responsibility for its use. Any claims against the Department of Commerce or Department of Commerce bureaus stemming from the use of this GitHub project will be governed by all applicable Federal law. Any reference to specific commercial products, processes, or services by service mark, trademark, manufacturer, or otherwise, does not constitute or imply their endorsement, recommendation or favoring by the Department of Commerce. The Department of Commerce seal and logo, or the seal and logo of a DOC bureau, shall not be used in any manner to imply endorsement of any commercial product or activity by DOC or the United States Government.
 
-# 8. Helpful links and further reading  
+# 8. Helpful links and further reading  {.tabset}
 
 ## 8.1 Citations for GCMs and carbon scenarios
 
@@ -2019,5 +2019,7 @@ The Model for Interdisciplinary Research on Climate (MIROC)-M model developed by
   
     
   }
- 
+
 ```
+
+

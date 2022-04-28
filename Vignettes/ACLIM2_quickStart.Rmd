@@ -1,0 +1,68 @@
+---
+title: "ACLIM2 CMIP6 ROMSNPZ Indices quick start guide"
+author: K. Holsman
+output:
+  html_document:
+    df_print: paged
+    toc: true
+    toc_depth: 4
+    number_sections: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+  header-includes:
+  - \usepackage{knputenc}
+  - \usepackage{unicode-math}
+  - \pagenumbering{gobble}
+  - \documentclass{article}
+  - \usepackage{amsmath}
+  word_document:
+    fig_caption: yes
+    fig_width: 4
+    keep_md: yes
+  pdf_document:
+    toc: TRUE
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 5
+    highlight: tango
+    keep_tex: yes
+    latex_engine: xelatex
+---
+
+
+
+```{r startup, eval=TRUE, echo=FALSE, results='hide',message=FALSE}
+ 
+ #source("R/make.R")       # loads packages, data, setup, etc.
+ knitr::opts_chunk$set(echo = T, fig.align="center")
+ thisYr <- format(Sys.time(), "%Y")
+ today  <- format(Sys.time(), "%b %d, %Y")
+ 
+     # --------------------------------------
+    # SETUP WORKSPACE
+
+    tmstp  <- format(Sys.time(), "%Y_%m_%d")
+    main   <- getwd()  #"~/GitHub_new/ACLIM2"
+    
+    # loads packages, data, setup, etc.
+    suppressWarnings(source("R/make.R"))
+    
+    # --------------------------------------
+    
+ 
+```
+
+
+This repository contains R code and Rdata files for working with netcdf-format data generated from the [**downscaled ROMSNPZ modeling**](https://beringnpz.github.io/roms-bering-sea) of the ROMSNPZ Bering Sea Ocean Modeling team; Drs. Hermann, Cheng, Kearney, Pilcher,Ortiz, and Aydin. The code and R resources described in this tutorial are publicly available through the [**ACLIM2 github repository**](https://github.com/kholsman/ACLIM2) maintained by [Kirstin Holsman](mailto:kirstin.holsman@noaa.gov) as part of NOAA's [**ACLIM project**](https://www.fisheries.noaa.gov/alaska/ecosystems/alaska-climate-integrated-modeling-project) for the Bering Sea. *See [Hollowed et al. 2020](https://www.frontiersin.org/articles/10.3389/fmars.2019.00775/full) for more information about the ACLIM project.*
+---
+
+# Overview{.tabset}
+
+This document provides an overview of accessing, ploting, and creating bias corrected indices for ACLIM2 based on CMIP6 (embargoed for ACLIM2 users until 2023) and CMIP5 (publically available). This guide assumes analyses will take place in R() and that users have access to the data folder within the ACLIM2 shared drive.
+
+
+## Accessing the data
+
+There are two formats that the ROMSNPZ data are available in for use in ACLIM2. Level 3 data are post-processed to replicate 
+

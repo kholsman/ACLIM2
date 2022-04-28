@@ -26,9 +26,13 @@
   
     install.packages(missing)
   }
+  # Install missing libraries:
+  missing <- setdiff("rgdal", installed.packages()[, 1])
+  if (length(missing) > 0)
+    install.packages(missing, source = binary)
   
   # Load libraries:
-  for(lib in lib_list)
+  for(lib in c(lib_list,"rgdal"))
     eval(parse(text=paste("library(",lib,")")))
   
   
@@ -65,7 +69,7 @@
   
   bathy1000    <-  sf::st_read(file.path(shp_dir,"global/ne_10m_bathymetry_J_1000/ne_10m_bathymetry_J_1000.shp"))
   bathy200     <-  sf::st_read(file.path(shp_dir,"global/ne_10m_bathymetry_K_200/ne_10m_bathymetry_K_200.shp"))
-  ocean_bot    <-  raster::brick(file.path(geotif_dir,"OB_LR/OB_LR.tif"))
+  ocean_bot    <-  raster::brick(file.path(geotif_dir,"OB_LR.tif"))
   
   # rnaturalearth files
   world 		   <-  rnaturalearth::ne_countries(scale = "medium", returnclass = "sf") 
@@ -130,6 +134,6 @@
   # same but as outlines:
   bering_l          <- bering_sf%>%st_cast("MULTILINESTRING")
   
-
+cat("\n\n*** Maps and packages loaded correctly***\n")
 
 

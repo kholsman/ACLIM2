@@ -3,11 +3,10 @@
 <!-- ``` -->
 
 <figure>
-<img src="Figs/logos2.jpg" style="width:100.0%" alt="" /><figcaption>The ACLIM Repository <a href="https://github.com/kholsman/ACLIM2" title="ACLIM2 Repo"><strong>github.com/kholsman/ACLIM2</strong></a> is maintained by <strong><a href="mailto:kirstin.holsman@noaa.gov">Kirstin Holsman</a></strong>, Alaska Fisheries Science Center, NOAA Fisheries, Seattle WA. Multiple programs and projects have supported the production and sharing of the suite of Bering10K hindcasts and projections. <em>Last updated: May 03, 2021</em></figcaption>
+<img src="Figs/logos2.jpg" style="width:100.0%" alt="The ACLIM2 Repository github.com/kholsman/ACLIM2 is maintained by Kirstin Holsman, Alaska Fisheries Science Center, NOAA Fisheries, Seattle WA. Multiple programs and projects have supported the production and sharing of the suite of Bering10K hindcasts and projections. Last updated: Apr 28, 2022" /><figcaption aria-hidden="true">The ACLIM2 Repository <a href="https://github.com/kholsman/ACLIM2" title="ACLIM2 Repo"><strong>github.com/kholsman/ACLIM2</strong></a> is maintained by <strong><a href="mailto:kirstin.holsman@noaa.gov">Kirstin Holsman</a></strong>, Alaska Fisheries Science Center, NOAA Fisheries, Seattle WA. Multiple programs and projects have supported the production and sharing of the suite of Bering10K hindcasts and projections. <em>Last updated: Apr 28, 2022</em></figcaption>
 </figure>
 
-1. Overview
-===========
+# 1. Overview
 
 This repository contains R code and Rdata files for working with
 netcdf-format data generated from the [**downscaled ROMSNPZ
@@ -22,8 +21,7 @@ for the Bering Sea. *See [Hollowed et
 al. 2020](https://www.frontiersin.org/articles/10.3389/fmars.2019.00775/full)
 for more information about the ACLIM project.*
 
-1.1. Resources
---------------
+## 1.1. Resources
 
 We **strongly recommend** reviewing the following documentation before
 using the data in order to understand the origin of the indices and
@@ -48,8 +46,7 @@ across indices and in space and time:
     is maintained by [Kelly Kearney](mailto:kelly.kearney@noaa.gov) and
     will be regularly updated with new documentation and publications.
 
-1.2 Guildlines for use and citation of the data
------------------------------------------------
+## 1.2 Guildlines for use and citation of the data
 
 The data described here are published and publicly available for use,
 except as explicitly noted. However, for novel uses of the data, it is
@@ -113,11 +110,9 @@ the most recent CMIP phase 6.
     Frontiers in Marine Science 5:1–18. [doi:
     10.3389/fmars.2018.00508](https://www.frontiersin.org/articles/10.3389/fmars.2018.00508/full)
 
-2. Installation
-===============
+# 2. Installation
 
-2.1 Minimal Install
--------------------
+## 2.1 Minimal Install
 
 A minimal R install (for Sections 3.2 and 4.1 only) requires installing
 the `ncdf4`, `devtools` libraries (available on CRAN), and `thredds` R
@@ -134,8 +129,7 @@ take several minutes to install. *The full install below includes
 installation of these packages, so you don’t need to perform this step
 if you perform the full install.*
 
-2.2 Full install
-----------------
+## 2.2 Full install
 
 The full install consists of the full directory structure in the ACLIM2
 Repo; this includes a substantial set of resource files including shape
@@ -194,8 +188,7 @@ mentioned in Option 2.
     setwd(main_nm)
 ```
 
-2.3 Set up envionment and get shapefiles (full install)
--------------------------------------------------------
+## 2.3 Set up envionment and get shapefiles (full install)
 
 The remainder of this tutorial was tested in RStudio. This may work in
 “plain” R, but is untested. If you are using RStudio, open
@@ -207,8 +200,8 @@ ACLIM2 directory. Then run:
     # SETUP WORKSPACE
     tmstp  <- format(Sys.time(), "%Y_%m_%d")
     main   <- getwd()  #"~/GitHub_new/ACLIM2
-    source("R/make.R")
-    source("R/sub_scripts/load_maps.R")  # skip this for faster load
+    suppressWarnings(source("R/make.R"))
+    suppressWarnings(source("R/sub_scripts/load_maps.R")) # skip this for faster load
     # --------------------------------------
 ```
 
@@ -217,8 +210,7 @@ listed under the minimal install) and download and process multiple
 shapefiles for geographic analysis, it takes several minutes depending
 on bandwidth.
 
-3. Get ROMSNPZ data
-===================
+# 3. Get ROMSNPZ data
 
 The ROMSNPZ team has been working with [Roland
 Schweitzer](mailto:roland.schweitzer@noaa.gov) and [Peggy
@@ -239,8 +231,7 @@ accessed at the following links:
 Currently, the public data includes hindcasts & CMIP5 climate
 projections.
 
-3.1 Available data
-------------------
+## 3.1 Available data
 
 -   `Level1` : (full grid, native ROMS coordinates, full suite of
     variables).
@@ -271,8 +262,7 @@ level3 (timeseries indices) folder under `B10K-H16_CMIP5_CESM_rcp45`,
 which would be the B10K version H16 of the CMIP5 CESM model under
 RCP4.5.
 
-3.2 Access using minimal installation
--------------------------------------
+## 3.2 Access using minimal installation
 
 The [ACLIM Thredds server](https://data.pmel.noaa.gov/aclim/thredds/)
 provides a directory structure and filenames/paths for individual
@@ -283,7 +273,7 @@ variable type (depends on Level), then finally a catalog page with
 metadata and the OPENDAP address.
 
 <figure>
-<img src="Figs/catalog.jpg" style="width:100.0%" alt="" /><figcaption>Thredds Catalog page.</figcaption>
+<img src="Figs/catalog.jpg" style="width:100.0%" alt="Thredds Catalog page." /><figcaption aria-hidden="true">Thredds Catalog page.</figcaption>
 </figure>
 
 The OPENDAP address (ending in .nc) is used to open a connection between
@@ -322,8 +312,7 @@ R and the nc files associated with that data:
     nc_close(nc_handle)
 ```
 
-3.3 Access using ACLIM package
-------------------------------
+## 3.3 Access using ACLIM package
 
 The below code will extract variables from the Level 2 and Level 3
 netcdf files (`.nc`) and save them as compressed `.Rdata` files on your
@@ -357,7 +346,6 @@ Let’s take a look at the available online datasets:
 ```
 
     ## Constants/ 
-    ##  B10K Extended Grid/ 
     ##  B10K-H16_CMIP5_CESM_BIO_rcp85/ 
     ##  B10K-H16_CMIP5_CESM_rcp45/ 
     ##  B10K-H16_CMIP5_CESM_rcp85/ 
@@ -545,16 +533,14 @@ are relatively small:
 Go to the shared google drive and dowload the CMIP6 data into your
 ACLIM2 local folder:
 
-[00\_ACLIM\_shared\>02\_Data\>Newest\>roms\_for\_aclim](https://drive.google.com/drive/folders/1ljACM6cgMD7M14lzvozZyTP4tMBnf_S4)
+[00_ACLIM_shared\>02_Data\>Newest\>roms_for_aclim](https://drive.google.com/drive/folders/1ljACM6cgMD7M14lzvozZyTP4tMBnf_S4)
 and put in your local folder under: `Data/in/roms_for_aclim`
 
 ![](Figs/filestructure2.jpg)
 
-4. Explore indices & plot the data
-==================================
+# 4. Explore indices & plot the data
 
-4.1. Data exploration with the minimal installation
----------------------------------------------------
+## 4.1. Data exploration with the minimal installation
 
 Let’s look at some data from the Level 2 bottom temperature records,
 using the threadds and ncdf4 libraries:
@@ -628,11 +614,10 @@ using the threadds and ncdf4 libraries:
 ```
 
 <figure>
-<img src="Figs/minimal_coldpool.jpg" style="width:100.0%" alt="" /><figcaption>Bottom temperature &lt;2 degrees C (blue) and &gt;=2 degrees C (green).</figcaption>
+<img src="Figs/minimal_coldpool.jpg" style="width:100.0%" alt="Bottom temperature &lt;2 degrees C (blue) and &gt;=2 degrees C (green)." /><figcaption aria-hidden="true">Bottom temperature &lt;2 degrees C (blue) and &gt;=2 degrees C (green).</figcaption>
 </figure>
 
-4.2. Level 3 indices
---------------------
+## 4.2. Level 3 indices
 
 Level 3 indices can be used to generate seasonal, monthly, and annual
 indices (like those reported in [Reum et
@@ -742,15 +727,13 @@ packages and download the files from the web (first time through only).*
    ggsave(file=file.path(main,"Figs/stations.jpg"),width=5,height=5)}
 ```
 
-5. Hindcasts
-============
+# 5. Hindcasts
 
 There are two model versions of hindcasts available for comparison. The
 Hermann et al. 2016 H16 10 depth layer model and the Kearney et al. 2020
 30 depth layer model. Both are resolved spatially at a \~10km grid cell.
 
-5.1. Level 3 hindcasts
-----------------------
+## 5.1. Level 3 hindcasts
 
 Level 3 hindcast products inculde survey replicated station data and
 strata averaged weekly values. The code below will explore these in more
@@ -894,7 +877,7 @@ that to the average conditions prior to 2010:
 ```
 
 <figure>
-<img src="Figs/mn_hindcast_mhw.jpg" style="width:100.0%" alt="" /><figcaption>Decadal averages of bottom temperature from the two hindcast models.</figcaption>
+<img src="Figs/mn_hindcast_mhw.jpg" style="width:100.0%" alt="Decadal averages of bottom temperature from the two hindcast models." /><figcaption aria-hidden="true">Decadal averages of bottom temperature from the two hindcast models.</figcaption>
 </figure>
 
 ### 5.1.2. Level 3 hindcasts: Weekly strata averages
@@ -966,11 +949,11 @@ values for each variable.These are stored in the
 ```
 
 <figure>
-<img src="Figs/hind_weekly_bystrata.jpg" style="width:90.0%" alt="" /><figcaption>Weekly indices by stratum</figcaption>
+<img src="Figs/hind_weekly_bystrata.jpg" style="width:90.0%" alt="Weekly indices by stratum" /><figcaption aria-hidden="true">Weekly indices by stratum</figcaption>
 </figure>
 
 <figure>
-<img src="Figs/hind_weekly_byreg.jpg" style="width:90.0%" alt="" /><figcaption>Weekly indices by sub-region</figcaption>
+<img src="Figs/hind_weekly_byreg.jpg" style="width:90.0%" alt="Weekly indices by sub-region" /><figcaption aria-hidden="true">Weekly indices by sub-region</figcaption>
 </figure>
 
 ### 5.1.3. Level 3 hindcasts: Seasonal averages
@@ -1068,7 +1051,7 @@ variable:
 ```
 
 <figure>
-<img src="Figs/Hind_Fall_large_Zoop.jpg" style="width:75.0%" alt="" /><figcaption>Large fall zooplankton integrated concentration</figcaption>
+<img src="Figs/Hind_Fall_large_Zoop.jpg" style="width:75.0%" alt="Large fall zooplankton integrated concentration" /><figcaption aria-hidden="true">Large fall zooplankton integrated concentration</figcaption>
 </figure>
 
 ### 5.1.4. Level 3 hindcasts: Monthly averages
@@ -1110,11 +1093,10 @@ variable:
 ```
 
 <figure>
-<img src="Figs/Hind_Sept_large_Zoop.jpg" style="width:75.0%" alt="" /><figcaption>September large zooplankton integrated concentration</figcaption>
+<img src="Figs/Hind_Sept_large_Zoop.jpg" style="width:75.0%" alt="September large zooplankton integrated concentration" /><figcaption aria-hidden="true">September large zooplankton integrated concentration</figcaption>
 </figure>
 
-5.2. Level 2 hindcasts
-----------------------
+## 5.2. Level 2 hindcasts
 
 Level 2 data can be explored in the same way as the above indices but we
 will focus in the section below on a simple spatial plot and temporal
@@ -1269,7 +1251,7 @@ periods for Aug 1 of each year:
 ```
 
 <figure>
-<img src="Figs/Hind_sub_grid_mn_BT_Aug1.jpg" style="width:100.0%" alt="" /><figcaption>Aug 1 Bottom temperature from Level 2 dataset</figcaption>
+<img src="Figs/Hind_sub_grid_mn_BT_Aug1.jpg" style="width:100.0%" alt="Aug 1 Bottom temperature from Level 2 dataset" /><figcaption aria-hidden="true">Aug 1 Bottom temperature from Level 2 dataset</figcaption>
 </figure>
 
 ### 5.2.2. Level 2 hindcasts: M2 mooring comparison
@@ -1397,11 +1379,10 @@ observations vs the H16 and K20 model versions of the hindcast:
 ```
 
 <figure>
-<img src="Figs/Hind_M2_SST.jpg" style="width:90.0%" alt="" /><figcaption>M2 mooring SST in 2013.</figcaption>
+<img src="Figs/Hind_M2_SST.jpg" style="width:90.0%" alt="M2 mooring SST in 2013." /><figcaption aria-hidden="true">M2 mooring SST in 2013.</figcaption>
 </figure>
 
-6. Projections
-==============
+# 6. Projections
 
 The ACLIM project utilizes the full “suite” of Bering10K model hindcasts
 and projections, summarized in the following table. These represent
@@ -1415,8 +1396,7 @@ scale climate reanalysis CORE and CFS products (see sections 1-5). For
 full details see the [Kearney 2021 Tech.
 Memo](https://beringnpz.github.io/roms-bering-sea/assets/DRAFT_NOAA-TM-AFSC-415.pdf).
 
-Table 1: Summary of ROMSNPZ downscaled model runs
--------------------------------------------------
+## Table 1: Summary of ROMSNPZ downscaled model runs
 
 | CMIP | GCM     | Scenario     | Def             | Years       | Model  | Source         | Status  |     |
 |------|---------|--------------|-----------------|-------------|--------|----------------|---------|-----|
@@ -1442,8 +1422,7 @@ Table 1: Summary of ROMSNPZ downscaled model runs
 
 \*“bio” = nutrient forcing on boundary conditions
 
-6.1. Level 3 projections
-------------------------
+## 6.1. Level 3 projections
 
 ### 6.1.1. Level 3 projections: spatial patterns
 
@@ -1474,20 +1453,21 @@ plot bottom temperature.
     # assign the simulation to download
     # --> Tinker: try selecting a different set of models to compare
     sim        <-"B10K-H16_CMIP5_MIROC_rcp85" 
+     sim        <-"B10K-H16_CMIP5_CESM_rcp85"
     
     # open a "region" or strata specific nc file
     fl         <- file.path(sim,paste0(srvy_txt,sim,".Rdata"))
     
-    # load object 'ACLIMsurveyrep'
-    load(file.path(main,Rdata_path,fl))   
-     
     # create local rdata files 
     if(!file.exists(file.path(Rdata_path,fl)))
       get_l3(web_nc = TRUE, download_nc = F,
           varlist = vl,sim_list =sim )
     
+    # load object 'ACLIMsurveyrep'
+    load(file.path(main,Rdata_path,fl))   
+     
     
-     # Collate mean values across timeperiods and simulations
+    # Collate mean values across timeperiods and simulations
     # -------------------------------------------------------
     m_set      <- c(9,7,8)
     ms         <- aclim[m_set]
@@ -1496,10 +1476,12 @@ plot bottom temperature.
     for(sim in ms){
      fl         <- file.path(sim,paste0(srvy_txt,sim,".Rdata"))
     
-    # download & convert .nc files that are not already in Rdata folder
-    if(!file.exists( file.path(Rdata_path,fl)) )
-      get_l3(web_nc = TRUE, download_nc = F,
-          varlist = vl,sim_list =sim )
+      # download & convert .nc files that are not already in Rdata folder
+      if(!file.exists( file.path(Rdata_path,fl)) )
+        get_l3(web_nc = TRUE, download_nc = F,
+            varlist = vl,sim_list =sim )
+       
+      
     }
       
     # get the mean values for the time blocks from the rdata versions
@@ -1603,11 +1585,11 @@ values for each variable.These are stored in the
 ```
 
 <figure>
-<img src="Figs/weekly_bystrata.jpg" style="width:90.0%" alt="" /><figcaption>Weekly indices by sub-region</figcaption>
+<img src="Figs/weekly_bystrata.jpg" style="width:90.0%" alt="Weekly indices by sub-region" /><figcaption aria-hidden="true">Weekly indices by sub-region</figcaption>
 </figure>
 
 <figure>
-<img src="Figs/weekly_byreg.jpg" style="width:90.0%" alt="" /><figcaption>Weekly indices by sub-region</figcaption>
+<img src="Figs/weekly_byreg.jpg" style="width:90.0%" alt="Weekly indices by sub-region" /><figcaption aria-hidden="true">Weekly indices by sub-region</figcaption>
 </figure>
 
 ### 6.1.3. Level 3 projections: Seasonal averages
@@ -1753,7 +1735,7 @@ for(sim in sim_set){
            long_name ="Total On-shelf 
                large zooplankton concentration, 
                integrated over depth (NCa, Eup)")
-  
+  rm(fl)
   rm(ACLIMregion)
   head(tmp_var)
   
@@ -1771,8 +1753,21 @@ for(sim in sim_set){
   if(ii > 1)
     plot_data <- rbind(plot_data, tmp_var)
   rm(tmp_var)
+  
 }
 
+ # # To get the average value for a set of strata by week, weight the val by the area:
+ #   mn_NEBS <- getAVGnSUM( bysim = T,
+ #      strataIN = NEBS_strata,
+ #      dataIN = plot_data)
+ #   mn_NEBS$basin = "NEBS"
+ #  
+ #  mn_SEBS <-getAVGnSUM( bysim = T,
+ #      strataIN = SEBS_strata,
+ #      dataIN = plot_data)
+ #   mn_SEBS$basin = "SEBS"
+ # 
+   
 # To get the average value for a set of strata, weight the val by the area: (slow...)
 mn_NEBS_season <- getAVGnSUM(
   bysim = T,
@@ -1811,7 +1806,7 @@ These results demonstrate the importance and challenge of bias
 correcting projections to hindcasts or historical runs.
 
 <figure>
-<img src="Figs/Fall_large_Zoop_bySSP.jpg" style="width:90.0%" alt="" /><figcaption>September large zooplankton integrated concentration</figcaption>
+<img src="Figs/Fall_large_Zoop_bySSP.jpg" style="width:90.0%" alt="September large zooplankton integrated concentration" /><figcaption aria-hidden="true">September large zooplankton integrated concentration</figcaption>
 </figure>
 
 ### 6.1.4. Level 3 Projections: Monthly averages
@@ -1826,6 +1821,7 @@ variable:
       dataIN   = tmp_var,
       tblock   = c("yr","mo"))
     mn_NEBS_season$basin = "NEBS"
+    
     mn_SEBS_season <- getAVGnSUM(
       strataIN = SEBS_strata, 
       dataIN = tmp_var,
@@ -1844,14 +1840,14 @@ variable:
       ylab(tmp_var$units[1])+
       ggtitle( paste(aclim[2],"Sept.",mn_NEBS_season$var[1]))+
       theme_minimal()
-  p7
+  print(p7)
   
   if(update.figs)  
     ggsave(file=file.path(main,"Figs/Sept_large_Zoop.jpg"),width=8,height=5)
 ```
 
 <figure>
-<img src="Figs/Sept_large_Zoop.jpg" style="width:90.0%" alt="" /><figcaption>September large zooplankton integrated concentration</figcaption>
+<img src="Figs/Sept_large_Zoop.jpg" style="width:90.0%" alt="September large zooplankton integrated concentration" /><figcaption aria-hidden="true">September large zooplankton integrated concentration</figcaption>
 </figure>
 
 Finally we can use this approach to plot the monthly averages and look
@@ -1890,11 +1886,10 @@ for phenological shifts:
 ```
 
 <figure>
-<img src="Figs/PhenShift_large_Zoop.jpg" style="width:90.0%" alt="" /><figcaption>September large zooplankton integrated concentration</figcaption>
+<img src="Figs/PhenShift_large_Zoop.jpg" style="width:90.0%" alt="September large zooplankton integrated concentration" /><figcaption aria-hidden="true">September large zooplankton integrated concentration</figcaption>
 </figure>
 
-6.2. Level 2 projections
-------------------------
+## 6.2. Level 2 projections
 
 Level 2 data can be explored in the same way as the above indices but we
 will focus in the section below on a simple spatial plot and temporal
@@ -2019,7 +2014,7 @@ values outside of the survey area.
 ```
 
 <figure>
-<img src="Figs/sub_grid_mn_BT_Aug1.jpg" style="width:100.0%" alt="" /><figcaption>Aug 1 Bottom temperature from Level 2 dataset</figcaption>
+<img src="Figs/sub_grid_mn_BT_Aug1.jpg" style="width:100.0%" alt="Aug 1 Bottom temperature from Level 2 dataset" /><figcaption aria-hidden="true">Aug 1 Bottom temperature from Level 2 dataset</figcaption>
 </figure>
 
 <!-- ## 4.2 Level 2: -->
@@ -2030,8 +2025,7 @@ values outside of the survey area.
 <!-- # 5.1 Recruitment ~f(ACLIM indices) -->
 <!-- # 5.2 Spatial overlap ~f(spp dist, aclim indices) -->
 
-7. Funding and acknowledgments
-==============================
+# 7. Funding and acknowledgments
 
 Multiple NOAA programs provided support for ACLIM and Bering Seasons
 projects including Fisheries and the Environment (FATE), Stock
@@ -2059,11 +2053,9 @@ The Department of Commerce seal and logo, or the seal and logo of a DOC
 bureau, shall not be used in any manner to imply endorsement of any
 commercial product or activity by DOC or the United States Government.
 
-8. Helpful links and further reading
-====================================
+# 8. Helpful links and further reading
 
-8.1 Citations for GCMs and carbon scenarios
--------------------------------------------
+## 8.1 Citations for GCMs and carbon scenarios
 
 ### CMIP3 (BSIERP global climate model runs)
 
@@ -2085,8 +2077,7 @@ Lowe, G. A. Meehl, R. Moss, K. Riahi, and B. M. Sanderson. 2016. The
 Scenario Model Intercomparison Project (ScenarioMIP) for CMIP6.
 Geoscientific Model Development 9:3461–3482.
 
-8.2 Weblinks for further reading
---------------------------------
+## 8.2 Weblinks for further reading
 
 -   Explore annual indices of downscaled projections for the EBS:
     [**ACLIM
@@ -2096,8 +2087,7 @@ Geoscientific Model Development 9:3461–3482.
     CMIP6):[**ESRL climate change portal
     **](https://www.esrl.noaa.gov/psd/ipcc/ocn/ "ESRL climate change portal")
 
-8.3 Additional information on Hindcast and Projection Models (needs updating)
------------------------------------------------------------------------------
+## 8.3 Additional information on Hindcast and Projection Models (needs updating)
 
 ### CORE-CFSR (1976-2020)
 
