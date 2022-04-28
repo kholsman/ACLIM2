@@ -28,23 +28,21 @@ output:
 
 ```{r startup, eval=TRUE, echo=FALSE, results='hide',message=FALSE}
  
- #source("R/make.R")       # loads packages, data, setup, etc.
- knitr::opts_chunk$set(echo = T, fig.align="center")
- thisYr <- format(Sys.time(), "%Y")
- today  <- format(Sys.time(), "%b %d, %Y")
- 
+   #source("R/make.R")       # loads packages, data, setup, etc.
+   knitr::opts_chunk$set(echo = T, fig.align="center")
+   thisYr <- format(Sys.time(), "%Y")
+   today  <- format(Sys.time(), "%b %d, %Y")
+   
      # --------------------------------------
     # SETUP WORKSPACE
 
     tmstp  <- format(Sys.time(), "%Y_%m_%d")
     main   <- getwd()  #"~/GitHub_new/ACLIM2"
-    
+```
+
+```{r startup2, eval=TRUE, echo=TRUE, results='hide',message=FALSE}
     # loads packages, data, setup, etc.
     suppressWarnings(source("R/make.R"))
-    
-    # --------------------------------------
-    
- 
 ```
 
 
@@ -138,7 +136,7 @@ This set of commands, run within R, downloads the ACLIM2 repository and unpacks 
     main_nm       <- "ACLIM2"
 
     # Note: Edit download_path for preference
-    download_path <- path.expand("~/desktop")
+    download_path <- path.expand("~/Desktop")
     dest_fldr     <- file.path(download_path,main_nm)
     
     url           <- "https://github.com/kholsman/ACLIM2/archive/main.zip"

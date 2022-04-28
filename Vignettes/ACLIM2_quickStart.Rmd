@@ -36,45 +36,21 @@ output:
 ```{r startup, eval=TRUE, echo=FALSE, results='hide',message=FALSE}
  
  #source("R/make.R")       # loads packages, data, setup, etc.
- knitr::opts_chunk$set(echo = T, fig.align="center",warning = FALSE, message = FALSE) 
+ knitr::opts_chunk$set(echo = T, fig.align="center",warning = FALSE, message = FALSE)
+ knitr::opts_knit$set(root.dir = '../')
  
  thisYr <- format(Sys.time(), "%Y")
  today  <- format(Sys.time(), "%b %d, %Y")
  
-     # --------------------------------------
-    # SETUP WORKSPACE
-
-    tmstp  <- format(Sys.time(), "%Y_%m_%d")
-    main   <- getwd()  #"~/GitHub_new/ACLIM2"
-    print(getwd())
-    # loads packages, data, setup, etc.
-    #suppressWarnings(source("R/make.R"))
-     # loads packages, data, setup, etc.
-    setwd("../")
-    suppressWarnings(source("R/make.R"))
-    
-    
-    # --------------------------------------
-    
- 
 ```
 
-# Download the ACLIM2 repo & data{.tabset}
-
+# Download the ACLIM2 repo & data
 
 ## Clone the ACLIM2 repo{.tabset}
 
 To run this tutorial first clone the ACLIM2 repository to your local drive:
 
-### Option 1: Download the repository  
-Download the full zip archive directly from the [**ACLIM2 Repo**](https://github.com/kholsman/ACLIM2) using this link: [**https://github.com/kholsman/ACLIM2/archive/main.zip**](https://github.com/kholsman/ACLIM2/archive/main.zip), and unzip its contents while preserving directory structure. 
-
-**Important!*** If downloading from zip, please **rename the root folder** from `ACLIM2-main` (in the zipfile) to `ACLIM2` (name used in cloned copies) after unzipping, for consistency in the following examples.
-
-Your final folder structure should look like this:
-
-
-### Option 2: Use R to download the repository  
+### Option 1: Use R  
 
 This set of commands, run within R, downloads the ACLIM2 repository and unpacks it, with the ACLIM2 directory structrue being located in the specified `download_path`.  This also performs the folder renaming mentioned in Option 2.
 
@@ -83,7 +59,7 @@ This set of commands, run within R, downloads the ACLIM2 repository and unpacks 
     main_nm       <- "ACLIM2"
 
     # Note: Edit download_path for preference
-    download_path <- path.expand("~/desktop")
+    download_path <- path.expand("~/Desktop")
     dest_fldr     <- file.path(download_path,main_nm)
     
     url           <- "https://github.com/kholsman/ACLIM2/archive/main.zip"
@@ -99,20 +75,61 @@ This set of commands, run within R, downloads the ACLIM2 repository and unpacks 
     setwd(main_nm)
 ```
 
+### Option 1: Download the zipped repo  
+Download the full zip archive directly from the [**ACLIM2 Repo**](https://github.com/kholsman/ACLIM2) using this link: [**https://github.com/kholsman/ACLIM2/archive/main.zip**](https://github.com/kholsman/ACLIM2/archive/main.zip), and unzip its contents while preserving directory structure. 
 
-### Option 1: Use commandline git to Clone the repository  
+**Important!*** If downloading from zip, please **rename the root folder** from `ACLIM2-main` (in the zipfile) to `ACLIM2` (name used in cloned copies) after unzipping, for consistency in the following examples.
 
-If you have git installed and can work with it, this is the preferred method as it preserves all directory structure and can aid in future updating. Use this from a **terminal command line, not in R**, to clone the full ACLIM2 directory and subdirectories:
+Your final folder structure should look like this:
+
+
+
+### Option 3: Use git commandline
+
+If you have git installed and can work with it, this is the preferred method as it preserves all directory structure and can aid in future updating. Use this from a **terminal command line, not in R**, to clone the full ACLIM2 directory and sub-directories:
 
 ```{bash, eval = FALSE,echo =T}
     git clone https://github.com/kholsman/ACLIM2.git
 ```
 
+---
+
 ## Get the data
 
-Go to the google drive 
+Go to the google drive and download the zipped file with the R data '2022_03_07_Rdata.zip':
 
-# Get Started
+[00_ACLIM_shared > 02_Data > Newest_Data(use this) > 2022_03_07_Rdata.zip](https://drive.google.com/drive/folders/11BQEfNEl9vvrN-V0LgS67XS4aLE9pNzz)
+
+Move the Zipped folder to your local folder 'ACLIM2/Data/in' and unzip. The final folder structure should look like:
+
+
+
+## Set up the Workspace
+
+Open R() and used 'setwd()' to navigate to the root ACLIM2 folder (.e.g, ~/mydocuments/ACLIM2)
+
+```{R  start, eval=TRUE, echo=T, results='show',message=FALSE}
+    
+    # set the workspace to your local ACLIM2 folder
+
+    # e.g., "/Users/kholsman/Documents/GitHub/ACLIM2"
+    setwd( path.expand("~/Documents/GitHub/ACLIM2") )
+   
+    # --------------------------------------
+    # SETUP WORKSPACE
+    tmstp  <- format(Sys.time(), "%Y_%m_%d")
+    main   <- getwd()  #"~/GitHub_new/ACLIM2"
+    print(getwd())
+    
+    # loads packages, data, setup, etc.
+    suppressWarnings(source("R/make.R"))
+```
+
+---
+
+
+
+# Read this before you start
 
 ## Overview{.tabset}
 
@@ -120,10 +137,10 @@ The [**ACLIM2 github repository**](https://github.com/kholsman/ACLIM2) contains 
 
 ---
 
-This document provides an overview of accessing, ploting, and creating bias corrected indices for ACLIM2 based on CMIP6 (embargoed for ACLIM2 users until 2023) and CMIP5 (publically available). This guide assumes analyses will take place in R() and that users have access to the data folder within the ACLIM2 shared drive.
+This document provides an overview of accessing, ploting, and creating bias corrected indices for ACLIM2 based on CMIP6 (embargoed for ACLIM2 users until 2023) and CMIP5 (publically available) simulations. This guide assumes analyses will take place in R() and that users have access to the data folder within the ACLIM2 shared drive. For more information also see the full tutorial ("GettingStarted_Bering10K_ROMSNPZ" available at the bottom of [**this repo page**](https://github.com/kholsman/ACLIM2).
 
 
-**Key things to know before getting started are in the tabs below. Please review these before getting started!**
+**Important!** A few key things to know before getting started are detailed below. Please review this information before getting started.
 
 ## KEY ROMSNPZ versions
 

@@ -254,18 +254,13 @@ div.tocify {
 </div>
 
 
-<div id="download-the-aclim2-repo-data" class="section level1 tabset" number="1">
-<h1 class="tabset" number="1"><span class="header-section-number">1</span> Download the ACLIM2 repo &amp; data</h1>
+<div id="download-the-aclim2-repo-data" class="section level1" number="1">
+<h1 number="1"><span class="header-section-number">1</span> Download the ACLIM2 repo &amp; data</h1>
 <div id="clone-the-aclim2-repo" class="section level2 tabset" number="1.1">
 <h2 class="tabset" number="1.1"><span class="header-section-number">1.1</span> Clone the ACLIM2 repo</h2>
 <p>To run this tutorial first clone the ACLIM2 repository to your local drive:</p>
-<div id="option-1-download-the-repository" class="section level3" number="1.1.1">
-<h3 number="1.1.1"><span class="header-section-number">1.1.1</span> Option 1: Download the repository</h3>
-<p>Download the full zip archive directly from the <a href="https://github.com/kholsman/ACLIM2"><strong>ACLIM2 Repo</strong></a> using this link: <a href="https://github.com/kholsman/ACLIM2/archive/main.zip"><strong>https://github.com/kholsman/ACLIM2/archive/main.zip</strong></a>, and unzip its contents while preserving directory structure.</p>
-<p><strong>Important!</strong>* If downloading from zip, please <strong>rename the root folder</strong> from <code>ACLIM2-main</code> (in the zipfile) to <code>ACLIM2</code> (name used in cloned copies) after unzipping, for consistency in the following examples.</p>
-</div>
-<div id="option-2-use-r-to-download-the-repository" class="section level3" number="1.1.2">
-<h3 number="1.1.2"><span class="header-section-number">1.1.2</span> Option 2: Use R to download the repository</h3>
+<div id="option-1-use-r" class="section level3" number="1.1.1">
+<h3 number="1.1.1"><span class="header-section-number">1.1.1</span> Option 1: Use R</h3>
 <p>This set of commands, run within R, downloads the ACLIM2 repository and unpacks it, with the ACLIM2 directory structrue being located in the specified <code>download_path</code>. This also performs the folder renaming mentioned in Option 2.</p>
 <pre class="r"><code>    # Specify the download directory
     main_nm       &lt;- &quot;ACLIM2&quot;
@@ -286,25 +281,89 @@ div.tocify {
     file.rename(paste0(main_nm,&quot;-main&quot;), main_nm)
     setwd(main_nm)</code></pre>
 </div>
-<div id="option-1-use-commandline-git-to-clone-the-repository" class="section level3" number="1.1.3">
-<h3 number="1.1.3"><span class="header-section-number">1.1.3</span> Option 1: Use commandline git to Clone the repository</h3>
-<p>If you have git installed and can work with it, this is the preferred method as it preserves all directory structure and can aid in future updating. Use this from a <strong>terminal command line, not in R</strong>, to clone the full ACLIM2 directory and subdirectories:</p>
+<div id="option-1-download-the-zipped-repo" class="section level3" number="1.1.2">
+<h3 number="1.1.2"><span class="header-section-number">1.1.2</span> Option 1: Download the zipped repo</h3>
+<p>Download the full zip archive directly from the <a href="https://github.com/kholsman/ACLIM2"><strong>ACLIM2 Repo</strong></a> using this link: <a href="https://github.com/kholsman/ACLIM2/archive/main.zip"><strong>https://github.com/kholsman/ACLIM2/archive/main.zip</strong></a>, and unzip its contents while preserving directory structure.</p>
+<p><strong>Important!</strong>* If downloading from zip, please <strong>rename the root folder</strong> from <code>ACLIM2-main</code> (in the zipfile) to <code>ACLIM2</code> (name used in cloned copies) after unzipping, for consistency in the following examples.</p>
+<p>Your final folder structure should look like this:</p>
+</div>
+<div id="option-3-use-git-commandline" class="section level3" number="1.1.3">
+<h3 number="1.1.3"><span class="header-section-number">1.1.3</span> Option 3: Use git commandline</h3>
+<p>If you have git installed and can work with it, this is the preferred method as it preserves all directory structure and can aid in future updating. Use this from a <strong>terminal command line, not in R</strong>, to clone the full ACLIM2 directory and sub-directories:</p>
 <pre class="bash"><code>    git clone https://github.com/kholsman/ACLIM2.git</code></pre>
+<hr />
 </div>
 </div>
 <div id="get-the-data" class="section level2" number="1.2">
 <h2 number="1.2"><span class="header-section-number">1.2</span> Get the data</h2>
-<p>Go to the google drive</p>
+<p>Go to the google drive and download the zipped file with the R data ‘2022_03_07_Rdata.zip’:</p>
+<p><a href="https://drive.google.com/drive/folders/11BQEfNEl9vvrN-V0LgS67XS4aLE9pNzz">00_ACLIM_shared &gt; 02_Data &gt; Newest_Data(use this) &gt; 2022_03_07_Rdata.zip</a></p>
+<p>Move the Zipped folder to your local folder ‘ACLIM2/Data/in’ and unzip. The final folder structure should look like:</p>
+</div>
+<div id="set-up-the-workspace" class="section level2" number="1.3">
+<h2 number="1.3"><span class="header-section-number">1.3</span> Set up the Workspace</h2>
+<p>Open R() and used ‘setwd()’ to navigate to the root ACLIM2 folder (.e.g, ~/mydocuments/ACLIM2)</p>
+<pre class="r"><code>    # set the workspace to your local ACLIM2 folder
+
+    # e.g., &quot;/Users/kholsman/Documents/GitHub/ACLIM2&quot;
+    setwd( path.expand(&quot;~/Documents/GitHub/ACLIM2&quot;) )
+   
+    # --------------------------------------
+    # SETUP WORKSPACE
+    tmstp  &lt;- format(Sys.time(), &quot;%Y_%m_%d&quot;)
+    main   &lt;- getwd()  #&quot;~/GitHub_new/ACLIM2&quot;
+    print(getwd())</code></pre>
+<pre><code>## [1] &quot;/Users/kholsman/Documents/GitHub/ACLIM2&quot;</code></pre>
+<pre class="r"><code>    # loads packages, data, setup, etc.
+    suppressWarnings(source(&quot;R/make.R&quot;))</code></pre>
+<pre><code>## ------------------------------
+## ALIM2/R/setup.R settings 
+## ------------------------------
+## main:                : /Users/kholsman/Documents/GitHub/ACLIM2 
+## data_path            : /Users/kholsman/Documents/GitHub/ACLIM2/Data/in/Newest/roms_for_aclim 
+## redownload_level3_mox: FALSE 
+## update.figs          : FALSE 
+## load_gis             : FALSE 
+## update.outputs       : TRUE 
+## update.figs          : FALSE 
+## dpiIN                : 150 
+## update.figs          : FALSE 
+## ------------------------------
+## ------------------------------
+## 
+## The following datasets are public, please cite as Hermann et al. 2019 (v.H16) and Kearney et al. 2020 (v.K20) :
+## B10K-H16_CMIP5_CESM_BIO_rcp85 
+## B10K-H16_CMIP5_CESM_rcp45 
+## B10K-H16_CMIP5_CESM_rcp85 
+## B10K-H16_CMIP5_GFDL_BIO_rcp85 
+## B10K-H16_CMIP5_GFDL_rcp45 
+## B10K-H16_CMIP5_GFDL_rcp85 
+## B10K-H16_CMIP5_MIROC_rcp45 
+## B10K-H16_CMIP5_MIROC_rcp85 
+## B10K-H16_CORECFS 
+## B10K-K20_CORECFS 
+## 
+## The following datasets are still under embargo, please do not share outside of ACLIM:
+## B10K-K20P19_CMIP6_cesm_historical 
+## B10K-K20P19_CMIP6_cesm_ssp126 
+## B10K-K20P19_CMIP6_cesm_ssp585 
+## B10K-K20P19_CMIP6_gfdl_historical 
+## B10K-K20P19_CMIP6_gfdl_ssp126 
+## B10K-K20P19_CMIP6_gfdl_ssp585 
+## B10K-K20P19_CMIP6_miroc_historical 
+## B10K-K20P19_CMIP6_miroc_ssp126 
+## B10K-K20P19_CMIP6_miroc_ssp585</code></pre>
+<hr />
 </div>
 </div>
-<div id="get-started" class="section level1" number="2">
-<h1 number="2"><span class="header-section-number">2</span> Get Started</h1>
+<div id="read-this-before-you-start" class="section level1" number="2">
+<h1 number="2"><span class="header-section-number">2</span> Read this before you start</h1>
 <div id="overview" class="section level2 tabset" number="2.1">
 <h2 class="tabset" number="2.1"><span class="header-section-number">2.1</span> Overview</h2>
 <p>The <a href="https://github.com/kholsman/ACLIM2"><strong>ACLIM2 github repository</strong></a> contains R code and Rdata files for working with netcdf-format data generated from the <a href="https://beringnpz.github.io/roms-bering-sea"><strong>downscaled ROMSNPZ modeling</strong></a> of the ROMSNPZ Bering Sea Ocean Modeling team; Drs. Hermann, Cheng, Kearney, Pilcher,Ortiz, and Aydin. The code and R resources described in this tutorial are maintained by <a href="mailto:kirstin.holsman@noaa.gov">Kirstin Holsman</a> as part of NOAA’s <a href="https://www.fisheries.noaa.gov/alaska/ecosystems/alaska-climate-integrated-modeling-project"><strong>ACLIM project</strong></a> for the Bering Sea. <em>See <a href="https://www.frontiersin.org/articles/10.3389/fmars.2019.00775/full">Hollowed et al. 2020</a> for more information about the ACLIM project.</em></p>
 <hr />
-<p>This document provides an overview of accessing, ploting, and creating bias corrected indices for ACLIM2 based on CMIP6 (embargoed for ACLIM2 users until 2023) and CMIP5 (publically available). This guide assumes analyses will take place in R() and that users have access to the data folder within the ACLIM2 shared drive.</p>
-<p><strong>Key things to know before getting started are in the tabs below. Please review these before getting started!</strong></p>
+<p>This document provides an overview of accessing, ploting, and creating bias corrected indices for ACLIM2 based on CMIP6 (embargoed for ACLIM2 users until 2023) and CMIP5 (publically available) simulations. This guide assumes analyses will take place in R() and that users have access to the data folder within the ACLIM2 shared drive. For more information also see the full tutorial (“GettingStarted_Bering10K_ROMSNPZ” available at the bottom of <a href="https://github.com/kholsman/ACLIM2"><strong>this repo page</strong></a>.</p>
+<p><strong>Important!</strong> A few key things to know before getting started are detailed below. Please review this information before getting started.</p>
 </div>
 <div id="key-romsnpz-versions" class="section level2" number="2.2">
 <h2 number="2.2"><span class="header-section-number">2.2</span> KEY ROMSNPZ versions</h2>
