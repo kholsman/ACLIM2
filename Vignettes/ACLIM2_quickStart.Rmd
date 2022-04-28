@@ -37,7 +37,6 @@ output:
  
  #source("R/make.R")       # loads packages, data, setup, etc.
  knitr::opts_chunk$set(echo = T, fig.align="center",warning = FALSE, message = FALSE) 
- knitr::opts_knit$set(root.dir = '../')
  
  thisYr <- format(Sys.time(), "%Y")
  today  <- format(Sys.time(), "%b %d, %Y")
@@ -50,19 +49,79 @@ output:
     print(getwd())
     # loads packages, data, setup, etc.
     #suppressWarnings(source("R/make.R"))
+     # loads packages, data, setup, etc.
+    setwd("../")
+    suppressWarnings(source("R/make.R"))
+    
     
     # --------------------------------------
     
  
 ```
 
-# Overview{.tabset}
+# Download the ACLIM2 repo & data{.tabset}
+
+
+## Clone the ACLIM2 repo{.tabset}
+
+To run this tutorial first clone the ACLIM2 repository to your local drive:
+
+### Option 1: Download the repository  
+Download the full zip archive directly from the [**ACLIM2 Repo**](https://github.com/kholsman/ACLIM2) using this link: [**https://github.com/kholsman/ACLIM2/archive/main.zip**](https://github.com/kholsman/ACLIM2/archive/main.zip), and unzip its contents while preserving directory structure. 
+
+**Important!*** If downloading from zip, please **rename the root folder** from `ACLIM2-main` (in the zipfile) to `ACLIM2` (name used in cloned copies) after unzipping, for consistency in the following examples.
+
+Your final folder structure should look like this:
+
+
+### Option 2: Use R to download the repository  
+
+This set of commands, run within R, downloads the ACLIM2 repository and unpacks it, with the ACLIM2 directory structrue being located in the specified `download_path`.  This also performs the folder renaming mentioned in Option 2.
+
+```{r gitdwnld, eval = FALSE,echo =T}
+    # Specify the download directory
+    main_nm       <- "ACLIM2"
+
+    # Note: Edit download_path for preference
+    download_path <- path.expand("~/desktop")
+    dest_fldr     <- file.path(download_path,main_nm)
+    
+    url           <- "https://github.com/kholsman/ACLIM2/archive/main.zip"
+    dest_file     <- file.path(download_path,paste0(main_nm,".zip"))
+    download.file(url=url, destfile=dest_file)
+    
+    # unzip the .zip file
+    setwd(download_path)
+    unzip (dest_file, exdir = "./",overwrite = T)
+    
+    #rename the unzipped folder from ACLIM2-main to ACLIM2
+    file.rename(paste0(main_nm,"-main"), main_nm)
+    setwd(main_nm)
+```
+
+
+### Option 1: Use commandline git to Clone the repository  
+
+If you have git installed and can work with it, this is the preferred method as it preserves all directory structure and can aid in future updating. Use this from a **terminal command line, not in R**, to clone the full ACLIM2 directory and subdirectories:
+
+```{bash, eval = FALSE,echo =T}
+    git clone https://github.com/kholsman/ACLIM2.git
+```
+
+## Get the data
+
+Go to the google drive 
+
+# Get Started
+
+## Overview{.tabset}
 
 The [**ACLIM2 github repository**](https://github.com/kholsman/ACLIM2) contains R code and Rdata files for working with netcdf-format data generated from the [**downscaled ROMSNPZ modeling**](https://beringnpz.github.io/roms-bering-sea) of the ROMSNPZ Bering Sea Ocean Modeling team; Drs. Hermann, Cheng, Kearney, Pilcher,Ortiz, and Aydin. The code and R resources described in this tutorial are maintained by [Kirstin Holsman](mailto:kirstin.holsman@noaa.gov) as part of NOAA's [**ACLIM project**](https://www.fisheries.noaa.gov/alaska/ecosystems/alaska-climate-integrated-modeling-project) for the Bering Sea. *See [Hollowed et al. 2020](https://www.frontiersin.org/articles/10.3389/fmars.2019.00775/full) for more information about the ACLIM project.*
 
 ---
 
 This document provides an overview of accessing, ploting, and creating bias corrected indices for ACLIM2 based on CMIP6 (embargoed for ACLIM2 users until 2023) and CMIP5 (publically available). This guide assumes analyses will take place in R() and that users have access to the data folder within the ACLIM2 shared drive.
+
 
 **Key things to know before getting started are in the tabs below. Please review these before getting started!**
 
@@ -77,20 +136,45 @@ There are two versions of the ROMSNPZ model:
 
 The models are not directly comparable, therefore the projections should be bias corrected and re-centerd to baselines of hindcasts of each model (forced by "observed" climate conditions). i.e. CMIP5 and CMIP6 have corresponding hindcasts:
 
-1. Hindcast for CMIP5 is H16_CORECFS
-2. Hindcast for CMIP6 is K20_CORECFS
+1. Hindcast for CMIP5 "H19"    -->  H16_CORECFS
+2. Hindcast for CMIP5 "K20P19" -->  H16_CORECFS
+2. Hindcast for CMIP6 "K20P19" -->  K20_CORECFS
 
 In addition for CMIP6 "historical" runs are available for bias correcting. We will use those below.
 
+For a list of the available simulations for ACLIM enter the following in R():
+```{R2, eval=TRUE, echo=T, results='show',message=FALSE}
+# list of the climate scenarios
+data.frame(sim_list)
+
+```
+
+
 ## KEY Data outputs
-**There are 2 types of post-processed data available for use in ACLIM.**
+**Important!** There are 2 types of post-processed data available for use in ACLIM.
 
 The ROMSNPZ team has developed a process to provide standardized post-processed outputs from the large (and non-intutive) ROMSNPZ grid. These have been characterized as:
 
 1. Level 1 (original ROMSNPZ U,V, grid, not rotated or corrected)   
-2. Level 2 (lat long bi-weekly high res versions, shouldn't be needed and difficult to work with)  
+2. Level 2 (lat long bi-weekly high res versions, shouldn't be needed and are difficult to work with)  
 3. **Level 3 indices (depth corrected and area weighted means for each model variable; i.e., what we will mostly use) **
+    a. "ACLIMsurveyrep_":   roundifsh survey replicated (replicated in space and time)
+    b. "ACLIMregion_":      weekly strata based averages
+    
+To get more information about each of these level 3 datasets enter this in R:
+
+```{R, eval=TRUE, echo=T, results='show',message=FALSE}
+# Metadata for Weekly ("ACLIMregion_...") indices
+(all_info1)
+
+# Metadata for Weekly ("ACLIMsurveyrep_...") indices
+(all_info2)
+```
+
+# Get and explore data{.tabset}
 
 
-There are two formats that the ROMSNPZ data are available in for use in ACLIM2. Level 3 data are post-processed to replicate the summer groundfish survey.
+## Download the data
+
+
 

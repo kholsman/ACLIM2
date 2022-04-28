@@ -254,14 +254,60 @@ div.tocify {
 </div>
 
 
-<div id="overview" class="section level1 tabset" number="1">
-<h1 class="tabset" number="1"><span class="header-section-number">1</span> Overview</h1>
+<div id="download-the-aclim2-repo-data" class="section level1 tabset" number="1">
+<h1 class="tabset" number="1"><span class="header-section-number">1</span> Download the ACLIM2 repo &amp; data</h1>
+<div id="clone-the-aclim2-repo" class="section level2 tabset" number="1.1">
+<h2 class="tabset" number="1.1"><span class="header-section-number">1.1</span> Clone the ACLIM2 repo</h2>
+<p>To run this tutorial first clone the ACLIM2 repository to your local drive:</p>
+<div id="option-1-download-the-repository" class="section level3" number="1.1.1">
+<h3 number="1.1.1"><span class="header-section-number">1.1.1</span> Option 1: Download the repository</h3>
+<p>Download the full zip archive directly from the <a href="https://github.com/kholsman/ACLIM2"><strong>ACLIM2 Repo</strong></a> using this link: <a href="https://github.com/kholsman/ACLIM2/archive/main.zip"><strong>https://github.com/kholsman/ACLIM2/archive/main.zip</strong></a>, and unzip its contents while preserving directory structure.</p>
+<p><strong>Important!</strong>* If downloading from zip, please <strong>rename the root folder</strong> from <code>ACLIM2-main</code> (in the zipfile) to <code>ACLIM2</code> (name used in cloned copies) after unzipping, for consistency in the following examples.</p>
+</div>
+<div id="option-2-use-r-to-download-the-repository" class="section level3" number="1.1.2">
+<h3 number="1.1.2"><span class="header-section-number">1.1.2</span> Option 2: Use R to download the repository</h3>
+<p>This set of commands, run within R, downloads the ACLIM2 repository and unpacks it, with the ACLIM2 directory structrue being located in the specified <code>download_path</code>. This also performs the folder renaming mentioned in Option 2.</p>
+<pre class="r"><code>    # Specify the download directory
+    main_nm       &lt;- &quot;ACLIM2&quot;
+
+    # Note: Edit download_path for preference
+    download_path &lt;- path.expand(&quot;~/desktop&quot;)
+    dest_fldr     &lt;- file.path(download_path,main_nm)
+    
+    url           &lt;- &quot;https://github.com/kholsman/ACLIM2/archive/main.zip&quot;
+    dest_file     &lt;- file.path(download_path,paste0(main_nm,&quot;.zip&quot;))
+    download.file(url=url, destfile=dest_file)
+    
+    # unzip the .zip file
+    setwd(download_path)
+    unzip (dest_file, exdir = &quot;./&quot;,overwrite = T)
+    
+    #rename the unzipped folder from ACLIM2-main to ACLIM2
+    file.rename(paste0(main_nm,&quot;-main&quot;), main_nm)
+    setwd(main_nm)</code></pre>
+</div>
+<div id="option-1-use-commandline-git-to-clone-the-repository" class="section level3" number="1.1.3">
+<h3 number="1.1.3"><span class="header-section-number">1.1.3</span> Option 1: Use commandline git to Clone the repository</h3>
+<p>If you have git installed and can work with it, this is the preferred method as it preserves all directory structure and can aid in future updating. Use this from a <strong>terminal command line, not in R</strong>, to clone the full ACLIM2 directory and subdirectories:</p>
+<pre class="bash"><code>    git clone https://github.com/kholsman/ACLIM2.git</code></pre>
+</div>
+</div>
+<div id="get-the-data" class="section level2" number="1.2">
+<h2 number="1.2"><span class="header-section-number">1.2</span> Get the data</h2>
+<p>Go to the google drive</p>
+</div>
+</div>
+<div id="get-started" class="section level1" number="2">
+<h1 number="2"><span class="header-section-number">2</span> Get Started</h1>
+<div id="overview" class="section level2 tabset" number="2.1">
+<h2 class="tabset" number="2.1"><span class="header-section-number">2.1</span> Overview</h2>
 <p>The <a href="https://github.com/kholsman/ACLIM2"><strong>ACLIM2 github repository</strong></a> contains R code and Rdata files for working with netcdf-format data generated from the <a href="https://beringnpz.github.io/roms-bering-sea"><strong>downscaled ROMSNPZ modeling</strong></a> of the ROMSNPZ Bering Sea Ocean Modeling team; Drs. Hermann, Cheng, Kearney, Pilcher,Ortiz, and Aydin. The code and R resources described in this tutorial are maintained by <a href="mailto:kirstin.holsman@noaa.gov">Kirstin Holsman</a> as part of NOAA’s <a href="https://www.fisheries.noaa.gov/alaska/ecosystems/alaska-climate-integrated-modeling-project"><strong>ACLIM project</strong></a> for the Bering Sea. <em>See <a href="https://www.frontiersin.org/articles/10.3389/fmars.2019.00775/full">Hollowed et al. 2020</a> for more information about the ACLIM project.</em></p>
 <hr />
 <p>This document provides an overview of accessing, ploting, and creating bias corrected indices for ACLIM2 based on CMIP6 (embargoed for ACLIM2 users until 2023) and CMIP5 (publically available). This guide assumes analyses will take place in R() and that users have access to the data folder within the ACLIM2 shared drive.</p>
 <p><strong>Key things to know before getting started are in the tabs below. Please review these before getting started!</strong></p>
-<div id="key-romsnpz-versions" class="section level2" number="1.1">
-<h2 number="1.1"><span class="header-section-number">1.1</span> KEY ROMSNPZ versions</h2>
+</div>
+<div id="key-romsnpz-versions" class="section level2" number="2.2">
+<h2 number="2.2"><span class="header-section-number">2.2</span> KEY ROMSNPZ versions</h2>
 <p><strong>Important!</strong> CMIP5 and CMIP6 datasets use different base models.</p>
 <p>There are two versions of the ROMSNPZ model:</p>
 <ol style="list-style-type: decimal">
@@ -270,23 +316,52 @@ div.tocify {
 </ol>
 <p>The models are not directly comparable, therefore the projections should be bias corrected and re-centerd to baselines of hindcasts of each model (forced by “observed” climate conditions). i.e. CMIP5 and CMIP6 have corresponding hindcasts:</p>
 <ol style="list-style-type: decimal">
-<li>Hindcast for CMIP5 is H16_CORECFS</li>
-<li>Hindcast for CMIP6 is K20_CORECFS</li>
+<li>Hindcast for CMIP5 “H19” –&gt; H16_CORECFS</li>
+<li>Hindcast for CMIP5 “K20P19” –&gt; H16_CORECFS</li>
+<li>Hindcast for CMIP6 “K20P19” –&gt; K20_CORECFS</li>
 </ol>
 <p>In addition for CMIP6 “historical” runs are available for bias correcting. We will use those below.</p>
+<p>For a list of the available simulations for ACLIM enter the following in R():</p>
+<pre class="r2"><code># list of the climate scenarios
+data.frame(sim_list)
+</code></pre>
 </div>
-<div id="key-data-outputs" class="section level2" number="1.2">
-<h2 number="1.2"><span class="header-section-number">1.2</span> KEY Data outputs</h2>
-<p><strong>There are 2 types of post-processed data available for use in ACLIM.</strong></p>
+<div id="key-data-outputs" class="section level2" number="2.3">
+<h2 number="2.3"><span class="header-section-number">2.3</span> KEY Data outputs</h2>
+<p><strong>Important!</strong> There are 2 types of post-processed data available for use in ACLIM.</p>
 <p>The ROMSNPZ team has developed a process to provide standardized post-processed outputs from the large (and non-intutive) ROMSNPZ grid. These have been characterized as:</p>
 <ol style="list-style-type: decimal">
 <li>Level 1 (original ROMSNPZ U,V, grid, not rotated or corrected)<br />
 </li>
-<li>Level 2 (lat long bi-weekly high res versions, shouldn’t be needed and difficult to work with)<br />
+<li>Level 2 (lat long bi-weekly high res versions, shouldn’t be needed and are difficult to work with)<br />
 </li>
-<li><strong>Level 3 indices (depth corrected and area weighted means for each model variable; i.e., what we will mostly use) </strong></li>
+<li><strong>Level 3 indices (depth corrected and area weighted means for each model variable; i.e., what we will mostly use) </strong>
+<ol style="list-style-type: lower-alpha">
+<li>“ACLIMsurveyrep_”: roundifsh survey replicated (replicated in space and time)</li>
+<li>“ACLIMregion_”: weekly strata based averages</li>
+</ol></li>
 </ol>
-<p>There are two formats that the ROMSNPZ data are available in for use in ACLIM2. Level 3 data are post-processed to replicate the summer groundfish survey.</p>
+<p>To get more information about each of these level 3 datasets enter this in R:</p>
+<pre class="r"><code># Metadata for Weekly (&quot;ACLIMregion_...&quot;) indices
+(all_info1)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Type"],"name":[2],"type":["fct"],"align":["left"]},{"label":["B10KVersion"],"name":[3],"type":["chr"],"align":["left"]},{"label":["CMIP"],"name":[4],"type":["chr"],"align":["left"]},{"label":["GCM"],"name":[5],"type":["chr"],"align":["left"]},{"label":["BIO"],"name":[6],"type":["chr"],"align":["left"]},{"label":["Carbon_scenario"],"name":[7],"type":["chr"],"align":["left"]},{"label":["Start"],"name":[8],"type":["dttm"],"align":["right"]},{"label":["End"],"name":[9],"type":["dttm"],"align":["right"]},{"label":["nvars"],"name":[10],"type":["dbl"],"align":["right"]}],"data":[{"1":"B10K-H16_CMIP5_CESM_BIO_rcp85","2":"Weekly regional indices","3":"H16","4":"CMIP5","5":"CESM","6":"TRUE","7":"rcp85","8":"2006-01-22 12:00:00","9":"2099-12-27 12:00:00","10":"59"},{"1":"B10K-H16_CMIP5_CESM_rcp45","2":"Weekly regional indices","3":"H16","4":"CMIP5","5":"CESM","6":"FALSE","7":"rcp45","8":"2006-01-22 12:00:00","9":"2081-02-16 12:00:00","10":"59"},{"1":"B10K-H16_CMIP5_CESM_rcp85","2":"Weekly regional indices","3":"H16","4":"CMIP5","5":"CESM","6":"FALSE","7":"rcp85","8":"2006-01-22 12:00:00","9":"2099-12-27 12:00:00","10":"59"},{"1":"B10K-H16_CMIP5_GFDL_BIO_rcp85","2":"Weekly regional indices","3":"H16","4":"CMIP5","5":"GFDL","6":"TRUE","7":"rcp85","8":"2006-01-22 12:00:00","9":"2099-12-27 12:00:00","10":"59"},{"1":"B10K-H16_CMIP5_GFDL_rcp45","2":"Weekly regional indices","3":"H16","4":"CMIP5","5":"GFDL","6":"FALSE","7":"rcp45","8":"2006-01-22 12:00:00","9":"2099-12-27 12:00:00","10":"59"},{"1":"B10K-H16_CMIP5_GFDL_rcp85","2":"Weekly regional indices","3":"H16","4":"CMIP5","5":"GFDL","6":"FALSE","7":"rcp85","8":"2006-01-22 12:00:00","9":"2099-12-27 12:00:00","10":"59"},{"1":"B10K-H16_CMIP5_MIROC_rcp45","2":"Weekly regional indices","3":"H16","4":"CMIP5","5":"MIROC","6":"FALSE","7":"rcp45","8":"2006-01-22 12:00:00","9":"2099-12-27 12:00:00","10":"59"},{"1":"B10K-H16_CMIP5_MIROC_rcp85","2":"Weekly regional indices","3":"H16","4":"CMIP5","5":"MIROC","6":"FALSE","7":"rcp85","8":"2006-01-22 12:00:00","9":"2099-12-27 12:00:00","10":"59"},{"1":"B10K-H16_CORECFS","2":"Weekly regional indices","3":"H16","4":"CORECFS","5":"NA","6":"FALSE","7":"CORECFS","8":"1970-01-18 12:00:00","9":"2018-08-12 12:00:00","10":"59"},{"1":"B10K-K20_CORECFS","2":"Weekly regional indices","3":"K20","4":"CORECFS","5":"NA","6":"FALSE","7":"CORECFS","8":"1970-01-18 12:00:00","9":"2020-08-09 12:00:00","10":"59"},{"1":"B10K-K20P19_CMIP6_cesm_historical","2":"Weekly regional indices","3":"K20P19","4":"CMIP6","5":"cesm","6":"TRUE","7":"historical","8":"1980-01-20 12:00:00","9":"2014-12-28 12:00:00","10":"59"},{"1":"B10K-K20P19_CMIP6_cesm_ssp126","2":"Weekly regional indices","3":"K20P19","4":"CMIP6","5":"cesm","6":"TRUE","7":"ssp126","8":"2014-12-28 12:00:00","9":"2099-12-27 12:00:00","10":"59"},{"1":"B10K-K20P19_CMIP6_cesm_ssp585","2":"Weekly regional indices","3":"K20P19","4":"CMIP6","5":"cesm","6":"TRUE","7":"ssp585","8":"2014-12-28 12:00:00","9":"2099-12-27 12:00:00","10":"59"},{"1":"B10K-K20P19_CMIP6_gfdl_historical","2":"Weekly regional indices","3":"K20P19","4":"CMIP6","5":"gfdl","6":"TRUE","7":"historical","8":"1980-01-20 12:00:00","9":"2014-12-28 12:00:00","10":"59"},{"1":"B10K-K20P19_CMIP6_gfdl_ssp126","2":"Weekly regional indices","3":"K20P19","4":"CMIP6","5":"gfdl","6":"TRUE","7":"ssp126","8":"2014-12-28 12:00:00","9":"2099-12-27 12:00:00","10":"59"},{"1":"B10K-K20P19_CMIP6_gfdl_ssp585","2":"Weekly regional indices","3":"K20P19","4":"CMIP6","5":"gfdl","6":"TRUE","7":"ssp585","8":"2014-12-28 12:00:00","9":"2099-12-27 12:00:00","10":"59"},{"1":"B10K-K20P19_CMIP6_miroc_historical","2":"Weekly regional indices","3":"K20P19","4":"CMIP6","5":"miroc","6":"TRUE","7":"historical","8":"1980-01-20 12:00:00","9":"2014-12-28 12:00:00","10":"59"},{"1":"B10K-K20P19_CMIP6_miroc_ssp126","2":"Weekly regional indices","3":"K20P19","4":"CMIP6","5":"miroc","6":"TRUE","7":"ssp126","8":"2014-12-28 12:00:00","9":"2099-12-20 12:00:00","10":"59"},{"1":"B10K-K20P19_CMIP6_miroc_ssp585","2":"Weekly regional indices","3":"K20P19","4":"CMIP6","5":"miroc","6":"TRUE","7":"ssp585","8":"2014-12-28 12:00:00","9":"2099-12-27 12:00:00","10":"59"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code># Metadata for Weekly (&quot;ACLIMsurveyrep_...&quot;) indices
+(all_info2)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Type"],"name":[2],"type":["fct"],"align":["left"]},{"label":["B10KVersion"],"name":[3],"type":["chr"],"align":["left"]},{"label":["CMIP"],"name":[4],"type":["chr"],"align":["left"]},{"label":["GCM"],"name":[5],"type":["chr"],"align":["left"]},{"label":["BIO"],"name":[6],"type":["chr"],"align":["left"]},{"label":["Carbon_scenario"],"name":[7],"type":["chr"],"align":["left"]},{"label":["Start"],"name":[8],"type":["dbl"],"align":["right"]},{"label":["End"],"name":[9],"type":["dbl"],"align":["right"]},{"label":["nvars"],"name":[10],"type":["dbl"],"align":["right"]}],"data":[{"1":"B10K-H16_CMIP5_CESM_BIO_rcp85","2":"Survey replicated","3":"H16","4":"CMIP5","5":"CESM","6":"TRUE","7":"rcp85","8":"1970","9":"2100","10":"60"},{"1":"B10K-H16_CMIP5_CESM_rcp45","2":"Survey replicated","3":"H16","4":"CMIP5","5":"CESM","6":"FALSE","7":"rcp45","8":"1970","9":"2100","10":"60"},{"1":"B10K-H16_CMIP5_CESM_rcp85","2":"Survey replicated","3":"H16","4":"CMIP5","5":"CESM","6":"FALSE","7":"rcp85","8":"1970","9":"2100","10":"60"},{"1":"B10K-H16_CMIP5_GFDL_BIO_rcp85","2":"Survey replicated","3":"H16","4":"CMIP5","5":"GFDL","6":"TRUE","7":"rcp85","8":"1970","9":"2100","10":"60"},{"1":"B10K-H16_CMIP5_GFDL_rcp45","2":"Survey replicated","3":"H16","4":"CMIP5","5":"GFDL","6":"FALSE","7":"rcp45","8":"1970","9":"2100","10":"60"},{"1":"B10K-H16_CMIP5_GFDL_rcp85","2":"Survey replicated","3":"H16","4":"CMIP5","5":"GFDL","6":"FALSE","7":"rcp85","8":"1970","9":"2100","10":"60"},{"1":"B10K-H16_CMIP5_MIROC_rcp45","2":"Survey replicated","3":"H16","4":"CMIP5","5":"MIROC","6":"FALSE","7":"rcp45","8":"1970","9":"2100","10":"60"},{"1":"B10K-H16_CMIP5_MIROC_rcp85","2":"Survey replicated","3":"H16","4":"CMIP5","5":"MIROC","6":"FALSE","7":"rcp85","8":"1970","9":"2100","10":"60"},{"1":"B10K-H16_CORECFS","2":"Survey replicated","3":"H16","4":"CORECFS","5":"NA","6":"FALSE","7":"CORECFS","8":"1970","9":"2100","10":"60"},{"1":"B10K-K20_CORECFS","2":"Survey replicated","3":"K20","4":"CORECFS","5":"NA","6":"FALSE","7":"CORECFS","8":"1970","9":"2100","10":"60"},{"1":"B10K-K20P19_CMIP6_cesm_historical","2":"Survey replicated","3":"K20P19","4":"CMIP6","5":"cesm","6":"TRUE","7":"historical","8":"1970","9":"2100","10":"60"},{"1":"B10K-K20P19_CMIP6_cesm_ssp126","2":"Survey replicated","3":"K20P19","4":"CMIP6","5":"cesm","6":"TRUE","7":"ssp126","8":"1970","9":"2100","10":"60"},{"1":"B10K-K20P19_CMIP6_cesm_ssp585","2":"Survey replicated","3":"K20P19","4":"CMIP6","5":"cesm","6":"TRUE","7":"ssp585","8":"1970","9":"2100","10":"60"},{"1":"B10K-K20P19_CMIP6_gfdl_historical","2":"Survey replicated","3":"K20P19","4":"CMIP6","5":"gfdl","6":"TRUE","7":"historical","8":"1970","9":"2100","10":"60"},{"1":"B10K-K20P19_CMIP6_gfdl_ssp126","2":"Survey replicated","3":"K20P19","4":"CMIP6","5":"gfdl","6":"TRUE","7":"ssp126","8":"1970","9":"2100","10":"60"},{"1":"B10K-K20P19_CMIP6_gfdl_ssp585","2":"Survey replicated","3":"K20P19","4":"CMIP6","5":"gfdl","6":"TRUE","7":"ssp585","8":"1970","9":"2100","10":"60"},{"1":"B10K-K20P19_CMIP6_miroc_historical","2":"Survey replicated","3":"K20P19","4":"CMIP6","5":"miroc","6":"TRUE","7":"historical","8":"1970","9":"2100","10":"60"},{"1":"B10K-K20P19_CMIP6_miroc_ssp126","2":"Survey replicated","3":"K20P19","4":"CMIP6","5":"miroc","6":"TRUE","7":"ssp126","8":"1970","9":"2100","10":"60"},{"1":"B10K-K20P19_CMIP6_miroc_ssp585","2":"Survey replicated","3":"K20P19","4":"CMIP6","5":"miroc","6":"TRUE","7":"ssp585","8":"1970","9":"2100","10":"60"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div id="get-and-explore-data" class="section level1 tabset" number="3">
+<h1 class="tabset" number="3"><span class="header-section-number">3</span> Get and explore data</h1>
+<div id="download-the-data" class="section level2" number="3.1">
+<h2 number="3.1"><span class="header-section-number">3.1</span> Download the data</h2>
 </div>
 </div>
 

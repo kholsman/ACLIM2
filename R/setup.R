@@ -23,6 +23,33 @@
     weekly_flnm     <- "ACLIMregion"
     survey_rep_flnm <- "ACLIMsurveyrep"
     
+    # simulation names:
+    #-------------------------------------------
+    sim_list <- scenarios <- c("B10K-K20_CORECFS",
+                  "B10K-H16_CMIP5_CESM_BIO_rcp85",
+                  "B10K-H16_CMIP5_CESM_rcp45",
+                  "B10K-H16_CMIP5_CESM_rcp85",
+                  "B10K-H16_CMIP5_GFDL_BIO_rcp85",
+                  "B10K-H16_CMIP5_GFDL_rcp45",
+                  "B10K-H16_CMIP5_GFDL_rcp85",
+                  "B10K-H16_CMIP5_MIROC_rcp45",
+                  "B10K-H16_CMIP5_MIROC_rcp85",
+                  "B10K-H16_CORECFS",
+                  # "B10K-K20P19_CMIP5_CESM_rcp45",
+                  # "B10K-K20P19_CMIP5_CESM_rcp85",
+                  # "B10K-K20P19_CMIP5_GFDL_rcp45",
+                  # "B10K-K20P19_CMIP5_GFDL_rcp85",
+                  # "B10K-K20P19_CMIP5_MIROC_rcp45",
+                  # "B10K-K20P19_CMIP5_MIROC_rcp85",
+                  "B10K-K20P19_CMIP6_cesm_historical",
+                  "B10K-K20P19_CMIP6_cesm_ssp126",
+                  "B10K-K20P19_CMIP6_cesm_ssp585",
+                  "B10K-K20P19_CMIP6_gfdl_historical",
+                  "B10K-K20P19_CMIP6_gfdl_ssp126",
+                  "B10K-K20P19_CMIP6_gfdl_ssp585",
+                  "B10K-K20P19_CMIP6_miroc_historical",
+                  "B10K-K20P19_CMIP6_miroc_ssp126",
+                  "B10K-K20P19_CMIP6_miroc_ssp585")
     # URL paths:
     #-------------------------------------------
     # specify the root URL:
