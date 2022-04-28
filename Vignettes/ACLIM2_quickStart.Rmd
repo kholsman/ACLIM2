@@ -5,7 +5,7 @@ output:
   html_document:
     df_print: paged
     toc: true
-    toc_depth: 4
+    toc_depth: 3
     number_sections: true
     toc_float:
       collapsed: false
@@ -22,6 +22,7 @@ output:
     keep_md: yes
   pdf_document:
     toc: TRUE
+    toc_depth: 3
     fig_caption: yes
     fig_height: 4
     fig_width: 5
@@ -46,28 +47,29 @@ output:
 
     tmstp  <- format(Sys.time(), "%Y_%m_%d")
     main   <- getwd()  #"~/GitHub_new/ACLIM2"
-    main   <- "~/GitHub_new/ACLIM2"
-    setwd(main)
+    print(getwd())
     # loads packages, data, setup, etc.
-    suppressWarnings(source("R/make.R"))
+    #suppressWarnings(source("R/make.R"))
     
     # --------------------------------------
     
  
 ```
 
-
-This repository contains R code and Rdata files for working with netcdf-format data generated from the [**downscaled ROMSNPZ modeling**](https://beringnpz.github.io/roms-bering-sea) of the ROMSNPZ Bering Sea Ocean Modeling team; Drs. Hermann, Cheng, Kearney, Pilcher,Ortiz, and Aydin. The code and R resources described in this tutorial are publicly available through the [**ACLIM2 github repository**](https://github.com/kholsman/ACLIM2) maintained by [Kirstin Holsman](mailto:kirstin.holsman@noaa.gov) as part of NOAA's [**ACLIM project**](https://www.fisheries.noaa.gov/alaska/ecosystems/alaska-climate-integrated-modeling-project) for the Bering Sea. *See [Hollowed et al. 2020](https://www.frontiersin.org/articles/10.3389/fmars.2019.00775/full) for more information about the ACLIM project.*
----
-
 # Overview{.tabset}
 
+The [**ACLIM2 github repository**](https://github.com/kholsman/ACLIM2) contains R code and Rdata files for working with netcdf-format data generated from the [**downscaled ROMSNPZ modeling**](https://beringnpz.github.io/roms-bering-sea) of the ROMSNPZ Bering Sea Ocean Modeling team; Drs. Hermann, Cheng, Kearney, Pilcher,Ortiz, and Aydin. The code and R resources described in this tutorial are maintained by [Kirstin Holsman](mailto:kirstin.holsman@noaa.gov) as part of NOAA's [**ACLIM project**](https://www.fisheries.noaa.gov/alaska/ecosystems/alaska-climate-integrated-modeling-project) for the Bering Sea. *See [Hollowed et al. 2020](https://www.frontiersin.org/articles/10.3389/fmars.2019.00775/full) for more information about the ACLIM project.*
+
+---
+
 This document provides an overview of accessing, ploting, and creating bias corrected indices for ACLIM2 based on CMIP6 (embargoed for ACLIM2 users until 2023) and CMIP5 (publically available). This guide assumes analyses will take place in R() and that users have access to the data folder within the ACLIM2 shared drive.
-H16_CORECFS
 
-## Key things to know!
+**Key things to know before getting started are in the tabs below. Please review these before getting started!**
 
-### CMIP5 and CMIP6 datasets use different base models
+## KEY ROMSNPZ versions
+
+**Important!** CMIP5 and CMIP6 datasets use different base models.
+
 There are two versions of the ROMSNPZ model:
 
 1. an older 10-depth layer model used for CMIP5
@@ -80,13 +82,15 @@ The models are not directly comparable, therefore the projections should be bias
 
 In addition for CMIP6 "historical" runs are available for bias correcting. We will use those below.
 
-### There are 2 types of post-processed data available for use
+## KEY Data outputs
+**There are 2 types of post-processed data available for use in ACLIM.**
 
 The ROMSNPZ team has developed a process to provide standardized post-processed outputs from the large (and non-intutive) ROMSNPZ grid. These have been characterized as:
 
-1. Level 3 indices (depth corrected and area weighted means for each model variable; i.e., what we will mostly use)  
+1. Level 1 (original ROMSNPZ U,V, grid, not rotated or corrected)   
 2. Level 2 (lat long bi-weekly high res versions, shouldn't be needed and difficult to work with)  
-3. Level 1 (original ROMSNPZ U,V, grid, not rotated or corrected)  
+3. **Level 3 indices (depth corrected and area weighted means for each model variable; i.e., what we will mostly use) **
+
 
 There are two formats that the ROMSNPZ data are available in for use in ACLIM2. Level 3 data are post-processed to replicate the summer groundfish survey.
 
