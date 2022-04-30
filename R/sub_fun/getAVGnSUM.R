@@ -24,7 +24,8 @@ getAVGnSUM <- function(
       mutate(valArea = val*strata_area_km2)%>%
       summarize(
         tot_val = sum(valArea), 
-        sumArea=sum(strata_area_km2))%>%
+        sumArea = sum(strata_area_km2),
+        mnDate  = mean(date))%>%
       mutate(mn_val=tot_val/sumArea)") ))
     
     if(mn & tot)
@@ -41,15 +42,16 @@ getAVGnSUM <- function(
       mutate(valArea = val*strata_area_km2)%>%
       summarize(
         tot_val = sum(valArea), 
-        sumArea=sum(strata_area_km2))%>%
+        sumArea = sum(strata_area_km2),
+        mnDate  = mean(date))%>%
       mutate(mn_val=tot_val/sumArea)") ))
     
     if(mn & tot)
-      eval(parse(text = paste0("tmp <- tmp%>%dplyr::select(var,mn_val,tot_val,",paste0(tblock,collapse=", "),",units,long_name)") ))
+      eval(parse(text = paste0("tmp <- tmp%>%dplyr::select(var,mn_val,tot_val,mnDate,",paste0(tblock,collapse=", "),",units,long_name)") ))
     if(mn & tot == F)
-      eval(parse(text = paste0("tmp <- tmp%>%dplyr::select(var,mn_val,",paste0(tblock,collapse=", "),",units,long_name)") ))
+      eval(parse(text = paste0("tmp <- tmp%>%dplyr::select(var,mn_val,mnDate,",paste0(tblock,collapse=", "),",units,long_name)") ))
     if(mn == F & tot)
-      eval(parse(text = paste0("tmp <- tmp%>%dplyr::select(var,tot_val,",paste0(tblock,collapse=", "),",units,long_name)") ))
+      eval(parse(text = paste0("tmp <- tmp%>%dplyr::select(var,tot_val,mnDate,",paste0(tblock,collapse=", "),",units,long_name)") ))
     
   }
    return(tmp)

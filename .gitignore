@@ -7,8 +7,11 @@ Data/In/Map_layers/shp_files/*
 Data/In/Newest.zip
 Data/In/Map_layers.zip
 Data/In/*
+Data/out
 NotShared
 Data/In/archived
 R/shiny_aclim/01_aclim_indices/*
-trash/*
+*trash
 .Rproj.user
+*.Rhistory
+*.DS_store

@@ -18,10 +18,24 @@
   SEBS_strata <- c(10,20,31,32,50,
                    20,41,42,43,61,62)
   
+
   if(update_base_data) 
     source("R/sub_scripts/update_base_data.R")
   
- 
+  # load strata Area for area weighted mean temp:
+  load(file.path("Data/in/lookup_tables","STRATA_AREA.Rdata"))
+  STRATA_AREAall <-STRATA_AREA
+  STRATA_AREA   <- STRATA_AREA%>%filter(REGION=="BS")
+  STRATA_AREA$subREG <- "Other"
+  STRATA_AREA$subREG[STRATA_AREA$STRATUM%in%NEBS_strata] <- "NEBS"
+  STRATA_AREA$subREG[STRATA_AREA$STRATUM%in%SEBS_strata] <- "SEBS"
+  STRATA_AREA_compare  <- cast(STRATA_AREA%>%dplyr::select(REGION,STRATUM,YEAR, AREA),
+                               REGION+STRATUM~YEAR)
+  # use 2010 area designations:
+  STRATA_AREA <- STRATA_AREA%>%
+    dplyr::filter(YEAR ==2010)%>%
+    dplyr::select(REGION,STRATUM, subREG,AREA)
+  
   
   load(file.path(shareddata_path,"base_data.Rdata"))
   load(file.path(shareddata_path,"grid_list.Rdata"))

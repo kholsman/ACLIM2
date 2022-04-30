@@ -1,10 +1,11 @@
 #'
 #'
 #'make_hind.R
+#'ACLIM2 folder
 #'
-#'
+#'updated Apr 28 2022
 
-    
+
     # hindcast first: Update annually
     # -----------------------------
     i <- 0
@@ -13,13 +14,13 @@
       i <- i + 1
       cat(sim,"....\n")
       
-      load(file.path(localfolder,file.path(sim,paste0(reg_txt,sim,".Rdata"))))
+      load(file.path(Rdata_path,file.path(sim,paste0(reg_txt,sim,".Rdata"))))
       reg_indices <-  make_indices_region( simIN = ACLIMregion,
-                                           BiasCorrect = FALSE,
+                                           timeblockIN = c("yr","season"),
                                            seasonsIN = seasons,
                                            refyrs    = deltayrs)
       
-      load(file.path(localfolder,file.path(sim,paste0(srvy_txt,sim,".Rdata"))))
+      load(file.path(Rdata_path,file.path(sim,paste0(srvy_txt,sim,".Rdata"))))
       srvy_indices <-  make_indices_srvyrep( simIN = ACLIMsurveyrep,
                                              BiasCorrect = FALSE,
                                              seasonsIN = seasons,

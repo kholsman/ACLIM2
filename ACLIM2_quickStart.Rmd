@@ -1,0 +1,1112 @@
+---
+title: "ACLIM2 CMIP6 ROMSNPZ Indices quick start guide"
+author: K. Holsman
+output:
+  html_document:
+    df_print: paged
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
+  header-includes:
+  - \usepackage{knputenc}
+  - \usepackage{unicode-math}
+  - \pagenumbering{gobble}
+  - \documentclass{article}
+  - \usepackage{amsmath}
+  word_document:
+    fig_caption: yes
+    fig_width: 4
+    keep_md: yes
+  pdf_document:
+    toc: TRUE
+    toc_depth: 3
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 5
+    highlight: tango
+    keep_tex: yes
+    latex_engine: xelatex
+---
+
+
+
+```{r startup, eval=TRUE, echo=FALSE, results='hide',message=FALSE}
+ 
+ #source("R/make.R")       # loads packages, data, setup, etc.
+ knitr::opts_chunk$set(echo = T, fig.align="center",warning = FALSE, message = FALSE)
+ #knitr::opts_knit$set(root.dir = '../')
+ 
+ thisYr <- format(Sys.time(), "%Y")
+ today  <- format(Sys.time(), "%b %d, %Y")
+ 
+```
+
+# Download the ACLIM2 repo & data
+
+## Clone the ACLIM2 repo{.tabset}
+
+To run this tutorial first clone the ACLIM2 repository to your local drive:
+
+### Option 1: Use R  
+
+This set of commands, run within R, downloads the ACLIM2 repository and unpacks it, with the ACLIM2 directory structrue being located in the specified `download_path`.  This also performs the folder renaming mentioned in Option 2.
+
+```{r gitdwnld, eval = FALSE,echo =T}
+    # Specify the download directory
+    main_nm       <- "ACLIM2"
+
+    # Note: Edit download_path for preference
+    download_path <-  path.expand("~")
+    dest_fldr     <- file.path(download_path,main_nm)
+    
+    url           <- "https://github.com/kholsman/ACLIM2/archive/main.zip"
+    dest_file     <- file.path(download_path,paste0(main_nm,".zip"))
+    download.file(url=url, destfile=dest_file)
+    
+    # unzip the .zip file (manually unzip if this doesn't work)
+    setwd(download_path)
+    unzip (dest_file, exdir = download_path,overwrite = T)
+    
+    #rename the unzipped folder from ACLIM2-main to ACLIM2
+    file.rename(paste0(main_nm,"-main"), main_nm)
+    setwd(main_nm)
+    
+```
+
+### Option 2: Download the zipped repo  
+Download the full zip archive directly from the [**ACLIM2 Repo**](https://github.com/kholsman/ACLIM2) using this link: [**https://github.com/kholsman/ACLIM2/archive/main.zip**](https://github.com/kholsman/ACLIM2/archive/main.zip), and unzip its contents while preserving directory structure. 
+
+**Important!*** If downloading from zip, please **rename the root folder** from `ACLIM2-main` (in the zipfile) to `ACLIM2` (name used in cloned copies) after unzipping, for consistency in the following examples.
+
+Your final folder structure should look like this:
+
+![](Figs/ACLIM_dir.png){ width=100%}
+
+### Option 3: Use git commandline
+
+If you have git installed and can work with it, this is the preferred method as it preserves all directory structure and can aid in future updating. Use this from a **terminal command line, not in R**, to clone the full ACLIM2 directory and sub-directories:
+
+```{bash, eval = FALSE,echo =T}
+    git clone https://github.com/kholsman/ACLIM2.git
+```
+
+---
+
+## Get the data
+
+Go to the google drive and download the zipped file with the R data '2022_03_07_Rdata.zip':
+
+[00_ACLIM_shared > 02_Data > Newest_Data(use this) > 2022_03_07_Rdata.zip](https://drive.google.com/drive/folders/11BQEfNEl9vvrN-V0LgS67XS4aLE9pNzz)
+
+Move the Zipped folder to your local folder 'ACLIM2/Data/in' and unzip. The final folder structure should look like:
+
+
+![](Figs/DATA_dir.png){ width=50%}
+
+## Set up the Workspace
+
+Open R() and used 'setwd()' to navigate to the root ACLIM2 folder (.e.g, ~/mydocuments/ACLIM2)
+
+```{R  start, eval=TRUE, echo=T, results='show',message=FALSE}
+    
+    # set the workspace to your local ACLIM2 folder
+    # e.g., "/Users/kholsman/Documents/GitHub/ACLIM2"
+    # setwd( path.expand("~/Documents/GitHub/ACLIM2") )
+   
+    # --------------------------------------
+    # SETUP WORKSPACE
+    tmstp  <- format(Sys.time(), "%Y_%m_%d")
+    main   <- getwd()  #"~/GitHub_new/ACLIM2"
+    
+    # loads packages, data, setup, etc.
+    suppressWarnings(source("R/make.R"))
+```
+
+---
+
+
+
+# Read this before you start
+
+## Overview{.tabset}
+
+The [**ACLIM2 github repository**](https://github.com/kholsman/ACLIM2) contains R code and Rdata files for working with netcdf-format data generated from the [**downscaled ROMSNPZ modeling**](https://beringnpz.github.io/roms-bering-sea) of the ROMSNPZ Bering Sea Ocean Modeling team; Drs. Hermann, Cheng, Kearney, Pilcher,Ortiz, and Aydin. The code and R resources described in this tutorial are maintained by [Kirstin Holsman](mailto:kirstin.holsman@noaa.gov) as part of NOAA's [**ACLIM project**](https://www.fisheries.noaa.gov/alaska/ecosystems/alaska-climate-integrated-modeling-project) for the Bering Sea. *See [Hollowed et al. 2020](https://www.frontiersin.org/articles/10.3389/fmars.2019.00775/full) for more information about the ACLIM project.*
+
+---
+
+This document provides an overview of accessing, ploting, and creating bias corrected indices for ACLIM2 based on CMIP6 (embargoed for ACLIM2 users until 2023) and CMIP5 (publically available) simulations. This guide assumes analyses will take place in R() and that users have access to the data folder within the ACLIM2 shared drive. For more information also see the full tutorial ("GettingStarted_Bering10K_ROMSNPZ" available at the bottom of [**this repo page**](https://github.com/kholsman/ACLIM2).
+
+
+**Important!** A few key things to know before getting started are detailed below. Please review this information before getting started.
+
+## KEY ROMSNPZ versions
+
+**Important!** CMIP5 and CMIP6 datasets use different base models.
+
+There are two versions of the ROMSNPZ model:
+
+1. an older 10-depth layer model used for CMIP5
+2. a new 30-depth layer model used for CMIP6
+
+The models are not directly comparable, therefore the projections should be bias corrected and re-centerd to baselines of hindcasts of each model (forced by "observed" climate conditions). i.e. CMIP5 and CMIP6 have corresponding hindcasts:
+
+1. Hindcast for CMIP5 "H19"    -->  H16_CORECFS
+2. Hindcast for CMIP5 "K20P19" -->  H16_CORECFS
+2. Hindcast for CMIP6 "K20P19" -->  K20_CORECFS
+
+In addition for CMIP6 "historical" runs are available for bias correcting. We will use those below.
+
+For a list of the available simulations for ACLIM enter the following in R():
+```{R2, eval=TRUE, echo=T, results='show',message=FALSE}
+# list of the climate scenarios
+data.frame(sim_list)
+
+```
+
+
+## KEY Data outputs
+**Important!** There are 2 types of post-processed data available for use in ACLIM.
+
+The ROMSNPZ team has developed a process to provide standardized post-processed outputs from the large (and non-intutive) ROMSNPZ grid. These have been characterized as:
+
+1. Level 1 (original ROMSNPZ U,V, grid, not rotated or corrected)   
+2. Level 2 (lat long bi-weekly high res versions, shouldn't be needed and are difficult to work with)  
+3. **Level 3 indices (depth corrected and area weighted means for each model variable; i.e., what we will mostly use) **
+    a. "ACLIMsurveyrep_":   roundifsh survey replicated (replicated in space and time)
+    b. "ACLIMregion_":      weekly strata based averages
+    
+To get more information about each of these level 3 datasets enter this in R:
+
+```{R, eval=TRUE, echo=T, results='show',message=FALSE}
+    # Metadata for Weekly ("ACLIMregion_...") indices
+    (all_info1)
+    
+    # Metadata for Weekly ("ACLIMsurveyrep_...") indices
+    (all_info2)
+    
+```
+
+# Create Indices & bias correct projections 
+
+The next step creates indices based on the level 3 data for each hind cast, historical run, and CMIP6 projection. The script below then bias corrects each index using the historical run and recenters the projection on the corresponding hindcast (such that projections are $\Delta$ from historical mean values for the reference period ` deltayrs     <- 1970:2000` ).
+
+## Water column averaged values{.tabset}
+
+The average water column values for each variable from the ROMSNPZ model strata x weekly Level2 outputs ('ACLIMregion') was calculated and used to calculate the strata-area weighted mean value for the NEBS and SEBS weekly, monthly, seasonally, and annually. Similarly, for survey replicated ('ACLIMsurveyrep') Level2 outputs the average water column value for each variable at each station was calaculated used to calculate the strata-area weighted mean value for the NEBS and SEBS annually. These indices were calculate for hindcast, historical, and projection scenarios, and used to bias correct the projections. More information on the methods for each can be found in the tabs below and the code immediately following this section will re-generate the bias corrected indices. All of the bias corrected outputs can be found in the "Data/out/CMIP6" folder. 
+
+*Important!* Note that for projections the 'mn_val' represents raw mean values, while 'val_biascorrected' is the bias corrected mn_val (should be used instead of the raw values). In all cases, for variables that are log-normally distributed (cannot be < 0), the ln(mn_val) were used to bias correct and were then back transformed to non-log space after correction:
+
+For normally distributed variables ($Y$):
+  $$\bar{Y}^{fut'}_{y,k} =\bar{Y}^{hind}_{k} +\left( \frac{\sigma^{hind}_{k}}{\sigma^{hist}_{k}}*(\bar{Y}^{fut}_{y,k}-\bar{Y}^{hist}_{k})  \right )$$,
+  
+For log-normally distributed variables($Y$):
+  $$\bar{Y}^{fut'}_{y,k} =\ln\bar{Y}^{hind}_{k} +\left( \frac{\hat\sigma^{hind}_{k}}{\hat\sigma^{hist}_{k}}*(\ln\bar{Y}^{fut}_{y,k}-\ln\bar{Y}^{hist}_{k})  \right )$$,
+  where $\hat\sigma^{hist}_{k}$ and $\hat\sigma^{hind}_{k}$ are the standard deviation of the $\ln\bar{Y}^{hist}_{k,y}$ and $\ln\bar{Y}^{hind}_{k,y}$, respectively.
+  
+## *Weekly indices ('ACLIM_weekly_hind')*
+  - Uses the strata x weekly data ('ACLIMregion') to generate strata-specific area-weighted averages of the strata values averaged for each week $w$ each year $y$.
+  
+  $$\bar{Y}_{w,y,k}= \frac{\sum^{n_s}_{l}(\frac{1}{n_i}\sum^{n_i}_{i}Y_{k,w,y,s,i})*A_s} {\sum^{n_s}_{s}{A_s}}$$, where $Y_{k,w,y,s,i}$ is the value of the variable $k$ at station $i$ in strata $s$ in year $y$, $A_s$ is the area of strata $s$, $n_i$ is the number of stations in strata $s$, and $n_s$ is the number of strata $s$ in each basin (NEBS or SEBS).
+  
+  $\bar{Y}_{w,y,k}$ was calculated for the hindcast, historical run, and projection time-series. For projections $\bar{Y}_{w,y,k}$ was bias corrected using the corresponding historical and hindcast values such that:
+  
+  $$\bar{Y}^{fut'}_{w,y,k} =\bar{Y}^{hind}_{w,k} +\left( \frac{\sigma^{hind}_{w,k}}{\sigma^{hist}_{w,k}}*(\bar{Y}^{fut}_{w,y,k}-\bar{Y}^{hist}_{w,k})  \right )$$, where $\bar{Y}^{hist}_{w,k}$ and $\bar{Y}^{hind}_{w,k}$ are the average historical weekly values across years in the reference period (`r ref_years`; adjustable in `R/setup.R`). 
+
+## *Monthly indices*
+   - Uses the strata x weekly data ('ACLIMregion') to generate strata-specific area-weighted averages of the strata values averaged for each month $m$ each year $y$.
+  
+  $$\bar{Y}_{m,y,k}= \frac{\sum^{n_s}_{l}(\frac{1}{n_i}\sum^{n_i}_{i}Y_{k,m,y,s,i})*A_s} {\sum^{n_s}_{s}{A_s}}$$, where $Y_{k,m,y,s,i}$ is the value of the variable $k$ at station $i$ in strata $s$ in year $y$, $A_s$ is the area of strata $s$, $n_i$ is the number of stations in strata $s$, and $n_s$ is the number of strata $s$ in each basin (NEBS or SEBS).
+  
+  $\bar{Y}_{m,y,k}$ was calculated for the hindcast, historical run, and projection time-series. For projections $\bar{Y}_{m,y,k}$ was bias corrected using the corresponding historical and hindcast values such that:
+  
+  $$\bar{Y}^{fut'}_{m,y,k} =\bar{Y}^{hind}_{m,k} +\left( \frac{\sigma^{hind}_{m,k}}{\sigma^{hist}_{m,k}}*(\bar{Y}^{fut}_{m,y,k}-\bar{Y}^{hist}_{m,k})  \right )$$, where $\bar{Y}^{hist}_{m,k}$ and $\bar{Y}^{hind}_{m,k}$ are the average historical monthly values across years in the reference period (`r ref_years`; adjustable in `R/setup.R`). 
+
+## *Seasonal indices*
+   - Uses the strata x weekly data ('ACLIMregion') to generate strata-specific area-weighted averages of the strata values averaged for each season $l$ each year $y$.
+  
+  $$\bar{Y}_{l,y,k}= \frac{\sum^{n_s}_{l}(\frac{1}{n_i}\sum^{n_i}_{i}Y_{k,l,y,s,i})*A_s} {\sum^{n_s}_{s}{A_s}}$$, where $Y_{k,l,y,s,i}$ is the value of the variable $k$ at station $i$ in strata $s$ in year $y$, $A_s$ is the area of strata $s$, $n_i$ is the number of stations in strata $s$, and $n_s$ is the number of strata $s$ in each basin (NEBS or SEBS).
+  
+  $\bar{Y}_{l,y,k}$ was calculated for the hindcast, historical run, and projection time-series. For projections $\bar{Y}_{l,y,k}$ was bias corrected using the corresponding historical and hindcast values such that:
+  
+  $$\bar{Y}^{fut'}_{l,y,k} =\bar{Y}^{hind}_{l,k} +\left( \frac{\sigma^{hind}_{l,k}}{\sigma^{hist}_{l,k}}*(\bar{Y}^{fut}_{l,y,k}-\bar{Y}^{hist}_{l,k})  \right )$$, where $\bar{Y}^{hist}_{l,k}$ and $\bar{Y}^{hind}_{l,k}$ are the average historical seasonal values across years in the reference period (`r ref_years`; adjustable in `R/setup.R`).  
+  
+## *Annual indices*
+   - Uses the strata x weekly data ('ACLIMregion') to generate strata-specific area-weighted averages of the strata values averaged for each year $y$.
+  
+  $$\bar{Y}_{y,k}= \frac{\sum^{n_s}_{l}(\frac{1}{n_i}\sum^{n_i}_{i}Y_{k,y,s,i})*A_s} {\sum^{n_s}_{s}{A_s}}$$, where $Y_{k,y,s,i}$ is the value of the variable $k$ at station $i$ in strata $s$ in year $y$, $A_s$ is the area of strata $s$, $n_i$ is the number of stations in strata $s$, and $n_s$ is the number of strata $s$ in each basin (NEBS or SEBS).
+  
+  $\bar{Y}_{y,k}$ was calculated for the hindcast, historical run, and projection time-series. For projections $\bar{Y}_{y,k}$ was bias corrected using the corresponding historical and hindcast values such that:
+  
+  $$\bar{Y}^{fut'}_{y,k} =\bar{Y}^{hind}_{k} +\left( \frac{\sigma^{hind}_{k}}{\sigma^{hist}_{k}}*(\bar{Y}^{fut}_{y,k}-\bar{Y}^{hist}_{k})  \right )$$, where $\bar{Y}^{hind}_{k}$ and $\bar{Y}^{hist}_{k}$ are the average historical values across years in the reference period (`r ref_years`; adjustable in `R/setup.R`).  
+
+## *Annual indices from survey replicated (summer surveys)*
+  - Uses survey replicated annual by station data to generate 1) average strata values (average across all stations within a strata) and then 2) strata area weighted means for the year 
+
+
+## Step 1: Create indices and bias correct CMIP6 projections
+
+```{r annual_aclim_indices, eval=F, include=T,echo=T}
+    # --------------------------------------
+    # SETUP WORKSPACE
+    tmstp  <- format(Sys.time(), "%Y_%m_%d")
+    main   <- getwd()  #"~/GitHub_new/ACLIM2"
+    
+    # loads packages, data, setup, etc.
+    suppressWarnings(source("R/make.R"))
+    
+    tmstamp1  <- format(Sys.time(), "%Y%m%d")
+    # tmstamp1  <- "20220428"
+    
+    update_hind  <- TRUE   # set to true to update hind and hindS; needed annually
+    update_proj  <- TRUE   # set to true to update proj and projS; not needed
+    update_hist  <- TRUE   # set to true to update proj and projS; not needed
+     
+    # set the reference years for bias correcting in R/setup.R
+    ref_years 
+    
+    # identify the year to z-score scale / delta in R/setup.R
+    deltayrs 
+    
+    # remove these variables:
+    vl <- srvy_vars[!srvy_vars%in%c("station_id","latitude",
+                                    "longitude","stratum","doy",
+                                  "Iron_bottom5m","Iron_integrated",
+                                  "Iron_surface5m","prod_Eup_integrated",
+                                  "prod_NCa_integrated")]
+
+    # Identify which variables would be normally 
+    # distributed (i.e., can have negative values)
+     normvl <- c("shflux","ssflux","temp_bottom5m",
+      "temp_integrated","temp_surface5m",
+      "uEast_bottom5m","uEast_surface5m",
+      "vNorth_bottom5m","vNorth_surface5m")
+
+    normlist <- data.frame(var = vl, lognorm = TRUE)
+    normlist$lognorm[normlist$var%in%normvl] <- FALSE
+
+    
+    # generate indices and bias corrected projections for 
+    #      average water column values (mn_val)
+    # This takes approx 30 mins to run completely
+    
+    # Identify which value to bias correct
+    BC_target<-"mn_val"
+    suppressWarnings(source("R/sub_scripts/Bias_correct_CMIP6_K20.R"))
+                     
+    # generate indices and bias corrected projections for
+    #     total water column values (mn_val)
+
+    # Identify which value to bias correct
+    BC_target<-"mn_val"
+    suppressWarnings(source("R/sub_scripts/Bias_correct_CMIP6_K20.R")
+                     
+                     
+    
+```
+
+
+## Step 3: CMIP6 Bias corrected proj
+
+Now run the code below to create indices from the historical runs (only avail for CMIP6) and corresponding projections.
+
+```{r hist2, eval = F, include = T, echo = T}
+   
+
+        
+```
+
+## Step 3: CMIP5 Bias corrected proj
+
+Now bias correct the projections using the hindcast indices
+
+```{r biascorrect2, eval = F, include = T, echo = T}
+    
+    
+    for( gcmcmip  in c("CMIP5_CESM","CMIP5_GFDL","CMIP5_MIROC")){
+      sim_listIN <- sim_list[grep(gcmcmip,sim_list)]
+      
+      for (sim in sim_listIN){
+        i<-i+1
+        cat(sim,"....\n")
+        
+        # open a "region" or strata specific  file
+        load(file.path(Rdata_path,file.path(sim,paste0(reg_txt,sim,".Rdata"))))
+        fut     <- ACLIMregion; rm(ACLIMregion)
+        SIM_adj <- bias_correct( 
+          hindIN = hnd,
+          histIN = hnd,
+          futIN  = fut,
+          ref_yrs    = 2006:2020,
+          normlistIN =  normlist,
+          plotIT = TRUE,
+          plotwk = 2,
+          plotvarIN  = "temp_bottom5m",
+          log_adj    = 1e-4)
+        
+        reg_indices <-  make_indices_region( simIN = SIM_adj$fut,
+                                             BiasCorrect = TRUE,
+                                             seasonsIN = seasons,
+                                             refyrs    = deltayrs)
+        
+        # open a "region" or strata specific  file
+        load(file.path(Rdata_path,file.path(sim,paste0(srvy_txt,sim,".Rdata")))) 
+        fut_srvy     <- ACLIMsurveyrep; rm(ACLIMsurveyrep)
+        SIM_adjsrvy <- bias_correct_srvy( 
+          hindIN = hnd_srvy,
+          histIN = hnd_srvy,
+          futIN  = fut_srvy,
+          ref_yrs    = 2006:2020,
+          normlistIN =  normlist,
+          plotIT = TRUE,
+          plotwk = 45,
+          plotvarIN  = "temp_bottom5m",
+          log_adj    = 1e-4)
+        
+        srvy_indices <-  make_indices_srvyrep(simIN = SIM_adjsrvy$fut,
+                                              BiasCorrect = TRUE,
+                                              seasonsIN = seasons, 
+                                              refyrs = deltayrs)
+        reg_indices$type  <- "strata means"
+        srvy_indices$type <- "survey replicated"
+        tmpproj <- rbind(reg_indices,
+                         srvy_indices[,match(names(reg_indices),names(srvy_indices))])
+        
+        proj <- rbind(proj,tmpproj)
+        
+        rm(reg_indices)
+        rm(srvy_indices)
+      }
+    }
+    proj      <- add_gcmssp(proj)
+    if(!dir.exists("Data/out")) dir.create("Data/out")
+    tmpfl <- file.path("Data/out/",paste0("proj_CMIP5n6_BiasCorr_",tmstamp1,".Rdata"))
+    if(file.exists(tmpfl)) file.remove(tmpfl)    
+    save(proj, file=tmpfl)
+    rm(tmpfl)
+    
+    # Non-Bias corrected proj (CMIP5 and CMIP66) don't need to update again
+    # -----------------------------
+    # set up hindcast
+    sim  <-"B10K-K20_CORECFS"
+    load(file.path(Rdata_path,file.path(sim,paste0(reg_txt,sim,".Rdata"))))
+    hnd  <- ACLIMregion; rm(ACLIMregion)
+    load(file.path(Rdata_path,file.path(sim,paste0(srvy_txt,sim,".Rdata"))))
+    hnd_srvy  <- ACLIMsurveyrep; rm(ACLIMsurveyrep)
+    
+    i <- 0
+    sim_listIN <- sim_list[-grep("CORECFS",sim_list)]
+    
+    for (sim in sim_listIN){
+      i<-i+1
+      cat(sim,"....\n")
+      
+      # open a "region" or strata specific  file
+      load(file.path(Rdata_path,file.path(sim,paste0(reg_txt,sim,".Rdata"))))
+      reg_indices <-  make_indices_region( simIN = ACLIMregion,
+                                           BiasCorrect = FALSE,
+                                           seasonsIN = seasons,
+                                           refyrs    = deltayrs)
+      
+      # open a "region" or strata specific  file
+      load(file.path(Rdata_path,file.path(sim,paste0(srvy_txt,sim,".Rdata")))) 
+      srvy_indices <-  make_indices_srvyrep(sim = ACLIMsurveyrep,
+                                            BiasCorrect = FALSE,
+                                            seasonsIN = seasons, 
+                                            refyrs = deltayrs)
+      reg_indices$type  <- "strata means"
+      srvy_indices$type <- "survey replicated"
+      tmpproj <- rbind(reg_indices,
+                       srvy_indices[,match(names(reg_indices),names(srvy_indices))])
+      if(i ==1)
+        proj <- tmpproj
+      if(i!=1)
+        proj <- rbind(proj,tmpproj)
+      
+      rm(reg_indices)
+      rm(srvy_indices)
+    }
+    
+    proj      <- add_gcmssp(proj)
+    if(!dir.exists("Data/out")) dir.create("Data/out")
+    tmpfl <- file.path("Data/out/",paste0("proj_CMIP6_raw_",tmstamp1,".Rdata"))
+    if(file.exists(tmpfl)) file.remove(tmpfl)    
+    save(proj, file=tmpfl)
+    rm(tmpfl)
+    
+ 
+
+```
+
+
+# DEFUNCT
+
+```{r hind, eval=F, include=T,echo=T}
+    # now create annual indices both the survey replicated and weekly strata values:
+     cat("making annual indices, please wait....\n")
+     
+     # this step
+
+    if(update_hind){
+       source("R/sub_scripts/make_hind.R")
+    }else{
+      load(file.path(main,"Data/out",paste0("hind_",tmstamp1,".Rdata")))
+      head(hind)
+    }
+```
+
+## Step 2: Historical
+
+```{r hist, eval=F, include=T,echo=T}
+    if(update_hist){
+       source("R/sub_scripts/make_hist.R")
+    }else{
+     load(file.path(main,"Data/out",paste0("hist_CMIP6_raw_",tmstamp1,".Rdata")))
+      hist_raw <- hist2; rm(hist2)
+      load(file.path(main,"Data/out",paste0("hist_CMIP6_BiasCorr_",tmstamp1,".Rdata")))
+      hist <- hist2; rm(hist2); head(hist)
+    }
+```
+
+## Step 3: Projections
+```{r proj, eval=F, include=T,echo=T}
+   if(update_proj){
+     source("R/sub_scripts/make_proj.R")
+   }else{
+     load(file.path(main,"Data/out",paste0("proj_CMIP6_BiasCorr_",tmstamp1,".Rdata")))
+     projCMIP6 <- proj; rm(proj)
+     load(file.path(main,"Data/out",paste0("proj_CMIP6_raw_",tmstamp1,".Rdata")))
+     proj_raw<-proj; rm(proj)
+     load(file.path(main,"Data/out",paste0("proj_CMIP5n6_BiasCorr_",tmstamp1,".Rdata")))
+     head(proj)
+   }
+
+    # now add gcm and ssp:
+   proj      <- add_gcmssp(proj)
+   proj_raw  <- add_gcmssp(proj_raw)
+   projCMIP6 <- add_gcmssp(projCMIP6)
+
+
+   hind$cmip     <- "hindcast"
+   hind$scenario <- "hindcast"
+   hind$gcm      <- "CORECFS"
+   hind$ssp      <- "hindcast"
+```
+
+## Step 4: Re-centering on the hindcast
+
+The last step is to recenter the data on the hindcast
+
+```{r rescale, eval=F, include=T,echo=T}
+   # Zscore-scale  the data
+   # -------------------------------------
+      hindS <- ScaleIT(proj_dat = hind,
+                     ref_dat  = hind,
+                     ref_yrs  = deltayrs)
+
+      tmpfl <- file.path("Data/out/",paste0("hind_delta_",tmstamp1,".Rdata"))
+      if(file.exists(tmpfl)) file.remove(tmpfl)
+      save(hindS, file=tmpfl)
+      rm(tmpfl)
+
+      projS <- ScaleIT(proj_dat = proj,
+                     ref_dat  = hind,
+                     ref_yrs  = deltayrs)
+
+      tmpfl <- file.path("Data/out/",paste0("proj_CMIP6_BiasCorr_delta_",tmstamp1,".Rdata"))
+      if(file.exists(tmpfl)) file.remove(tmpfl)
+      save(projS, file=tmpfl)
+      rm(tmpfl)
+
+
+    # now add gcm and ssp:
+    # -------------------------------------
+    simset <- data.frame(sim=unique(proj$sim),stringsAsFactors =  FALSE)
+    ttp   <- strsplit(
+      sapply(strsplit(simset$sim,split=
+                      "_B10K-K20P19_"),"[[",2),"_")
+    simset$cmip <- sapply(ttp,"[[",1)
+    simset$gcm  <- sapply(ttp,"[[",2)
+    simset$ssp  <- sapply(ttp,"[[",3)
+
+    CMIP6set    <- simset$sim[simset$cmip =="CMIP6"]
+
+```
+
+```{r ceattle, eval=F, include=F,echo=F}
+
+
+     # Now make files for .dat input:
+    # -----------------------------
+    shortvars <- c("Cop_integrated","PhL_integrated",
+    "EupS_integrated","largeZoop_integrated","NCaS_integrated",
+    "salt_surface5m","temp_bottom5m","temp_surface5m")
+
+    longvars <- c("Ben","Cop_integrated","DetBen","EupO_integrated",
+    "EupS_integrated", "hice","Jel_integrated","largeZoop_integrated",
+    "MZL_integrated","NCaO_integrated"  ,"NCaS_integrated"  , "PhL_integrated",
+    "PhS_integrated"    ,"salt_surface5m","shflux","ssflux","temp_bottom5m",
+    "temp_integrated","temp_surface5m" ,"uEast_bottom5m","uEast_surface5m",
+    "vNorth_bottom5m","vNorth_surface5m")
+
+    short_vars <- makeROMSNPZdat(outfldr = "Data/out",
+                   hind_fl    = projS,
+                   proj_fl    = hindS,
+                   hind_sheetnames = c("K20_CORECFS"),
+                   hinddat    = "hind",
+                   projdat    = "proj",
+                   hind_years = 1979:thisYr,
+                   proj_years = (thisYr+1):2099,
+                   varsIN     = shortvars,
+                   nsppIN     = 3,
+                   write2dat  = T,
+                   seasonsIN  = c("Winter","Spring","srvy_rep","Fall"),
+                   datfile    = paste("_romspz",thisYr,"_short.dat"))
+
+```
+
+# Plot results
+
+```{r plotit, eval=F, include=T,echo=T}
+
+    # now make some plots:
+    # ----------------------
+
+    if(update.figs)
+      #source(file.path(main,"R/sub_scripts/make_annual_plots.R"))
+
+    if(update.figs)
+      source(file.path(main,"R/sub_scripts/make_summary_plots.R"))
+
+    # plot Fall values:
+    # -----------------------------
+
+
+    pfall_BT_fut
+     if(update.figs){
+        sclr <- 1.2
+        jpeg(file=file.path(main,"Figs/Fall_temperature_fut.jpg"),
+             width=7*sclr,height=5*sclr, res=150, units="in")
+        print(pfall_BT_fut)
+        dev.off()
+     }
+
+    psrvy_BT_fut
+     if(update.figs){
+        sclr <- 1.2
+        jpeg(file=file.path(main,"Figs/Srvy_temperature_fut.jpg"),
+             width=7*sclr,height=5*sclr, res=150, units="in")
+        print(psrvy_BT_fut)
+        dev.off()
+     }
+
+    pfall_BT_fut_raw
+     if(update.figs){
+        sclr <- 1.2
+        jpeg(file=file.path(main,"Figs/Fall_temperature_raw_fut.jpg"),
+             width=7*sclr,height=5*sclr, res=150, units="in")
+        print(pfall_BT_fut_raw)
+        dev.off()
+     }
+
+   pfall_BT_fut_scaled
+   if(update.figs){
+      sclr <- 1.2
+      jpeg(file=file.path(main,"Figs/Fall_temperature_scaled_fut.jpg"),
+           width=7*sclr,height=5*sclr, res=150, units="in")
+      print(pfall_BT_fut_scaled)
+      dev.off()
+   }
+
+   z6_fut2 <- plotROMZ(
+                      hindIN = hind%>%filter(season=="Fall",
+                          var%in%c("EupS_surface5m"),
+                          year<=thisYr),
+                      futIN  = proj%>%filter(season=="Fall",
+                         var%in%c("EupS_surface5m"),
+                         sim%in%CMIP6set,
+                         year>=thisYr),
+                      plotval  = "value",
+                      refYrsIN = deltayrs,
+                      scalesIN ="free",
+                      simsetIN = simset%>%filter(sim%in%CMIP6set),
+                      titleIN  = "Surface EuphS (srvy_rep) ")
+    z6_fut2
+Euhp_Fall_fut
+     if(update.figs){
+        sclr <- 1.2
+        jpeg(file=file.path(main,"Figs/Fall_EuphSIntg_fut.jpg"),
+             width=7*sclr,height=4*sclr, res=150, units="in")
+        print(Euhp_Fall_fut)
+        dev.off()
+     }
+    Euhp_Fall_fut_raw
+
+     if(update.figs){
+        sclr <- 1.2
+        jpeg(file=file.path(main,"Figs/Fall_EuphSIntg_fut_raw.jpg"),
+             width=7*sclr,height=4*sclr, res=150, units="in")
+        print(Euhp_Fall_fut_raw)
+        dev.off()
+     }
+  #
+
+```
+
+# 3) Now create obs bottom and SST timeseries
+
+```{r obstemp, include=FALSE, echo=TRUE, eval=FALSE}
+  Temp_race              <- readxl::read_xlsx(file.path(localfolder,"../../../Temperature_2021.xlsx"))
+  Temp_race$subREG       <- factor("SEBS",
+                                   levels = c("SEBS","NEBS","Other"))
+  TEMP_srvyrep <- suppressWarnings(readxl::read_xlsx(
+    file.path(localfolder,
+              "AFSC_groundfish_survey_temperature_1982-2020_B10K-surveyreplicated.xlsx"),
+    col_names = TRUE))
+  TEMP_srvyrep$subREG <- "Other"
+  TEMP_srvyrep$subREG[TEMP_srvyrep$STRATUM%in%NEBS_strata] <- "NEBS"
+  TEMP_srvyrep$subREG[TEMP_srvyrep$STRATUM%in%SEBS_strata] <- "SEBS"
+   tt <- strptime(TEMP_srvyrep$DATETIME,"%Y-%m-%d",tz = "UTC")
+  TEMP_srvyrep$YEAR  <- tt$year+1900
+  TEMP_srvyrep$MO    <- tt$mon+1
+  TEMP_srvyrep$JDAY  <- tt$yday+1
+
+  TEMP_srvyobs <- suppressWarnings(readxl::read_xlsx(
+    file.path(localfolder,
+              "AFSC_groundfish_survey_temperature_1982-2020.xlsx"),
+    col_names = TRUE))
+  TEMP_srvyobs$subREG <- "Other"
+  TEMP_srvyobs$subREG[TEMP_srvyobs$STRATUM%in%NEBS_strata] <- "NEBS"
+  TEMP_srvyobs$subREG[TEMP_srvyobs$STRATUM%in%SEBS_strata] <- "SEBS"
+  tt <- strptime(TEMP_srvyobs$DATETIME,"%Y-%m-%d",tz = "UTC")
+  TEMP_srvyobs$YEAR  <- tt$year+1900
+  TEMP_srvyobs$MO    <- tt$mon+1
+  TEMP_srvyobs$JDAY  <- tt$yday+1
+
+
+  TEMP_srvyrep_mn <- getAnnual_mn(x=TEMP_srvyrep%>%filter(MO>5, MO<10))%>%group_by(subREG, YEAR)
+  TEMP_srvyobs_mn <- getAnnual_mn(x=TEMP_srvyobs%>%filter(MO>5, MO<10))
+
+  TEMP_srvyobs_mnbystation <- TEMP_srvyobs%>%
+    filter(MO>5, MO<10)%>%
+    group_by(REGION,YEAR,subREG)%>%
+    summarize(mnBT  = mean(GEAR_TEMPERATURE, na.rm=T),
+           mnSST = mean(GEAR_TEMPERATURE, na.rm=T),
+           seBT  = se(GEAR_TEMPERATURE, na.rm=T),
+           seSST = se(GEAR_TEMPERATURE, na.rm=T))
+
+   TEMP_srvyrep_mnbystation <- TEMP_srvyrep%>%
+    filter(MO>5, MO<10)%>%
+    group_by(REGION,YEAR,subREG)%>%
+    summarize(mnBT  = mean(GEAR_TEMPERATURE, na.rm=T),
+           mnSST = mean(GEAR_TEMPERATURE, na.rm=T),
+           seBT  = se(GEAR_TEMPERATURE, na.rm=T),
+           seSST = se(GEAR_TEMPERATURE, na.rm=T))
+
+
+  Strata_list     <- as.numeric(na.omit(unique(TEMP_srvyrep$STRATUM, na.rm=T)))
+  Strata_list_obs <- as.numeric(na.omit(unique(TEMP_srvyobs$STRATUM, na.rm=T)))
+  if(length(setdiff(Strata_list,Strata_list_obs)>0))
+    stop("Strata from obs and survey replicated do not match!")
+
+  TEMP_srvyrep_mn$subREG <- factor(TEMP_srvyrep_mn$subREG,
+                                   levels = c("SEBS","NEBS","Other"))
+  TEMP_srvyobs_mn$subREG <- factor(TEMP_srvyobs_mn$subREG,
+                                   levels = c("SEBS","NEBS","Other"))
+
+  p <- ggplot()+
+      geom_point(data=Temp_race,
+              aes(x = Year, y = BottomT,color=ROMSNPZ,shape = ROMSNPZ),size=2)+
+   geom_point(data=TEMP_srvyobs_mn,
+              aes(x = YEAR, y = mnBT,color=subREG))+
+   geom_errorbar(data=TEMP_srvyobs_mn,
+                 aes(x = YEAR, ymax = mnBT+1.95*seBT,ymin = mnBT-1.95*seBT,color=subREG))+
+   geom_line(data=TEMP_srvyobs_mn,
+             aes(x = YEAR, y = mnBT,color=subREG))+
+   # geom_errorbar(data=TEMP_srvyobs_mnbystation,
+   #               aes(x = YEAR, ymax = mnBT+1.95*seBT,ymin = mnBT-1.95*seBT,color=subREG))+
+   # geom_line(data=TEMP_srvyobs_mnbystation,
+   #           aes(x = YEAR, y = mnBT,color=subREG))+
+    facet_grid(subREG~.)+
+  theme_minimal()+scale_color_viridis_d(begin=.3,end=.8)+ylab("Bottom T (oC)")
+  p
+  if(update.figs){
+        sclr <- 1.5
+        jpeg(file=file.path(main,"Figs/Srvy_obs_temperature.jpg"),
+             width=5*sclr,height=3*sclr, res=150, units="in")
+        print(p)
+        dev.off()
+     }
+  save(TEMP_srvyobs_mn,
+       file=file.path("Data/out",paste0(thisYr,"_TEMP_srvyobs_mn.Rdata")))
+   save(TEMP_srvyrep_mn,
+       file=file.path("Data/out",paste0(thisYr,"_TEMP_srvyrep_mn.Rdata")))
+    save(Temp_race,
+       file=file.path("Data/out",paste0(thisYr,"_Temp_race.Rdata")))
+
+```
+
+
+<!-- ### 5.1.1. Level 3 hindcasts: spatial patterns -->
+
+<!-- Now let's explore the survey replicated data in more detail and use to plot bottom temperature. -->
+
+<!-- ```{r explore_srvy1, eval=F, echo=T, results='hide',message=FALSE} -->
+<!--     # run this line if load_gis is set to F in R/setup.R: -->
+<!--     tt <- getwd() -->
+<!--     setwd("../ACLIM2") -->
+<!--     source("R/sub_scripts/load_maps.R") -->
+<!--     setwd(tt) -->
+
+<!--     Rdata_path <- localfolder -->
+
+<!--     # preview the l3 data for the hindcast: -->
+<!--     tt <- all_info1%>%filter(name =="B10K-K20_CORECFS") -->
+<!--     tt <- seq(as.numeric(substring(tt$Start,1,4)), -->
+<!--               as.numeric(substring(tt$End,1,4)),10) -->
+
+<!--     # now create plots of average BT during four time periods -->
+<!--     time_seg   <- list( '1970-1980' = c(1970:1980), -->
+<!--                         '1980-1990' = c(1980:1990), -->
+<!--                         '1990-2000' = c(1990:2000), -->
+<!--                         '2000-2010' = c(2000:2010), -->
+<!--                         '2010-2020' = c(2010:2021)) -->
+
+<!--     # lists the possible variables -->
+<!--     srvy_vars  # lists the possible variables -->
+
+<!--     # specify the variables to plot -->
+<!--     vl        <- c( -->
+<!--                   "temp_bottom5m", -->
+<!--                   "NCaS_integrated", # Large Cop -->
+<!--                   "Cop_integrated",  # Small Cop -->
+<!--                   "EupS_integrated") # Euphausiids -->
+
+<!--     # assign the simulation to download -->
+<!--     # --> Tinker: try selecting a different set of models to compare -->
+<!--     sim        <-"B10K-K20_CORECFS" -->
+
+<!--     # open a "region" or strata specific nc file -->
+<!--     fl         <- file.path(sim,paste0(srvy_txt,sim,".Rdata")) -->
+
+<!--     vl <- srvy_vars[!srvy_vars%in%c("station_id","latitude","longitude","stratum","doy", -->
+<!--                                     "Iron_bottom5m","Iron_integrated","Iron_surface5m", -->
+<!--                                     "prod_Eup_integrated","prod_NCa_integrated")] -->
+<!--     # create local rdata files (opt 1) -->
+<!--     if(!file.exists(file.path(Rdata_path,fl))) -->
+<!--       l3_2Rdata( -->
+<!--              rd_path     = localfolder, -->
+<!--              local_path  = localfolder, -->
+<!--              varlist     = vl, -->
+<!--              sim_list    = sim, -->
+<!--              verbose     = TRUE) -->
+
+<!--     # load object 'ACLIMsurveyrep' -->
+<!--     load(file.path(localfolder,fl)) -->
+
+<!--     hind <- getMN_srvyrep(x=ACLIMsurveyrep) -->
+<!--     plot_dat <- hind%>%dplyr::filter(var== "temp_bottom5m",YEAR<=thisYr,subREG=="SEBS") -->
+<!--     plot_obs <- TEMP_srvyobs_mn%>%dplyr::filter(subREG=="SEBS") -->
+
+<!--     ggplot()+ -->
+<!--       geom_point(data=plot_obs,aes(x = YEAR, y = mnBT,color=subREG))+ -->
+<!--       geom_errorbar(data=plot_obs,aes(x = YEAR, ymax = mnBT+1.95*seBT,ymin = mnBT-1.95*seBT,color=subREG))+ -->
+<!--       geom_line(data=plot_dat,aes(x = YEAR, y = mnVal,color=subREG))+ -->
+<!--       geom_line(data=plot_dat,aes(x = YEAR, y = mnVal+1.95*seVal,color=subREG),linetype="dashed")+ -->
+<!--       geom_line(data=plot_dat,aes(x = YEAR, y = mnVal-1.95*seVal,color=subREG),linetype="dashed") -->
+
+
+
+
+<!-- ``` -->
+
+
+
+<!-- ## hindcasts: annual survey replicated averages -->
+
+<!-- Now let's look at the Marine Heatwave conditions in 2018 and compare that to the average conditions prior to 2010: -->
+
+<!-- ```{r MHW_plot, eval=F, echo=T} -->
+<!--  # get the mean values for the time blocks from the rdata versions -->
+<!--     # will throw "implicit NA" errors that can be ignored -->
+<!--     mn_var_all <- get_mn_rd(modset = ms, -->
+<!--                             names  = c("K20") , -->
+<!--                             varUSE = "temp_bottom5m") -->
+
+<!--     # convert results to a shapefile -->
+<!--     mn_var_sf  <- convert2shp(mn_var_all%>%filter(!is.na(mnval))) -->
+<!--     lab_t      <- "Bering10K CORECFS hindcast" -->
+
+<!--     p_hind_3         <- plot_stations_basemap(sfIN = mn_var_sf, -->
+<!--                                 fillIN = "mnval", -->
+<!--                                 colorIN = "mnval", -->
+<!--                                 sizeIN=.3) + -->
+<!--       facet_grid(simulation~time_period)+ -->
+<!--       scale_color_viridis_c()+ -->
+<!--       scale_fill_viridis_c()+ -->
+<!--       guides( -->
+<!--         color =  guide_legend(title="Bottom T (degC)"), -->
+<!--         fill  =  guide_legend(title="Bottom T (degC)")) + -->
+<!--       ggtitle(lab_t) -->
+
+<!--     # This is slow but it works (repeat dev.new() twice if in Rstudio)... -->
+<!--     dev.new() -->
+<!--     p_hind_3 -->
+
+<!--     if(update.figs) -->
+<!--       ggsave(file=file.path(main,"Figs/mn_hindcast_BT.jpg"),width=8,height=6) -->
+
+<!--  # now create plots of average BT during four time periods -->
+<!--     time_seg   <- list( '1970-2010' = c(1970:2010), -->
+<!--                         '2018-2018' = c(2018:2018)) -->
+
+<!--     # assign the simulation to download -->
+<!--     sim        <- "B10K-K20_CORECFS" -->
+
+<!--     # open a "region" or strata specific nc file -->
+<!--     fl         <- file.path(sim,paste0(srvy_txt,sim,".Rdata")) -->
+
+<!--     # load object 'ACLIMsurveyrep' -->
+<!--     load(file.path(main,Rdata_path,fl)) -->
+
+<!--     # get the mean values for the time blocks from the rdata versions -->
+<!--     mn_var_all <- get_mn_rd(modset = "B10K-K20_CORECFS", -->
+<!--                             varUSE = "temp_bottom5m") -->
+
+<!--     # convert results to a shapefile -->
+<!--     mn_var_sf  <- convert2shp(mn_var_all%>%filter(!is.na(mnval))) -->
+<!--     lab_t      <- "Bering10K CORECFS hindcast" -->
+
+<!--     p_mhw      <- plot_stations_basemap(sfIN = mn_var_sf, -->
+<!--                                 fillIN = "mnval", -->
+<!--                                 colorIN = "mnval", -->
+<!--                                 sizeIN=.3) + -->
+<!--       facet_grid(simulation~time_period)+ -->
+<!--       scale_color_viridis_c()+ -->
+<!--       scale_fill_viridis_c()+ -->
+<!--       guides( -->
+<!--         color =  guide_legend(title="Bottom T (degC)"), -->
+<!--         fill  =  guide_legend(title="Bottom T (degC)")) + -->
+<!--       ggtitle(lab_t) -->
+
+<!--     # This is slow but it works (repeat dev.new() twice if in Rstudio)... -->
+<!--     dev.new(width=4,height=3) -->
+<!--     p_mhw -->
+
+<!--     if(update.figs) -->
+<!--       ggsave(file=file.path(main,"Figs/mn_hindcast_mhw.jpg"),width=4,height=3) -->
+<!-- ``` -->
+
+<!-- ### 5.1.2. Level 3 hindcasts: Weekly strata averages -->
+
+<!-- The next set of indices to will explore are the weekly strata-specific values for each variable.These are stored in the `ACLIMregion_B10K-[version_CMIPx_GCM_RCP].nc` in each scenario folder. -->
+
+<!-- ```{r hind_weekly, eval=F, echo=T} -->
+
+
+<!--     # View an individual variable (e.g., Bottom Temp) -->
+<!--     # ------------------------------------------------------- -->
+<!--     weekly_vars -->
+
+<!--     # assign the simulation to download -->
+<!--     sim        <- "B10K-K20_CORECFS" -->
+
+<!--     # define a "region" or strata specific nc file -->
+<!--     fl         <- file.path(sim,paste0(reg_txt,sim,".Rdata")) -->
+
+
+<!--     vl        <- c( -->
+<!--                   "temp_bottom5m", -->
+<!--                   "NCaS_integrated", # Large Cop -->
+<!--                   "Cop_integrated",  # Small Cop -->
+<!--                   "EupS_integrated") # Euphausiids -->
+
+<!--     # create local rdata files (opt 1) -->
+<!--     if(!file.exists(file.path(Rdata_path,fl))) -->
+<!--       get_l3(web_nc = TRUE, download_nc = F, -->
+<!--           varlist = vl,sim_list = sim) -->
+
+
+<!--     # load object 'ACLIMregion' for bottom temperature -->
+<!--     load(file.path(main,Rdata_path,fl)) -->
+<!--     tmp_var    <- ACLIMregion%>%filter(var == "temp_bottom5m") -->
+
+<!--    # now plot the data: -->
+<!--    p4_hind <- ggplot(data = tmp_var) + -->
+<!--      geom_line(aes(x=time,y=val,color= strata),alpha=.8)+ -->
+<!--      facet_grid(basin~.)+ -->
+<!--      ylab(tmp_var$units[1])+ -->
+<!--      ggtitle( paste(sim,tmp_var$var[1]))+ -->
+<!--      theme_minimal() -->
+<!--    p4_hind -->
+
+<!--     if(update.figs) -->
+<!--       ggsave(file=file.path(main,"Figs/hind_weekly_bystrata.jpg"),width=8,height=5) -->
+
+
+<!--    # To get the average value for a set of strata, weight the val by the area: -->
+<!--    mn_NEBS <- getAVGnSUM(strataIN = NEBS_strata, dataIN = tmp_var) -->
+<!--    mn_NEBS$basin = "NEBS" -->
+<!--    mn_SEBS <-getAVGnSUM(strataIN = SEBS_strata, dataIN = tmp_var) -->
+<!--    mn_SEBS$basin = "SEBS" -->
+
+<!--    p5_hind <- ggplot(data = rbind(mn_NEBS,mn_SEBS)) + -->
+<!--       geom_line(aes(x=time,y=mn_val,color=basin),alpha=.8)+ -->
+<!--       geom_smooth(aes(x=time,y=mn_val,color=basin), -->
+<!--                   formula = y ~ x, se = T)+ -->
+<!--       facet_grid(basin~.)+ -->
+<!--       scale_color_viridis_d(begin=.4,end=.8)+ -->
+<!--       ylab(tmp_var$units[1])+ -->
+<!--       ggtitle( paste(sim,mn_NEBS$var[1]))+ -->
+
+<!--       theme_minimal() -->
+<!--   p5_hind -->
+<!--   if(update.figs) -->
+<!--     ggsave(file=file.path(main,"Figs/hind_weekly_byreg.jpg"),width=8,height=5) -->
+
+
+<!-- ``` -->
+
+<!-- ### 5.1.3. Level 3 hindcasts: Seasonal averages -->
+<!-- Now using a similar approach get the seasonal mean values for a variable: -->
+<!-- ```{r seasonal averages, eval=F, include=T,echo=T} -->
+
+<!--     # assign the simulation to download -->
+<!--       sim        <- "B10K-K20_CORECFS" -->
+
+
+<!--     # Set up seasons (this follows Holsman et al. 2020) -->
+<!--       seasons <- data.frame(mo = 1:12, -->
+<!--                    season =factor("", -->
+<!--                      levels=c("Winter","Spring","Summer","Fall"))) -->
+<!--       seasons$season[1:3]   <- "Winter" -->
+<!--       seasons$season[4:6]   <- "Spring" -->
+<!--       seasons$season[7:9]   <- "Summer" -->
+<!--       seasons$season[10:12] <- "Fall" -->
+
+
+<!--     vl <- c( -->
+<!--                   "temp_bottom5m", -->
+<!--                   "NCaS_integrated", # Large Cop -->
+<!--                   "Cop_integrated",  # Small Cop -->
+<!--                   "EupS_integrated") # Euphausiids -->
+
+<!--     # create local rdata files (opt 1) -->
+<!--     if(!file.exists(file.path(Rdata_path,fl))) -->
+<!--       get_l3(web_nc = TRUE, download_nc = F, -->
+<!--           varlist = vl,sim_list = sim) -->
+
+<!--     # open a "region" or strata specific  file -->
+<!--     fl      <- file.path(sim,paste0(reg_txt,sim,".Rdata")) -->
+<!--     load(file.path(main,Rdata_path,fl)) -->
+
+<!--     # get large zooplankton as the sum of euph and NCaS -->
+<!--     tmp_var    <- ACLIMregion%>% -->
+<!--       filter(var%in%vl[c(2,3)])%>% -->
+<!--       group_by(time,strata,strata_area_km2,basin)%>% -->
+<!--       group_by(time, -->
+<!--              strata, -->
+<!--              strata_area_km2, -->
+<!--              basin, -->
+<!--              units)%>% -->
+<!--       summarise(val =sum(val))%>% -->
+<!--       mutate(var       = "Zoop_integrated", -->
+<!--              long_name ="Total On-shelf -->
+<!--              large zooplankton concentration, -->
+<!--              integrated over depth (NCa, Eup)") -->
+
+<!--     rm(ACLIMregion) -->
+<!--     head(tmp_var) -->
+
+<!--     # define some columns for year mo and julian day -->
+<!--     tmp_var$yr     <- strptime(as.Date(tmp_var$time), -->
+<!--                                format="%Y-%m-%d")$year + 1900 -->
+<!--     tmp_var$mo     <- strptime(as.Date(tmp_var$time), -->
+<!--                                format="%Y-%m-%d")$mon  + 1 -->
+<!--     tmp_var$jday   <- strptime(as.Date(tmp_var$time), -->
+<!--                                format="%Y-%m-%d")$yday + 1 -->
+<!--     tmp_var$season <- seasons[tmp_var$mo,2] -->
+
+<!--     # To get the average value for a set of strata, weight the val by the area: (slow...) -->
+<!--     mn_NEBS_season <- getAVGnSUM( -->
+<!--       strataIN = NEBS_strata, -->
+<!--       dataIN = tmp_var, -->
+<!--       tblock=c("yr","season")) -->
+<!--     mn_NEBS_season$basin = "NEBS" -->
+
+<!--     mn_SEBS_season <- getAVGnSUM( -->
+<!--       strataIN = SEBS_strata, -->
+<!--       dataIN = tmp_var, -->
+<!--       tblock=c("yr","season")) -->
+<!--     mn_SEBS_season$basin = "SEBS" -->
+
+<!--    plot_data      <- rbind(mn_NEBS_season,mn_SEBS_season) -->
+
+<!--    # plot Fall values: -->
+<!--    p6_hind <- ggplot(data = plot_data%>%filter(season=="Fall") ) + -->
+<!--       geom_line(   aes(x = yr,y = mn_val,color=basin),alpha=.8)+ -->
+<!--       geom_smooth( aes(x = yr,y = mn_val,color=basin), -->
+<!--                   formula = y ~ x, se = T)+ -->
+<!--       facet_grid(basin~.)+ -->
+<!--       scale_color_viridis_d(begin=.4,end=.8)+ -->
+<!--       ylab(tmp_var$units[1])+ -->
+<!--       ggtitle( paste(sim,"Fall",mn_NEBS_season$var[1]))+ -->
+<!--       theme_minimal() -->
+<!--   p6_hind -->
+
+
+<!--   if(update.figs) -->
+<!--     ggsave(file=file.path(main,"Figs/Hind_Fall_large_Zoop.jpg"),width=8,height=5) -->
+
+<!-- ``` -->
+
+<!-- ![Large fall zooplankton integrated concentration](Figs/Hind_Fall_large_Zoop.jpg){ width=75% } -->
+
+### 5.1.4. Level 3 hindcasts: Monthly averages
+
+Using the same approach we can get monthly averages for a given variable:
+
+```{r monthly averages hind, eval=F, include=T,echo=T}
+
+    # To get the average value for a set of strata, weight the val by the area: (slow...)
+    mn_NEBS_season <- getAVGnSUM(
+      strataIN = NEBS_strata,
+      dataIN   = tmp_var,
+      tblock   = c("yr","mo"))
+    mn_NEBS_season$basin = "NEBS"
+
+    mn_SEBS_season <- getAVGnSUM(
+      strataIN = SEBS_strata,
+      dataIN = tmp_var,
+      tblock=c("yr","mo"))
+    mn_SEBS_season$basin = "SEBS"
+
+    plot_data      <- rbind(mn_NEBS_season,mn_SEBS_season)
+
+   # plot Fall values:
+   p7_hind <- ggplot(data = plot_data%>%filter(mo==9) ) +
+      geom_line(   aes(x = yr,y = mn_val,color=basin),alpha=.8)+
+      geom_smooth( aes(x = yr,y = mn_val,color=basin),
+                  formula = y ~ x, se = T)+
+      facet_grid(basin~.)+
+      scale_color_viridis_d(begin=.4,end=.8)+
+      ylab(tmp_var$units[1])+
+      ggtitle( paste(aclim[2],"Sept.",mn_NEBS_season$var[1]))+
+      theme_minimal()
+   dev.new()
+  p7_hind
+
+  if(update.figs)
+    ggsave(file=file.path(main,"Figs/Hind_Sept_large_Zoop.jpg"),width=8,height=5)
+```
+
+
+![September large zooplankton integrated concentration](Figs/Hind_Sept_large_Zoop.jpg){ width=75% }
+
+
+
+
+
+

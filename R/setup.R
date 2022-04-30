@@ -7,9 +7,17 @@
   
     # switches and options:
     #-------------------------------------------
+    # set the reference years for bias correcting:
+    ref_years <- 1980:2013
+    
+    # identify the year to z-score scale / delta
+    deltayrs  <- 1970:2000
+    
     # set this to TRUE to "update" the indices from the original files on mox
     redownload_level3_mox  <- FALSE
     update_base_data       <- FALSE
+    subfldr                <- "2022_03_07"
+    subfldrR               <- "2022_03_07_Rdata"
     
     load_gis        <-  FALSE  # load mapfiles, note first time through downloading these may take a long time
     update.figs     <-  FALSE  # set to true to re-save figs
@@ -18,61 +26,26 @@
     scaleIN         <-  1      # controls the ratio (relative scaling of window)
     dpiIN           <-  150    # dpi for figures (set to lower res for smaller file size- these will be about 3.5 MB)
     
-    # dataset names:
-    #-------------------------------------------
-    weekly_flnm     <- "ACLIMregion"
-    survey_rep_flnm <- "ACLIMsurveyrep"
-    
-    # simulation names:
-    #-------------------------------------------
-    sim_list <- scenarios <- c("B10K-K20_CORECFS",
-                  "B10K-H16_CMIP5_CESM_BIO_rcp85",
-                  "B10K-H16_CMIP5_CESM_rcp45",
-                  "B10K-H16_CMIP5_CESM_rcp85",
-                  "B10K-H16_CMIP5_GFDL_BIO_rcp85",
-                  "B10K-H16_CMIP5_GFDL_rcp45",
-                  "B10K-H16_CMIP5_GFDL_rcp85",
-                  "B10K-H16_CMIP5_MIROC_rcp45",
-                  "B10K-H16_CMIP5_MIROC_rcp85",
-                  "B10K-H16_CORECFS",
-                  # "B10K-K20P19_CMIP5_CESM_rcp45",
-                  # "B10K-K20P19_CMIP5_CESM_rcp85",
-                  # "B10K-K20P19_CMIP5_GFDL_rcp45",
-                  # "B10K-K20P19_CMIP5_GFDL_rcp85",
-                  # "B10K-K20P19_CMIP5_MIROC_rcp45",
-                  # "B10K-K20P19_CMIP5_MIROC_rcp85",
-                  "B10K-K20P19_CMIP6_cesm_historical",
-                  "B10K-K20P19_CMIP6_cesm_ssp126",
-                  "B10K-K20P19_CMIP6_cesm_ssp585",
-                  "B10K-K20P19_CMIP6_gfdl_historical",
-                  "B10K-K20P19_CMIP6_gfdl_ssp126",
-                  "B10K-K20P19_CMIP6_gfdl_ssp585",
-                  "B10K-K20P19_CMIP6_miroc_historical",
-                  "B10K-K20P19_CMIP6_miroc_ssp126",
-                  "B10K-K20P19_CMIP6_miroc_ssp585")
-    # URL paths:
-    #-------------------------------------------
-    # specify the root URL:
-    ACLIM_data_url <- "https://data.pmel.noaa.gov/aclim/thredds/"
-    
     # set up directory paths:
     #-------------------------------------------
-    remote_fl    <- "roms_for_aclim"
-    local_fl     <- file.path(main,"Data/in",  "Newest")
+    remote_fl     <- "roms_for_public"
+    local_fl      <- file.path(main,"Data/in")
     if(redownload_level3_mox)
-      local_fl    <- file.path(main,"Data/in",  tmstp)
+      subfldr     <- tmstp
+    local_fl      <- file.path(main,"Data/in",  subfldr)
     localfolder   <- file.path(local_fl,remote_fl)
     data_path     <- file.path(local_fl,remote_fl)
+    Rdata_path    <- file.path(file.path(main,"Data/in",  subfldrR),remote_fl)
     
-    
-    if(!dir.exists(local_fl))       dir.create(local_fl)
+    if(!dir.exists(local_fl))       
+      dir.create(local_fl)
     if(!dir.exists(file.path(local_fl,remote_fl)))   
       dir.create(file.path(local_fl,remote_fl))
     
     mapdata_path     <- file.path(main,"Data/in/Map_layers")
     geotif_dir       <- "Data/in/Map_layers/geo_tif"
     shp_dir          <- "Data/in/Map_layers/shp_files"
-    Rdata_path       <- "Data/in/Newest/Rdata"
+    
     shareddata_path  <- "Data/shared"
    
     
@@ -80,6 +53,44 @@
     if(!dir.exists(Rdata_path))       dir.create(Rdata_path)
     if(!dir.exists(mapdata_path))     dir.create(mapdata_path)
     
+    # dataset names:
+    #-------------------------------------------
+    weekly_flnm     <- "ACLIMregion"
+    survey_rep_flnm <- "ACLIMsurveyrep"
+    
+    # URL paths:
+    #-------------------------------------------
+    # specify the root URL:
+    ACLIM_data_url <- "https://data.pmel.noaa.gov/aclim/thredds/"
+    
+    
+    # simulation names:
+    #-------------------------------------------
+    sim_list <- scenarios <- c("B10K-K20_CORECFS",
+                               "B10K-H16_CMIP5_CESM_BIO_rcp85",
+                               "B10K-H16_CMIP5_CESM_rcp45",
+                               "B10K-H16_CMIP5_CESM_rcp85",
+                               "B10K-H16_CMIP5_GFDL_BIO_rcp85",
+                               "B10K-H16_CMIP5_GFDL_rcp45",
+                               "B10K-H16_CMIP5_GFDL_rcp85",
+                               "B10K-H16_CMIP5_MIROC_rcp45",
+                               "B10K-H16_CMIP5_MIROC_rcp85",
+                               "B10K-H16_CORECFS",
+                               # "B10K-K20P19_CMIP5_CESM_rcp45",
+                               # "B10K-K20P19_CMIP5_CESM_rcp85",
+                               # "B10K-K20P19_CMIP5_GFDL_rcp45",
+                               # "B10K-K20P19_CMIP5_GFDL_rcp85",
+                               # "B10K-K20P19_CMIP5_MIROC_rcp45",
+                               # "B10K-K20P19_CMIP5_MIROC_rcp85",
+                               "B10K-K20P19_CMIP6_cesm_historical",
+                               "B10K-K20P19_CMIP6_cesm_ssp126",
+                               "B10K-K20P19_CMIP6_cesm_ssp585",
+                               "B10K-K20P19_CMIP6_gfdl_historical",
+                               "B10K-K20P19_CMIP6_gfdl_ssp126",
+                               "B10K-K20P19_CMIP6_gfdl_ssp585",
+                               "B10K-K20P19_CMIP6_miroc_historical",
+                               "B10K-K20P19_CMIP6_miroc_ssp126",
+                               "B10K-K20P19_CMIP6_miroc_ssp585")
     
     # Identify ACLIM shared models:
     #-------------------------------------------
@@ -121,6 +132,7 @@
     cat("------------------------------\n")
     cat(paste("main:                :",main,"\n"))
     cat(paste("data_path            :",data_path,"\n"))
+    cat(paste("Rdata_path           :",Rdata_path,"\n"))
     cat(paste("redownload_level3_mox:",redownload_level3_mox,"\n"))
     cat(paste("update.figs          :", update.figs,"\n"))
     
