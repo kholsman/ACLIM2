@@ -427,70 +427,64 @@ data.frame(sim_list)
 <p><em>Important!</em> Note that for projections the ‘mn_val’ represents raw mean values, while ‘val_biascorrected’ is the bias corrected mn_val (should be used instead of the raw values). In all cases, for variables that are log-normally distributed (cannot be &lt; 0), the ln(mn_val) were used to bias correct and were then back transformed to non-log space after correction:</p>
 <p>For normally distributed variables (<span class="math inline">\(Y\)</span>): <span class="math display">\[\bar{Y}^{fut&#39;}_{y,k} =\bar{Y}^{hind}_{k} +\left( \frac{\sigma^{hind}_{k}}{\sigma^{hist}_{k}}*(\bar{Y}^{fut}_{y,k}-\bar{Y}^{hist}_{k})  \right )\]</span>,</p>
 <p>For log-normally distributed variables(<span class="math inline">\(Y\)</span>): <span class="math display">\[\bar{Y}^{fut&#39;}_{y,k} =\ln\bar{Y}^{hind}_{k} +\left( \frac{\hat\sigma^{hind}_{k}}{\hat\sigma^{hist}_{k}}*(\ln\bar{Y}^{fut}_{y,k}-\ln\bar{Y}^{hist}_{k})  \right )\]</span>, where <span class="math inline">\(\hat\sigma^{hist}_{k}\)</span> and <span class="math inline">\(\hat\sigma^{hind}_{k}\)</span> are the standard deviation of the <span class="math inline">\(\ln\bar{Y}^{hist}_{k,y}\)</span> and <span class="math inline">\(\ln\bar{Y}^{hind}_{k,y}\)</span>, respectively.</p>
-</div>
-<div id="weekly-indices-aclim_weekly_hind" class="section level2" number="3.2">
-<h2 number="3.2"><span class="header-section-number">3.2</span> <em>Weekly indices (‘ACLIM_weekly_hind’)</em></h2>
-<ul>
-<li>Uses the strata x weekly data (‘ACLIMregion’) to generate strata-specific area-weighted averages of the strata values averaged for each week <span class="math inline">\(w\)</span> each year <span class="math inline">\(y\)</span>.</li>
-</ul>
-<p><span class="math display">\[\bar{Y}_{w,y,k}= \frac{\sum^{n_s}_{l}(\frac{1}{n_i}\sum^{n_i}_{i}Y_{k,w,y,s,i})*A_s} {\sum^{n_s}_{s}{A_s}}\]</span>, where <span class="math inline">\(Y_{k,w,y,s,i}\)</span> is the value of the variable <span class="math inline">\(k\)</span> at station <span class="math inline">\(i\)</span> in strata <span class="math inline">\(s\)</span> in year <span class="math inline">\(y\)</span>, <span class="math inline">\(A_s\)</span> is the area of strata <span class="math inline">\(s\)</span>, <span class="math inline">\(n_i\)</span> is the number of stations in strata <span class="math inline">\(s\)</span>, and <span class="math inline">\(n_s\)</span> is the number of strata <span class="math inline">\(s\)</span> in each basin (NEBS or SEBS).</p>
+<div id="weekly-indices" class="section level3" number="3.1.1">
+<h3 number="3.1.1"><span class="header-section-number">3.1.1</span> Weekly indices</h3>
+<p>Uses the strata x weekly data (‘ACLIMregion’) to generate strata-specific averages in order to generate the strata area-weighted averages for each week <span class="math inline">\(w\)</span> each year <span class="math inline">\(y\)</span>.</p>
+<p><span class="math display">\[\bar{Y}_{w,y,k}= \frac{\sum^{n_s}_{l}(\frac{1}{n_i}\sum^{n_t}_{t}Y_{k,w,y,s,t})*A_s} {\sum^{n_s}_{s}{A_s}}\]</span>, where <span class="math inline">\(Y_{k,w,y,s,t}\)</span> is the value of the variable <span class="math inline">\(k\)</span> in strata <span class="math inline">\(s\)</span> at time <span class="math inline">\(t\)</span> in year <span class="math inline">\(y\)</span>, <span class="math inline">\(A_s\)</span> is the area of strata <span class="math inline">\(s\)</span>, <span class="math inline">\(n_i\)</span> is the number of stations in strata <span class="math inline">\(s\)</span>, and <span class="math inline">\(n_s\)</span> is the number of strata <span class="math inline">\(s\)</span> in each basin (NEBS or SEBS).</p>
 <p><span class="math inline">\(\bar{Y}_{w,y,k}\)</span> was calculated for the hindcast, historical run, and projection time-series. For projections <span class="math inline">\(\bar{Y}_{w,y,k}\)</span> was bias corrected using the corresponding historical and hindcast values such that:</p>
 <p><span class="math display">\[\bar{Y}^{fut&#39;}_{w,y,k} =\bar{Y}^{hind}_{w,k} +\left( \frac{\sigma^{hind}_{w,k}}{\sigma^{hist}_{w,k}}*(\bar{Y}^{fut}_{w,y,k}-\bar{Y}^{hist}_{w,k})  \right )\]</span>, where <span class="math inline">\(\bar{Y}^{hist}_{w,k}\)</span> and <span class="math inline">\(\bar{Y}^{hind}_{w,k}\)</span> are the average historical weekly values across years in the reference period (1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013; adjustable in <code>R/setup.R</code>).</p>
 </div>
-<div id="monthly-indices" class="section level2" number="3.3">
-<h2 number="3.3"><span class="header-section-number">3.3</span> <em>Monthly indices</em></h2>
-<ul>
-<li>Uses the strata x weekly data (‘ACLIMregion’) to generate strata-specific area-weighted averages of the strata values averaged for each month <span class="math inline">\(m\)</span> each year <span class="math inline">\(y\)</span>.</li>
-</ul>
-<p><span class="math display">\[\bar{Y}_{m,y,k}= \frac{\sum^{n_s}_{l}(\frac{1}{n_i}\sum^{n_i}_{i}Y_{k,m,y,s,i})*A_s} {\sum^{n_s}_{s}{A_s}}\]</span>, where <span class="math inline">\(Y_{k,m,y,s,i}\)</span> is the value of the variable <span class="math inline">\(k\)</span> at station <span class="math inline">\(i\)</span> in strata <span class="math inline">\(s\)</span> in year <span class="math inline">\(y\)</span>, <span class="math inline">\(A_s\)</span> is the area of strata <span class="math inline">\(s\)</span>, <span class="math inline">\(n_i\)</span> is the number of stations in strata <span class="math inline">\(s\)</span>, and <span class="math inline">\(n_s\)</span> is the number of strata <span class="math inline">\(s\)</span> in each basin (NEBS or SEBS).</p>
+<div id="monthly-indices" class="section level3" number="3.1.2">
+<h3 number="3.1.2"><span class="header-section-number">3.1.2</span> Monthly indices</h3>
+<p>Uses the strata x weekly data (‘ACLIMregion’) to generate strata-specific averages in order to generate the strata area-weighted averages for each month <span class="math inline">\(m\)</span> each year <span class="math inline">\(y\)</span>.</p>
+<p><span class="math display">\[\bar{Y}_{m,y,k}= \frac{1}{n_w}\sum^{n_w}_{w}\bar{Y}_{w,y,k}\]</span>, where <span class="math inline">\(\bar{Y}_{w,y,k}\)</span> are the weekly average indices for variable <span class="math inline">\(k\)</span> in year <span class="math inline">\(y\)</span> from the previous step ,<span class="math inline">\(n_w\)</span> is the number of weeks in each month <span class="math inline">\(m\)</span>.</p>
 <p><span class="math inline">\(\bar{Y}_{m,y,k}\)</span> was calculated for the hindcast, historical run, and projection time-series. For projections <span class="math inline">\(\bar{Y}_{m,y,k}\)</span> was bias corrected using the corresponding historical and hindcast values such that:</p>
 <p><span class="math display">\[\bar{Y}^{fut&#39;}_{m,y,k} =\bar{Y}^{hind}_{m,k} +\left( \frac{\sigma^{hind}_{m,k}}{\sigma^{hist}_{m,k}}*(\bar{Y}^{fut}_{m,y,k}-\bar{Y}^{hist}_{m,k})  \right )\]</span>, where <span class="math inline">\(\bar{Y}^{hist}_{m,k}\)</span> and <span class="math inline">\(\bar{Y}^{hind}_{m,k}\)</span> are the average historical monthly values across years in the reference period (1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013; adjustable in <code>R/setup.R</code>).</p>
 </div>
-<div id="seasonal-indices" class="section level2" number="3.4">
-<h2 number="3.4"><span class="header-section-number">3.4</span> <em>Seasonal indices</em></h2>
-<ul>
-<li>Uses the strata x weekly data (‘ACLIMregion’) to generate strata-specific area-weighted averages of the strata values averaged for each season <span class="math inline">\(l\)</span> each year <span class="math inline">\(y\)</span>.</li>
-</ul>
-<p><span class="math display">\[\bar{Y}_{l,y,k}= \frac{\sum^{n_s}_{l}(\frac{1}{n_i}\sum^{n_i}_{i}Y_{k,l,y,s,i})*A_s} {\sum^{n_s}_{s}{A_s}}\]</span>, where <span class="math inline">\(Y_{k,l,y,s,i}\)</span> is the value of the variable <span class="math inline">\(k\)</span> at station <span class="math inline">\(i\)</span> in strata <span class="math inline">\(s\)</span> in year <span class="math inline">\(y\)</span>, <span class="math inline">\(A_s\)</span> is the area of strata <span class="math inline">\(s\)</span>, <span class="math inline">\(n_i\)</span> is the number of stations in strata <span class="math inline">\(s\)</span>, and <span class="math inline">\(n_s\)</span> is the number of strata <span class="math inline">\(s\)</span> in each basin (NEBS or SEBS).</p>
+<div id="seasonal-indices" class="section level3" number="3.1.3">
+<h3 number="3.1.3"><span class="header-section-number">3.1.3</span> Seasonal indices</h3>
+<p>Uses the strata x weekly data (‘ACLIMregion’) to generate strata-specific averages in order to generate the strata area-weighted averages for each season <span class="math inline">\(l\)</span> each year <span class="math inline">\(y\)</span>.</p>
+<p><span class="math display">\[\bar{Y}_{l,y,k}= \frac{1}{n_w}\sum^{n_w}_{w}\bar{Y}_{w,y,k}\]</span>, where <span class="math inline">\(\bar{Y}_{w,y,k}\)</span> are the weekly average indices for variable <span class="math inline">\(k\)</span> in year <span class="math inline">\(y\)</span> from the previous step ,<span class="math inline">\(n_w\)</span> is the number of weeks in each season <span class="math inline">\(l\)</span>.</p>
 <p><span class="math inline">\(\bar{Y}_{l,y,k}\)</span> was calculated for the hindcast, historical run, and projection time-series. For projections <span class="math inline">\(\bar{Y}_{l,y,k}\)</span> was bias corrected using the corresponding historical and hindcast values such that:</p>
 <p><span class="math display">\[\bar{Y}^{fut&#39;}_{l,y,k} =\bar{Y}^{hind}_{l,k} +\left( \frac{\sigma^{hind}_{l,k}}{\sigma^{hist}_{l,k}}*(\bar{Y}^{fut}_{l,y,k}-\bar{Y}^{hist}_{l,k})  \right )\]</span>, where <span class="math inline">\(\bar{Y}^{hist}_{l,k}\)</span> and <span class="math inline">\(\bar{Y}^{hind}_{l,k}\)</span> are the average historical seasonal values across years in the reference period (1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013; adjustable in <code>R/setup.R</code>).</p>
 </div>
-<div id="annual-indices" class="section level2" number="3.5">
-<h2 number="3.5"><span class="header-section-number">3.5</span> <em>Annual indices</em></h2>
-<ul>
-<li>Uses the strata x weekly data (‘ACLIMregion’) to generate strata-specific area-weighted averages of the strata values averaged for each year <span class="math inline">\(y\)</span>.</li>
-</ul>
+<div id="annual-indices" class="section level3" number="3.1.4">
+<h3 number="3.1.4"><span class="header-section-number">3.1.4</span> Annual indices</h3>
+<p>Uses the strata x weekly data (‘ACLIMregion’) to generate strata-specific averages in order to generate the strata area-weighted averages for each year <span class="math inline">\(y\)</span>.</p>
+<p><span class="math display">\[\bar{Y}_{y,k}= \frac{\sum^{n_s}_{l}(\frac{1}{n_i}\sum^{n_i}_{i}Y_{k,y,s,i})*A_s} {\sum^{n_s}_{s}{A_s}}\]</span>, where <span class="math inline">\(Y_{k,w,y,s,t}\)</span> is the value of the variable <span class="math inline">\(k\)</span> in strata <span class="math inline">\(s\)</span> at time <span class="math inline">\(t\)</span> in year <span class="math inline">\(y\)</span>, <span class="math inline">\(A_s\)</span> is the area of strata <span class="math inline">\(s\)</span>, <span class="math inline">\(n_i\)</span> is the number of stations in strata <span class="math inline">\(s\)</span>, and <span class="math inline">\(n_s\)</span> is the number of strata <span class="math inline">\(s\)</span> in each basin (NEBS or SEBS).</p>
+<p><span class="math inline">\(\bar{Y}_{y,k}\)</span> was calculated for the hindcast, historical run, and projection time-series. For projections <span class="math inline">\(\bar{Y}_{y,k}\)</span> was bias corrected using the corresponding historical and hindcast values such that:</p>
+<p><span class="math display">\[\bar{Y}^{fut&#39;}_{y,k} =\bar{Y}^{hind}_{k} +\left( \frac{\sigma^{hind}_{k}}{\sigma^{hist}_{k}}*(\bar{Y}^{fut}_{y,k}-\bar{Y}^{hist}_{k})  \right )\]</span>, where <span class="math inline">\(\bar{Y}^{hind}_{k}\)</span> and <span class="math inline">\(\bar{Y}^{hist}_{k}\)</span> are the average historical values across years in the reference period (1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013; adjustable in <code>R/setup.R</code>).</p>
+</div>
+<div id="annual-survey-rep.-indices" class="section level3" number="3.1.5">
+<h3 number="3.1.5"><span class="header-section-number">3.1.5</span> Annual survey rep. indices</h3>
+<p>Uses the station specific survey replicated (in time and space) data (‘ACLIMsurveyrep’) to generate strata-specific averages in order to generate the strata area-weighted averages for each year <span class="math inline">\(y\)</span>.</p>
 <p><span class="math display">\[\bar{Y}_{y,k}= \frac{\sum^{n_s}_{l}(\frac{1}{n_i}\sum^{n_i}_{i}Y_{k,y,s,i})*A_s} {\sum^{n_s}_{s}{A_s}}\]</span>, where <span class="math inline">\(Y_{k,y,s,i}\)</span> is the value of the variable <span class="math inline">\(k\)</span> at station <span class="math inline">\(i\)</span> in strata <span class="math inline">\(s\)</span> in year <span class="math inline">\(y\)</span>, <span class="math inline">\(A_s\)</span> is the area of strata <span class="math inline">\(s\)</span>, <span class="math inline">\(n_i\)</span> is the number of stations in strata <span class="math inline">\(s\)</span>, and <span class="math inline">\(n_s\)</span> is the number of strata <span class="math inline">\(s\)</span> in each basin (NEBS or SEBS).</p>
 <p><span class="math inline">\(\bar{Y}_{y,k}\)</span> was calculated for the hindcast, historical run, and projection time-series. For projections <span class="math inline">\(\bar{Y}_{y,k}\)</span> was bias corrected using the corresponding historical and hindcast values such that:</p>
 <p><span class="math display">\[\bar{Y}^{fut&#39;}_{y,k} =\bar{Y}^{hind}_{k} +\left( \frac{\sigma^{hind}_{k}}{\sigma^{hist}_{k}}*(\bar{Y}^{fut}_{y,k}-\bar{Y}^{hist}_{k})  \right )\]</span>, where <span class="math inline">\(\bar{Y}^{hind}_{k}\)</span> and <span class="math inline">\(\bar{Y}^{hist}_{k}\)</span> are the average historical values across years in the reference period (1980, 1981, 1982, 1983, 1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013; adjustable in <code>R/setup.R</code>).</p>
 </div>
-<div id="annual-indices-from-survey-replicated-summer-surveys" class="section level2" number="3.6">
-<h2 number="3.6"><span class="header-section-number">3.6</span> <em>Annual indices from survey replicated (summer surveys)</em></h2>
-<ul>
-<li>Uses survey replicated annual by station data to generate 1) average strata values (average across all stations within a strata) and then 2) strata area weighted means for the year</li>
-</ul>
 </div>
-<div id="step-1-create-indices-and-bias-correct-cmip6-projections" class="section level2" number="3.7">
-<h2 number="3.7"><span class="header-section-number">3.7</span> Step 1: Create indices and bias correct CMIP6 projections</h2>
+<div id="step-1-create-indices-and-bias-correct-cmip6-projections" class="section level2" number="3.2">
+<h2 number="3.2"><span class="header-section-number">3.2</span> Step 1: Create indices and bias correct CMIP6 projections</h2>
+<p>The following code shows how the ACLIM2 indices and bias correction was done. You do not need to re-run this (it is included so you can if you want to). To explore the indices skep to the next section.</p>
 <pre class="r"><code>    # --------------------------------------
     # SETUP WORKSPACE
     tmstp  &lt;- format(Sys.time(), &quot;%Y_%m_%d&quot;)
     main   &lt;- getwd()  #&quot;~/GitHub_new/ACLIM2&quot;
     
     # loads packages, data, setup, etc.
-    suppressWarnings(source(&quot;R/make.R&quot;))
+    suppressMessages(source(&quot;R/make.R&quot;))
     
     tmstamp1  &lt;- format(Sys.time(), &quot;%Y%m%d&quot;)
     # tmstamp1  &lt;- &quot;20220428&quot;
     
     update_hind  &lt;- TRUE   # set to true to update hind and hindS; needed annually
-    update_proj  &lt;- TRUE   # set to true to update proj and projS; not needed
-    update_hist  &lt;- TRUE   # set to true to update proj and projS; not needed
+    update_proj  &lt;- TRUE   # set to true to update fut; not needed
+    update_hist  &lt;- TRUE   # set to true to update fut; not needed
      
-    # set the reference years for bias correcting in R/setup.R
+    # the reference years for bias correcting in R/setup.R
     ref_years 
     
-    # identify the year to z-score scale / delta in R/setup.R
+    # the year to z-score scale / delta in R/setup.R
     deltayrs 
     
     # remove these variables:
@@ -511,13 +505,56 @@ data.frame(sim_list)
     normlist$lognorm[normlist$var%in%normvl] &lt;- FALSE
 
     
-    # generate indices and bias corrected projections for 
-    #      average water column values (mn_val)
+    # generate indices and bias corrected projections 
     # This takes approx 30 mins to run completely
     
-    # Identify which value to bias correct
-    BC_target&lt;-&quot;mn_val&quot;
-    suppressWarnings(source(&quot;R/sub_scripts/Bias_correct_CMIP6_K20.R&quot;))
+    gcmcmipL &lt;- c(&quot;B10K-K20P19_CMIP6_miroc&quot;,
+                  &quot;B10K-K20P19_CMIP6_gfdl&quot;,
+                  &quot;B10K-K20P19_CMIP6_cesm&quot;) 
+    CMIP6_Indices &lt;- suppressMessages(
+                        makeACLIM2_Indices(
+                        BC_target = &quot;mn_val&quot;,
+                        hind_sim  =  &quot;B10K-K20_CORECFS&quot;,
+                        histLIST  = paste0(gcmcmipL,&quot;_historical&quot;),
+                        gcmcmipLIST = gcmcmipL,
+                        sim_listIN = sim_list[-grep(&quot;historical&quot;,sim_list)]))
+                      )
+    save_indices(flIN = CMIP6_Indices, 
+                 subfl = &quot;watercolumn_means&quot;,
+                 post_txt = &quot;_mn&quot;,
+                 CMIP_fdlr =&quot;K20P19_CMIP6&quot;)
+
+    # CMIP5 K20P19
+    gcmcmipL2 &lt;- c(&quot;B10K-K20P19_CMIP5_MIROC&quot;,&quot;B10K-K20P19_CMIP5_GFDL&quot;,&quot;B10K-K20P19_CMIP5_CESM&quot;) 
+    CMIP5_K20_Indices &lt;- suppressMessages(
+                        makeACLIM2_Indices(
+                        BC_target = &quot;mn_val&quot;,
+                        hind_sim  =  &quot;B10K-K20_CORECFS&quot;,
+                        histLIST  = paste0(gcmcmipL,&quot;_historical&quot;),
+                        gcmcmipLIST = gcmcmipL2,
+                        sim_listIN = sim_list[-grep(&quot;historical&quot;,sim_list)]))
+                      )
+    save_indices(flIN = CMIP5_K20_Indices, 
+                 subfl = &quot;watercolumn_means&quot;,
+                 post_txt = &quot;_mn&quot;,
+                 CMIP_fdlr =&quot;K20P19_CMIP5&quot;)
+    
+    # CMIP5 H16
+    gcmcmipL2 &lt;- c(&quot;B10K-H16_CMIP5_MIROC&quot;,&quot;B10K-H16_CMIP5_GFDL&quot;,&quot;B10K-H16_CMIP5_CESM&quot;) 
+    CMIP5_H16_Indices &lt;- suppressMessages(
+                        makeACLIM2_Indices(
+                        BC_target = &quot;mn_val&quot;,
+                        hind_sim  =  &quot;B10K-H16_CORECFS&quot;,
+                        histLIST  = rep(&quot;B10K-H16_CORECFS&quot;,3),
+                        gcmcmipLIST = gcmcmipL2,
+                        sim_listIN = sim_list[-grep(&quot;historical&quot;,sim_list)]))
+                      )
+    save_indices(flIN = CMIP5_H16_Indices, 
+                 subfl = &quot;watercolumn_means&quot;,
+                 post_txt = &quot;_mn&quot;,
+                 CMIP_fdlr =&quot;H16_CMIP5&quot;)
+    
+    #suppressWarnings(source(&quot;R/sub_scripts/Bias_correct_CMIP6_K20.R&quot;))
                      
     # generate indices and bias corrected projections for
     #     total water column values (mn_val)
@@ -526,127 +563,36 @@ data.frame(sim_list)
     BC_target&lt;-&quot;mn_val&quot;
     suppressWarnings(source(&quot;R/sub_scripts/Bias_correct_CMIP6_K20.R&quot;)</code></pre>
 </div>
-<div id="step-3-cmip6-bias-corrected-proj" class="section level2" number="3.8">
-<h2 number="3.8"><span class="header-section-number">3.8</span> Step 3: CMIP6 Bias corrected proj</h2>
-<p>Now run the code below to create indices from the historical runs (only avail for CMIP6) and corresponding projections.</p>
 </div>
-<div id="step-3-cmip5-bias-corrected-proj" class="section level2" number="3.9">
-<h2 number="3.9"><span class="header-section-number">3.9</span> Step 3: CMIP5 Bias corrected proj</h2>
-<p>Now bias correct the projections using the hindcast indices</p>
-<pre class="r"><code>    for( gcmcmip  in c(&quot;CMIP5_CESM&quot;,&quot;CMIP5_GFDL&quot;,&quot;CMIP5_MIROC&quot;)){
-      sim_listIN &lt;- sim_list[grep(gcmcmip,sim_list)]
-      
-      for (sim in sim_listIN){
-        i&lt;-i+1
-        cat(sim,&quot;....\n&quot;)
-        
-        # open a &quot;region&quot; or strata specific  file
-        load(file.path(Rdata_path,file.path(sim,paste0(reg_txt,sim,&quot;.Rdata&quot;))))
-        fut     &lt;- ACLIMregion; rm(ACLIMregion)
-        SIM_adj &lt;- bias_correct( 
-          hindIN = hnd,
-          histIN = hnd,
-          futIN  = fut,
-          ref_yrs    = 2006:2020,
-          normlistIN =  normlist,
-          plotIT = TRUE,
-          plotwk = 2,
-          plotvarIN  = &quot;temp_bottom5m&quot;,
-          log_adj    = 1e-4)
-        
-        reg_indices &lt;-  make_indices_region( simIN = SIM_adj$fut,
-                                             BiasCorrect = TRUE,
-                                             seasonsIN = seasons,
-                                             refyrs    = deltayrs)
-        
-        # open a &quot;region&quot; or strata specific  file
-        load(file.path(Rdata_path,file.path(sim,paste0(srvy_txt,sim,&quot;.Rdata&quot;)))) 
-        fut_srvy     &lt;- ACLIMsurveyrep; rm(ACLIMsurveyrep)
-        SIM_adjsrvy &lt;- bias_correct_srvy( 
-          hindIN = hnd_srvy,
-          histIN = hnd_srvy,
-          futIN  = fut_srvy,
-          ref_yrs    = 2006:2020,
-          normlistIN =  normlist,
-          plotIT = TRUE,
-          plotwk = 45,
-          plotvarIN  = &quot;temp_bottom5m&quot;,
-          log_adj    = 1e-4)
-        
-        srvy_indices &lt;-  make_indices_srvyrep(simIN = SIM_adjsrvy$fut,
-                                              BiasCorrect = TRUE,
-                                              seasonsIN = seasons, 
-                                              refyrs = deltayrs)
-        reg_indices$type  &lt;- &quot;strata means&quot;
-        srvy_indices$type &lt;- &quot;survey replicated&quot;
-        tmpproj &lt;- rbind(reg_indices,
-                         srvy_indices[,match(names(reg_indices),names(srvy_indices))])
-        
-        proj &lt;- rbind(proj,tmpproj)
-        
-        rm(reg_indices)
-        rm(srvy_indices)
-      }
-    }
-    proj      &lt;- add_gcmssp(proj)
-    if(!dir.exists(&quot;Data/out&quot;)) dir.create(&quot;Data/out&quot;)
-    tmpfl &lt;- file.path(&quot;Data/out/&quot;,paste0(&quot;proj_CMIP5n6_BiasCorr_&quot;,tmstamp1,&quot;.Rdata&quot;))
-    if(file.exists(tmpfl)) file.remove(tmpfl)    
-    save(proj, file=tmpfl)
-    rm(tmpfl)
-    
-    # Non-Bias corrected proj (CMIP5 and CMIP66) don&#39;t need to update again
-    # -----------------------------
-    # set up hindcast
-    sim  &lt;-&quot;B10K-K20_CORECFS&quot;
-    load(file.path(Rdata_path,file.path(sim,paste0(reg_txt,sim,&quot;.Rdata&quot;))))
-    hnd  &lt;- ACLIMregion; rm(ACLIMregion)
-    load(file.path(Rdata_path,file.path(sim,paste0(srvy_txt,sim,&quot;.Rdata&quot;))))
-    hnd_srvy  &lt;- ACLIMsurveyrep; rm(ACLIMsurveyrep)
-    
-    i &lt;- 0
-    sim_listIN &lt;- sim_list[-grep(&quot;CORECFS&quot;,sim_list)]
-    
-    for (sim in sim_listIN){
-      i&lt;-i+1
-      cat(sim,&quot;....\n&quot;)
-      
-      # open a &quot;region&quot; or strata specific  file
-      load(file.path(Rdata_path,file.path(sim,paste0(reg_txt,sim,&quot;.Rdata&quot;))))
-      reg_indices &lt;-  make_indices_region( simIN = ACLIMregion,
-                                           BiasCorrect = FALSE,
-                                           seasonsIN = seasons,
-                                           refyrs    = deltayrs)
-      
-      # open a &quot;region&quot; or strata specific  file
-      load(file.path(Rdata_path,file.path(sim,paste0(srvy_txt,sim,&quot;.Rdata&quot;)))) 
-      srvy_indices &lt;-  make_indices_srvyrep(sim = ACLIMsurveyrep,
-                                            BiasCorrect = FALSE,
-                                            seasonsIN = seasons, 
-                                            refyrs = deltayrs)
-      reg_indices$type  &lt;- &quot;strata means&quot;
-      srvy_indices$type &lt;- &quot;survey replicated&quot;
-      tmpproj &lt;- rbind(reg_indices,
-                       srvy_indices[,match(names(reg_indices),names(srvy_indices))])
-      if(i ==1)
-        proj &lt;- tmpproj
-      if(i!=1)
-        proj &lt;- rbind(proj,tmpproj)
-      
-      rm(reg_indices)
-      rm(srvy_indices)
-    }
-    
-    proj      &lt;- add_gcmssp(proj)
-    if(!dir.exists(&quot;Data/out&quot;)) dir.create(&quot;Data/out&quot;)
-    tmpfl &lt;- file.path(&quot;Data/out/&quot;,paste0(&quot;proj_CMIP6_raw_&quot;,tmstamp1,&quot;.Rdata&quot;))
-    if(file.exists(tmpfl)) file.remove(tmpfl)    
-    save(proj, file=tmpfl)
-    rm(tmpfl)</code></pre>
+<div id="explore-aclim2-indices" class="section level1 tabset" number="4">
+<h1 class="tabset" number="4"><span class="header-section-number">4</span> Explore ACLIM2 Indices</h1>
+<div id="annual-indices-1" class="section level2" number="4.1">
+<h2 number="4.1"><span class="header-section-number">4.1</span> Annual indices</h2>
+</div>
+<div id="monthly-indices-1" class="section level2" number="4.2">
+<h2 number="4.2"><span class="header-section-number">4.2</span> Monthly indices</h2>
+</div>
+<div id="seasonal-indices-1" class="section level2" number="4.3">
+<h2 number="4.3"><span class="header-section-number">4.3</span> Seasonal indices</h2>
+</div>
+<div id="weekly-indices-1" class="section level2" number="4.4">
+<h2 number="4.4"><span class="header-section-number">4.4</span> weekly indices</h2>
 </div>
 </div>
-<div id="defunct" class="section level1" number="4">
-<h1 number="4"><span class="header-section-number">4</span> DEFUNCT</h1>
+<div id="output-to-.dat-file-admb-tmb-users" class="section level1" number="5">
+<h1 number="5"><span class="header-section-number">5</span> Output to .dat file (ADMB/ TMB users)</h1>
+</div>
+<div id="special-cases" class="section level1 tabset" number="6">
+<h1 class="tabset" number="6"><span class="header-section-number">6</span> Special cases</h1>
+<div id="salmon-index-ellen" class="section level2" number="6.1">
+<h2 number="6.1"><span class="header-section-number">6.1</span> Salmon index (Ellen)</h2>
+</div>
+<div id="nfs-index-jeremy" class="section level2" number="6.2">
+<h2 number="6.2"><span class="header-section-number">6.2</span> NFS index (Jeremy )</h2>
+</div>
+</div>
+<div id="defunct" class="section level1" number="7">
+<h1 number="7"><span class="header-section-number">7</span> DEFUNCT</h1>
 <pre class="r"><code>    # now create annual indices both the survey replicated and weekly strata values:
      cat(&quot;making annual indices, please wait....\n&quot;)
      
@@ -658,8 +604,8 @@ data.frame(sim_list)
       load(file.path(main,&quot;Data/out&quot;,paste0(&quot;hind_&quot;,tmstamp1,&quot;.Rdata&quot;)))
       head(hind)
     }</code></pre>
-<div id="step-2-historical" class="section level2" number="4.1">
-<h2 number="4.1"><span class="header-section-number">4.1</span> Step 2: Historical</h2>
+<div id="step-2-historical" class="section level2" number="7.1">
+<h2 number="7.1"><span class="header-section-number">7.1</span> Step 2: Historical</h2>
 <pre class="r"><code>    if(update_hist){
        source(&quot;R/sub_scripts/make_hist.R&quot;)
     }else{
@@ -669,8 +615,8 @@ data.frame(sim_list)
       hist &lt;- hist2; rm(hist2); head(hist)
     }</code></pre>
 </div>
-<div id="step-3-projections" class="section level2" number="4.2">
-<h2 number="4.2"><span class="header-section-number">4.2</span> Step 3: Projections</h2>
+<div id="step-3-projections" class="section level2" number="7.2">
+<h2 number="7.2"><span class="header-section-number">7.2</span> Step 3: Projections</h2>
 <pre class="r"><code>   if(update_proj){
      source(&quot;R/sub_scripts/make_proj.R&quot;)
    }else{
@@ -693,8 +639,8 @@ data.frame(sim_list)
    hind$gcm      &lt;- &quot;CORECFS&quot;
    hind$ssp      &lt;- &quot;hindcast&quot;</code></pre>
 </div>
-<div id="step-4-re-centering-on-the-hindcast" class="section level2" number="4.3">
-<h2 number="4.3"><span class="header-section-number">4.3</span> Step 4: Re-centering on the hindcast</h2>
+<div id="step-4-re-centering-on-the-hindcast" class="section level2" number="7.3">
+<h2 number="7.3"><span class="header-section-number">7.3</span> Step 4: Re-centering on the hindcast</h2>
 <p>The last step is to recenter the data on the hindcast</p>
 <pre class="r"><code>   # Zscore-scale  the data
    # -------------------------------------
@@ -729,8 +675,8 @@ data.frame(sim_list)
     CMIP6set    &lt;- simset$sim[simset$cmip ==&quot;CMIP6&quot;]</code></pre>
 </div>
 </div>
-<div id="plot-results" class="section level1" number="5">
-<h1 number="5"><span class="header-section-number">5</span> Plot results</h1>
+<div id="plot-results" class="section level1" number="8">
+<h1 number="8"><span class="header-section-number">8</span> Plot results</h1>
 <pre class="r"><code>    # now make some plots:
     # ----------------------
 
@@ -812,8 +758,8 @@ Euhp_Fall_fut
      }
   #</code></pre>
 </div>
-<div id="now-create-obs-bottom-and-sst-timeseries" class="section level1" number="6">
-<h1 number="6"><span class="header-section-number">6</span> 3) Now create obs bottom and SST timeseries</h1>
+<div id="now-create-obs-bottom-and-sst-timeseries" class="section level1" number="9">
+<h1 number="9"><span class="header-section-number">9</span> 3) Now create obs bottom and SST timeseries</h1>
 <!-- ### 5.1.1. Level 3 hindcasts: spatial patterns -->
 <!-- Now let's explore the survey replicated data in more detail and use to plot bottom temperature. -->
 <!-- ```{r explore_srvy1, eval=F, echo=T, results='hide',message=FALSE} -->
@@ -1054,8 +1000,8 @@ Euhp_Fall_fut
 <!--     ggsave(file=file.path(main,"Figs/Hind_Fall_large_Zoop.jpg"),width=8,height=5) -->
 <!-- ``` -->
 <!-- ![Large fall zooplankton integrated concentration](Figs/Hind_Fall_large_Zoop.jpg){ width=75% } -->
-<div id="level-3-hindcasts-monthly-averages" class="section level3" number="6.0.1">
-<h3 number="6.0.1"><span class="header-section-number">6.0.1</span> 5.1.4. Level 3 hindcasts: Monthly averages</h3>
+<div id="level-3-hindcasts-monthly-averages" class="section level3" number="9.0.1">
+<h3 number="9.0.1"><span class="header-section-number">9.0.1</span> 5.1.4. Level 3 hindcasts: Monthly averages</h3>
 <p>Using the same approach we can get monthly averages for a given variable:</p>
 <pre class="r"><code>    # To get the average value for a set of strata, weight the val by the area: (slow...)
     mn_NEBS_season &lt;- getAVGnSUM(

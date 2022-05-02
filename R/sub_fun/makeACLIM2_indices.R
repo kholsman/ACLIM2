@@ -1,7 +1,7 @@
 #'
 #'
 #'
-#'Bias_correct_CMIP6_K20
+#'makeACLIM2_Indices()
 #'
 #'Author: Kirstin Holsman
 #'kirstin.holsman@noaa.gov
@@ -18,15 +18,23 @@
 # 4  -- bias correct the projections
 # 5  -- save results
 
-
-  # ------------------------------------
-  # 1  -- Create indices from Hindcast
-  
+makeACLIM2_Indices <- function(
+  BC_target = "mn_val",
+  CMIP_fdlr = "CMIP6",
+  hind_sim  =  "B10K-K20_CORECFS",
+  histLIST,
+  gcmcmipLIST = c("CMIP6_miroc","CMIP6_gfdl","CMIP6_cesm"),
+  sim_listIN){
+    # ------------------------------------
+    # 1  -- Create indices from Hindcast
+    cat("-- Starting analysis...\n")
+    
     # load the Hindcast:
     # -------------------------
-    cat("-- getting hindcast indices....\n")
-    sim       <-  "B10K-K20_CORECFS"
-    
+    cat("-- making hindcast indices....\n")
+  
+    #sim <- "B10K-K20_CORECFS"
+    sim  <- hind_sim
     load(file.path(Rdata_path,file.path(sim,paste0(reg_txt,sim,".Rdata"))))
     hnd       <- ACLIMregion; rm(ACLIMregion)
     load(file.path(Rdata_path,file.path(sim,paste0(srvy_txt,sim,".Rdata"))))
@@ -34,8 +42,6 @@
     
     # Get Indices: 
     # -------------------------
-    
-    
     # area weighted  means for survey indices (annual)
     srvy_indices_hind  <-  make_indices_srvyrep(simIN = hnd_srvy,
                                                 seasonsIN   = seasons, 
@@ -73,12 +79,15 @@
   
   # ------------------------------------
   # 2  -- loop across GCMs and create historical run indicies
-  
+     
       i <- 0
       # gcmcmip <- "CMIP6_miroc"
-      for( gcmcmip  in c("CMIP6_miroc","CMIP6_gfdl","CMIP6_cesm")){
-        
-        sim   <- paste0("B10K-K20P19_",gcmcmip,"_historical")
+      #for( gcmcmip  in c("CMIP6_miroc","CMIP6_gfdl","CMIP6_cesm")){
+      for( ii in 1:length(gcmcmipLIST)){
+       
+        #sim   <- paste0("B10K-K20P19_",gcmcmip,"_historical")
+        gcmcmip <- gcmcmipLIST[ii]
+        sim     <- histLIST[ii]
         
         load(file.path(Rdata_path,file.path(sim,paste0(reg_txt,sim,".Rdata"))))
         hist  <- ACLIMregion; rm(ACLIMregion)
@@ -87,7 +96,7 @@
         
         # Get Historical Indices: 
         # -------------------------
-        cat("-- getting historical indices....\n")
+        cat("-- making historical indices....\n")
         # area weighted  means for survey indices (annual)
         srvy_indices_hist <-  make_indices_srvyrep(simIN  = hist_srvy,
                                                    seasonsIN   = seasons, 
@@ -125,20 +134,16 @@
         
         
         # select the simulations that correspond to the cmip x gcm:
-        
-        sim_listIN <- sim_list[grep(gcmcmip,sim_list)]
-        sim_listIN <- sim_listIN[-grep("historical",sim_listIN)]
-        # sim <- sim_listIN[1]
-      
-        
+        simL <- sim_listIN[grep(gcmcmip,sim_listIN)]
+  
   # ------------------------------------
   # 3  -- create projection indices
 
         # Now for each projection get the index and bias correct it 
-        cat("-- getting projection indices....\n")
-        for (sim in sim_listIN){
+        cat("-- making projection indices....\n")
+        for (sim in simL){
           i <- i + 1
-          cat("\n-- ",sim,"....\n-----------------------------------\n\n")
+          cat("-- ",sim,"....\n-----------------------------------\n\n")
           
           load(file.path(Rdata_path,file.path(sim,paste0(reg_txt,sim,".Rdata"))))
           proj_wk  <- ACLIMregion; rm(ACLIMregion)
@@ -408,57 +413,28 @@
      #geom_line(data=ht,aes(x=mnDate,y=mn_val),color="gray",linetype = "dashed",alpha = .8)+
      #geom_line(data=ht,aes(x=mnDate,y=mnVal_hist),color="gray",linetype = "dashed")+
       theme_minimal()+ylab(" Bottom Temperature")
-    
+  }
   # ------------------------------------
   # 5  -- save results    
+      cat("-- Complete\n")
+      return(list(   ACLIM_annual_hind    = ACLIM_annual_hind,
+                     ACLIM_seasonal_hind  = ACLIM_seasonal_hind,
+                     ACLIM_monthly_hind   = ACLIM_monthly_hind,
+                     ACLIM_weekly_hind    = ACLIM_weekly_hind,
+                     ACLIM_surveyrep_hind = ACLIM_surveyrep_hind,
+                     
+                     ACLIM_annual_hist    = ACLIM_annual_hist,
+                     ACLIM_seasonal_hist  = ACLIM_seasonal_hist,
+                     ACLIM_monthly_hist   = ACLIM_monthly_hist,
+                     ACLIM_weekly_hist    = ACLIM_weekly_hist,
+                     ACLIM_surveyrep_hist = ACLIM_surveyrep_hist,
+                     
+                     ACLIM_annual_fut    = ACLIM_annual_fut,
+                     ACLIM_seasonal_fut  = ACLIM_seasonal_fut,
+                     ACLIM_monthly_fut   = ACLIM_monthly_fut,
+                     ACLIM_weekly_fut    = ACLIM_weekly_fut,
+                     ACLIM_surveyrep_fut = ACLIM_surveyrep_fut))
+}
     
-      outlist <- c("ACLIM_annual_hind",
-                   "ACLIM_seasonal_hind",
-                   "ACLIM_monthly_hind",
-                   "ACLIM_weekly_hind",
-                   "ACLIM_surveyrep_hind",
-                   
-                   "ACLIM_annual_hist",
-                   "ACLIM_seasonal_hist",
-                   "ACLIM_monthly_hist",
-                   "ACLIM_weekly_hist",
-                   "ACLIM_surveyrep_hist",
-                   
-                   "ACLIM_annual_fut",
-                   "ACLIM_seasonal_fut",
-                   "ACLIM_monthly_fut",
-                   "ACLIM_weekly_fut",
-                   "ACLIM_surveyrep_fut")
-      
-      if(!dir.exists("Data/out")) dir.create("Data/out")
-      if(!dir.exists( paste0("Data/out/",tmstamp1) )) dir.create(paste0("Data/out/",tmstamp1))
-      fl_out <- paste0("Data/out/",tmstamp1)
-      if(!dir.exists(file.path(fl_out,"CMIP6"))) 
-        dir.create(file.path(fl_out,"CMIP6"))
-      
-      if(BC_target=="mn_val"){
-        if(!dir.exists(file.path(fl_out,"CMIP6","watercolumn_mean"))) 
-          dir.create(file.path(fl_out,"CMIP6","watercolumn_mean"))
-        for(outfl in outlist){
-          tmpfl <- file.path(fl_out,"CMIP6","watercolumn_mean",paste0(outfl,"_mn",".Rdata"))
-          if(file.exists(tmpfl)) 
-            file.remove(tmpfl)    
-          eval(parse(text = paste0("save(",outfl,", file=",tmpfl,")")))
-          rm(tmpfl)
-        } }else{
-        if(BC_target=="tot_val"){
-          if(!dir.exists(file.path(fl_out,"CMIP6","watercolumn_total"))) 
-            dir.create(file.path(fl_out,"CMIP6","watercolumn_total"))
-          for(outfl in outlist){
-            tmpfl <- file.path(fl_out,"CMIP6","watercolumn_mean",paste0(outfl,"_mn",".Rdata"))
-            if(file.exists(tmpfl)) 
-              file.remove(tmpfl)    
-            eval(parse(text = paste0("save(",outfl,", file=",tmpfl,")")))
-            rm(list=c("tmpfl","outfl"))
-          } }else{
-          stop("BC_target must be either 'mn_val' or 'tot_val'")
-          }}
-      
-      
-  }
+
      

@@ -66,8 +66,8 @@ make_indices_region<-function(
     group_by(strata,strata_area_km2, basin,units,season,
              yr, mo, wk,sim,long_name,var)%>%
     summarise(val= mean(val, na.rm=T),
-              jday = mean(jday),
-              date = mean(date)))
+              jday = mean(jday, na.rm=T),
+              date = mean(date, na.rm=T)))
 
   # To get the average value for a set of strata, weight the val by the area: (slow...)
   mn_NEBS_season <- getAVGnSUM(
