@@ -2,14 +2,15 @@
 title: "ACLIM2 CMIP6 ROMSNPZ Indices quick start guide"
 author: K. Holsman
 output:
-  html_document:
-    df_print: paged
-    toc: true
+  pdf_document:
+    toc: TRUE
     toc_depth: 3
-    number_sections: true
-    toc_float:
-      collapsed: false
-      smooth_scroll: true
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 5
+    highlight: tango
+    keep_tex: yes
+    latex_engine: xelatex
   header-includes:
   - \usepackage{knputenc}
   - \usepackage{unicode-math}
@@ -20,15 +21,14 @@ output:
     fig_caption: yes
     fig_width: 4
     keep_md: yes
-  pdf_document:
-    toc: TRUE
+  html_document:
+    df_print: paged
+    toc: true
     toc_depth: 3
-    fig_caption: yes
-    fig_height: 4
-    fig_width: 5
-    highlight: tango
-    keep_tex: yes
-    latex_engine: xelatex
+    number_sections: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
 #runtime: shiny
 ---
 
@@ -465,6 +465,13 @@ The following code shows how the ACLIM2 indices and bias correction was done. Yo
 $$B0^k_{input}= \bar{B0}^k_{(2004:2014)}\left(\frac{B0^{a}_{2015}}{\bar{B0}^a_{(2004:2014)}}\right) $$
 Where B0kinput is the unfished biomass used for setting inputs of  (e.g., B0ktarget = 0.4B0kinput) and is determined by re-scaling the spawning stock biomass from the status quo assessment in 2015 (B0a2015) to the average model spawning stock biomass for your model between 2004-2014  (i.e., B0k) using the average unfished biomass from the stock assessment model during the same period (B0a).
 
+
+```{r makeReadME, echo=FALSE,eval=F, include =F}
+source("R/make.R")
+ # copy and paste this into R window (won't work within markdown)
+ rmd2md(rmd_fl = "ACLIM2_quickStart",md_fl = "README")
+
+```
 
 
 
