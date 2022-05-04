@@ -198,6 +198,9 @@ The next step creates indices based on the level 3 data for each hind cast, hist
 
 The average water column values for each variable from the ROMSNPZ model strata x weekly Level2 outputs ('ACLIMregion') was calculated and used to calculate the strata-area weighted mean value for the NEBS and SEBS weekly, monthly, seasonally, and annually. Similarly, for survey replicated ('ACLIMsurveyrep') Level2 outputs the average water column value for each variable at each station was calculated used to calculate the strata-area weighted mean value for the NEBS and SEBS annually. These indices were calculate for hindcast, historical, and projection scenarios, and used to bias correct the projections. More information on the methods for each can be found in the tabs below and the code immediately following this section will re-generate the bias corrected indices. All of the bias corrected outputs can be found in the "Data/out/CMIP6" folder. 
 
+![*Raw (top row) and bias corrected (bottom row)bottom temperature indices based on survey replicated Level3 outputs for the SEBS*](Figs/biascorrected_temp2.png){width=75%}
+
+
 *Important!* Note that for projections the 'mn_val' represents raw mean values, while 'val_bias-corrected' is the bias corrected mn_val (should be used instead of the raw values). In all cases, for variables that are log-normally distributed (cannot be < 0), the ln(mn_val) were used to bias correct and were then back transformed to non-log space after correction:
 
 For normally distributed variables ($Y$):
@@ -209,7 +212,6 @@ For log-normally distributed variables($Y$):
   $${Y}^{fut'}_{y,k} =e^{\ln\bar{Y}^{hind}_{k,\bar{T}} +\left( \frac{\hat{\sigma}^{hind}_{k,\bar{T}}}{\hat{\sigma}^{hist}_{k,\bar{T}}}*(\ln{Y}^{fut}_{t,k}-\ln\bar{Y}^{hist}_{k,\bar{T}})  \right )}$$,
   where $\hat\sigma^{hist}_{k,\bar{T}}$ and $\hat\sigma^{hind}_{k,\bar{T}}$ are the standard deviation of the $\ln\bar{Y}^{hist}_{k,t}$ and $\ln\bar{Y}^{hind}_{k,t}$ during the reference period $\hat{T}$ (respectively).
   
-!["Raw (top row) and bias corrected (bottom row)bottom temperature indices based on survey replicated Level3 outputs for the SEBS"](Figs/biascorrected_temp2.png){width=100%}
 
 
 ### Weekly indices
@@ -220,7 +222,7 @@ Uses the strata x weekly data ('ACLIMregion') to generate strata-specific averag
   
   $\bar{Y}_{w,y,k}$ was calculated for the hindcast, historical run, and projection time-series. For projections $\bar{Y}_{w,y,k}$ was bias corrected using the corresponding historical and hindcast values such that:
   
-  $$\bar{Y}^{fut'}_{w,y,k} =\bar{Y}^{hind}_{w,k} +\left( \frac{\sigma^{hind}_{w,k}}{\sigma^{hist}_{w,k}}*(\bar{Y}^{fut}_{w,y,k}-\bar{Y}^{hist}_{w,k})  \right )$$, where $\bar{Y}^{hist}_{w,k}$ and $\bar{Y}^{hind}_{w,k}$ are the average historical weekly values across years in the period (`r c(ref_years[1]:rev(ref_years)[1])`; adjustable in `R/setup.R`).  
+  $$\bar{Y}^{fut'}_{w,y,k} =\bar{Y}^{hind}_{w,k} +\left( \frac{\sigma^{hind}_{w,k}}{\sigma^{hist}_{w,k}}*(\bar{Y}^{fut}_{w,y,k}-\bar{Y}^{hist}_{w,k})  \right )$$, where $\bar{Y}^{hist}_{w,k}$ and $\bar{Y}^{hind}_{w,k}$ are the average historical weekly values across years in the period (`r ref_years[1]` to `r rev(ref_years)[2]` ; adjustable in `R/setup.R`).  
 
 ### Monthly indices  
 
@@ -230,7 +232,7 @@ Uses the strata x weekly data ('ACLIMregion') to generate strata-specific averag
   
   $\bar{Y}_{m,y,k}$ was calculated for the hindcast, historical run, and projection time-series. For projections $\bar{Y}_{m,y,k}$ was bias corrected using the corresponding historical and hindcast values such that:
   
-  $$\bar{Y}^{fut'}_{m,y,k} =\bar{Y}^{hind}_{m,k} +\left( \frac{\sigma^{hind}_{m,k}}{\sigma^{hist}_{m,k}}*(\bar{Y}^{fut}_{m,y,k}-\bar{Y}^{hist}_{m,k})  \right )$$, where $\bar{Y}^{hist}_{m,k}$ and $\bar{Y}^{hind}_{m,k}$ are the average historical monthly values across years in the period (`r c(ref_years[1]:rev(ref_years)[1])`; adjustable in `R/setup.R`).
+  $$\bar{Y}^{fut'}_{m,y,k} =\bar{Y}^{hind}_{m,k} +\left( \frac{\sigma^{hind}_{m,k}}{\sigma^{hist}_{m,k}}*(\bar{Y}^{fut}_{m,y,k}-\bar{Y}^{hist}_{m,k})  \right )$$, where $\bar{Y}^{hist}_{m,k}$ and $\bar{Y}^{hind}_{m,k}$ are the average historical monthly values across years in the period (`r ref_years[1]` to `r rev(ref_years)[2]` ; adjustable in `R/setup.R`).  
 
 ### Seasonal indices  
 
@@ -240,7 +242,7 @@ Uses the strata x weekly data ('ACLIMregion') to generate strata-specific averag
   
   $\bar{Y}_{l,y,k}$ was calculated for the hindcast, historical run, and projection time-series. For projections $\bar{Y}_{l,y,k}$ was bias corrected using the corresponding historical and hindcast values such that:
   
-  $$\bar{Y}^{fut'}_{l,y,k} =\bar{Y}^{hind}_{l,k} +\left( \frac{\sigma^{hind}_{l,k}}{\sigma^{hist}_{l,k}}*(\bar{Y}^{fut}_{l,y,k}-\bar{Y}^{hist}_{l,k})  \right )$$, where $\bar{Y}^{hist}_{l,k}$ and $\bar{Y}^{hind}_{l,k}$ are the average historical seasonal values across years in the reference period (`r ref_years`; adjustable in `R/setup.R`).  
+  $$\bar{Y}^{fut'}_{l,y,k} =\bar{Y}^{hind}_{l,k} +\left( \frac{\sigma^{hind}_{l,k}}{\sigma^{hist}_{l,k}}*(\bar{Y}^{fut}_{l,y,k}-\bar{Y}^{hist}_{l,k})  \right )$$, where $\bar{Y}^{hist}_{l,k}$ and $\bar{Y}^{hind}_{l,k}$ are the average historical seasonal values across years in the reference period (`r ref_years[1]` to `r rev(ref_years)[2]` ; adjustable in `R/setup.R`).  
   
 ### Annual indices  
 
@@ -250,7 +252,7 @@ Uses the strata x weekly data ('ACLIMregion') to generate strata-specific averag
   
   $\bar{Y}_{y,k}$ was calculated for the hindcast, historical run, and projection time-series. For projections $\bar{Y}_{y,k}$ was bias corrected using the corresponding historical and hindcast values such that:
   
-  $$\bar{Y}^{fut'}_{y,k} =\bar{Y}^{hind}_{k} +\left( \frac{\sigma^{hind}_{k}}{\sigma^{hist}_{k}}*(\bar{Y}^{fut}_{y,k}-\bar{Y}^{hist}_{k})  \right )$$, where $\bar{Y}^{hind}_{k}$ and $\bar{Y}^{hist}_{k}$ are the average historical values across years in the reference period (`r c(ref_years[1]:rev(ref_years)[1])`; adjustable in `R/setup.R`).  
+  $$\bar{Y}^{fut'}_{y,k} =\bar{Y}^{hind}_{k} +\left( \frac{\sigma^{hind}_{k}}{\sigma^{hist}_{k}}*(\bar{Y}^{fut}_{y,k}-\bar{Y}^{hist}_{k})  \right )$$, where $\bar{Y}^{hind}_{k}$ and $\bar{Y}^{hist}_{k}$ are the average historical values across years in the reference period (`r ref_years[1]` to `r rev(ref_years)[2]` ; adjustable in `R/setup.R`).  
 
 ### Annual survey rep. indices 
 
@@ -260,7 +262,7 @@ Uses the station specific survey replicated (in time and space) data ('ACLIMsurv
   
   $\bar{Y}_{y,k}$ was calculated for the hindcast, historical run, and projection time-series. For projections $\bar{Y}_{y,k}$ was bias corrected using the corresponding historical and hindcast values such that:
   
-  $$\bar{Y}^{fut'}_{y,k} =\bar{Y}^{hind}_{k} +\left( \frac{\sigma^{hind}_{k}}{\sigma^{hist}_{k}}*(\bar{Y}^{fut}_{y,k}-\bar{Y}^{hist}_{k})  \right )$$, where $\bar{Y}^{hind}_{k}$ and $\bar{Y}^{hist}_{k}$ are the average historical values across years in the reference period (`r c(ref_years[1]:rev(ref_years)[1])`; adjustable in `R/setup.R`).  
+  $$\bar{Y}^{fut'}_{y,k} =\bar{Y}^{hind}_{k} +\left( \frac{\sigma^{hind}_{k}}{\sigma^{hist}_{k}}*(\bar{Y}^{fut}_{y,k}-\bar{Y}^{hist}_{k})  \right )$$, where $\bar{Y}^{hind}_{k}$ and $\bar{Y}^{hist}_{k}$ are the average historical values across years in the reference period (`r ref_years[1]` to `r rev(ref_years)[2]` ; adjustable in `R/setup.R`).    
 
 Appendix A includes the code used to generate the ACLIM2 indices and bias correct them. That code can be run to re-make the indices if you like but takes approx 30 mins a CMIP to run. 
 
