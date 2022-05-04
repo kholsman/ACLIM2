@@ -33,9 +33,13 @@ save_indices <- function(
     if(!dir.exists( paste0("Data/out") )) dir.create(paste0("Data/out"))
     fl_out <- paste0("Data/out")
     
-    if(!dir.exists(file.path(fl_out,CMIP_fdlr))) 
+    if(!dir.exists(file.path(fl_out,CMIP_fdlr))){
       dir.create(file.path(fl_out,CMIP_fdlr))
-    
+    }else{
+      dir.remove(file.path(fl_out,CMIP_fdlr))
+      dir.create(file.path(fl_out,CMIP_fdlr))
+    }
+  
     if(!dir.exists(file.path(fl_out,CMIP_fdlr,subfl))) 
       dir.create(file.path(fl_out,CMIP_fdlr,subfl))
     

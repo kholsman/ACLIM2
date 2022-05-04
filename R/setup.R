@@ -13,6 +13,11 @@
     # identify the year to z-score scale / delta
     deltayrs  <- 1970:2000
     
+    # Designate strata:
+    NEBS_strata <- c(70,81,82,90) #c(70,81) 
+    SEBS_strata <- c(10,20,31,32,50,
+                     20,41,42,43,61,62)
+    
     # set this to TRUE to "update" the indices from the original files on mox
     redownload_level3_mox  <- FALSE
     update_base_data       <- FALSE

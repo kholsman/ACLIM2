@@ -14,9 +14,7 @@
   seasons$season[10:12] <- "Fall"
 
   #cat("loading data, this may take a few mins...")
-  NEBS_strata <- c(71,70,81,82,90)
-  SEBS_strata <- c(10,20,31,32,50,
-                   20,41,42,43,61,62)
+
   
 
   if(update_base_data) 

@@ -1,0 +1,13 @@
+name: HCR_viewer
+title: HCR_viewer
+username:
+account: kkh2022
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 6217946
+bundleId: 5862837
+url: https://kkh2022.shinyapps.io/HCR_viewer/
+when: 1651545204.30663
+lastSyncTime: 1651545204.30664
+asMultiple: FALSE
+asStatic: FALSE

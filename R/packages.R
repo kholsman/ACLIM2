@@ -18,7 +18,8 @@ lib_list <- c(
     "purrr",
     "readxl", 
     "tidyverse",
-   "usethis",
+   "shiny",
+    #"usethis",
     
   # # these for ggplot mapping:
   #   "raster",

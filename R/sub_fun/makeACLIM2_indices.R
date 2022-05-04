@@ -23,7 +23,7 @@ makeACLIM2_Indices <- function(
   CMIP_fdlr = "CMIP6",
   hind_sim  =  "B10K-K20_CORECFS",
   histLIST,
-  gcmcmipLIST = c("CMIP6_miroc","CMIP6_gfdl","CMIP6_cesm"),
+  gcmcmipLIST = c("B10K-K20P19_CMIP6_miroc","B10K-K20P19_CMIP6_gfdl","B10K-K20P19_CMIP6_cesm"),
   sim_listIN){
     # ------------------------------------
     # 1  -- Create indices from Hindcast
@@ -39,16 +39,18 @@ makeACLIM2_Indices <- function(
     hnd       <- ACLIMregion; rm(ACLIMregion)
     load(file.path(Rdata_path,file.path(sim,paste0(srvy_txt,sim,".Rdata"))))
     hnd_srvy  <- ACLIMsurveyrep; rm(ACLIMsurveyrep)
-    
+    gc()
     # Get Indices: 
     # -------------------------
     # area weighted  means for survey indices (annual)
+    cat("    -- get srvy_indices_hind ... \n")
     srvy_indices_hind  <-  make_indices_srvyrep(simIN = hnd_srvy,
                                                 seasonsIN   = seasons, 
                                                 refyrs      = deltayrs,
                                                 type        = "survey replicated")
     
     # area weighted weekly means for the NEBS and SEBS separately
+    cat("    -- get reg_indices_weekly_hind ... \n")
     reg_indices_weekly_hind <- make_indices_region(simIN = hnd,
                                                    timeblockIN = c("yr","season","mo","wk"),
                                                    seasonsIN   = seasons,
@@ -57,26 +59,45 @@ makeACLIM2_Indices <- function(
     tmp <- reg_indices_weekly_hind
     
     # get monthly means:
+    cat("    -- make reg_indices_monthly_hind ... \n")
     reg_indices_monthly_hind  <- tmp%>%
-      group_by(var,year,season,mo,units, long_name,basin,sim)%>%
-      summarize(mn_val  = mean(mn_val, na.rm = T),
+      dplyr::group_by(var,year,season,mo,units, long_name,basin,sim)%>%
+      dplyr::summarize(mn_val  = mean(mn_val, na.rm = T),
                 mnDate  = mean(mnDate, na.rm = T))%>%
-      mutate(type = "monthly means")
+      dplyr::mutate(type = "monthly means",
+                    jday = mnDate,
+                    mnDate = as.Date(paste0(year,"-01-01"))+mnDate)
     
     # get seasonal means:
+    cat("    -- make reg_indices_seasonal_hind ... \n")
     reg_indices_seasonal_hind  <- tmp%>%
-      group_by(var,year,season,units, long_name,basin,sim)%>%
-      summarize(mn_val  = mean(mn_val, na.rm = T),
+      dplyr::group_by(var,year,season,units, long_name,basin,sim)%>%
+      dplyr::summarize(mn_val  = mean(mn_val, na.rm = T),
                 mnDate  = mean(mnDate, na.rm = T))%>%
-      mutate(type =  "seaonal means")
+      dplyr::mutate(type =  "seaonal means",
+                    jday = mnDate,
+                    mnDate = as.Date(paste0(year,"-01-01"))+mnDate)
     
     # get annual means:
+    cat("    -- make reg_indices_annual_hind ... \n")
     reg_indices_annual_hind <- tmp%>%
-      group_by(var,year,units, long_name,basin,sim)%>%
-      summarize(mn_val  = mean(mn_val, na.rm = T),
+      dplyr::group_by(var,year,units, long_name,basin,sim)%>%
+      dplyr::summarize(mn_val  = mean(mn_val, na.rm = T),
                 mnDate  = mean(mnDate, na.rm = T))%>%
-      mutate(type = "annual means")
-  
+      dplyr::mutate(type = "annual means",
+                    jday = mnDate,
+                    mnDate = as.Date(paste0(year,"-01-01"))+mnDate)
+    
+    reg_indices_weekly_hind <- reg_indices_weekly_hind%>%
+      dplyr::mutate(type = "weekly means",
+                    jday = mnDate,
+                    mnDate = as.Date(paste0(year,"-01-01"))+mnDate)
+    
+    srvy_indices_hind <- srvy_indices_hind%>%
+      dplyr::mutate(jday = mnDate,
+                    mnDate = as.Date(paste0(year,"-01-01"))+mnDate)
+   rm(list=c("tmp","hnd","hnd_srvy"))
+   gc()
   # ------------------------------------
   # 2  -- loop across GCMs and create historical run indicies
      
@@ -90,20 +111,22 @@ makeACLIM2_Indices <- function(
         sim     <- histLIST[ii]
         
         load(file.path(Rdata_path,file.path(sim,paste0(reg_txt,sim,".Rdata"))))
-        hist  <- ACLIMregion; rm(ACLIMregion)
+        hist  <- ACLIMregion; rm(ACLIMregion);gc()
         load(file.path(Rdata_path,file.path(sim,paste0(srvy_txt,sim,".Rdata"))))
-        hist_srvy  <- ACLIMsurveyrep; rm(ACLIMsurveyrep)
+        hist_srvy  <- ACLIMsurveyrep; rm(ACLIMsurveyrep);gc()
         
         # Get Historical Indices: 
         # -------------------------
         cat("-- making historical indices....\n")
         # area weighted  means for survey indices (annual)
+        cat("    -- make srvy_indices_hist ... \n")
         srvy_indices_hist <-  make_indices_srvyrep(simIN  = hist_srvy,
                                                    seasonsIN   = seasons, 
                                                    refyrs      = deltayrs,
                                                    type        = "survey replicated")
         
         # area weighted weekly means for the NEBS and SEBS separately
+        cat("    -- make reg_indices_weekly_hist ... \n")
         reg_indices_weekly_hist <- make_indices_region(simIN       = hist,
                                                        timeblockIN = c("yr","season","mo","wk"),
                                                        seasonsIN   = seasons,
@@ -112,27 +135,46 @@ makeACLIM2_Indices <- function(
         
         tmp <- reg_indices_weekly_hist
         # get monthly means:
+        cat("    -- make reg_indices_monthly_hist ... \n")
         reg_indices_monthly_hist  <- tmp%>%
-          group_by(var,year,season,mo,units, long_name,basin,sim)%>%
-          summarize(mn_val  = mean(mn_val, na.rm = T),
+          dplyr::group_by(var,year,season,mo,units, long_name,basin,sim)%>%
+          dplyr::summarize(mn_val  = mean(mn_val, na.rm = T),
                     mnDate  = mean(mnDate, na.rm = T))%>%
-          mutate(type = "monthly means")
+          dplyr::mutate(type = "monthly means",
+                        jday = mnDate,
+                        mnDate = as.Date(paste0(year,"-01-01"))+mnDate)
         
         # get seasonal means:
+        cat("    -- make reg_indices_seasonal_hist ... \n")
         reg_indices_seasonal_hist  <- tmp%>%
-          group_by(var,year,season,units, long_name,basin,sim)%>%
-          summarize(mn_val  = mean(mn_val, na.rm = T),
+          dplyr::group_by(var,year,season,units, long_name,basin,sim)%>%
+          dplyr::summarize(mn_val  = mean(mn_val, na.rm = T),
                     mnDate  = mean(mnDate, na.rm = T))%>%
-          mutate(type =  "seaonal means")
+          dplyr::mutate(type =  "seaonal means",
+                        jday = mnDate,
+                        mnDate = as.Date(paste0(year,"-01-01"))+mnDate)
         
         # get annual means:
+        cat("    -- make reg_indices_annual_hist ... \n")
         reg_indices_annual_hist  <- tmp%>%
-          group_by(var,year,units, long_name,basin,sim)%>%
-          summarize(mn_val  = mean(mn_val, na.rm = T),
+          dplyr::group_by(var,year,units, long_name,basin,sim)%>%
+          dplyr::summarize(mn_val  = mean(mn_val, na.rm = T),
                     mnDate  = mean(mnDate, na.rm = T))%>%
-          mutate(type = "annual means")
+          dplyr::mutate(type = "annual means",
+                        jday = mnDate,
+                        mnDate = as.Date(paste0(year,"-01-01"))+mnDate)
         
+        reg_indices_weekly_hist <- reg_indices_weekly_hist%>%
+          dplyr::mutate(type = "weekly means",
+                        jday = mnDate,
+                        mnDate = as.Date(paste0(year,"-01-01"))+mnDate)
         
+        srvy_indices_hist <- srvy_indices_hist%>%
+          dplyr::mutate(jday = mnDate,
+                        mnDate = as.Date(paste0(year,"-01-01"))+mnDate)
+        
+        rm(list=c("tmp","hist","hist_srvy"))
+        gc()
         # select the simulations that correspond to the cmip x gcm:
         simL <- sim_listIN[grep(gcmcmip,sim_listIN)]
   
@@ -143,54 +185,86 @@ makeACLIM2_Indices <- function(
         cat("-- making projection indices....\n")
         for (sim in simL){
           i <- i + 1
-          cat("-- ",sim,"....\n-----------------------------------\n\n")
+          cat("-- ",sim,"...\n-----------------------------------\n")
+          #gcmcmipLIST = c("B10K-K20P19_CMIP6_miroc","B10K-K20P19_CMIP6_gfdl","B10K-K20P19_CMIP6_cesm")
+          sim_listIN
+          # CMIP  <- strsplit(gcmcmip,"_")[[1]][2]
+          # GCM   <- strsplit(gcmcmip,"_")[[1]][3]
+          RCP  <- rev(strsplit(sim,"_")[[1]])[1]
+          mod   <- (strsplit(sim,"_")[[1]])[1]
+          CMIP  <- strsplit(sim,"_")[[1]][2]
+          GCM   <- strsplit(sim,"_")[[1]][3]
           
           load(file.path(Rdata_path,file.path(sim,paste0(reg_txt,sim,".Rdata"))))
           proj_wk  <- ACLIMregion; rm(ACLIMregion)
           load(file.path(Rdata_path,file.path(sim,paste0(srvy_txt,sim,".Rdata"))))
           proj_srvy  <- ACLIMsurveyrep; rm(ACLIMsurveyrep)
-          
+          gc()
           
           # Get Projection Indices: 
           # -------------------------
           # area weighted  means for survey indices (annual)
+          cat("    -- make srvy_indices_proj ... \n")
           srvy_indices_proj <-  make_indices_srvyrep(simIN  = proj_srvy,
                                                      seasonsIN   = seasons, 
                                                      refyrs      = deltayrs,
                                                      type        = "survey replicated")
-          
+          cat("    -- make reg_indices_weekly_proj ... \n")
           # area weighted weekly means for the NEBS and SEBS separately
           reg_indices_weekly_proj <- make_indices_region(simIN  = proj_wk,
                                                          timeblockIN = c("yr","season","mo","wk"),
                                                          seasonsIN   = seasons,
                                                          refyrs      = deltayrs,
                                                          type        = "weekly means")
+
           tmp <- reg_indices_weekly_proj
           # get monthly means:
+          cat("    -- make reg_indices_monthly_proj ... \n")
           reg_indices_monthly_proj  <- tmp%>%
-            group_by(var,year,season,mo,units, long_name,basin,sim)%>%
-            summarize(mn_val  = mean(mn_val, na.rm = T),
+            dplyr::group_by(var,year,season,mo,units, long_name,basin,sim)%>%
+            dplyr::summarize(mn_val  = mean(mn_val, na.rm = T),
                       mnDate  = mean(mnDate, na.rm = T))%>%
-            mutate(type = "monthly means")
+            dplyr::mutate(type = "monthly means",
+                          jday = mnDate,
+                          mnDate = as.Date(paste0(year,"-01-01"))+mnDate)
           
           # get seasonal means:
+          cat("    -- make reg_indices_seasonal_proj ... \n")
           reg_indices_seasonal_proj   <- tmp%>%
-            group_by(var,year,season,units, long_name,basin,sim)%>%
-            summarize(mn_val  = mean(mn_val, na.rm = T),
+            dplyr::group_by(var,year,season,units, long_name,basin,sim)%>%
+            dplyr::summarize(mn_val  = mean(mn_val, na.rm = T),
                       mnDate  = mean(mnDate, na.rm = T))%>%
-            mutate(type =  "seaonal means")
+            dplyr::mutate(type =  "seaonal means",
+                          jday = mnDate,
+                          mnDate = as.Date(paste0(year,"-01-01"))+mnDate)
           
           # get annual means:
+          cat("    -- make reg_indices_annual_proj ... \n")
           reg_indices_annual_proj   <- tmp%>%
-            group_by(var,year,units, long_name,basin,sim)%>%
-            summarize(mn_val  = mean(mn_val, na.rm = T),
-                      mnDate  = mean(mnDate, na.rm = T))%>%
-            mutate(type = "annual means", time = year)
+            dplyr::group_by(var,year,units, long_name,basin,sim)%>%
+            dplyr::summarize(
+              mn_val  = mean(mn_val, na.rm = T),
+              mnDate  = mean(mnDate, na.rm = T))%>%
+            dplyr::mutate(type = "annual means",
+                          jday = mnDate,
+                          mnDate = as.Date(paste0(year,"-01-01"))+mnDate)
           
+          reg_indices_weekly_proj <- reg_indices_weekly_proj%>%
+            dplyr::mutate(type = "weekly means",
+                          jday = mnDate,
+                          mnDate = as.Date(paste0(year,"-01-01"))+mnDate)
+          
+          srvy_indices_proj <- srvy_indices_proj%>%
+            dplyr::mutate(jday = mnDate,
+                          mnDate = as.Date(paste0(year,"-01-01"))+mnDate)
+          
+          rm(list=c("tmp","proj_wk","proj_srvy"))
+          gc()
   # ------------------------------------
   # 4  -- bias correct the projections
                  
           # Now bias correct the data:
+          cat("    -- bias correct seasonal_adj ... \n")
           seasonal_adj <- suppressWarnings(bias_correct( 
             target     = BC_target,
             hindIN = reg_indices_seasonal_hind,
@@ -202,7 +276,10 @@ makeACLIM2_Indices <- function(
             plotwk     = 2,
             plotvarIN  = "temp_bottom5m", # this is just one of the variables
             log_adj    = 1e-4))
+          # rm(list=c("reg_indices_seasonal_hind","reg_indices_seasonal_hist","reg_indices_seasonal_proj"))
+          # gc()
           
+          cat("    -- bias correct weekly_adj ... \n")
           weekly_adj <- suppressWarnings(bias_correct( 
             target     = BC_target,
             hindIN = reg_indices_weekly_hind,
@@ -215,6 +292,10 @@ makeACLIM2_Indices <- function(
             plotvarIN  = "temp_bottom5m", # this is just one of the variables
             log_adj    = 1e-4))
           
+          # rm(list=c("reg_indices_weekly_hind","reg_indices_weekly_hist","reg_indices_weekly_proj"))
+          # gc()
+          
+          cat("    -- bias correct monthly_adj ... \n")
           monthly_adj <- suppressWarnings(bias_correct( 
             target     = BC_target,
             hindIN = reg_indices_monthly_hind,
@@ -227,6 +308,9 @@ makeACLIM2_Indices <- function(
             plotvarIN  = "temp_bottom5m", # this is just one of the variables
             log_adj    = 1e-4))
           
+          # rm(list=c("reg_indices_monthly_hind","reg_indices_monthly_hist","reg_indices_monthly_proj"))
+          # gc()
+          cat("    -- bias correct annual_adj ... \n")
           annual_adj <- suppressWarnings(bias_correct( 
             target     = BC_target,
             hindIN = reg_indices_annual_hind,
@@ -239,7 +323,10 @@ makeACLIM2_Indices <- function(
             plotvarIN  = "temp_bottom5m", # this is just one of the variables
             log_adj    = 1e-4))
           
-          
+          # rm(list=c("reg_indices_annual_hind","reg_indices_annual_hist","reg_indices_annual_proj"))
+          # gc()
+          # 
+          cat("    -- bias correct surveyrep_adj ... \n")
           surveyrep_adj <- bias_correct( 
             target     = BC_target,
             hindIN = srvy_indices_hind,
@@ -252,91 +339,54 @@ makeACLIM2_Indices <- function(
             plotwk = 45,
             plotvarIN  = "temp_bottom5m",
             log_adj    = 1e-4)
-          if(1==10){
-            
-            dd<- annual_adj
-            ff <- dd$fut%>%filter(var =="temp_bottom5m")
-            hd <- dd$hind%>%filter(var =="temp_bottom5m")
-            ht <- dd$hist%>%filter(var =="temp_bottom5m")
-            
-            ggplot(ff)+
-              geom_line(aes(x=year,y=val_biascorrected),color="orange")+
-              geom_line(aes(x=year,y=val),color="grey")+
-              facet_wrap(~basin)+
-              geom_line(data=hd, aes(x=year,y=val),color="blue3",alpha = .6)+
-              geom_line(data=hd,aes(x=year,y=mnVal_hind),color="blue3")+
-              geom_line(data=ht,aes(x=year,y=val),color="gray",linetype = "dashed",alpha = .8)+
-              geom_line(data=ht,aes(x=year,y=mnVal_hist),color="gray",linetype = "dashed")+
-              theme_minimal()+ylab(" Bottom Temperature")
-            
-            dd  <-  seasonal_adj
-            ff  <-  dd$fut%>%filter(var =="temp_bottom5m",basin =="SEBS")
-            hd <- dd$hind%>%filter(var =="temp_bottom5m",basin =="SEBS")
-            ht <- dd$hist%>%filter(var =="temp_bottom5m",basin =="SEBS")
-            
-            ggplot(ff)+
-              geom_line(aes(x=year,y=val_biascorrected),color="orange")+
-              geom_line(aes(x=year,y=val),color="grey")+
-              facet_wrap(~season)+
-              geom_line(data=hd, aes(x=year,y=val),color="blue3",alpha = .6)+
-              geom_line(data=hd,aes(x=year,y=mnVal_hind),color="blue3")+
-              geom_line(data=ht,aes(x=year,y=val),color="gray",linetype = "dashed",alpha = .8)+
-              geom_line(data=ht,aes(x=year,y=mnVal_hist),color="gray",linetype = "dashed")+
-              theme_minimal()+ylab(" Bottom Temperature")
-            
-          }
-          
-          CMIP  <- strsplit(gcmcmip,"_")[[1]][1]
-          GCM   <- strsplit(gcmcmip,"_")[[1]][2]
-          RCP  <- rev(strsplit(sim,"_")[[1]])[1]
-          mod   <- (strsplit(sim,"_")[[1]])[1]
-          
+        
+          # rm(list=c("srvy_indices_hind","srvy_indices_hist","srvy_indices_proj"))
+          # gc()
           
           if(i ==1){
             # first time through
-            ACLIM_annual_hind   <- annual_adj$hind%>%mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-            ACLIM_seasonal_hind <- seasonal_adj$hind%>%mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-            ACLIM_monthly_hind  <- monthly_adj$hind%>%mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-            ACLIM_weekly_hind   <- weekly_adj$hind%>%mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-            ACLIM_surveyrep_hind<- surveyrep_adj$hind%>%mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
+            ACLIM_annual_hind   <- annual_adj$hind%>%dplyr::mutate(i = i,gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=mod)
+            ACLIM_seasonal_hind <- seasonal_adj$hind%>%dplyr::mutate(i = i,gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=mod)
+            ACLIM_monthly_hind  <- monthly_adj$hind%>%dplyr::mutate(i = i,gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=mod)
+            ACLIM_weekly_hind   <- weekly_adj$hind%>%dplyr::mutate(i = i,gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=mod)
+            ACLIM_surveyrep_hind<- surveyrep_adj$hind%>%dplyr::mutate(i = i,gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=mod)
             
-            ACLIM_annual_hist   <- annual_adj$hist%>%mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-            ACLIM_seasonal_hist <- seasonal_adj$hist%>%mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-            ACLIM_monthly_hist  <- monthly_adj$hist%>%mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-            ACLIM_weekly_hist   <- weekly_adj$hist%>%mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-            ACLIM_surveyrep_hist<- surveyrep_adj$hist%>%mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
+            ACLIM_annual_hist   <- annual_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
+            ACLIM_seasonal_hist <- seasonal_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
+            ACLIM_monthly_hist  <- monthly_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
+            ACLIM_weekly_hist   <- weekly_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
+            ACLIM_surveyrep_hist<- surveyrep_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
             
-            ACLIM_annual_fut    <- annual_adj$fut%>%mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-            ACLIM_seasonal_fut  <- seasonal_adj$fut%>%mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-            ACLIM_monthly_fut   <- monthly_adj$fut%>%mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-            ACLIM_weekly_fut    <- weekly_adj$fut%>%mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-            ACLIM_surveyrep_fut <- surveyrep_adj$fut%>%mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
+            ACLIM_annual_fut    <- annual_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
+            ACLIM_seasonal_fut  <- seasonal_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
+            ACLIM_monthly_fut   <- monthly_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
+            ACLIM_weekly_fut    <- weekly_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
+            ACLIM_surveyrep_fut <- surveyrep_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
             
           }
           
           if(i!=1){
             # next time through
-            ACLIM_annual_hind   <- rbind(ACLIM_annual_hind,annual_adj$hind%>%mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
-            ACLIM_seasonal_hind <- rbind(ACLIM_seasonal_hind,seasonal_adj$hind%>%mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
-            ACLIM_monthly_hind  <- rbind(ACLIM_monthly_hind,monthly_adj$hind%>%mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
-            ACLIM_weekly_hind   <- rbind(ACLIM_weekly_hind,weekly_adj$hind%>%mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
-            ACLIM_surveyrep_hind<- rbind(ACLIM_surveyrep_hind,surveyrep_adj$hind%>%mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
+            # ACLIM_annual_hind   <- rbind(ACLIM_annual_hind,annual_adj$hind%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
+            # ACLIM_seasonal_hind <- rbind(ACLIM_seasonal_hind,seasonal_adj$hind%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
+            # ACLIM_monthly_hind  <- rbind(ACLIM_monthly_hind,monthly_adj$hind%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
+            # ACLIM_weekly_hind   <- rbind(ACLIM_weekly_hind,weekly_adj$hind%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
+            # ACLIM_surveyrep_hind<- rbind(ACLIM_surveyrep_hind,surveyrep_adj$hind%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
 
-            ACLIM_annual_hist   <- rbind(ACLIM_annual_hist,annual_adj$hist%>%mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
-            ACLIM_seasonal_hist <- rbind(ACLIM_seasonal_hist,seasonal_adj$hist%>%mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
-            ACLIM_monthly_hist  <- rbind(ACLIM_monthly_hist,monthly_adj$hist%>%mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
-            ACLIM_weekly_hist   <- rbind(ACLIM_weekly_hist,weekly_adj$hist%>%mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
-            ACLIM_surveyrep_hist<- rbind(ACLIM_surveyrep_hist,surveyrep_adj$hist%>%mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
+            ACLIM_annual_hist   <- rbind(ACLIM_annual_hist,annual_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
+            ACLIM_seasonal_hist <- rbind(ACLIM_seasonal_hist,seasonal_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
+            ACLIM_monthly_hist  <- rbind(ACLIM_monthly_hist,monthly_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
+            ACLIM_weekly_hist   <- rbind(ACLIM_weekly_hist,weekly_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
+            ACLIM_surveyrep_hist<- rbind(ACLIM_surveyrep_hist,surveyrep_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
 
-            ACLIM_annual_fut    <- rbind(ACLIM_annual_fut,annual_adj$fut%>%mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
-            ACLIM_seasonal_fut  <- rbind(ACLIM_seasonal_fut,seasonal_adj$fut%>%mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
-            ACLIM_monthly_fut   <- rbind(ACLIM_monthly_fut,monthly_adj$fut%>%mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
-            ACLIM_weekly_fut    <- rbind(ACLIM_weekly_fut,weekly_adj$fut%>%mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
-            ACLIM_surveyrep_fut <- rbind(ACLIM_surveyrep_fut,surveyrep_adj$fut%>%mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
+            ACLIM_annual_fut    <- rbind(ACLIM_annual_fut,annual_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
+            ACLIM_seasonal_fut  <- rbind(ACLIM_seasonal_fut,seasonal_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
+            ACLIM_monthly_fut   <- rbind(ACLIM_monthly_fut,monthly_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
+            ACLIM_weekly_fut    <- rbind(ACLIM_weekly_fut,weekly_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
+            ACLIM_surveyrep_fut <- rbind(ACLIM_surveyrep_fut,surveyrep_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
             
           }
           rm(list= c( 
-            "proj_wk","proj_srvy",
             "reg_indices_annual_proj",
             "reg_indices_seasonal_proj",
             "reg_indices_monthly_proj",
@@ -351,31 +401,33 @@ makeACLIM2_Indices <- function(
             "GCM",
             "RCP",
             "mod"))
+          
+          gc()
         }
       }
       
     
       # remove duplicates:
-      ACLIM_annual_hind    <- ACLIM_annual_hind %>% distinct(var, basin, year, units,
+      ACLIM_annual_hind    <- ACLIM_annual_hind %>% dplyr::distinct(var, basin, year, units,
                                                              long_name,sim, type, sim_type, .keep_all= TRUE)
-      ACLIM_seasonal_hind  <- ACLIM_seasonal_hind %>% distinct(var, basin,season, year, units,
+      ACLIM_seasonal_hind  <- ACLIM_seasonal_hind %>% dplyr::distinct(var, basin,season, year, units,
                                                                long_name,sim, type, sim_type, .keep_all= TRUE)
-      ACLIM_monthly_hind   <- ACLIM_monthly_hind %>% distinct(var, basin,season, mo, year, units,
+      ACLIM_monthly_hind   <- ACLIM_monthly_hind %>% dplyr::distinct(var, basin,season, mo, year, units,
                                                               long_name,sim, type, sim_type, .keep_all= TRUE)
-      ACLIM_weekly_hind    <- ACLIM_weekly_hind %>% distinct(var, basin,season, mo, wk,year, units,
+      ACLIM_weekly_hind    <- ACLIM_weekly_hind %>% dplyr::distinct(var, basin,season, mo, wk,year, units,
                                                              long_name,sim, type, sim_type, .keep_all= TRUE)
-      ACLIM_surveyrep_hind <- ACLIM_surveyrep_hind %>% distinct(var, basin,season, year, units,
+      ACLIM_surveyrep_hind <- ACLIM_surveyrep_hind %>% dplyr::distinct(var, basin,season, year, units,
                                                                 long_name,sim, type, sim_type, .keep_all= TRUE)
       
-      ACLIM_annual_hist    <- ACLIM_annual_hist %>% distinct(var, basin, year, units,
+      ACLIM_annual_hist    <- ACLIM_annual_hist %>% dplyr::distinct(var, basin, year, units,
                                                              long_name,sim, type, sim_type, .keep_all= TRUE)
-      ACLIM_seasonal_hist  <- ACLIM_seasonal_hist %>% distinct(var, basin,season, year, units,
+      ACLIM_seasonal_hist  <- ACLIM_seasonal_hist %>% dplyr::distinct(var, basin,season, year, units,
                                                                long_name,sim, type, sim_type, .keep_all= TRUE)
-      ACLIM_monthly_hist   <- ACLIM_monthly_hist %>% distinct(var, basin,season, mo, year, units,
+      ACLIM_monthly_hist   <- ACLIM_monthly_hist %>% dplyr::distinct(var, basin,season, mo, year, units,
                                                               long_name,sim, type, sim_type, .keep_all= TRUE)
-      ACLIM_weekly_hist    <- ACLIM_weekly_hist %>% distinct(var, basin,season, mo, wk,year, units,
+      ACLIM_weekly_hist    <- ACLIM_weekly_hist %>% dplyr::distinct(var, basin,season, mo, wk,year, units,
                                                              long_name,sim, type, sim_type, .keep_all= TRUE)
-      ACLIM_surveyrep_hist <- ACLIM_surveyrep_hist %>% distinct(var, basin,season, year, units,
+      ACLIM_surveyrep_hist <- ACLIM_surveyrep_hist %>% dplyr::distinct(var, basin,season, year, units,
                                                                 long_name,sim, type, sim_type, .keep_all= TRUE)
       
       
@@ -392,28 +444,7 @@ makeACLIM2_Indices <- function(
       ACLIM_weekly_hist$i    <- factor(ACLIM_weekly_hist$i, levels = 1:mi )
       ACLIM_surveyrep_hist$i <- factor(ACLIM_surveyrep_hist$i, levels = 1:mi )
       
-  if(1==10){  
-    dd <- ACLIM_annual_hind%>%
-      filter(var =="temp_bottom5m")
-    ht <- ACLIM_annual_hist%>%
-      filter(var =="temp_bottom5m",basin=="SEBS")%>%
-      mutate(sim2 =(strsplit(sim,"_")[[1]][4]))
-    
-    hd <- ACLIM_annual_hind%>%
-      filter(var =="temp_bottom5m",basin=="SEBS")%>%
-      mutate (sim2 = "hindcast")
-    fut <- ACLIM_annual_fut%>%
-      filter(var =="temp_bottom5m",basin=="SEBS")%>%
-      mutate(sim2 =(strsplit(sim,"_")[[1]][4]))
-    
-    ggplot(fut)+
-      geom_line(aes(x=mnDate,y=mn_val,color=sim))+
-      geom_line(data=hd, aes(x=mnDate,y=mn_val),color="blue3",alpha = .6)+
-      geom_line(data=hd,aes(x=mnDate,y=mnVal_hind),color="blue3")+
-     #geom_line(data=ht,aes(x=mnDate,y=mn_val),color="gray",linetype = "dashed",alpha = .8)+
-     #geom_line(data=ht,aes(x=mnDate,y=mnVal_hist),color="gray",linetype = "dashed")+
-      theme_minimal()+ylab(" Bottom Temperature")
-  }
+
   # ------------------------------------
   # 5  -- save results    
       cat("-- Complete\n")
