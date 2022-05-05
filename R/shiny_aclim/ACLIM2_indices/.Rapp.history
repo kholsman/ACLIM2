@@ -1,0 +1,861 @@
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+load("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_annual_fut_mn.Rdata")#
+            plotvars   <- unique(ACLIM_annual_fut$var)
+plotvars
+rm(plotvars)
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+load("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_annual_fut_mn.Rdata")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+rm(list=ls())
+input<-list()#
+input$bc         <- c("raw","bias corrected")#
+input$GCM        <- c("miroc","gfdl","cesm")#
+input$scen       <- c("ssp126","ssp585")#
+#
+input$CMIP       <- c("K20P19_CMIP6")#
+input$plotvar    <- "temp_bottom5m"#
+input$plotbasin  <- "SEBS"#
+input$facet_row  <- "bc"#
+input$facet_col  <- "scen"
+for(c in 1:length(input$CMIP)){#
+            load(paste0("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_hind_mn.Rdata"))#
+            load(paste0("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_hist_mn.Rdata"))#
+            load(paste0("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_fut_mn.Rdata"))#
+            #load(paste0("Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_fut_mn.Rdata"))#
+            #plotvars   <- unique(ACLIM_annual_hind$var)#
+#
+            CMIP       <- input$CMIP#
+            plotvar    <- input$plotvar#
+            plotbasin  <- input$plotbasin#
+            facet_row  <- input$facet_row#
+            facet_col  <- input$facet_col#
+#
+            hind       <- ACLIM_annual_hind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            hist       <- ACLIM_annual_hist%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            fut        <- ACLIM_annual_fut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            plotdat    <- rbind(hind,hist,fut)%>%mutate(bc = "raw")#
+#
+            hind_bc    <- ACLIM_annual_hind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)%>%mutate(bc="bias corrected")#
+            fut_bc     <- ACLIM_annual_fut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,val_biascorrected, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            fut_bc     <- fut_bc%>%mutate(bc="bias corrected")%>%rename(mn_val = val_biascorrected)#
+#
+            fut_bc     <-rbind(hind_bc,fut_bc)#
+#
+            plotdat    <- rbind(plotdat,fut_bc)#
+            plotdat$bc <- factor(plotdat$bc, levels =c("raw","bias corrected"))#
+            plotdat$GCM_scen <- paste0(plotdat$GCM,"_",plotdat$scen) #
+#
+            plotdat$GCM_scen_sim <- paste0(plotdat$GCM,"_",plotdat$scen,"_",plotdat$sim_type) #
+#
+            plotdat <- plotdat%>%filter(#
+                scen%in%input$scen,#
+                GCM%in%input$GCM,#
+                bc%in%input$bc)#
+            plotdat$CMIP <- input$CMIP[c]#
+#
+            if(c ==1 ){#
+                plotdatout <- plotdat#
+            }else{#
+                plotdatout <- rbind(plotdatout,plotdat)#
+            }#
+#
+        }#
+#
+        units <- plotdat$units[1]#
+#
+        nyrs <- length(unique(plotdat$year))#
+        spanIN <- 5/nyrs
+plotdat <- list(dat=plotdatout,nyrs = nyrs, units = units,spanIN=spanIN, input = input,plotvars=plotvars)
+plotdat <- list(dat=plotdatout,nyrs = nyrs, units = units,spanIN=spanIN, input = input)
+pp <- ggplot(plotdat()$dat)+#
+          geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen_sim,linetype = basin))+#
+          geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen_sim,linetype = basin),alpha = 0.6)+#
+          geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen_sim,linetype = basin),alpha = 0.6)+#
+          geom_smooth(aes(x=mnDate,y=mn_val,color= GCM_scen_sim,fill=GCM_scen_sim,linetype = basin),alpha=0.1,method="loess",span = .5)+#
+          theme_minimal() + ylab(paste(input$plotvar,"(",plotdat()$units,")"))+#
+          labs(x="Date",#
+                 y=paste(input$plotvar,"(",units,")"),#
+                 subtitle = "",#
+                 title = input$plotvar)+#
+        scale_color_discrete()#
+        eval(parse(text = paste0("pp <-pp+facet_grid(",input$facet_row,"~",input$facet_col,")") ))#
+        pp
+plotdat <- reactive({#
+#
+        for(c in 1:length(input$CMIP)){#
+            load(paste0("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_hind_mn.Rdata"))#
+            load(paste0("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_hist_mn.Rdata"))#
+            load(paste0("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_fut_mn.Rdata"))#
+            #load(paste0("Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_fut_mn.Rdata"))#
+            #plotvars   <- unique(ACLIM_annual_hind$var)#
+#
+            CMIP       <- input$CMIP#
+            plotvar    <- input$plotvar#
+            plotbasin  <- input$plotbasin#
+            facet_row  <- input$facet_row#
+            facet_col  <- input$facet_col#
+#
+            hind       <- ACLIM_annual_hind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            hist       <- ACLIM_annual_hist%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            fut        <- ACLIM_annual_fut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            plotdat    <- rbind(hind,hist,fut)%>%mutate(bc = "raw")#
+#
+            hind_bc    <- ACLIM_annual_hind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)%>%mutate(bc="bias corrected")#
+            fut_bc     <- ACLIM_annual_fut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,val_biascorrected, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            fut_bc     <- fut_bc%>%mutate(bc="bias corrected")%>%rename(mn_val = val_biascorrected)#
+#
+            fut_bc     <-rbind(hind_bc,fut_bc)#
+#
+            plotdat    <- rbind(plotdat,fut_bc)#
+            plotdat$bc <- factor(plotdat$bc, levels =c("raw","bias corrected"))#
+            plotdat$GCM_scen <- paste0(plotdat$GCM,"_",plotdat$scen) #
+#
+            plotdat$GCM_scen_sim <- paste0(plotdat$GCM,"_",plotdat$scen,"_",plotdat$sim_type) #
+#
+            plotdat <- plotdat%>%filter(#
+                scen%in%input$scen,#
+                GCM%in%input$GCM,#
+                bc%in%input$bc)#
+            plotdat$CMIP <- input$CMIP[c]#
+#
+            if(c ==1 ){#
+                plotdatout <- plotdat#
+            }else{#
+                plotdatout <- rbind(plotdatout,plotdat)#
+            }#
+#
+        }#
+#
+        units <- plotdat$units[1]#
+#
+        nyrs <- length(unique(plotdat$year))#
+        spanIN <- 5/nyrs#
+#
+        return(list(dat=plotdatout,nyrs = nyrs, units = units,spanIN=spanIN, input = input))#
+    })
+pp <- ggplot(plotdat()$dat)+#
+          geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen_sim,linetype = basin))+#
+          geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen_sim,linetype = basin),alpha = 0.6)+#
+          geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen_sim,linetype = basin),alpha = 0.6)+#
+          geom_smooth(aes(x=mnDate,y=mn_val,color= GCM_scen_sim,fill=GCM_scen_sim,linetype = basin),alpha=0.1,method="loess",span = .5)+#
+          theme_minimal() + ylab(paste(input$plotvar,"(",plotdat()$units,")"))+#
+          labs(x="Date",#
+                 y=paste(input$plotvar,"(",units,")"),#
+                 subtitle = "",#
+                 title = input$plotvar)+#
+        scale_color_discrete()#
+        eval(parse(text = paste0("pp <-pp+facet_grid(",input$facet_row,"~",input$facet_col,")") ))#
+        pp
+plotdat <-function(){  for(c in 1:length(input$CMIP)){#
+            load(paste0("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_hind_mn.Rdata"))#
+            load(paste0("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_hist_mn.Rdata"))#
+            load(paste0("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_fut_mn.Rdata"))#
+            #load(paste0("Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_fut_mn.Rdata"))#
+            #plotvars   <- unique(ACLIM_annual_hind$var)#
+#
+            CMIP       <- input$CMIP#
+            plotvar    <- input$plotvar#
+            plotbasin  <- input$plotbasin#
+            facet_row  <- input$facet_row#
+            facet_col  <- input$facet_col#
+#
+            hind       <- ACLIM_annual_hind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            hist       <- ACLIM_annual_hist%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            fut        <- ACLIM_annual_fut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            plotdat    <- rbind(hind,hist,fut)%>%mutate(bc = "raw")#
+#
+            hind_bc    <- ACLIM_annual_hind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)%>%mutate(bc="bias corrected")#
+            fut_bc     <- ACLIM_annual_fut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,val_biascorrected, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            fut_bc     <- fut_bc%>%mutate(bc="bias corrected")%>%rename(mn_val = val_biascorrected)#
+#
+            fut_bc     <-rbind(hind_bc,fut_bc)#
+#
+            plotdat    <- rbind(plotdat,fut_bc)#
+            plotdat$bc <- factor(plotdat$bc, levels =c("raw","bias corrected"))#
+            plotdat$GCM_scen <- paste0(plotdat$GCM,"_",plotdat$scen) #
+#
+            plotdat$GCM_scen_sim <- paste0(plotdat$GCM,"_",plotdat$scen,"_",plotdat$sim_type) #
+#
+            plotdat <- plotdat%>%filter(#
+                scen%in%input$scen,#
+                GCM%in%input$GCM,#
+                bc%in%input$bc)#
+            plotdat$CMIP <- input$CMIP[c]#
+#
+            if(c ==1 ){#
+                plotdatout <- plotdat#
+            }else{#
+                plotdatout <- rbind(plotdatout,plotdat)#
+            }#
+#
+        }#
+#
+        units <- plotdat$units[1]#
+#
+        nyrs <- length(unique(plotdat$year))#
+        spanIN <- 5/nyrs#
+#
+        return(list(dat=plotdatout,nyrs = nyrs, units = units,spanIN=spanIN, input = input))}
+plotdat()
+pp <- ggplot(plotdat()$dat)+#
+          geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen_sim,linetype = basin))+#
+          geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen_sim,linetype = basin),alpha = 0.6)+#
+          geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen_sim,linetype = basin),alpha = 0.6)+#
+          geom_smooth(aes(x=mnDate,y=mn_val,color= GCM_scen_sim,fill=GCM_scen_sim,linetype = basin),alpha=0.1,method="loess",span = .5)+#
+          theme_minimal() + ylab(paste(input$plotvar,"(",plotdat()$units,")"))+#
+          labs(x="Date",#
+                 y=paste(input$plotvar,"(",units,")"),#
+                 subtitle = "",#
+                 title = input$plotvar)+#
+        scale_color_discrete()#
+        eval(parse(text = paste0("pp <-pp+facet_grid(",input$facet_row,"~",input$facet_col,")") ))#
+        pp
+graphics.off()
+pp <- ggplot(plotdat()$dat)+#
+          geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen_sim,linetype = basin))+#
+          geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen_sim,linetype = basin),alpha = 0.6)+#
+          geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen_sim,linetype = basin),alpha = 0.6)+#
+          geom_smooth(aes(x=mnDate,y=mn_val,color= GCM_scen_sim,fill=GCM_scen_sim,linetype = basin),alpha=0.1,method="loess",span = .5)+#
+          theme_minimal() + ylab(paste(input$plotvar,"(",plotdat()$units,")"))+#
+          labs(x="Date",#
+                 y=paste(input$plotvar,"(",units,")"),#
+                 subtitle = "",#
+                 title = input$plotvar)+#
+        scale_color_discrete()#
+        eval(parse(text = paste0("pp <-pp+facet_grid(",input$facet_row,"~",input$facet_col,")") ))#
+        pp
+pp <- ggplot(plotdat()$dat)+#
+          geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen_sim,linetype = basin))+#
+          geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen_sim,linetype = basin),alpha = 0.6)+#
+          geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen_sim,linetype = basin),alpha = 0.6)+#
+          geom_smooth(aes(x=mnDate,y=mn_val,color= GCM_scen_sim,fill=GCM_scen_sim,linetype = basin),alpha=0.1,method="loess",span = .5)+#
+          theme_minimal() + ylab(paste(input$plotvar,"(",plotdat()$units,")"))+#
+          labs(x="Date",#
+                 y=paste(input$plotvar,"(",units,")"),#
+                 subtitle = "",#
+                 title = input$plotvar)+#
+        scale_color_discrete()#
+        eval(parse(text = paste0("pp <-pp+facet_grid(",input$facet_row,"~",input$facet_col,")") ))#
+        pp
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+outdat <- function(){#
+        for(c in 1:length(input$CMIP)){#
+            load(paste0("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_hind_mn.Rdata"))#
+            load(paste0("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_hist_mn.Rdata"))#
+            load(paste0("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_fut_mn.Rdata"))#
+            #load(paste0("Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_fut_mn.Rdata"))#
+            #plotvars   <- unique(ACLIM_annual_hind$var)#
+#
+            CMIP       <- input$CMIP#
+            plotvar    <- input$plotvar#
+            plotbasin  <- input$plotbasin#
+            facet_row  <- input$facet_row#
+            facet_col  <- input$facet_col#
+#
+            hind       <- ACLIM_annual_hind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            hist       <- ACLIM_annual_hist%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            fut        <- ACLIM_annual_fut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            plotdat    <- rbind(hind,hist,fut)%>%mutate(bc = "raw")#
+#
+            hind_bc    <- ACLIM_annual_hind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)%>%mutate(bc="bias corrected")#
+            fut_bc     <- ACLIM_annual_fut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,val_biascorrected, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            fut_bc     <- fut_bc%>%mutate(bc="bias corrected")%>%rename(mn_val = val_biascorrected)#
+#
+            fut_bc     <-rbind(hind_bc,fut_bc)#
+#
+            plotdat    <- rbind(plotdat,fut_bc)#
+            plotdat$bc <- factor(plotdat$bc, levels =c("raw","bias corrected"))#
+            plotdat$GCM_scen <- paste0(plotdat$GCM,"_",plotdat$scen) #
+#
+            plotdat$GCM_scen_sim <- paste0(plotdat$GCM,"_",plotdat$scen,"_",plotdat$sim_type) #
+            plotdat$CMIP <- input$CMIP[c]#
+#
+            if(c ==1 ){#
+                plotdatout <- plotdat#
+            }else{#
+                plotdatout <- rbind(plotdatout,plotdat)#
+            }#
+#
+        }#
+        plotdat <- plotdat%>%filter(#
+                scen%in%input$scen,#
+                GCM%in%input$GCM,#
+                bc%in%input$bc)#
+        units <- plotdat$units[1]#
+#
+        nyrs <- length(unique(plotdat$year))#
+        spanIN <- 5/nyrs#
+#
+        return(list(dat=plotdatout,nyrs = nyrs, units = units,spanIN=spanIN, plotvar = plotvar,facet_row=facet_row,facet_col=facet_col))#
+    })}
+outdat <- function(){#
+        for(c in 1:length(input$CMIP)){#
+            load(paste0("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_hind_mn.Rdata"))#
+            load(paste0("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_hist_mn.Rdata"))#
+            load(paste0("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_fut_mn.Rdata"))#
+            #load(paste0("Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_fut_mn.Rdata"))#
+            #plotvars   <- unique(ACLIM_annual_hind$var)#
+#
+            CMIP       <- input$CMIP#
+            plotvar    <- input$plotvar#
+            plotbasin  <- input$plotbasin#
+            facet_row  <- input$facet_row#
+            facet_col  <- input$facet_col#
+#
+            hind       <- ACLIM_annual_hind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            hist       <- ACLIM_annual_hist%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            fut        <- ACLIM_annual_fut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            plotdat    <- rbind(hind,hist,fut)%>%mutate(bc = "raw")#
+#
+            hind_bc    <- ACLIM_annual_hind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)%>%mutate(bc="bias corrected")#
+            fut_bc     <- ACLIM_annual_fut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,val_biascorrected, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            fut_bc     <- fut_bc%>%mutate(bc="bias corrected")%>%rename(mn_val = val_biascorrected)#
+#
+            fut_bc     <-rbind(hind_bc,fut_bc)#
+#
+            plotdat    <- rbind(plotdat,fut_bc)#
+            plotdat$bc <- factor(plotdat$bc, levels =c("raw","bias corrected"))#
+            plotdat$GCM_scen <- paste0(plotdat$GCM,"_",plotdat$scen) #
+#
+            plotdat$GCM_scen_sim <- paste0(plotdat$GCM,"_",plotdat$scen,"_",plotdat$sim_type) #
+            plotdat$CMIP <- input$CMIP[c]#
+#
+            if(c ==1 ){#
+                plotdatout <- plotdat#
+            }else{#
+                plotdatout <- rbind(plotdatout,plotdat)#
+            }#
+#
+        }#
+        plotdat <- plotdat%>%filter(#
+                scen%in%input$scen,#
+                GCM%in%input$GCM,#
+                bc%in%input$bc)#
+        units <- plotdat$units[1]#
+#
+        nyrs <- length(unique(plotdat$year))#
+        spanIN <- 5/nyrs#
+#
+        return(list(dat=plotdatout,nyrs = nyrs, units = units,spanIN=spanIN, plotvar = plotvar,facet_row=facet_row,facet_col=facet_col))#
+    }
+pp <- ggplot(outdat()$dat)+#
+          geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen_sim,linetype = basin))+#
+          geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen_sim,linetype = basin),alpha = 0.6)+#
+          geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen_sim,linetype = basin),alpha = 0.6)+#
+          geom_smooth(aes(x=mnDate,y=mn_val,color= GCM_scen_sim,fill=GCM_scen_sim,linetype = basin),alpha=0.1,method="loess",span = .5)+#
+          theme_minimal() + ylab(paste( outdat()$plotvar,"(",outdat()$units,")"))+#
+          labs(x="Date",#
+                 y=paste(outdat()$plotvar,"(",units,")"),#
+                 subtitle = "",#
+                 title = outdat()$plotvar)+#
+        scale_color_discrete()#
+        eval(parse(text = paste0("pp <-pp+facet_grid(",outdat()$facet_row,"~",outdat()$facet_col,")") ))#
+        pp
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+rm(list=ls())
+outdat <-function(input){}
+for(c in 1:length(input$CMIP)){#
+            load(paste0("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_hind_mn.Rdata"))#
+            load(paste0("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_hist_mn.Rdata"))#
+            load(paste0("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_fut_mn.Rdata"))#
+            #load(paste0("Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_fut_mn.Rdata"))#
+            #plotvars   <- unique(ACLIM_annual_hind$var)#
+#
+            CMIP       <- input$CMIP#
+            plotvar    <- input$plotvar#
+            plotbasin  <- input$plotbasin#
+            facet_row  <- input$facet_row#
+            facet_col  <- input$facet_col#
+#
+            hind       <- ACLIM_annual_hind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            hist       <- ACLIM_annual_hist%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            fut        <- ACLIM_annual_fut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            plotdat    <- rbind(hind,hist,fut)%>%mutate(bc = "raw")#
+#
+            hind_bc    <- ACLIM_annual_hind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)%>%mutate(bc="bias corrected")#
+            fut_bc     <- ACLIM_annual_fut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,val_biascorrected, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            fut_bc     <- fut_bc%>%mutate(bc="bias corrected")%>%rename(mn_val = val_biascorrected)#
+#
+            fut_bc     <-rbind(hind_bc,fut_bc)#
+#
+            plotdat    <- rbind(plotdat,fut_bc)#
+            plotdat$bc <- factor(plotdat$bc, levels =c("raw","bias corrected"))#
+            plotdat$GCM_scen <- paste0(plotdat$GCM,"_",plotdat$scen) #
+#
+            plotdat$GCM_scen_sim <- paste0(plotdat$GCM,"_",plotdat$scen,"_",plotdat$sim_type) #
+            plotdat$CMIP <- input$CMIP[c]#
+#
+            if(c ==1 ){#
+                plotdatout <- plotdat#
+            }else{#
+                plotdatout <- rbind(plotdatout,plotdat)#
+            }#
+#
+        }#
+        plotdat <- plotdat%>%filter(#
+                scen%in%input$scen,#
+                GCM%in%input$GCM,#
+                bc%in%input$bc)#
+        units <- plotdat$units[1]#
+#
+        nyrs <- length(unique(plotdat$year))#
+        spanIN <- 5/nyrs#
+#
+        return(list(dat=plotdatout,nyrs = nyrs, units = units,spanIN=spanIN, plotvar = plotvar,facet_row=facet_row,facet_col=facet_col))
+for(c in 1:length(input$CMIP)){#
+            load(paste0("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_hind_mn.Rdata"))#
+            load(paste0("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_hist_mn.Rdata"))#
+            load(paste0("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_fut_mn.Rdata"))#
+            #load(paste0("Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_fut_mn.Rdata"))#
+            #plotvars   <- unique(ACLIM_annual_hind$var)#
+#
+            CMIP       <- input$CMIP#
+            plotvar    <- input$plotvar#
+            plotbasin  <- input$plotbasin#
+            facet_row  <- input$facet_row#
+            facet_col  <- input$facet_col#
+#
+            hind       <- ACLIM_annual_hind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            hist       <- ACLIM_annual_hist%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            fut        <- ACLIM_annual_fut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            plotdat    <- rbind(hind,hist,fut)%>%mutate(bc = "raw")#
+#
+            hind_bc    <- ACLIM_annual_hind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)%>%mutate(bc="bias corrected")#
+            fut_bc     <- ACLIM_annual_fut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,val_biascorrected, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            fut_bc     <- fut_bc%>%mutate(bc="bias corrected")%>%rename(mn_val = val_biascorrected)#
+#
+            fut_bc     <-rbind(hind_bc,fut_bc)#
+#
+            plotdat    <- rbind(plotdat,fut_bc)#
+            plotdat$bc <- factor(plotdat$bc, levels =c("raw","bias corrected"))#
+            plotdat$GCM_scen <- paste0(plotdat$GCM,"_",plotdat$scen) #
+#
+            plotdat$GCM_scen_sim <- paste0(plotdat$GCM,"_",plotdat$scen,"_",plotdat$sim_type) #
+            plotdat$CMIP <- input$CMIP[c]#
+#
+            if(c ==1 ){#
+                plotdatout <- plotdat#
+            }else{#
+                plotdatout <- rbind(plotdatout,plotdat)#
+            }#
+#
+        }#
+        plotdat <- plotdat%>%filter(#
+                scen%in%input$scen,#
+                GCM%in%input$GCM,#
+                bc%in%input$bc)#
+        units <- plotdat$units[1]#
+#
+        nyrs <- length(unique(plotdat$year))#
+        spanIN <- 5/nyrs#
+#
+        return(list(dat=plotdatout,nyrs = nyrs, units = units,spanIN=spanIN, plotvar = plotvar,facet_row=facet_row,facet_col=facet_col))}
+outdat <-function(input){#
+        for(c in 1:length(input$CMIP)){#
+            load(paste0("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_hind_mn.Rdata"))#
+            load(paste0("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_hist_mn.Rdata"))#
+            load(paste0("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_fut_mn.Rdata"))#
+            #load(paste0("Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_fut_mn.Rdata"))#
+            #plotvars   <- unique(ACLIM_annual_hind$var)#
+#
+            CMIP       <- input$CMIP#
+            plotvar    <- input$plotvar#
+            plotbasin  <- input$plotbasin#
+            facet_row  <- input$facet_row#
+            facet_col  <- input$facet_col#
+#
+            hind       <- ACLIM_annual_hind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            hist       <- ACLIM_annual_hist%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            fut        <- ACLIM_annual_fut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            plotdat    <- rbind(hind,hist,fut)%>%mutate(bc = "raw")#
+#
+            hind_bc    <- ACLIM_annual_hind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)%>%mutate(bc="bias corrected")#
+            fut_bc     <- ACLIM_annual_fut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,val_biascorrected, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            fut_bc     <- fut_bc%>%mutate(bc="bias corrected")%>%rename(mn_val = val_biascorrected)#
+#
+            fut_bc     <-rbind(hind_bc,fut_bc)#
+#
+            plotdat    <- rbind(plotdat,fut_bc)#
+            plotdat$bc <- factor(plotdat$bc, levels =c("raw","bias corrected"))#
+            plotdat$GCM_scen <- paste0(plotdat$GCM,"_",plotdat$scen) #
+#
+            plotdat$GCM_scen_sim <- paste0(plotdat$GCM,"_",plotdat$scen,"_",plotdat$sim_type) #
+            plotdat$CMIP <- input$CMIP[c]#
+#
+            if(c ==1 ){#
+                plotdatout <- plotdat#
+            }else{#
+                plotdatout <- rbind(plotdatout,plotdat)#
+            }#
+#
+        }#
+        plotdat <- plotdat%>%filter(#
+                scen%in%input$scen,#
+                GCM%in%input$GCM,#
+                bc%in%input$bc)#
+        units <- plotdat$units[1]#
+#
+        nyrs <- length(unique(plotdat$year))#
+        spanIN <- 5/nyrs#
+#
+        return(list(dat=plotdatout,nyrs = nyrs, units = units,spanIN=spanIN, plotvar = plotvar,facet_row=facet_row,facet_col=facet_col))}
+input<-list()#
+input$bc         <- c("raw","bias corrected")#
+input$GCM        <- c("miroc","gfdl","cesm")#
+input$scen       <- c("ssp126","ssp585")#
+#
+input$CMIP       <- c("K20P19_CMIP6")#
+input$plotvar    <- "temp_bottom5m"#
+input$plotbasin  <- "SEBS"#
+input$facet_row  <- "bc"#
+input$facet_col  <- "scen"
+outdat(input)
+outdat()
+outdat <-function(input=input){#
+        for(c in 1:length(input$CMIP)){#
+            load(paste0("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_hind_mn.Rdata"))#
+            load(paste0("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_hist_mn.Rdata"))#
+            load(paste0("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_fut_mn.Rdata"))#
+            #load(paste0("Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_fut_mn.Rdata"))#
+            #plotvars   <- unique(ACLIM_annual_hind$var)#
+#
+            CMIP       <- input$CMIP#
+            plotvar    <- input$plotvar#
+            plotbasin  <- input$plotbasin#
+            facet_row  <- input$facet_row#
+            facet_col  <- input$facet_col#
+#
+            hind       <- ACLIM_annual_hind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            hist       <- ACLIM_annual_hist%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            fut        <- ACLIM_annual_fut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            plotdat    <- rbind(hind,hist,fut)%>%mutate(bc = "raw")#
+#
+            hind_bc    <- ACLIM_annual_hind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)%>%mutate(bc="bias corrected")#
+            fut_bc     <- ACLIM_annual_fut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,val_biascorrected, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            fut_bc     <- fut_bc%>%mutate(bc="bias corrected")%>%rename(mn_val = val_biascorrected)#
+#
+            fut_bc     <-rbind(hind_bc,fut_bc)#
+#
+            plotdat    <- rbind(plotdat,fut_bc)#
+            plotdat$bc <- factor(plotdat$bc, levels =c("raw","bias corrected"))#
+            plotdat$GCM_scen <- paste0(plotdat$GCM,"_",plotdat$scen) #
+#
+            plotdat$GCM_scen_sim <- paste0(plotdat$GCM,"_",plotdat$scen,"_",plotdat$sim_type) #
+            plotdat$CMIP <- input$CMIP[c]#
+#
+            if(c ==1 ){#
+                plotdatout <- plotdat#
+            }else{#
+                plotdatout <- rbind(plotdatout,plotdat)#
+            }#
+#
+        }#
+        plotdat <- plotdat%>%filter(#
+                scen%in%input$scen,#
+                GCM%in%input$GCM,#
+                bc%in%input$bc)#
+        units <- plotdat$units[1]#
+#
+        nyrs <- length(unique(plotdat$year))#
+        spanIN <- 5/nyrs#
+#
+        return(list(dat=plotdatout,nyrs = nyrs, units = units,spanIN=spanIN, plotvar = plotvar,facet_row=facet_row,facet_col=facet_col))}
+outdat()
+outdat <-function(){#
+        for(c in 1:length(input$CMIP)){#
+            load(paste0("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_hind_mn.Rdata"))#
+            load(paste0("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_hist_mn.Rdata"))#
+            load(paste0("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_fut_mn.Rdata"))#
+            #load(paste0("Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_fut_mn.Rdata"))#
+            #plotvars   <- unique(ACLIM_annual_hind$var)#
+#
+            CMIP       <- input$CMIP#
+            plotvar    <- input$plotvar#
+            plotbasin  <- input$plotbasin#
+            facet_row  <- input$facet_row#
+            facet_col  <- input$facet_col#
+#
+            hind       <- ACLIM_annual_hind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            hist       <- ACLIM_annual_hist%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            fut        <- ACLIM_annual_fut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            plotdat    <- rbind(hind,hist,fut)%>%mutate(bc = "raw")#
+#
+            hind_bc    <- ACLIM_annual_hind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)%>%mutate(bc="bias corrected")#
+            fut_bc     <- ACLIM_annual_fut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, mnDate,val_biascorrected, sim,gcmcmip,GCM,scen,sim_type ,units)#
+            fut_bc     <- fut_bc%>%mutate(bc="bias corrected")%>%rename(mn_val = val_biascorrected)#
+#
+            fut_bc     <-rbind(hind_bc,fut_bc)#
+#
+            plotdat    <- rbind(plotdat,fut_bc)#
+            plotdat$bc <- factor(plotdat$bc, levels =c("raw","bias corrected"))#
+            plotdat$GCM_scen <- paste0(plotdat$GCM,"_",plotdat$scen) #
+#
+            plotdat$GCM_scen_sim <- paste0(plotdat$GCM,"_",plotdat$scen,"_",plotdat$sim_type) #
+            plotdat$CMIP <- input$CMIP[c]#
+#
+            if(c ==1 ){#
+                plotdatout <- plotdat#
+            }else{#
+                plotdatout <- rbind(plotdatout,plotdat)#
+            }#
+#
+        }#
+        plotdat <- plotdat%>%filter(#
+                scen%in%input$scen,#
+                GCM%in%input$GCM,#
+                bc%in%input$bc)#
+        units <- plotdat$units[1]#
+#
+        nyrs <- length(unique(plotdat$year))#
+        spanIN <- 5/nyrs#
+#
+        return(list(dat=plotdatout,nyrs = nyrs, units = units,spanIN=spanIN, plotvar = plotvar,facet_row=facet_row,facet_col=facet_col))}
+outdat()
+pp <- ggplot(outdat()$dat)+#
+          geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen_sim,linetype = basin))+#
+          geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen_sim,linetype = basin),alpha = 0.6)+#
+          geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen_sim,linetype = basin),alpha = 0.6)+#
+          geom_smooth(aes(x=mnDate,y=mn_val,color= GCM_scen_sim,fill=GCM_scen_sim,linetype = basin),alpha=0.1,method="loess",span = .5)+#
+          theme_minimal() + #
+          labs(x="Date",#
+                 y=paste(outdat()$plotvar,"(",outdat()$units,")"),#
+                 subtitle = "",#
+                 title = outdat()$plotvar)+#
+        scale_color_discrete()#
+        eval(parse(text = paste0("pp <-pp+facet_grid(",outdat()$facet_row,"~",outdat()$facet_col,")") ))#
+        pp
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+rm(list=ls())
+flush.consol()
+gc()
+flush()
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+load("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/K20P19_CMIP6/allEBS_means/ACLIM_annual_fut_mn.Rdata")
+load("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/K20P19_CMIP6/allEBS_means/ACLIM_annual_fut_mn.Rdata")
+ACLIM_annual_fut$GCM
+head(ACLIM_annual_fut$GCM)
+load("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/K20P19_CMIP6/allEBS_means/ACLIM_annual_fut_mn.Rdata")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+names(ACLIM_annual_fut)
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+dirlist <- dir("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/K20P19_CMIP6/allEBS_means")
+dirlist
+substr(dirlist,1,9)
+strsplit(dirlist,"_mn.Rdata)"
+strsplit(dirlist,"_mn.Rdata")
+strsplit(dirlist,"_mn.Rdata")
+strsplit(dirlist,"_mn.Rdata")[[``]]
+strsplit(dirlist,"_mn.Rdata")[[1]]
+unlist(strsplit(dirlist,"_mn.Rdata"))
+unique(unlist(strsplit(dirlist,"_mn.Rdata")))
+unique(unlist(strsplit(dirlist,"_")))
+unique(unlist(strsplit(dirlist,"_")))!%in%c("ACLIM")
+unique(unlist(strsplit(dirlist,"_")))%!in%c("ACLIM")
+unique(unlist(strsplit(dirlist,"_")))%out%c("ACLIM")
+unique(unlist(strsplit(dirlist,"_")))%in%c("ACLIM")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+?switch
+require(stats)#
+centre <- function(x, type) {#
+  switch(type,#
+         mean = mean(x),#
+         median = median(x),#
+         trimmed = mean(x, trim = .1))#
+}
+centre(1:10,"mean")
+paste0("dhind <- ACLIM_",typeIN,"_hind")
+dir("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/K20P19_CMIP6/allEBS_means/")
+dir("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/K20P19_CMIP6/allEBS_means/ACLIM_surveyrep_fut_mn.Rdata")
+load("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/K20P19_CMIP6/allEBS_means/ACLIM_surveyrep_fut_mn.Rdata")
+rm(list=ls())
+load("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/K20P19_CMIP6/allEBS_means/ACLIM_surveyrep_fut_mn.Rdata")
+ls()
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+ls()
+load("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/K20P19_CMIP6/allEBS_means/ACLIM_annual_fut_mn.Rdata")#
+plotvars   <- unique(ACLIM_annual_fut$var)#
+gcms       <- unique(ACLIM_annual_fut$GCM)#
+CMIPs      <- unique(ACLIM_annual_fut$CMIP)#
+scens      <-  unique(ACLIM_annual_fut$scen)
+plotvars
+grep("largeZoop_integrated",plotvars)
+head(ACLIM_annual_fut)
+julian(ACLIM_annual_fut $mnDate[1])
+julian(ACLIM_annual_fut $mnDate[1])-julian(as.Date(paste()))
+load("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/K20P19_CMIP6/allEBS_means/ACLIM_annual_fut_mn.Rdata")
+ls()
+names()ACLIM_annual_fut
+names(ACLIM_annual_fut)
+jead(ACLIM_annual_fut)
+head(data.frame(ACLIM_annual_fut))
+load("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/K20P19_CMIP6/allEBS_means/ACLIM_surveyrep_fut_mn.Rdata")
+ls()
+head(data.frame(ACLIM_surveyrep_fut))
+load("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/K20P19_CMIP6/allEBS_means/ACLIM_weekly_fut_mn.Rdata")
+ls()
+head(data.frame(ACLIM_weekly_fut))
+head(data.frame(ACLIM_weekly_hind))
+load("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/K20P19_CMIP6/allEBS_means/ACLIM_weekly_hind_mn.Rdata")
+head(data.frame(ACLIM_weekly_hind))
+rm(list=ls())
+load("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/K20P19_CMIP6/allEBS_means/ACLIM_weekly_hind_mn.Rdata")
+head(data.frame(ACLIM_weekly_hind))
+load("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/K20P19_CMIP6/allEBS_means/ACLIM_weekly_fut_mn.Rdata")
+head(data.frame(ACLIM_weekly_fut))
+load("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/K20P19_CMIP6/allEBS_means/ACLIM_surveyrep_fut_mn.Rdata")
+head(data.frame(ACLIM_surveyrep_fut))
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+dplyr::between(2,2,5)
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+load("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/K20P19_CMIP6/allEBS_means/ACLIM_annual_fut_mn.Rdata")
+head(data.frame(ACLIM_annual_fut_mn))
+head(data.frame(ACLIM_annual_fut))
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+head(data.frame(ACLIM_annual_fut_mn))
+load("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/K20P19_CMIP6/allEBS_means/ACLIM_annual_fut_mn.Rdata")
+head(data.frame(ACLIM_annual_fut_mn))
+head(data.frame(ACLIM_annual_fut))
+head(data.frame(ACLIM_monthly_fut_mn))
+load("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/K20P19_CMIP6/allEBS_means/ACLIM_monthly_fut_mn.Rdata")
+head(data.frame(ACLIM_monthly_fut))
+load("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/K20P19_CMIP6/allEBS_means/ACLIM_weekly_fut_mn.Rdata");head(data.frame(ACLIM_weekly_fut))
+load("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/K20P19_CMIP6/allEBS_means/ACLIM_seasonal_fut_mn.Rdata");head(data.frame(ACLIM_sesasonal_fut))
+load("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/K20P19_CMIP6/allEBS_means/ACLIM_seasonal_fut_mn.Rdata");head(data.frame(ACLIM_seasonal_fut))
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+load("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/K20P19_CMIP6/allEBS_means/ACLIM_seasonal_fut_mn.Rdata");head(data.frame(ACLIM_seasonal_fut))
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+ls()
+dfut<-ACLIM_seasonal_fut
+sort(unique(dfut$year))
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+yrin <- sort(unique(dfut$year))[1]
+yrin <- sort(unique(dfut$year))[1]
+dfut%>%dplyr::filter(year>yrin)
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+head(dfut)
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+hind
+dhind
+load("/Users/kholsman/Documents/GitHub/ACLIM2/Data/out/K20P19_CMIP6/allEBS_means/ACLIM_seasonal_hind_mn.Rdata");head(data.frame(ACLIM_seasonal_hind))
+dhind <-ACLIM_seasonal_hind
+hindIN     <- dhind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, jday,mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)
+hindIN     <- dhind
+head(hindIN%>%dplyr::mutate(scen = scenIN[s],gcmcmip="hind",GCM ="hind", scen = "hind"))
+scenIN <- dfut
+scenIN <- unique(dfut$scen)
+scenIN
+head(hindIN%>%dplyr::mutate(scen = scenIN[s],gcmcmip="hind",GCM ="hind", scen = "hind"))
+s<-1
+hindIN%>%dplyr::mutate(scen = scenIN[s],gcmcmip="hind",GCM ="hind", scen = "hind")
+head(hindIN%>%dplyr::mutate(scen = scenIN[s],gcmcmip="hind",GCM ="hind", scen = "hind"))
+head(hindIN%>%dplyr::mutate(scen = scenIN[s],gcmcmip="hind",GCM ="hind"))
+for(s in 1:length(scenIN)){#
+                if(s ==1)#
+                 hind <- hindIN%>%dplyr::mutate(scen = scenIN[s],gcmcmip="hind",GCM ="hind")#
+                if(s>1)#
+                  hind <- rbind(hind,hindIN%>%dplyr::mutate(scen = scenIN[s]),gcmcmip="hind",GCM ="hind")#
+#
+            }
+s<-1
+if(s ==1)#
+                 hind <- hindIN%>%dplyr::mutate(scen = scenIN[s],gcmcmip="hind",GCM ="hind")
+s<-s+1
+(s>1)
+if(s>1)#
+                  hind <- rbind(hind,hindIN%>%dplyr::mutate(scen = scenIN[s],gcmcmip="hind",GCM ="hind"))
+head(hind)
+tail(hind)
+for(s in 1:length(scenIN)){#
+                if(s ==1)#
+                 hind <- hindIN%>%dplyr::mutate(scen = scenIN[s],gcmcmip="hind",GCM ="hind")#
+                if(s>1)#
+                  hind <- rbind(hind,hindIN%>%dplyr::mutate(scen = scenIN[s],gcmcmip="hind",GCM ="hind"))#
+#
+            }
+tail(hind)
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")

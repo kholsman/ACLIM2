@@ -1,0 +1,132 @@
+load("/Users/kholsman/Documents/GitHub/AK_climate_engergtics/Data/in/aggPrey.all.Rdata")
+ls()
+head(agg.prey)
+rm(list=ls)
+rm(list=ls()()
+)
+rm(list=ls())
+# Load CPUE data:#
+load("/Volumes/LaCie/01_SRVY_AFSC_data_all/Newest/cpue_data/plk.cpue.ebs.Rdata")#
+#
+# Load agg.prey ED data:#
+load("/Volumes/LaCie/01_SRVY_AFSC_data_all/Newest/Out_SMRY_QRYS/Agg_files/WALLEYE POLLOCK_BS_byPred_agg.preyED.Rdata")
+ls()
+? suppressMessages
+2521.70/2
+.05*.4
+alpha <- .2
+Sratio = 1
+(1-alpha)/(1-alpha)
+bratio = 1
+(bratio-alpha)/(1-alpha)
+bratio <-0.05
+alpha <- .05
+(bratio-alpha)/(1-alpha)
+bratio <-1
+(bratio-alpha)/(1-alpha)
+w<-2;x<-5;y<-8;z<-3; x^2+2*y/2*w+3*z
+~/Downloads/catchfunction-1.6.0/R/sysdata.rda
+load("/Users/kholsman/Downloads/catchfunction-1.6.0/R/sysdata.rda")
+ls()
+CATCH.AVG.BS
+mean.BS.AI.ABCs
+tac_BOTHBIND_FLATSUR_sur
+ls()
+install.packages('rsconnect')
+library(rsconnect)
+rsconnect::setAccountInfo(name='kkh2022',#
+			  token='682C7F32198278E1B49C46C21450CD80',#
+			  secret='<SECRET>')
+? rsconnect
+rsconnect::deployments()
+rsconnect::accountInfo()
+rsconnect::accountInfo("kkh2022")
+rsconnect::accountInfo("KKH2022")
+rsconnect::accountInfo(name="kkh2022")
+rsconnect::accountInfo(name="kholsman")
+library(rsconnect)#
+rsconnect::deployApp('/Users/kholsman/Documents/GitHub/Covid_shiny')
+rsconnect::setAccountInfo(name='kkh2022', token='682C7F32198278E1B49C46C21450CD80', secret='Kxg2WZh8Vmwbd+p0x9trDUHpU3b8sYb71JvLmRx8')
+library(rsconnect)#
+rsconnect::deployApp('/Users/kholsman/Documents/GitHub/Covid_shiny')
+load("/Users/kholsman/Documents/GitHub/futR/data/in/NPZcov.Rdata")
+ls()
+head(NPZcov)
+load("/Users/kholsman/Documents/GitHub/futR/data/in/rec_dat.Rdata")
+ls()
+head(rec_dat)
+write.csv(rec_dat[[1]],"/Users/kholsman/Documents/GitHub/futR/data/in/rec_dat.csv")
+write.csv(NPZcov,"/Users/kholsman/Documents/GitHub/futR/data/in/NPZcov.csv")
+setwd("Documents/GitHub/ACLIM2")#
+    tmstp  <- format(Sys.time(), "%Y_%m_%d")#
+    main   <- getwd()  #"~/GitHub_new/ACLIM2"#
+    # loads packages, data, setup, etc.#
+    suppressMessages(source("R/make.R"))#
+    tmstamp1  <- format(Sys.time(), "%Y%m%d")#
+    # tmstamp1  <- "20220428"#
+    update_hind  <- TRUE   # set to true to update hind and hindS; needed annually#
+    update_proj  <- TRUE   # set to true to update fut; not needed#
+    update_hist  <- TRUE   # set to true to update fut; not needed#
+    # the reference years for bias correcting in R/setup.R#
+    ref_years #
+    # the year to z-score scale / delta in R/setup.R#
+    deltayrs #
+    # remove these variables:#
+    vl <- srvy_vars[!srvy_vars%in%c("station_id","latitude",#
+                                    "longitude","stratum","doy",#
+                                  "Iron_bottom5m","Iron_integrated",#
+                                  "Iron_surface5m","prod_Eup_integrated",#
+                                  "prod_NCa_integrated")]#
+#
+    # Identify which variables would be normally #
+    # distributed (i.e., can have negative values)#
+     normvl <- c("shflux","ssflux","temp_bottom5m",#
+      "temp_integrated","temp_surface5m",#
+      "uEast_bottom5m","uEast_surface5m",#
+      "vNorth_bottom5m","vNorth_surface5m")#
+#
+    normlist <- data.frame(var = vl, lognorm = TRUE)#
+    normlist$lognorm[normlist$var%in%normvl] <- FALSE#
+    # generate indices and bias corrected projections #
+    # This takes approx 30 mins to run completely#
+    gcmcmipL <- c("B10K-K20P19_CMIP6_miroc",#
+                  "B10K-K20P19_CMIP6_gfdl",#
+                  "B10K-K20P19_CMIP6_cesm")
+CMIP6_Indices <- suppressMessages(#
+                        makeACLIM2_Indices(#
+                        BC_target = "mn_val",#
+                        hind_sim  =  "B10K-K20_CORECFS",#
+                        histLIST  = paste0(gcmcmipL,"_historical"),#
+                        gcmcmipLIST = gcmcmipL,#
+                        sim_listIN = sim_list[-grep("historical",sim_list)]))#
+    save_indices(flIN = CMIP6_Indices, #
+                 subfl = "allEBS_means",#
+                 post_txt = "_mn",#
+                 CMIP_fdlr ="K20P19_CMIP6")#
+#
+    # CMIP5 K20P19#
+    gcmcmipL2 <- c("B10K-K20P19_CMIP5_MIROC","B10K-K20P19_CMIP5_GFDL","B10K-K20P19_CMIP5_CESM") #
+    CMIP5_K20_Indices <- suppressMessages(#
+                        makeACLIM2_Indices(#
+                        BC_target = "mn_val",#
+                        hind_sim  =  "B10K-K20_CORECFS",#
+                        histLIST  = paste0(gcmcmipL,"_historical"),#
+                        gcmcmipLIST = gcmcmipL2,#
+                        sim_listIN = sim_list[-grep("historical",sim_list)]))#
+    save_indices(flIN = CMIP5_K20_Indices, #
+                 subfl = "allEBS_means",#
+                 post_txt = "_mn",#
+                 CMIP_fdlr ="K20P19_CMIP5")#
+    # CMIP5 H16#
+    gcmcmipL2 <- c("B10K-H16_CMIP5_MIROC","B10K-H16_CMIP5_GFDL","B10K-H16_CMIP5_CESM") #
+    CMIP5_H16_Indices <- suppressMessages(#
+                        makeACLIM2_Indices(#
+                        BC_target = "mn_val",#
+                        hind_sim  =  "B10K-H16_CORECFS",#
+                        histLIST  = rep("B10K-H16_CORECFS",3),#
+                        gcmcmipLIST = gcmcmipL2,#
+                        sim_listIN = sim_list[-grep("historical",sim_list)]))#
+    save_indices(flIN = CMIP5_H16_Indices, #
+                 subfl = "allEBS_means",#
+                 post_txt = "_mn",#
+                 CMIP_fdlr ="H16_CMIP5")

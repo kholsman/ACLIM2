@@ -80,7 +80,7 @@ This set of commands, run within R, downloads the ACLIM2 repository and unpacks 
 ### Option 2: Download the zipped repo  
 Download the full zip archive directly from the [**ACLIM2 Repo**](https://github.com/kholsman/ACLIM2) using this link: [**https://github.com/kholsman/ACLIM2/archive/main.zip**](https://github.com/kholsman/ACLIM2/archive/main.zip), and unzip its contents while preserving directory structure. 
 
-**Important!*** If downloading from zip, please **rename the root folder** from `ACLIM2-main` (in the zipfile) to `ACLIM2` (name used in cloned copies) after unzipping, for consistency in the following examples.
+**Important!** If downloading from zip, please **rename the root folder** from `ACLIM2-main` (in the zipfile) to `ACLIM2` (name used in cloned copies) after unzipping, for consistency in the following examples.
 
 Your final folder structure should look like this:
 
@@ -98,14 +98,24 @@ If you have git installed and can work with it, this is the preferred method as 
 
 ## Get the data
 
-Go to the google drive and download the zipped file with the R data '2022_03_07_Rdata.zip':
+**Step 1)**
+* Go to the google drive and download the zipped file with the R data `2022_03_07_Rdata.zip`:
 
-[00_ACLIM_shared > 02_Data > Newest_Data(use this) > 2022_03_07_Rdata.zip](https://drive.google.com/drive/folders/11BQEfNEl9vvrN-V0LgS67XS4aLE9pNzz)
+* [00_ACLIM_shared > 02_Data > Newest_Data(use this) > 2022_03_07_Rdata.zip](https://drive.google.com/drive/folders/11BQEfNEl9vvrN-V0LgS67XS4aLE9pNzz)
 
-Move the Zipped folder to your local folder 'ACLIM2/Data/in' and unzip. The final folder structure should look like:
-
+* Move the Zipped folder to your local folder `ACLIM2/Data/in` and unzip. The final folder structure should look like:
 
 ![](Figs/DATA_dir.png){ width=50%}
+
+**Step 2)**
+* Go to the google drive and download the zipped file with the R ACLIM2 indices `ACLIM2_indices.zip`:
+
+* [00_ACLIM_shared > 02_Data > Newest_Data(use this) > ACLIM2_indice.zip](https://drive.google.com/drive/folders/11BQEfNEl9vvrN-V0LgS67XS4aLE9pNzz)
+
+* Move the Zipped folder to your local folder `ACLIM2/Data/out` and unzip. The final folder structure should look like:
+
+![](Figs/DATA_dir2.png){ width=50%}
+
 
 ## Set up the Workspace
 
@@ -143,7 +153,7 @@ This document provides an overview of accessing, plotting, and creating bias cor
 
 **Important!** A few key things to know before getting started are detailed below. Please review this information before getting started.
 
-## KEY ROMSNPZ versions
+## ROMSNPZ versions
 
 **Important!** ACLIM1 CMIP5 and ACLIM2 CMIP5 and CMIP6 datasets use different base models.
 
@@ -161,14 +171,23 @@ The models are not directly comparable, therefore the projections should be bias
 In addition for CMIP6 "historical" runs are available for bias correcting. We will use those below.
 
 For a list of the available simulations for ACLIM enter the following in R():
-```{R2, eval=TRUE, echo=T, results='show',message=FALSE}
-# list of the climate scenarios
-data.frame(sim_list)
+```{R, eval=TRUE, echo=T, results='show',message=FALSE}
+    # list of the climate scenarios
+    data.frame(sim_list)
 
 ```
 
+## ROMSNPZ variables
 
-## KEY Data outputs
+For a list of the available variables from the ROMSNPZ:
+
+```{R, eval=TRUE, echo=T, results='show',message=FALSE}
+    # Metadata for variables
+    (srvy_var_def[-(1:5),])
+
+```
+
+## Data outputs
 **Important!** There are 2 types of post-processed data available for use in ACLIM.
 
 The ROMSNPZ team has developed a process to provide standardized post-processed outputs from the large (and non-intuitive) ROMSNPZ grid. These have been characterized as:
@@ -183,25 +202,25 @@ To get more information about each of these level 3 datasets enter this in R:
 
 ```{R, eval=TRUE, echo=T, results='show',message=FALSE}
     # Metadata for Weekly ("ACLIMregion_...") indices
-    head(all_info1)
+    (all_info1)
     
     # Metadata for Weekly ("ACLIMsurveyrep_...") indices
-    head(all_info2)
+    (all_info2)
     
 ```
 
-# Create Indices & bias correct projections 
+# ACLIM2 Indices & bias correction 
 
 The next step creates indices based on the level 3 data for each hind cast, historical run, and CMIP6 projection. The script below then bias corrects each index using the historical run and recenters the projection on the corresponding hindcast (such that projections are $\Delta$ from historical mean values for the reference period ` deltayrs     <- 1970:2000` ).
 
-## Water column averaged values{.tabset}
+## NESB & SEBS averaged indices{.tabset}
 
 The average water column values for each variable from the ROMSNPZ model strata x weekly Level2 outputs ('ACLIMregion') was calculated and used to calculate the strata-area weighted mean value for the NEBS and SEBS weekly, monthly, seasonally, and annually. Similarly, for survey replicated ('ACLIMsurveyrep') Level2 outputs the average water column value for each variable at each station was calculated used to calculate the strata-area weighted mean value for the NEBS and SEBS annually. These indices were calculate for hindcast, historical, and projection scenarios, and used to bias correct the projections. More information on the methods for each can be found in the tabs below and the code immediately following this section will re-generate the bias corrected indices. All of the bias corrected outputs can be found in the "Data/out/CMIP6" folder. 
 
-![*Raw (top row) and bias corrected (bottom row)bottom temperature indices based on survey replicated Level3 outputs for the SEBS*](Figs/biascorrected_temp2.png){width=75%}
+![**Raw (top row) and bias corrected (bottom row)bottom temperature indices based on survey replicated Level3 outputs for the SEBS**](Figs/biascorrected_temp2.png){width=75%}
 
 
-*Important!* Note that for projections the 'mn_val' represents raw mean values, while 'val_bias-corrected' is the bias corrected mn_val (should be used instead of the raw values). In all cases, for variables that are log-normally distributed (cannot be < 0), the ln(mn_val) were used to bias correct and were then back transformed to non-log space after correction:
+**Important!** Note that for projections the 'mn_val' represents raw mean values, while 'val_bias-corrected' is the bias corrected mn_val (should be used instead of the raw values). In all cases, for variables that are log-normally distributed (cannot be < 0), the ln(mn_val) were used to bias correct and were then back transformed to non-log space after correction:
 
 For normally distributed variables ($Y$):
   $${Y}^{fut'}_{t,k} =\bar{Y}^{hind}_{k,\bar{T}} +\left( \frac{\sigma^{hind}_{k,\bar{T}}}{\sigma^{hist}_{k,\bar{T}}}*({Y}^{fut}_{t,k}-\bar{Y}^{hist}_{k,\bar{T}})  \right )$$
@@ -266,7 +285,7 @@ Uses the station specific survey replicated (in time and space) data ('ACLIMsurv
 
 Appendix A includes the code used to generate the ACLIM2 indices and bias correct them. That code can be run to re-make the indices if you like but takes approx 30 mins a CMIP to run. 
 
-# Explore ACLIM2 Indices {.tabset}
+## Explore ACLIM2 Indices {.tabset}
 
 The following code will open an interactive shiny() app for exploring the indices. You can also view this online at (kkh2022.shinyapps.io/ACLIM2_indices)[https://kkh2022.shinyapps.io/ACLIM2_indices/].
 
@@ -278,35 +297,28 @@ shiny::runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indi
 
 !["Raw (top row) and bias corrected (bottom row)bottom temperature indices based on survey replicated Level3 outputs for the SEBS"](Figs/biascorrected_temp2.png){width=100%}
 
-## Annual indices
+<!-- ## Annual indices -->
 
-```{r explore, eval=F, include=T,echo=T}
-    # --------------------------------------
-    # SETUP WORKSPACE
-    main   <- getwd()  #"~/GitHub_new/ACLIM2"
-    
-    # loads packages, data, setup, etc.
-    suppressMessages(source("R/make.R"))
-    
-    
-    # load the Indices:
-    fldr <- "Data/out/K20P19_CMIP6/allEBS_means"
-    dirlist <-grep ("annual", dir(fldr))
-    for(d in dirlist)
-      load(file.path(fldr,d))
-    hnd <- ACLIM_annual_fut_mn
-    
-````
+<!-- ```{r explore, eval=F, include=T,echo=T} -->
+<!--     # -------------------------------------- -->
+<!--     # SETUP WORKSPACE -->
+<!--     main   <- getwd()  #"~/GitHub_new/ACLIM2" -->
 
-## Monthly indices
+<!--     # loads packages, data, setup, etc. -->
+<!--     suppressMessages(source("R/make.R")) -->
 
-## Seasonal indices
 
-## weekly indices
+<!--     # load the Indices: -->
+<!--     fldr <- "Data/out/K20P19_CMIP6/allEBS_means" -->
+<!--     dirlist <-grep ("annual", dir(fldr)) -->
+<!--     for(d in dirlist) -->
+<!--       load(file.path(fldr,d)) -->
+<!--     hnd <- ACLIM_annual_fut_mn -->
 
-# Output to .dat file (ADMB/ TMB users)
+<!-- ```` -->
 
-# Special cases {.tabset}
+
+<!-- # Special cases {.tabset} -->
 
 ## monthly indices (Andy)
 
@@ -326,7 +338,7 @@ shiny::runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indi
 ## NFS index (Jeremy )
 
 
-# APPENDIX A: Create indices and bias correct CMIP6 projections
+# APPENDIX A: Create & bias correct ACLIM2 indices
 
 The following code shows how the ACLIM2 indices and bias correction was done. You do not need to re-run this (it is included so you can if you want to). To explore the indices skep to the next section.
 
@@ -455,6 +467,8 @@ The following code shows how the ACLIM2 indices and bias correction was done. Yo
     }
          
 ```
+
+# APPENDIX B:Output to .dat file (ADMB/ TMB users)
 
 ![September large zooplankton integrated concentration](Figs/Hind_Sept_large_Zoop.jpg){ width=75% }
 
