@@ -1,10 +1,16 @@
-Data/In/Newest/aclim_thredds*
-Data/In/Newest/Rdata/*
-Data/In/Newest/roms_for_aclim/*
+
 Data/In/Map_layers/geo_tif/*
 Data/In/Map_layers/shp_files/*
 Data/In/Map_layers/shp_files/*
+
+Data/In/Newest
+Data/In/Newest/aclim_thredds*
+Data/In/Newest/Rdata/*
+Data/In/Newest/roms_for_aclim/*
 Data/In/Newest.zip
+Data/In/lookup_tables.zip
+
+
 Data/In/Map_layers.zip
 Data/In/Map_layers
 Data/In/2022_03_07
@@ -36,8 +42,7 @@ Data/in/2022_03_07_Rdata/roms_for_public/B10K-K20P19_CMIP6_gfdl_ssp585
 Data/in/2022_03_07_Rdata/roms_for_public/B10K-K20P19_CMIP6_miroc_historical
 Data/in/2022_03_07_Rdata/roms_for_public/B10K-K20P19_CMIP6_miroc_ssp126
 
-Data/In/Newest
-Data/In/Newest
+
 Data/out/ACLIM2_indices
 Data/out/ACLIM2_indices.zip
 Data/out/CMIP5_H16_Indices_List.Rdata
