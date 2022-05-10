@@ -34,20 +34,21 @@
     # set up directory paths:
     #-------------------------------------------
     remote_fl     <- "roms_for_public"
-    local_fl      <- file.path(main,"Data/in")
+    #main          <- getwd()  #"~/GitHub_new/ACLIM2"
+    local_fl      <- file.path("Data/in")
     if(redownload_level3_mox)
       subfldr     <- tmstp
-    local_fl      <- file.path(main,"Data/in",  subfldr)
+    local_fl      <- file.path("Data/in",  subfldr)
     localfolder   <- file.path(local_fl,remote_fl)
     data_path     <- file.path(local_fl,remote_fl)
-    Rdata_path    <- file.path(file.path(main,"Data/in",  subfldrR),remote_fl)
+    Rdata_path    <- file.path(file.path("Data/in",  subfldrR),remote_fl)
     
     if(!dir.exists(local_fl))       
       dir.create(local_fl)
     if(!dir.exists(file.path(local_fl,remote_fl)))   
       dir.create(file.path(local_fl,remote_fl))
     
-    mapdata_path     <- file.path(main,"Data/in/Map_layers")
+    mapdata_path     <- file.path("Data/in/Map_layers")
     geotif_dir       <- "Data/in/Map_layers/geo_tif"
     shp_dir          <- "Data/in/Map_layers/shp_files"
     
@@ -135,7 +136,7 @@
     cat("------------------------------\n")
     cat("ALIM2/R/setup.R settings \n")
     cat("------------------------------\n")
-    cat(paste("main:                :",main,"\n"))
+    #cat(paste("main:                :",main,"\n"))
     cat(paste("data_path            :",data_path,"\n"))
     cat(paste("Rdata_path           :",Rdata_path,"\n"))
     cat(paste("redownload_level3_mox:",redownload_level3_mox,"\n"))
