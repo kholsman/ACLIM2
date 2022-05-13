@@ -2,15 +2,14 @@
 title: "ACLIM2 CMIP6 ROMSNPZ Indices quick start guide"
 author: K. Holsman
 output:
-  pdf_document:
-    toc: TRUE
+  html_document:
+    df_print: paged
+    toc: true
     toc_depth: 3
-    fig_caption: yes
-    fig_height: 4
-    fig_width: 5
-    highlight: tango
-    keep_tex: yes
-    latex_engine: xelatex
+    number_sections: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
   header-includes:
   - \usepackage{knputenc}
   - \usepackage{unicode-math}
@@ -21,14 +20,15 @@ output:
     fig_caption: yes
     fig_width: 4
     keep_md: yes
-  html_document:
-    df_print: paged
-    toc: true
+  pdf_document:
+    toc: TRUE
     toc_depth: 3
-    number_sections: true
-    toc_float:
-      collapsed: false
-      smooth_scroll: true
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 5
+    highlight: tango
+    keep_tex: yes
+    latex_engine: xelatex
 #runtime: shiny
 ---
 
