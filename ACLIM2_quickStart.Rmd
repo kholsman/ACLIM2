@@ -2,14 +2,15 @@
 title: "ACLIM2 CMIP6 ROMSNPZ Indices quick start guide"
 author: K. Holsman
 output:
-  html_document:
-    df_print: paged
-    toc: true
+  pdf_document:
+    toc: TRUE
     toc_depth: 3
-    number_sections: true
-    toc_float:
-      collapsed: false
-      smooth_scroll: true
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 5
+    highlight: tango
+    keep_tex: yes
+    latex_engine: xelatex
   header-includes:
   - \usepackage{knputenc}
   - \usepackage{unicode-math}
@@ -20,15 +21,14 @@ output:
     fig_caption: yes
     fig_width: 4
     keep_md: yes
-  pdf_document:
-    toc: TRUE
+  html_document:
+    df_print: paged
+    toc: true
     toc_depth: 3
-    fig_caption: yes
-    fig_height: 4
-    fig_width: 5
-    highlight: tango
-    keep_tex: yes
-    latex_engine: xelatex
+    number_sections: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
 #runtime: shiny
 ---
 
@@ -114,7 +114,7 @@ If you have git installed and can work with it, this is the preferred method as 
 
 * Move the Zipped folder to your local folder `ACLIM2/Data/out` and unzip. The final folder structure should look like:
 
-![](Figs/DATA_dir2.png){ width=50%}
+<!-- ![](Figs/DATA_dir2.png){ width=50%} -->
 
 
 ## Set up the Workspace
@@ -293,6 +293,16 @@ The following code will open an interactive shiny() app for exploring the indice
 
 shiny::runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
 
+# alternatively you can extract the data you want using the get_var()function
+
+df <- get_var(typeIN    = "annual", 
+         plotvar = "temp_bottom5m",plothist =F)
+
+df$plot
+head(df$dat)
+
+
+
 ```
 
 !["Raw (top row) and bias corrected (bottom row)bottom temperature indices based on survey replicated Level3 outputs for the SEBS"](Figs/biascorrected_temp2.png){width=100%}
@@ -325,12 +335,92 @@ shiny::runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indi
 ```{r ewe, eval=F, include=T,echo=T}
 
 
+# get the variable you want:
+df <- get_var( typeIN     = "monthly", 
+               plotvar   = "temp_bottom5m",
+               bcIN      = "bias corrected",
+               plothist  = F,  # ignore the hist runs
+               removeyr1 = T)  #"Remove first year of projection ( burn in)")
+
+df$plot
+head(df$dat)
+
+# concat the hind and fut runs by removing years from projection
+maxDin <- max(as.vector(df$dat%>%dplyr::filter(sim_type=="hind")%>%dplyr::select(mnDate))[[1]])
+
+newdat <- stitchTS(dat = df$dat,
+                 maxD  = maxDin)
+
+# newdat has the full set
+
+
+pp  <- ggplot(newdat)+
+          geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen, linetype = basin),
+                    alpha = 0.6,show.legend = FALSE)+
+          geom_smooth(aes(x=mnDate,y=mn_val,color= GCM_scen,
+                          fill=GCM_scen,linetype = basin),alpha=0.1,
+                      method="loess",formula='y ~ x',span = .5,show.legend=T)+
+          theme_minimal() + 
+          labs(x="Date",
+                 y=paste(newdat$var[1],"(",newdat$units[1],")"),
+                 subtitle = "",
+                 legend = "",
+                 title = paste(newdat$var[1],"(",newdat$basin[1],",",newdat$type[1],")"))+
+        scale_color_discrete()+
+          facet_grid(scen~.)
+# plot it
+pp
+
+# plot it interactively
+plotly::ggplotly(pp)
+        
 ```
 
 ## NRS indices (André)
 
 ```{r NRS, eval=F, include=T,echo=T}
 
+suppressMessages(source("R/make.R"))
+
+# get the variable you want:
+df <- get_var( typeIN     = "annual", 
+               plotvar   = "temp_bottom5m",
+               bcIN      = "bias corrected",
+               plothist  = F,  # ignore the hist runs
+               removeyr1 = T)  #"Remove first year of projection ( burn in)")
+
+df$plot
+head(df$dat)
+
+# concat the hind and fut runs by removing years from projection
+maxDin <- max(as.vector(df$dat%>%dplyr::filter(sim_type=="hind")%>%dplyr::select(mnDate))[[1]])
+
+newdat <- stitchTS(dat = df$dat,
+                 maxD  = maxDin)
+
+# newdat has the full set
+
+
+pp  <- ggplot(newdat)+
+          geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen, linetype = basin),
+                    alpha = 0.6,show.legend = FALSE)+
+          geom_smooth(aes(x=mnDate,y=mn_val,color= GCM_scen,
+                          fill=GCM_scen,linetype = basin),alpha=0.1,
+                      method="loess",formula='y ~ x',span = .5,show.legend=T)+
+          theme_minimal() + 
+          labs(x="Date",
+                 y=paste(newdat$var[1],"(",newdat$units[1],")"),
+                 subtitle = "",
+                 legend = "",
+                 title = paste(newdat$var[1],"(",newdat$basin[1],",",newdat$type[1],")"))+
+        scale_color_discrete()+
+          facet_grid(scen~.)
+# plot it
+pp
+
+# plot it interactively
+plotly::ggplotly(pp)
+        
 ```
 
 ## Salmon index (Ellen)
