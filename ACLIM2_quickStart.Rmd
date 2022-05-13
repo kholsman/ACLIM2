@@ -661,11 +661,12 @@ Where B0kinput is the unfished biomass used for setting inputs of  (e.g., B0ktar
 setwd("/Users/kholsman/Documents/GitHub/ACLIM2")
 file.remove(paste0("index",".html"))
 file.copy(from=paste0("ACLIM2_quickStart",".html"),to=paste0("index",".html"),overwrite=T)
+file.copy(from=paste0("ACLIM2_quickStart",".md"),to=paste0("README",".md"),overwrite=T)
 
 
-source("R/make.R")
- # copy and paste this into R window (won't work within markdown)
- rmd2md(rmd_fl = "ACLIM2_quickStart",md_fl = "README")
+# source("R/make.R")
+#  # copy and paste this into R window (won't work within markdown)
+#  rmd2md(rmd_fl = "ACLIM2_quickStart",md_fl = "README")
 
 
 ```
