@@ -34,17 +34,17 @@ get_var <- function(
     #load(paste0("Data/out/",CMIP[c],"/allEBS_means/ACLIM_annual_fut_mn.Rdata"))
     #plotvars   <- unique(ACLIM_annual_hind$var)
     if(typeIN == "monthly"){
-      months <- unique(dhind$mo)
-      seasons <- unique(dhind$season)}
+      months <- unique(dhindIN$mo)
+      seasons <- unique(dhindIN$season)}
     
     
     if(typeIN == "seasonal"){
-      seasons <- unique(dhind$season)}
+      seasons <- unique(dhindIN$season)}
     
     if(typeIN == "weekly"){
-      weeks <- unique(dhind$wk)
-      months <- unique(dhind$mo)
-      seasons <- unique(dhind$season)}
+      weeks <- unique(dhindIN$wk)
+      months <- unique(dhindIN$mo)
+      seasons <- unique(dhindIN$season)}
     
     
     if(removeyr1){

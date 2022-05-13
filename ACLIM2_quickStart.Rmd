@@ -209,12 +209,13 @@ To get more information about each of these level 3 datasets enter this in R:
     
 ```
 
-# ACLIM2 Indices & bias correction 
+# Indices & bias correction {.tabset}
 
-The next step creates indices based on the level 3 data for each hind cast, historical run, and CMIP6 projection. The script below then bias corrects each index using the historical run and recenters the projection on the corresponding hindcast (such that projections are $\Delta$ from historical mean values for the reference period ` deltayrs     <- 1970:2000` ).
+*ACLIM2 Indices*
 
-## NESB & SEBS averaged indices{.tabset}
+The next step creates ACLIM2 indices (i.e., Level4) based on the Level3 output for each hindcast, historical run, and CMIP6 projection. The script below then bias corrects each index using the historical run and recenters the projection on the corresponding hindcast (such that projections are $\Delta$ from historical mean values for the reference period ` deltayrs     <- 1970:2000` ).
 
+*NESB & SEBS averaged indices*
 The average water column values for each variable from the ROMSNPZ model strata x weekly Level2 outputs ('ACLIMregion') was calculated and used to calculate the strata-area weighted mean value for the NEBS and SEBS weekly, monthly, seasonally, and annually. Similarly, for survey replicated ('ACLIMsurveyrep') Level2 outputs the average water column value for each variable at each station was calculated used to calculate the strata-area weighted mean value for the NEBS and SEBS annually. These indices were calculate for hindcast, historical, and projection scenarios, and used to bias correct the projections. More information on the methods for each can be found in the tabs below and the code immediately following this section will re-generate the bias corrected indices. All of the bias corrected outputs can be found in the "Data/out/CMIP6" folder. 
 
 ![**Raw (top row) and bias corrected (bottom row)bottom temperature indices based on survey replicated Level3 outputs for the SEBS**](Figs/biascorrected_temp2.png){width=75%}
@@ -233,7 +234,7 @@ For log-normally distributed variables($Y$):
   
 
 
-### Weekly indices
+## Weekly indices
 
 Uses the strata x weekly data ('ACLIMregion') to generate strata-specific averages in order to generate the strata area-weighted averages for each week $w$ each year $y$.
   
@@ -243,7 +244,7 @@ Uses the strata x weekly data ('ACLIMregion') to generate strata-specific averag
   
   $$\bar{Y}^{fut'}_{w,y,k} =\bar{Y}^{hind}_{w,k} +\left( \frac{\sigma^{hind}_{w,k}}{\sigma^{hist}_{w,k}}*(\bar{Y}^{fut}_{w,y,k}-\bar{Y}^{hist}_{w,k})  \right )$$, where $\bar{Y}^{hist}_{w,k}$ and $\bar{Y}^{hind}_{w,k}$ are the average historical weekly values across years in the period (`r ref_years[1]` to `r rev(ref_years)[2]` ; adjustable in `R/setup.R`).  
 
-### Monthly indices  
+## Monthly indices  
 
 Uses the strata x weekly data ('ACLIMregion') to generate strata-specific averages in order to generate the strata area-weighted averages for each month $m$ each year $y$.
   
@@ -253,7 +254,7 @@ Uses the strata x weekly data ('ACLIMregion') to generate strata-specific averag
   
   $$\bar{Y}^{fut'}_{m,y,k} =\bar{Y}^{hind}_{m,k} +\left( \frac{\sigma^{hind}_{m,k}}{\sigma^{hist}_{m,k}}*(\bar{Y}^{fut}_{m,y,k}-\bar{Y}^{hist}_{m,k})  \right )$$, where $\bar{Y}^{hist}_{m,k}$ and $\bar{Y}^{hind}_{m,k}$ are the average historical monthly values across years in the period (`r ref_years[1]` to `r rev(ref_years)[2]` ; adjustable in `R/setup.R`).  
 
-### Seasonal indices  
+## Seasonal indices  
 
 Uses the strata x weekly data ('ACLIMregion') to generate strata-specific averages in order to generate the strata area-weighted averages for each season $l$ each year $y$.
   
@@ -263,7 +264,7 @@ Uses the strata x weekly data ('ACLIMregion') to generate strata-specific averag
   
   $$\bar{Y}^{fut'}_{l,y,k} =\bar{Y}^{hind}_{l,k} +\left( \frac{\sigma^{hind}_{l,k}}{\sigma^{hist}_{l,k}}*(\bar{Y}^{fut}_{l,y,k}-\bar{Y}^{hist}_{l,k})  \right )$$, where $\bar{Y}^{hist}_{l,k}$ and $\bar{Y}^{hind}_{l,k}$ are the average historical seasonal values across years in the reference period (`r ref_years[1]` to `r rev(ref_years)[2]` ; adjustable in `R/setup.R`).  
   
-### Annual indices  
+## Annual indices  
 
 Uses the strata x weekly data ('ACLIMregion') to generate strata-specific averages in order to generate the strata area-weighted averages for each season $l$ each year $y$.
   
@@ -273,7 +274,7 @@ Uses the strata x weekly data ('ACLIMregion') to generate strata-specific averag
   
   $$\bar{Y}^{fut'}_{y,k} =\bar{Y}^{hind}_{k} +\left( \frac{\sigma^{hind}_{k}}{\sigma^{hist}_{k}}*(\bar{Y}^{fut}_{y,k}-\bar{Y}^{hist}_{k})  \right )$$, where $\bar{Y}^{hind}_{k}$ and $\bar{Y}^{hist}_{k}$ are the average historical values across years in the reference period (`r ref_years[1]` to `r rev(ref_years)[2]` ; adjustable in `R/setup.R`).  
 
-### Annual survey rep. indices 
+## Annual survey rep. indices 
 
 Uses the station specific survey replicated (in time and space) data ('ACLIMsurveyrep') to generate strata-specific averages in order to generate the strata area-weighted averages for each year $y$.
   
@@ -285,7 +286,7 @@ Uses the station specific survey replicated (in time and space) data ('ACLIMsurv
 
 Appendix A includes the code used to generate the ACLIM2 indices and bias correct them. That code can be run to re-make the indices if you like but takes approx 30 mins a CMIP to run. 
 
-## Explore ACLIM2 Indices {.tabset}
+# Plot & concat Indices {.tabset}
 
 The following code will open an interactive shiny() app for exploring the indices. You can also view this online at (kkh2022.shinyapps.io/ACLIM2_indices)[https://kkh2022.shinyapps.io/ACLIM2_indices/].
 
@@ -329,11 +330,60 @@ head(df$dat)
 
 
 <!-- # Special cases {.tabset} -->
+## NRS indices (André)
+
+```{r NRS, eval=T, include=T,echo=T, results='hide',message=FALSE}
+
+suppressMessages(source("R/make.R"))
+
+# get the variable you want:
+df <- get_var( typeIN    = "annual", 
+               plotvar   = "temp_bottom5m",
+               bcIN      = "bias corrected",
+               plothist  = F,  # ignore the hist runs
+               removeyr1 = T)  #"Remove first year of projection ( burn in)")
+
+df$plot
+head(df$dat)
+
+# concat the hind and fut runs by removing years from projection
+maxDin <- max(as.vector(df$dat%>%dplyr::filter(sim_type=="hind")%>%dplyr::select(mnDate))[[1]])
+
+newdat <- stitchTS(dat = df$dat,
+                 maxD  = maxDin)
+
+# newdat has the full set
+
+
+pp  <- ggplot(newdat)+
+          geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen, linetype = basin),
+                    alpha = 0.6,show.legend = FALSE)+
+          geom_smooth(aes(x=mnDate,y=mn_val,color= GCM_scen,
+                          fill=GCM_scen,linetype = basin),alpha=0.1,
+                      method="loess",formula='y ~ x',span = .5,show.legend=T)+
+          theme_minimal() + 
+          labs(x="Date",
+                 y=paste(newdat$var[1],"(",newdat$units[1],")"),
+                 subtitle = "",
+                 legend = "",
+                 title = paste(newdat$var[1],"(",newdat$basin[1],",",newdat$type[1],")"))+
+        scale_color_discrete()+
+          facet_grid(scen~.)
+# plot it
+pp
+        
+```
+
+```{r, fig.width=8, fig.height=7, fig.fullwidth=TRUE, echo =T, eval=T}
+# plot it interactively
+plotly::ggplotly(pp)
+```
 
 ## monthly indices (Andy)
 
-```{r ewe, eval=F, include=T,echo=T}
+```{r ewe, eval=T, include=T,echo=T, results='hide',message=FALSE}
 
+suppressMessages(source("R/make.R"))
 
 # get the variable you want:
 df <- get_var( typeIN     = "monthly", 
@@ -370,20 +420,22 @@ pp  <- ggplot(newdat)+
           facet_grid(scen~.)
 # plot it
 pp
-
-# plot it interactively
-plotly::ggplotly(pp)
         
 ```
 
-## NRS indices (André)
+```{r, fig.width=8, fig.height=7, fig.fullwidth=TRUE, echo =T, eval=T}
+# plot it interactively
+plotly::ggplotly(pp)
+```
 
-```{r NRS, eval=F, include=T,echo=T}
+## weekly indices (Jon)
+
+```{r sizespec, eval=T, include=T,echo=T, results='hide',message=FALSE}
 
 suppressMessages(source("R/make.R"))
 
 # get the variable you want:
-df <- get_var( typeIN     = "annual", 
+df <- get_var( typeIN    = "weekly", 
                plotvar   = "temp_bottom5m",
                bcIN      = "bias corrected",
                plothist  = F,  # ignore the hist runs
@@ -417,16 +469,19 @@ pp  <- ggplot(newdat)+
           facet_grid(scen~.)
 # plot it
 pp
-
-# plot it interactively
-plotly::ggplotly(pp)
         
 ```
 
-## Salmon index (Ellen)
+```{r, fig.width=8, fig.height=7, fig.fullwidth=TRUE, echo =T, eval=T}
+# plot it interactively
+plotly::ggplotly(pp)
+```
 
-## NFS index (Jeremy )
+<!-- ## Salmon index (Ellen) -->
 
+<!-- ## NFS index (Jeremy ) -->
+
+---
 
 # APPENDIX A: Create & bias correct ACLIM2 indices
 
