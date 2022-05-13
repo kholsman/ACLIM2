@@ -578,151 +578,76 @@ in R:
 \begin{Shaded}
 \begin{Highlighting}[]
     \CommentTok{\# Metadata for Weekly ("ACLIMregion\_...") indices}
-\NormalTok{    (all\_info1)}
+    \FunctionTok{head}\NormalTok{(all\_info1)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-##                                  name                    Type B10KVersion
-## 1       B10K-H16_CMIP5_CESM_BIO_rcp85 Weekly regional indices         H16
-## 2           B10K-H16_CMIP5_CESM_rcp45 Weekly regional indices         H16
-## 3           B10K-H16_CMIP5_CESM_rcp85 Weekly regional indices         H16
-## 4       B10K-H16_CMIP5_GFDL_BIO_rcp85 Weekly regional indices         H16
-## 5           B10K-H16_CMIP5_GFDL_rcp45 Weekly regional indices         H16
-## 6           B10K-H16_CMIP5_GFDL_rcp85 Weekly regional indices         H16
-## 7          B10K-H16_CMIP5_MIROC_rcp45 Weekly regional indices         H16
-## 8          B10K-H16_CMIP5_MIROC_rcp85 Weekly regional indices         H16
-## 9                    B10K-H16_CORECFS Weekly regional indices         H16
-## 10                   B10K-K20_CORECFS Weekly regional indices         K20
-## 11  B10K-K20P19_CMIP6_cesm_historical Weekly regional indices      K20P19
-## 12      B10K-K20P19_CMIP6_cesm_ssp126 Weekly regional indices      K20P19
-## 13      B10K-K20P19_CMIP6_cesm_ssp585 Weekly regional indices      K20P19
-## 14  B10K-K20P19_CMIP6_gfdl_historical Weekly regional indices      K20P19
-## 15      B10K-K20P19_CMIP6_gfdl_ssp126 Weekly regional indices      K20P19
-## 16      B10K-K20P19_CMIP6_gfdl_ssp585 Weekly regional indices      K20P19
-## 17 B10K-K20P19_CMIP6_miroc_historical Weekly regional indices      K20P19
-## 18     B10K-K20P19_CMIP6_miroc_ssp126 Weekly regional indices      K20P19
-## 19     B10K-K20P19_CMIP6_miroc_ssp585 Weekly regional indices      K20P19
-##       CMIP   GCM   BIO Carbon_scenario               Start                 End
-## 1    CMIP5  CESM  TRUE           rcp85 2006-01-22 12:00:00 2099-12-27 12:00:00
-## 2    CMIP5  CESM FALSE           rcp45 2006-01-22 12:00:00 2081-02-16 12:00:00
-## 3    CMIP5  CESM FALSE           rcp85 2006-01-22 12:00:00 2099-12-27 12:00:00
-## 4    CMIP5  GFDL  TRUE           rcp85 2006-01-22 12:00:00 2099-12-27 12:00:00
-## 5    CMIP5  GFDL FALSE           rcp45 2006-01-22 12:00:00 2099-12-27 12:00:00
-## 6    CMIP5  GFDL FALSE           rcp85 2006-01-22 12:00:00 2099-12-27 12:00:00
-## 7    CMIP5 MIROC FALSE           rcp45 2006-01-22 12:00:00 2099-12-27 12:00:00
-## 8    CMIP5 MIROC FALSE           rcp85 2006-01-22 12:00:00 2099-12-27 12:00:00
-## 9  CORECFS  <NA> FALSE         CORECFS 1970-01-18 12:00:00 2018-08-12 12:00:00
-## 10 CORECFS  <NA> FALSE         CORECFS 1970-01-18 12:00:00 2020-08-09 12:00:00
-## 11   CMIP6  cesm  TRUE      historical 1980-01-20 12:00:00 2014-12-28 12:00:00
-## 12   CMIP6  cesm  TRUE          ssp126 2014-12-28 12:00:00 2099-12-27 12:00:00
-## 13   CMIP6  cesm  TRUE          ssp585 2014-12-28 12:00:00 2099-12-27 12:00:00
-## 14   CMIP6  gfdl  TRUE      historical 1980-01-20 12:00:00 2014-12-28 12:00:00
-## 15   CMIP6  gfdl  TRUE          ssp126 2014-12-28 12:00:00 2099-12-27 12:00:00
-## 16   CMIP6  gfdl  TRUE          ssp585 2014-12-28 12:00:00 2099-12-27 12:00:00
-## 17   CMIP6 miroc  TRUE      historical 1980-01-20 12:00:00 2014-12-28 12:00:00
-## 18   CMIP6 miroc  TRUE          ssp126 2014-12-28 12:00:00 2099-12-20 12:00:00
-## 19   CMIP6 miroc  TRUE          ssp585 2014-12-28 12:00:00 2099-12-27 12:00:00
-##    nvars
-## 1     59
-## 2     59
-## 3     59
-## 4     59
-## 5     59
-## 6     59
-## 7     59
-## 8     59
-## 9     59
-## 10    59
-## 11    59
-## 12    59
-## 13    59
-## 14    59
-## 15    59
-## 16    59
-## 17    59
-## 18    59
-## 19    59
+##                            name                    Type B10KVersion  CMIP  GCM
+## 1 B10K-H16_CMIP5_CESM_BIO_rcp85 Weekly regional indices         H16 CMIP5 CESM
+## 2     B10K-H16_CMIP5_CESM_rcp45 Weekly regional indices         H16 CMIP5 CESM
+## 3     B10K-H16_CMIP5_CESM_rcp85 Weekly regional indices         H16 CMIP5 CESM
+## 4 B10K-H16_CMIP5_GFDL_BIO_rcp85 Weekly regional indices         H16 CMIP5 GFDL
+## 5     B10K-H16_CMIP5_GFDL_rcp45 Weekly regional indices         H16 CMIP5 GFDL
+## 6     B10K-H16_CMIP5_GFDL_rcp85 Weekly regional indices         H16 CMIP5 GFDL
+##     BIO Carbon_scenario               Start                 End nvars
+## 1  TRUE           rcp85 2006-01-22 12:00:00 2099-12-27 12:00:00    59
+## 2 FALSE           rcp45 2006-01-22 12:00:00 2081-02-16 12:00:00    59
+## 3 FALSE           rcp85 2006-01-22 12:00:00 2099-12-27 12:00:00    59
+## 4  TRUE           rcp85 2006-01-22 12:00:00 2099-12-27 12:00:00    59
+## 5 FALSE           rcp45 2006-01-22 12:00:00 2099-12-27 12:00:00    59
+## 6 FALSE           rcp85 2006-01-22 12:00:00 2099-12-27 12:00:00    59
 \end{verbatim}
 
 \begin{Shaded}
 \begin{Highlighting}[]
     \CommentTok{\# Metadata for Weekly ("ACLIMsurveyrep\_...") indices}
-\NormalTok{    (all\_info2)}
+    \FunctionTok{head}\NormalTok{(all\_info2)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-##                                  name              Type B10KVersion    CMIP
-## 1       B10K-H16_CMIP5_CESM_BIO_rcp85 Survey replicated         H16   CMIP5
-## 2           B10K-H16_CMIP5_CESM_rcp45 Survey replicated         H16   CMIP5
-## 3           B10K-H16_CMIP5_CESM_rcp85 Survey replicated         H16   CMIP5
-## 4       B10K-H16_CMIP5_GFDL_BIO_rcp85 Survey replicated         H16   CMIP5
-## 5           B10K-H16_CMIP5_GFDL_rcp45 Survey replicated         H16   CMIP5
-## 6           B10K-H16_CMIP5_GFDL_rcp85 Survey replicated         H16   CMIP5
-## 7          B10K-H16_CMIP5_MIROC_rcp45 Survey replicated         H16   CMIP5
-## 8          B10K-H16_CMIP5_MIROC_rcp85 Survey replicated         H16   CMIP5
-## 9                    B10K-H16_CORECFS Survey replicated         H16 CORECFS
-## 10                   B10K-K20_CORECFS Survey replicated         K20 CORECFS
-## 11  B10K-K20P19_CMIP6_cesm_historical Survey replicated      K20P19   CMIP6
-## 12      B10K-K20P19_CMIP6_cesm_ssp126 Survey replicated      K20P19   CMIP6
-## 13      B10K-K20P19_CMIP6_cesm_ssp585 Survey replicated      K20P19   CMIP6
-## 14  B10K-K20P19_CMIP6_gfdl_historical Survey replicated      K20P19   CMIP6
-## 15      B10K-K20P19_CMIP6_gfdl_ssp126 Survey replicated      K20P19   CMIP6
-## 16      B10K-K20P19_CMIP6_gfdl_ssp585 Survey replicated      K20P19   CMIP6
-## 17 B10K-K20P19_CMIP6_miroc_historical Survey replicated      K20P19   CMIP6
-## 18     B10K-K20P19_CMIP6_miroc_ssp126 Survey replicated      K20P19   CMIP6
-## 19     B10K-K20P19_CMIP6_miroc_ssp585 Survey replicated      K20P19   CMIP6
-##      GCM   BIO Carbon_scenario Start  End nvars
-## 1   CESM  TRUE           rcp85  1970 2100    60
-## 2   CESM FALSE           rcp45  1970 2100    60
-## 3   CESM FALSE           rcp85  1970 2100    60
-## 4   GFDL  TRUE           rcp85  1970 2100    60
-## 5   GFDL FALSE           rcp45  1970 2100    60
-## 6   GFDL FALSE           rcp85  1970 2100    60
-## 7  MIROC FALSE           rcp45  1970 2100    60
-## 8  MIROC FALSE           rcp85  1970 2100    60
-## 9   <NA> FALSE         CORECFS  1970 2100    60
-## 10  <NA> FALSE         CORECFS  1970 2100    60
-## 11  cesm  TRUE      historical  1970 2100    60
-## 12  cesm  TRUE          ssp126  1970 2100    60
-## 13  cesm  TRUE          ssp585  1970 2100    60
-## 14  gfdl  TRUE      historical  1970 2100    60
-## 15  gfdl  TRUE          ssp126  1970 2100    60
-## 16  gfdl  TRUE          ssp585  1970 2100    60
-## 17 miroc  TRUE      historical  1970 2100    60
-## 18 miroc  TRUE          ssp126  1970 2100    60
-## 19 miroc  TRUE          ssp585  1970 2100    60
+##                            name              Type B10KVersion  CMIP  GCM   BIO
+## 1 B10K-H16_CMIP5_CESM_BIO_rcp85 Survey replicated         H16 CMIP5 CESM  TRUE
+## 2     B10K-H16_CMIP5_CESM_rcp45 Survey replicated         H16 CMIP5 CESM FALSE
+## 3     B10K-H16_CMIP5_CESM_rcp85 Survey replicated         H16 CMIP5 CESM FALSE
+## 4 B10K-H16_CMIP5_GFDL_BIO_rcp85 Survey replicated         H16 CMIP5 GFDL  TRUE
+## 5     B10K-H16_CMIP5_GFDL_rcp45 Survey replicated         H16 CMIP5 GFDL FALSE
+## 6     B10K-H16_CMIP5_GFDL_rcp85 Survey replicated         H16 CMIP5 GFDL FALSE
+##   Carbon_scenario Start  End nvars
+## 1           rcp85  1970 2100    60
+## 2           rcp45  1970 2100    60
+## 3           rcp85  1970 2100    60
+## 4           rcp85  1970 2100    60
+## 5           rcp45  1970 2100    60
+## 6           rcp85  1970 2100    60
 \end{verbatim}
 
-\hypertarget{aclim2-indices-bias-correction}{%
-\section{ACLIM2 Indices \& bias
-correction}\label{aclim2-indices-bias-correction}}
+\hypertarget{indices-bias-correction}{%
+\section{Indices \& bias correction}\label{indices-bias-correction}}
 
-The next step creates indices based on the level 3 data for each hind
-cast, historical run, and CMIP6 projection. The script below then bias
-corrects each index using the historical run and recenters the
-projection on the corresponding hindcast (such that projections are
-\(\Delta\) from historical mean values for the reference period
-\texttt{deltayrs\ \ \ \ \ \textless{}-\ 1970:2000} ).
+\emph{ACLIM2 Indices}
 
-\hypertarget{nesb-sebs-averaged-indices}{%
-\subsection{NESB \& SEBS averaged
-indices}\label{nesb-sebs-averaged-indices}}
+The next step creates ACLIM2 indices (i.e., Level4) based on the Level3
+output for each hindcast, historical run, and CMIP6 projection. The
+script below then bias corrects each index using the historical run and
+recenters the projection on the corresponding hindcast (such that
+projections are \(\Delta\) from historical mean values for the reference
+period \texttt{deltayrs\ \ \ \ \ \textless{}-\ 1970:2000} ).
 
-The average water column values for each variable from the ROMSNPZ model
-strata x weekly Level2 outputs (`ACLIMregion') was calculated and used
-to calculate the strata-area weighted mean value for the NEBS and SEBS
-weekly, monthly, seasonally, and annually. Similarly, for survey
-replicated (`ACLIMsurveyrep') Level2 outputs the average water column
-value for each variable at each station was calculated used to calculate
-the strata-area weighted mean value for the NEBS and SEBS annually.
-These indices were calculate for hindcast, historical, and projection
-scenarios, and used to bias correct the projections. More information on
-the methods for each can be found in the tabs below and the code
-immediately following this section will re-generate the bias corrected
-indices. All of the bias corrected outputs can be found in the
-``Data/out/CMIP6'' folder.
+\emph{NESB \& SEBS averaged indices} The average water column values for
+each variable from the ROMSNPZ model strata x weekly Level2 outputs
+(`ACLIMregion') was calculated and used to calculate the strata-area
+weighted mean value for the NEBS and SEBS weekly, monthly, seasonally,
+and annually. Similarly, for survey replicated (`ACLIMsurveyrep') Level2
+outputs the average water column value for each variable at each station
+was calculated used to calculate the strata-area weighted mean value for
+the NEBS and SEBS annually. These indices were calculate for hindcast,
+historical, and projection scenarios, and used to bias correct the
+projections. More information on the methods for each can be found in
+the tabs below and the code immediately following this section will
+re-generate the bias corrected indices. All of the bias corrected
+outputs can be found in the ``Data/out/CMIP6'' folder.
 
 \begin{figure}
 \centering
@@ -762,7 +687,7 @@ where \(\hat\sigma^{hist}_{k,\bar{T}}\) and
 reference period \(\hat{T}\) (respectively).
 
 \hypertarget{weekly-indices}{%
-\subsubsection{Weekly indices}\label{weekly-indices}}
+\subsection{Weekly indices}\label{weekly-indices}}
 
 Uses the strata x weekly data (`ACLIMregion') to generate
 strata-specific averages in order to generate the strata area-weighted
@@ -785,7 +710,7 @@ average historical weekly values across years in the period (1980 to
 2012 ; adjustable in \texttt{R/setup.R}).
 
 \hypertarget{monthly-indices}{%
-\subsubsection{Monthly indices}\label{monthly-indices}}
+\subsection{Monthly indices}\label{monthly-indices}}
 
 Uses the strata x weekly data (`ACLIMregion') to generate
 strata-specific averages in order to generate the strata area-weighted
@@ -807,7 +732,7 @@ average historical monthly values across years in the period (1980 to
 2012 ; adjustable in \texttt{R/setup.R}).
 
 \hypertarget{seasonal-indices}{%
-\subsubsection{Seasonal indices}\label{seasonal-indices}}
+\subsection{Seasonal indices}\label{seasonal-indices}}
 
 Uses the strata x weekly data (`ACLIMregion') to generate
 strata-specific averages in order to generate the strata area-weighted
@@ -829,7 +754,7 @@ average historical seasonal values across years in the reference period
 (1980 to 2012 ; adjustable in \texttt{R/setup.R}).
 
 \hypertarget{annual-indices}{%
-\subsubsection{Annual indices}\label{annual-indices}}
+\subsection{Annual indices}\label{annual-indices}}
 
 Uses the strata x weekly data (`ACLIMregion') to generate
 strata-specific averages in order to generate the strata area-weighted
@@ -851,7 +776,7 @@ historical values across years in the reference period (1980 to 2012 ;
 adjustable in \texttt{R/setup.R}).
 
 \hypertarget{annual-survey-rep.-indices}{%
-\subsubsection{Annual survey rep.
+\subsection{Annual survey rep.
 indices}\label{annual-survey-rep.-indices}}
 
 Uses the station specific survey replicated (in time and space) data
@@ -878,8 +803,8 @@ Appendix A includes the code used to generate the ACLIM2 indices and
 bias correct them. That code can be run to re-make the indices if you
 like but takes approx 30 mins a CMIP to run.
 
-\hypertarget{explore-aclim2-indices}{%
-\subsection{Explore ACLIM2 Indices}\label{explore-aclim2-indices}}
+\hypertarget{plot-concat-indices}{%
+\section{Plot \& concat Indices}\label{plot-concat-indices}}
 
 The following code will open an interactive shiny() app for exploring
 the indices. You can also view this online at
@@ -907,52 +832,6 @@ temperature indices based on survey replicated Level3 outputs for the
 SEBS''}
 \end{figure}
 
-\hypertarget{monthly-indices-andy}{%
-\subsection{monthly indices (Andy)}\label{monthly-indices-andy}}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# get the variable you want:}
-\NormalTok{df }\OtherTok{\textless{}{-}} \FunctionTok{get\_var}\NormalTok{( }\AttributeTok{typeIN     =} \StringTok{"monthly"}\NormalTok{, }
-               \AttributeTok{plotvar   =} \StringTok{"temp\_bottom5m"}\NormalTok{,}
-               \AttributeTok{bcIN      =} \StringTok{"bias corrected"}\NormalTok{,}
-               \AttributeTok{plothist  =}\NormalTok{ F,  }\CommentTok{\# ignore the hist runs}
-               \AttributeTok{removeyr1 =}\NormalTok{ T)  }\CommentTok{\#"Remove first year of projection ( burn in)")}
-
-\NormalTok{df}\SpecialCharTok{$}\NormalTok{plot}
-\FunctionTok{head}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{dat)}
-
-\CommentTok{\# concat the hind and fut runs by removing years from projection}
-\NormalTok{maxDin }\OtherTok{\textless{}{-}} \FunctionTok{max}\NormalTok{(}\FunctionTok{as.vector}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{dat}\SpecialCharTok{\%\textgreater{}\%}\NormalTok{dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(sim\_type}\SpecialCharTok{==}\StringTok{"hind"}\NormalTok{)}\SpecialCharTok{\%\textgreater{}\%}\NormalTok{dplyr}\SpecialCharTok{::}\FunctionTok{select}\NormalTok{(mnDate))[[}\DecValTok{1}\NormalTok{]])}
-
-\NormalTok{newdat }\OtherTok{\textless{}{-}} \FunctionTok{stitchTS}\NormalTok{(}\AttributeTok{dat =}\NormalTok{ df}\SpecialCharTok{$}\NormalTok{dat,}
-                 \AttributeTok{maxD  =}\NormalTok{ maxDin)}
-
-\CommentTok{\# newdat has the full set}
-
-
-\NormalTok{pp  }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(newdat)}\SpecialCharTok{+}
-          \FunctionTok{geom\_line}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{mnDate,}\AttributeTok{y=}\NormalTok{mn\_val,}\AttributeTok{color=}\NormalTok{ GCM\_scen, }\AttributeTok{linetype =}\NormalTok{ basin),}
-                    \AttributeTok{alpha =} \FloatTok{0.6}\NormalTok{,}\AttributeTok{show.legend =} \ConstantTok{FALSE}\NormalTok{)}\SpecialCharTok{+}
-          \FunctionTok{geom\_smooth}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{mnDate,}\AttributeTok{y=}\NormalTok{mn\_val,}\AttributeTok{color=}\NormalTok{ GCM\_scen,}
-                          \AttributeTok{fill=}\NormalTok{GCM\_scen,}\AttributeTok{linetype =}\NormalTok{ basin),}\AttributeTok{alpha=}\FloatTok{0.1}\NormalTok{,}
-                      \AttributeTok{method=}\StringTok{"loess"}\NormalTok{,}\AttributeTok{formula=}\StringTok{\textquotesingle{}y \textasciitilde{} x\textquotesingle{}}\NormalTok{,}\AttributeTok{span =}\NormalTok{ .}\DecValTok{5}\NormalTok{,}\AttributeTok{show.legend=}\NormalTok{T)}\SpecialCharTok{+}
-          \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+} 
-          \FunctionTok{labs}\NormalTok{(}\AttributeTok{x=}\StringTok{"Date"}\NormalTok{,}
-                 \AttributeTok{y=}\FunctionTok{paste}\NormalTok{(newdat}\SpecialCharTok{$}\NormalTok{var[}\DecValTok{1}\NormalTok{],}\StringTok{"("}\NormalTok{,newdat}\SpecialCharTok{$}\NormalTok{units[}\DecValTok{1}\NormalTok{],}\StringTok{")"}\NormalTok{),}
-                 \AttributeTok{subtitle =} \StringTok{""}\NormalTok{,}
-                 \AttributeTok{legend =} \StringTok{""}\NormalTok{,}
-                 \AttributeTok{title =} \FunctionTok{paste}\NormalTok{(newdat}\SpecialCharTok{$}\NormalTok{var[}\DecValTok{1}\NormalTok{],}\StringTok{"("}\NormalTok{,newdat}\SpecialCharTok{$}\NormalTok{basin[}\DecValTok{1}\NormalTok{],}\StringTok{","}\NormalTok{,newdat}\SpecialCharTok{$}\NormalTok{type[}\DecValTok{1}\NormalTok{],}\StringTok{")"}\NormalTok{))}\SpecialCharTok{+}
-        \FunctionTok{scale\_color\_discrete}\NormalTok{()}\SpecialCharTok{+}
-          \FunctionTok{facet\_grid}\NormalTok{(scen}\SpecialCharTok{\textasciitilde{}}\NormalTok{.)}
-\CommentTok{\# plot it}
-\NormalTok{pp}
-
-\CommentTok{\# plot it interactively}
-\NormalTok{plotly}\SpecialCharTok{::}\FunctionTok{ggplotly}\NormalTok{(pp)}
-\end{Highlighting}
-\end{Shaded}
-
 \hypertarget{nrs-indices-andruxe9}{%
 \subsection{NRS indices (André)}\label{nrs-indices-andruxe9}}
 
@@ -960,23 +839,178 @@ SEBS''}
 \begin{Highlighting}[]
 \FunctionTok{suppressMessages}\NormalTok{(}\FunctionTok{source}\NormalTok{(}\StringTok{"R/make.R"}\NormalTok{))}
 
+\CommentTok{\# preview possible variables}
+\NormalTok{weekly\_vars }
+
+\NormalTok{scens   }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"ssp126"}\NormalTok{,}\StringTok{"ssp585"}\NormalTok{)}
+\NormalTok{GCMs    }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"miroc"}\NormalTok{,}\StringTok{"gfdl"}\NormalTok{,  }\StringTok{"cesm"}\NormalTok{ )}
+\NormalTok{varlist }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"temp\_bottom5m"}\NormalTok{,}\StringTok{"fracbelow2"}\NormalTok{,}\StringTok{"uEast\_surface5m"}\NormalTok{)}
+
 \CommentTok{\# get the variable you want:}
-\NormalTok{df }\OtherTok{\textless{}{-}} \FunctionTok{get\_var}\NormalTok{( }\AttributeTok{typeIN     =} \StringTok{"annual"}\NormalTok{, }
-               \AttributeTok{plotvar   =} \StringTok{"temp\_bottom5m"}\NormalTok{,}
+\NormalTok{df }\OtherTok{\textless{}{-}} \FunctionTok{get\_var}\NormalTok{( }\AttributeTok{typeIN    =} \StringTok{"annual"}\NormalTok{, }
+               \AttributeTok{plotvar   =}\NormalTok{ varlist[}\DecValTok{1}\NormalTok{],}
                \AttributeTok{bcIN      =} \StringTok{"bias corrected"}\NormalTok{,}
                \AttributeTok{plothist  =}\NormalTok{ F,  }\CommentTok{\# ignore the hist runs}
                \AttributeTok{removeyr1 =}\NormalTok{ T)  }\CommentTok{\#"Remove first year of projection ( burn in)")}
 
 \NormalTok{df}\SpecialCharTok{$}\NormalTok{plot}
-\FunctionTok{head}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{dat)}
+\end{Highlighting}
+\end{Shaded}
 
+\begin{center}\includegraphics{ACLIM2_quickStart_files/figure-latex/unnamed-chunk-6-1} \end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{head}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{dat)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \CommentTok{\# concat the hind and fut runs by removing years from projection}
 \NormalTok{maxDin }\OtherTok{\textless{}{-}} \FunctionTok{max}\NormalTok{(}\FunctionTok{as.vector}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{dat}\SpecialCharTok{\%\textgreater{}\%}\NormalTok{dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(sim\_type}\SpecialCharTok{==}\StringTok{"hind"}\NormalTok{)}\SpecialCharTok{\%\textgreater{}\%}\NormalTok{dplyr}\SpecialCharTok{::}\FunctionTok{select}\NormalTok{(mnDate))[[}\DecValTok{1}\NormalTok{]])}
 
 \NormalTok{newdat }\OtherTok{\textless{}{-}} \FunctionTok{stitchTS}\NormalTok{(}\AttributeTok{dat =}\NormalTok{ df}\SpecialCharTok{$}\NormalTok{dat,}
                  \AttributeTok{maxD  =}\NormalTok{ maxDin)}
 
-\CommentTok{\# newdat has the full set}
+\CommentTok{\# newdat has the full set of data}
+\CommentTok{\# select miroc\_ssp126}
+\FunctionTok{head}\NormalTok{(newdat}\SpecialCharTok{\%\textgreater{}\%}\NormalTok{dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(GCM\_scen}\SpecialCharTok{==}\FunctionTok{paste0}\NormalTok{(GCMs[}\DecValTok{1}\NormalTok{],}\StringTok{"\_"}\NormalTok{,scens[}\DecValTok{1}\NormalTok{])))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   basin year     jday     mnDate   mn_val                          sim gcmcmip
+## 1  SEBS 1970 189.5000 1970-07-09 2.074569 ACLIMregion_B10K-K20_CORECFS    hind
+## 2  SEBS 1971 181.5000 1971-07-01 1.501867 ACLIMregion_B10K-K20_CORECFS    hind
+## 3  SEBS 1972 184.0000 1972-07-03 1.596919 ACLIMregion_B10K-K20_CORECFS    hind
+## 4  SEBS 1973 182.0000 1973-07-02 2.169304 ACLIMregion_B10K-K20_CORECFS    hind
+## 5  SEBS 1974 181.1373 1974-07-01 1.826142 ACLIMregion_B10K-K20_CORECFS    hind
+## 6  SEBS 1975 183.5000 1975-07-03 1.524967 ACLIMregion_B10K-K20_CORECFS    hind
+##    GCM   scen sim_type   units             bc     GCM_scen     GCM_scen_sim
+## 1 hind ssp126     hind Celsius bias corrected miroc_ssp126 hind_ssp126_hind
+## 2 hind ssp126     hind Celsius bias corrected miroc_ssp126 hind_ssp126_hind
+## 3 hind ssp126     hind Celsius bias corrected miroc_ssp126 hind_ssp126_hind
+## 4 hind ssp126     hind Celsius bias corrected miroc_ssp126 hind_ssp126_hind
+## 5 hind ssp126     hind Celsius bias corrected miroc_ssp126 hind_ssp126_hind
+## 6 hind ssp126     hind Celsius bias corrected miroc_ssp126 hind_ssp126_hind
+##           CMIP   type
+## 1 K20P19_CMIP6 annual
+## 2 K20P19_CMIP6 annual
+## 3 K20P19_CMIP6 annual
+## 4 K20P19_CMIP6 annual
+## 5 K20P19_CMIP6 annual
+## 6 K20P19_CMIP6 annual
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{tail}\NormalTok{(newdat}\SpecialCharTok{\%\textgreater{}\%}\NormalTok{dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(GCM\_scen}\SpecialCharTok{==}\FunctionTok{paste0}\NormalTok{(GCMs[}\DecValTok{1}\NormalTok{],}\StringTok{"\_"}\NormalTok{,scens[}\DecValTok{1}\NormalTok{])))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##     basin year   jday     mnDate   mn_val
+## 126  SEBS 2094 181.50 2094-07-01 2.680691
+## 127  SEBS 2095 180.50 2095-06-30 2.725785
+## 128  SEBS 2096 183.00 2096-07-02 2.241747
+## 129  SEBS 2097 184.50 2097-07-04 3.319004
+## 130  SEBS 2098 183.50 2098-07-03 2.968876
+## 131  SEBS 2099 175.92 2099-06-25 2.288020
+##                                            sim                 gcmcmip   GCM
+## 126 ACLIMregion_B10K-K20P19_CMIP6_miroc_ssp126 B10K-K20P19_CMIP6_miroc miroc
+## 127 ACLIMregion_B10K-K20P19_CMIP6_miroc_ssp126 B10K-K20P19_CMIP6_miroc miroc
+## 128 ACLIMregion_B10K-K20P19_CMIP6_miroc_ssp126 B10K-K20P19_CMIP6_miroc miroc
+## 129 ACLIMregion_B10K-K20P19_CMIP6_miroc_ssp126 B10K-K20P19_CMIP6_miroc miroc
+## 130 ACLIMregion_B10K-K20P19_CMIP6_miroc_ssp126 B10K-K20P19_CMIP6_miroc miroc
+## 131 ACLIMregion_B10K-K20P19_CMIP6_miroc_ssp126 B10K-K20P19_CMIP6_miroc miroc
+##       scen sim_type   units             bc     GCM_scen      GCM_scen_sim
+## 126 ssp126     proj Celsius bias corrected miroc_ssp126 miroc_ssp126_proj
+## 127 ssp126     proj Celsius bias corrected miroc_ssp126 miroc_ssp126_proj
+## 128 ssp126     proj Celsius bias corrected miroc_ssp126 miroc_ssp126_proj
+## 129 ssp126     proj Celsius bias corrected miroc_ssp126 miroc_ssp126_proj
+## 130 ssp126     proj Celsius bias corrected miroc_ssp126 miroc_ssp126_proj
+## 131 ssp126     proj Celsius bias corrected miroc_ssp126 miroc_ssp126_proj
+##             CMIP   type
+## 126 K20P19_CMIP6 annual
+## 127 K20P19_CMIP6 annual
+## 128 K20P19_CMIP6 annual
+## 129 K20P19_CMIP6 annual
+## 130 K20P19_CMIP6 annual
+## 131 K20P19_CMIP6 annual
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pp  }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(newdat)}\SpecialCharTok{+}
+          \FunctionTok{geom\_line}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{mnDate,}\AttributeTok{y=}\NormalTok{mn\_val,}\AttributeTok{color=}\NormalTok{ GCM\_scen, }\AttributeTok{linetype =}\NormalTok{ basin),}
+                    \AttributeTok{alpha =} \FloatTok{0.6}\NormalTok{,}\AttributeTok{show.legend =} \ConstantTok{FALSE}\NormalTok{)}\SpecialCharTok{+}
+          \FunctionTok{geom\_smooth}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{mnDate,}\AttributeTok{y=}\NormalTok{mn\_val,}\AttributeTok{color=}\NormalTok{ GCM\_scen,}
+                          \AttributeTok{fill=}\NormalTok{GCM\_scen,}\AttributeTok{linetype =}\NormalTok{ basin),}\AttributeTok{alpha=}\FloatTok{0.1}\NormalTok{,}
+                      \AttributeTok{method=}\StringTok{"loess"}\NormalTok{,}\AttributeTok{formula=}\StringTok{\textquotesingle{}y \textasciitilde{} x\textquotesingle{}}\NormalTok{,}\AttributeTok{span =}\NormalTok{ .}\DecValTok{5}\NormalTok{,}\AttributeTok{show.legend=}\NormalTok{T)}\SpecialCharTok{+}
+          \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+} 
+          \FunctionTok{labs}\NormalTok{(}\AttributeTok{x=}\StringTok{"Date"}\NormalTok{,}
+                 \AttributeTok{y=}\FunctionTok{paste}\NormalTok{(newdat}\SpecialCharTok{$}\NormalTok{var[}\DecValTok{1}\NormalTok{],}\StringTok{"("}\NormalTok{,newdat}\SpecialCharTok{$}\NormalTok{units[}\DecValTok{1}\NormalTok{],}\StringTok{")"}\NormalTok{),}
+                 \AttributeTok{subtitle =} \StringTok{""}\NormalTok{,}
+                 \AttributeTok{legend =} \StringTok{""}\NormalTok{,}
+                 \AttributeTok{title =} \FunctionTok{paste}\NormalTok{(newdat}\SpecialCharTok{$}\NormalTok{var[}\DecValTok{1}\NormalTok{],}\StringTok{"("}\NormalTok{,newdat}\SpecialCharTok{$}\NormalTok{basin[}\DecValTok{1}\NormalTok{],}\StringTok{","}\NormalTok{,newdat}\SpecialCharTok{$}\NormalTok{type[}\DecValTok{1}\NormalTok{],}\StringTok{")"}\NormalTok{))}\SpecialCharTok{+}
+        \FunctionTok{scale\_color\_discrete}\NormalTok{()}\SpecialCharTok{+}
+        \FunctionTok{facet\_grid}\NormalTok{(scen}\SpecialCharTok{\textasciitilde{}}\NormalTok{.)}
+\CommentTok{\# plot it}
+\NormalTok{pp}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{ACLIM2_quickStart_files/figure-latex/unnamed-chunk-7-1} \end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# plot it interactively}
+\NormalTok{plotly}\SpecialCharTok{::}\FunctionTok{ggplotly}\NormalTok{(pp)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{monthly-indices-andy}{%
+\subsection{monthly indices (Andy)}\label{monthly-indices-andy}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{suppressMessages}\NormalTok{(}\FunctionTok{source}\NormalTok{(}\StringTok{"R/make.R"}\NormalTok{))}
+
+\CommentTok{\# preview possible variables}
+\NormalTok{weekly\_vars }
+
+\NormalTok{scens   }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"ssp126"}\NormalTok{,}\StringTok{"ssp585"}\NormalTok{)}
+\NormalTok{GCMs    }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"miroc"}\NormalTok{,}\StringTok{"gfdl"}\NormalTok{,  }\StringTok{"cesm"}\NormalTok{ )}
+\NormalTok{varlist }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"temp\_bottom5m"}\NormalTok{,}\StringTok{"fracbelow2"}\NormalTok{,}\StringTok{"uEast\_surface5m"}\NormalTok{)}
+
+\CommentTok{\# get the variable you want:}
+\NormalTok{df }\OtherTok{\textless{}{-}} \FunctionTok{get\_var}\NormalTok{( }\AttributeTok{typeIN    =} \StringTok{"monthly"}\NormalTok{, }
+               \AttributeTok{plotvar   =} \StringTok{"temp\_bottom5m"}\NormalTok{,}
+               \AttributeTok{bcIN      =} \StringTok{"bias corrected"}\NormalTok{,}
+               \AttributeTok{plothist  =}\NormalTok{ F,  }\CommentTok{\# ignore the hist runs}
+               \AttributeTok{removeyr1 =}\NormalTok{ T)  }\CommentTok{\#"Remove first year of projection ( burn in)")}
+
+
+\FunctionTok{head}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{dat)}
+\NormalTok{df}\SpecialCharTok{$}\NormalTok{plot}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{ACLIM2_quickStart_files/figure-latex/ewe-1} \end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# concat the hind and fut runs by removing years from projection}
+\NormalTok{maxDin }\OtherTok{\textless{}{-}} \FunctionTok{max}\NormalTok{(}\FunctionTok{as.vector}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{dat}\SpecialCharTok{\%\textgreater{}\%}\NormalTok{dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(sim\_type}\SpecialCharTok{==}\StringTok{"hind"}\NormalTok{)}\SpecialCharTok{\%\textgreater{}\%}\NormalTok{dplyr}\SpecialCharTok{::}\FunctionTok{select}\NormalTok{(mnDate))[[}\DecValTok{1}\NormalTok{]])}
+
+\NormalTok{newdat }\OtherTok{\textless{}{-}} \FunctionTok{stitchTS}\NormalTok{(}\AttributeTok{dat =}\NormalTok{ df}\SpecialCharTok{$}\NormalTok{dat,}
+                 \AttributeTok{maxD  =}\NormalTok{ maxDin)}
+
+\CommentTok{\# newdat has the full set of data}
+\CommentTok{\# select miroc\_ssp126}
+\FunctionTok{head}\NormalTok{(newdat}\SpecialCharTok{\%\textgreater{}\%}\NormalTok{dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(GCM\_scen}\SpecialCharTok{==}\FunctionTok{paste0}\NormalTok{(GCMs[}\DecValTok{1}\NormalTok{],}\StringTok{"\_"}\NormalTok{,scens[}\DecValTok{1}\NormalTok{])))}
+\FunctionTok{tail}\NormalTok{(newdat}\SpecialCharTok{\%\textgreater{}\%}\NormalTok{dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(GCM\_scen}\SpecialCharTok{==}\FunctionTok{paste0}\NormalTok{(GCMs[}\DecValTok{1}\NormalTok{],}\StringTok{"\_"}\NormalTok{,scens[}\DecValTok{1}\NormalTok{])))}
 
 
 \NormalTok{pp  }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(newdat)}\SpecialCharTok{+}
@@ -992,20 +1026,91 @@ SEBS''}
                  \AttributeTok{legend =} \StringTok{""}\NormalTok{,}
                  \AttributeTok{title =} \FunctionTok{paste}\NormalTok{(newdat}\SpecialCharTok{$}\NormalTok{var[}\DecValTok{1}\NormalTok{],}\StringTok{"("}\NormalTok{,newdat}\SpecialCharTok{$}\NormalTok{basin[}\DecValTok{1}\NormalTok{],}\StringTok{","}\NormalTok{,newdat}\SpecialCharTok{$}\NormalTok{type[}\DecValTok{1}\NormalTok{],}\StringTok{")"}\NormalTok{))}\SpecialCharTok{+}
         \FunctionTok{scale\_color\_discrete}\NormalTok{()}\SpecialCharTok{+}
-          \FunctionTok{facet\_grid}\NormalTok{(scen}\SpecialCharTok{\textasciitilde{}}\NormalTok{.)}
+        \FunctionTok{facet\_grid}\NormalTok{(scen}\SpecialCharTok{\textasciitilde{}}\NormalTok{.)}
 \CommentTok{\# plot it}
 \NormalTok{pp}
+\end{Highlighting}
+\end{Shaded}
 
+\begin{center}\includegraphics{ACLIM2_quickStart_files/figure-latex/ewe-2} \end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \CommentTok{\# plot it interactively}
 \NormalTok{plotly}\SpecialCharTok{::}\FunctionTok{ggplotly}\NormalTok{(pp)}
 \end{Highlighting}
 \end{Shaded}
 
-\hypertarget{salmon-index-ellen}{%
-\subsection{Salmon index (Ellen)}\label{salmon-index-ellen}}
+\hypertarget{weekly-indices-jon}{%
+\subsection{weekly indices (Jon)}\label{weekly-indices-jon}}
 
-\hypertarget{nfs-index-jeremy}{%
-\subsection{NFS index (Jeremy )}\label{nfs-index-jeremy}}
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{suppressMessages}\NormalTok{(}\FunctionTok{source}\NormalTok{(}\StringTok{"R/make.R"}\NormalTok{))}
+\CommentTok{\# preview possible variables}
+\NormalTok{weekly\_vars }
+
+\NormalTok{scens   }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"ssp126"}\NormalTok{,}\StringTok{"ssp585"}\NormalTok{)}
+\NormalTok{GCMs    }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"miroc"}\NormalTok{,}\StringTok{"gfdl"}\NormalTok{,  }\StringTok{"cesm"}\NormalTok{ )}
+\NormalTok{varlist }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"temp\_bottom5m"}\NormalTok{,}\StringTok{"fracbelow2"}\NormalTok{,}\StringTok{"uEast\_surface5m"}\NormalTok{)}
+
+\CommentTok{\# get the variable you want:}
+\NormalTok{df }\OtherTok{\textless{}{-}} \FunctionTok{get\_var}\NormalTok{( }\AttributeTok{typeIN    =} \StringTok{"weekly"}\NormalTok{, }
+               \AttributeTok{plotvar   =} \StringTok{"temp\_bottom5m"}\NormalTok{,}
+               \AttributeTok{bcIN      =} \StringTok{"bias corrected"}\NormalTok{,}
+               \AttributeTok{plothist  =}\NormalTok{ F,  }\CommentTok{\# ignore the hist runs}
+               \AttributeTok{removeyr1 =}\NormalTok{ T)  }\CommentTok{\#"Remove first year of projection ( burn in)")}
+
+\NormalTok{df}\SpecialCharTok{$}\NormalTok{plot}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{ACLIM2_quickStart_files/figure-latex/sizespec-1} \end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{head}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{dat)}
+
+\CommentTok{\# concat the hind and fut runs by removing years from projection}
+\NormalTok{maxDin }\OtherTok{\textless{}{-}} \FunctionTok{max}\NormalTok{(}\FunctionTok{as.vector}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{dat}\SpecialCharTok{\%\textgreater{}\%}\NormalTok{dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(sim\_type}\SpecialCharTok{==}\StringTok{"hind"}\NormalTok{)}\SpecialCharTok{\%\textgreater{}\%}\NormalTok{dplyr}\SpecialCharTok{::}\FunctionTok{select}\NormalTok{(mnDate))[[}\DecValTok{1}\NormalTok{]])}
+
+\NormalTok{newdat }\OtherTok{\textless{}{-}} \FunctionTok{stitchTS}\NormalTok{(}\AttributeTok{dat =}\NormalTok{ df}\SpecialCharTok{$}\NormalTok{dat,}
+                 \AttributeTok{maxD  =}\NormalTok{ maxDin)}
+
+\CommentTok{\# newdat has the full set of data}
+\CommentTok{\# select miroc\_ssp126}
+\FunctionTok{head}\NormalTok{(newdat}\SpecialCharTok{\%\textgreater{}\%}\NormalTok{dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(GCM\_scen}\SpecialCharTok{==}\FunctionTok{paste0}\NormalTok{(GCMs[}\DecValTok{1}\NormalTok{],}\StringTok{"\_"}\NormalTok{,scens[}\DecValTok{1}\NormalTok{])))}
+
+
+\NormalTok{pp  }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(newdat)}\SpecialCharTok{+}
+          \FunctionTok{geom\_line}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{mnDate,}\AttributeTok{y=}\NormalTok{mn\_val,}\AttributeTok{color=}\NormalTok{ GCM\_scen, }\AttributeTok{linetype =}\NormalTok{ basin),}
+                    \AttributeTok{alpha =} \FloatTok{0.6}\NormalTok{,}\AttributeTok{show.legend =} \ConstantTok{FALSE}\NormalTok{)}\SpecialCharTok{+}
+          \FunctionTok{geom\_smooth}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{mnDate,}\AttributeTok{y=}\NormalTok{mn\_val,}\AttributeTok{color=}\NormalTok{ GCM\_scen,}
+                          \AttributeTok{fill=}\NormalTok{GCM\_scen,}\AttributeTok{linetype =}\NormalTok{ basin),}\AttributeTok{alpha=}\FloatTok{0.1}\NormalTok{,}
+                      \AttributeTok{method=}\StringTok{"loess"}\NormalTok{,}\AttributeTok{formula=}\StringTok{\textquotesingle{}y \textasciitilde{} x\textquotesingle{}}\NormalTok{,}\AttributeTok{span =}\NormalTok{ .}\DecValTok{5}\NormalTok{,}\AttributeTok{show.legend=}\NormalTok{T)}\SpecialCharTok{+}
+          \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+} 
+          \FunctionTok{labs}\NormalTok{(}\AttributeTok{x=}\StringTok{"Date"}\NormalTok{,}
+                 \AttributeTok{y=}\FunctionTok{paste}\NormalTok{(newdat}\SpecialCharTok{$}\NormalTok{var[}\DecValTok{1}\NormalTok{],}\StringTok{"("}\NormalTok{,newdat}\SpecialCharTok{$}\NormalTok{units[}\DecValTok{1}\NormalTok{],}\StringTok{")"}\NormalTok{),}
+                 \AttributeTok{subtitle =} \StringTok{""}\NormalTok{,}
+                 \AttributeTok{legend =} \StringTok{""}\NormalTok{,}
+                 \AttributeTok{title =} \FunctionTok{paste}\NormalTok{(newdat}\SpecialCharTok{$}\NormalTok{var[}\DecValTok{1}\NormalTok{],}\StringTok{"("}\NormalTok{,newdat}\SpecialCharTok{$}\NormalTok{basin[}\DecValTok{1}\NormalTok{],}\StringTok{","}\NormalTok{,newdat}\SpecialCharTok{$}\NormalTok{type[}\DecValTok{1}\NormalTok{],}\StringTok{")"}\NormalTok{))}\SpecialCharTok{+}
+        \FunctionTok{scale\_color\_discrete}\NormalTok{()}\SpecialCharTok{+}
+        \FunctionTok{facet\_grid}\NormalTok{(scen}\SpecialCharTok{\textasciitilde{}}\NormalTok{.)}
+\CommentTok{\# plot it}
+\NormalTok{pp}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{ACLIM2_quickStart_files/figure-latex/sizespec-2} \end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# plot it interactively}
+\NormalTok{plotly}\SpecialCharTok{::}\FunctionTok{ggplotly}\NormalTok{(pp)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
 \hypertarget{appendix-a-create-bias-correct-aclim2-indices}{%
 \section{APPENDIX A: Create \& bias correct ACLIM2
