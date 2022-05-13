@@ -2,14 +2,15 @@
 title: "ACLIM2 CMIP6 ROMSNPZ Indices quick start guide"
 author: K. Holsman
 output:
-  html_document:
-    df_print: paged
-    toc: true
+  pdf_document:
+    toc: TRUE
     toc_depth: 3
-    number_sections: true
-    toc_float:
-      collapsed: false
-      smooth_scroll: true
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 5
+    highlight: tango
+    keep_tex: yes
+    latex_engine: xelatex
   header-includes:
   - \usepackage{knputenc}
   - \usepackage{unicode-math}
@@ -20,15 +21,14 @@ output:
     fig_caption: yes
     fig_width: 4
     keep_md: yes
-  pdf_document:
-    toc: TRUE
+  html_document:
+    df_print: paged
+    toc: true
     toc_depth: 3
-    fig_caption: yes
-    fig_height: 4
-    fig_width: 5
-    highlight: tango
-    keep_tex: yes
-    latex_engine: xelatex
+    number_sections: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
 #runtime: shiny
 ---
 
@@ -202,10 +202,10 @@ To get more information about each of these level 3 datasets enter this in R:
 
 ```{R, eval=TRUE, echo=T, results='show',message=FALSE}
     # Metadata for Weekly ("ACLIMregion_...") indices
-    (all_info1)
+    head(all_info1)
     
     # Metadata for Weekly ("ACLIMsurveyrep_...") indices
-    (all_info2)
+    head(all_info2)
     
 ```
 
@@ -332,19 +332,29 @@ head(df$dat)
 <!-- # Special cases {.tabset} -->
 ## NRS indices (André)
 
-```{r NRS, eval=T, include=T,echo=T, results='hide',message=FALSE}
+```{r, eval=T, include=T,echo=T, results='hide',message=FALSE}
 
 suppressMessages(source("R/make.R"))
 
+# preview possible variables
+weekly_vars 
+
+scens   <- c("ssp126","ssp585")
+GCMs    <- c("miroc","gfdl",  "cesm" )
+varlist <- c("temp_bottom5m","fracbelow2","uEast_surface5m")
+
 # get the variable you want:
 df <- get_var( typeIN    = "annual", 
-               plotvar   = "temp_bottom5m",
+               plotvar   = varlist[1],
                bcIN      = "bias corrected",
                plothist  = F,  # ignore the hist runs
                removeyr1 = T)  #"Remove first year of projection ( burn in)")
 
 df$plot
 head(df$dat)
+```
+
+```{r, eval=T, include=T,echo=T, results='show',message=FALSE}
 
 # concat the hind and fut runs by removing years from projection
 maxDin <- max(as.vector(df$dat%>%dplyr::filter(sim_type=="hind")%>%dplyr::select(mnDate))[[1]])
@@ -352,8 +362,10 @@ maxDin <- max(as.vector(df$dat%>%dplyr::filter(sim_type=="hind")%>%dplyr::select
 newdat <- stitchTS(dat = df$dat,
                  maxD  = maxDin)
 
-# newdat has the full set
-
+# newdat has the full set of data
+# select miroc_ssp126
+head(newdat%>%dplyr::filter(GCM_scen==paste0(GCMs[1],"_",scens[1])))
+tail(newdat%>%dplyr::filter(GCM_scen==paste0(GCMs[1],"_",scens[1])))
 
 pp  <- ggplot(newdat)+
           geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen, linetype = basin),
@@ -368,13 +380,13 @@ pp  <- ggplot(newdat)+
                  legend = "",
                  title = paste(newdat$var[1],"(",newdat$basin[1],",",newdat$type[1],")"))+
         scale_color_discrete()+
-          facet_grid(scen~.)
+        facet_grid(scen~.)
 # plot it
 pp
         
 ```
 
-```{r, fig.width=8, fig.height=7, fig.fullwidth=TRUE, echo =T, eval=T}
+```{r, fig.width=8, fig.height=6, fig.fullwidth=TRUE, echo =T, eval=T}
 # plot it interactively
 plotly::ggplotly(pp)
 ```
@@ -385,15 +397,23 @@ plotly::ggplotly(pp)
 
 suppressMessages(source("R/make.R"))
 
+# preview possible variables
+weekly_vars 
+
+scens   <- c("ssp126","ssp585")
+GCMs    <- c("miroc","gfdl",  "cesm" )
+varlist <- c("temp_bottom5m","fracbelow2","uEast_surface5m")
+
 # get the variable you want:
-df <- get_var( typeIN     = "monthly", 
+df <- get_var( typeIN    = "monthly", 
                plotvar   = "temp_bottom5m",
                bcIN      = "bias corrected",
                plothist  = F,  # ignore the hist runs
                removeyr1 = T)  #"Remove first year of projection ( burn in)")
 
-df$plot
+
 head(df$dat)
+df$plot
 
 # concat the hind and fut runs by removing years from projection
 maxDin <- max(as.vector(df$dat%>%dplyr::filter(sim_type=="hind")%>%dplyr::select(mnDate))[[1]])
@@ -401,7 +421,10 @@ maxDin <- max(as.vector(df$dat%>%dplyr::filter(sim_type=="hind")%>%dplyr::select
 newdat <- stitchTS(dat = df$dat,
                  maxD  = maxDin)
 
-# newdat has the full set
+# newdat has the full set of data
+# select miroc_ssp126
+head(newdat%>%dplyr::filter(GCM_scen==paste0(GCMs[1],"_",scens[1])))
+tail(newdat%>%dplyr::filter(GCM_scen==paste0(GCMs[1],"_",scens[1])))
 
 
 pp  <- ggplot(newdat)+
@@ -417,13 +440,13 @@ pp  <- ggplot(newdat)+
                  legend = "",
                  title = paste(newdat$var[1],"(",newdat$basin[1],",",newdat$type[1],")"))+
         scale_color_discrete()+
-          facet_grid(scen~.)
+        facet_grid(scen~.)
 # plot it
 pp
         
 ```
 
-```{r, fig.width=8, fig.height=7, fig.fullwidth=TRUE, echo =T, eval=T}
+```{r, fig.width=8, fig.height=6, fig.fullwidth=TRUE, echo =T, eval=T}
 # plot it interactively
 plotly::ggplotly(pp)
 ```
@@ -433,6 +456,12 @@ plotly::ggplotly(pp)
 ```{r sizespec, eval=T, include=T,echo=T, results='hide',message=FALSE}
 
 suppressMessages(source("R/make.R"))
+# preview possible variables
+weekly_vars 
+
+scens   <- c("ssp126","ssp585")
+GCMs    <- c("miroc","gfdl",  "cesm" )
+varlist <- c("temp_bottom5m","fracbelow2","uEast_surface5m")
 
 # get the variable you want:
 df <- get_var( typeIN    = "weekly", 
@@ -450,7 +479,9 @@ maxDin <- max(as.vector(df$dat%>%dplyr::filter(sim_type=="hind")%>%dplyr::select
 newdat <- stitchTS(dat = df$dat,
                  maxD  = maxDin)
 
-# newdat has the full set
+# newdat has the full set of data
+# select miroc_ssp126
+head(newdat%>%dplyr::filter(GCM_scen==paste0(GCMs[1],"_",scens[1])))
 
 
 pp  <- ggplot(newdat)+
@@ -466,13 +497,13 @@ pp  <- ggplot(newdat)+
                  legend = "",
                  title = paste(newdat$var[1],"(",newdat$basin[1],",",newdat$type[1],")"))+
         scale_color_discrete()+
-          facet_grid(scen~.)
+        facet_grid(scen~.)
 # plot it
 pp
         
 ```
 
-```{r, fig.width=8, fig.height=7, fig.fullwidth=TRUE, echo =T, eval=T}
+```{r, fig.width=8, fig.height=6, fig.fullwidth=TRUE, echo =T, eval=T}
 # plot it interactively
 plotly::ggplotly(pp)
 ```
@@ -626,12 +657,14 @@ Where B0kinput is the unfished biomass used for setting inputs of  (e.g., B0ktar
 
 
 ```{r makeReadME, echo=FALSE,eval=F, include =F}
+file.copy(from=paste0("ACLIM2_quickStart",".html"),to=paste0("index",".html"),overwrite=T)
+
 setwd("/Users/kholsman/Documents/GitHub/ACLIM2")
 source("R/make.R")
  # copy and paste this into R window (won't work within markdown)
  rmd2md(rmd_fl = "ACLIM2_quickStart",md_fl = "README")
 
-file.copy(from=paste0("ACLIM2_quickStart",".html"),to=paste0("index",".html"),overwrite=T)
+
 ```
 
 
