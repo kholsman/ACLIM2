@@ -67,21 +67,21 @@ get_var <- function(
       
     }
     
-    hind     <- dhind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, jday,mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)
-    hist     <- dhist%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, jday,mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)
+    hind     <- dhind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%dplyr::select(var,basin,year, jday,mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)
+    hist     <- dhist%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%dplyr::select(var,basin,year, jday,mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)
   
-    fut      <- dfut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, jday,mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)
+    fut      <- dfut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%dplyr::select(var,basin,year, jday,mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)
     
     
-    plotdat    <- rbind(hind,hist,fut)%>%mutate(bc = "raw")
+    plotdat    <- rbind(hind,hist,fut)%>%dplyr::mutate(bc = "raw")
    
     # print(head(plotdat))
     # print(plotdat$GCM[1:3])
     # print(plotdat$scen[1:3])
     
-    hind_bc    <- dhind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, jday,mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)%>%mutate(bc="bias corrected")
-    fut_bc     <- dfut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, jday,mnDate,val_biascorrected, sim,gcmcmip,GCM,scen,sim_type ,units)
-    fut_bc     <- fut_bc%>%mutate(bc="bias corrected")%>%rename(mn_val = val_biascorrected)
+    hind_bc    <- dhind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%dplyr::select(var,basin,year, jday,mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)%>%dplyr::mutate(bc="bias corrected")
+    fut_bc     <- dfut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%dplyr::select(var,basin,year, jday,mnDate,val_biascorrected, sim,gcmcmip,GCM,scen,sim_type ,units)
+    fut_bc     <- fut_bc%>%dplyr::mutate(bc="bias corrected")%>%rename(mn_val = val_biascorrected)
     fut_bc     <-rbind(hind_bc,fut_bc)
     
     plotdat          <- rbind(plotdat,fut_bc)

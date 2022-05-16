@@ -110,6 +110,7 @@ makeACLIM2_Indices <- function(
         gcmcmip <- gcmcmipLIST[ii]
         sim     <- histLIST[ii]
         
+        
         load(file.path(Rdata_path,file.path(sim,paste0(reg_txt,sim,".Rdata"))))
         hist  <- ACLIMregion; rm(ACLIMregion);gc()
         load(file.path(Rdata_path,file.path(sim,paste0(srvy_txt,sim,".Rdata"))))

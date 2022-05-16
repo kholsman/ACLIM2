@@ -1,0 +1,50 @@
+GLOBALS_SECTION
+ adstring futfile_name;
+
+
+ LOCAL_CALCS
+  futfile_name      = adstring("Data/out/ADMB_datfiles/KKHfut_ACLIM2_CMIP6_short_bcs.dat");
+  dump_rep = 1;
+ END_CALCS
+
+
+// -------------------------------------------------------------------------
+// -------------------------------------------------------------------------
+// Read in projection data file e.g., Data/out/ADMB_datfiles/KKHfut_ACLIM2_CMIP6_short_bcs.dat
+// -------------------------------------------------------------------------
+// -------------------------------------------------------------------------
+   !!                if(dump_rep) cout << "Projection data read in begins:   "<<futfile_name<< endl;
+   !!                ad_comm::change_datafile_name(futfile_name);
+//   init_int          nEatcovs_fut                                    // number of covariates for the food limitation configuration of RS (demand-zoop*Eatcov)
+//   init_ivector      Eat_covs_fut(1,nEatcovs_fut)                    // index of covariates that should be used for the function
+   init_int          num_runs                                             // number of future temperature simulations
+   init_int          nyrs_fut                                          // (1, num_runs) number years for the projection data
+   init_vector       fut_yrs(1,nyrs_fut)                               // fut_years : matrix(num_runs,nyrs_fut) years for the projection data
+   init_int          ncov_fut                                          // number of RS covariates
+   3darray           rs_cov_fut(1,num_runs,1,ncov_fut,1,nyrs_fut)         // covariate values (may be scaled)
+ LOCAL_CALCS
+                     if(ncov_fut!=ncov){cout<<"ERROR ncov and ncov_fut do not match!!! "<<endl;exit(1);}
+     //                   for (int c=1;c<=nEatcovs_fut;c++){
+      //                       if(Eat_covs_fut(c)!=Eat_covs(c))
+      //                       {
+      //                           cout<<"ERROR Eat_covs('<<c<<') and Eat_covs_fut do not match!!!"<<endl;
+      //                           exit(1);
+      //                       }
+      //                     }
+                     for (int c=1;c<=ncov_fut;c++)
+                       for (int cm=1;cm<=num_runs;cm++)
+                         for(int yr=1;yr<=nyrs_fut;yr++)
+                           *(ad_comm::global_datafile) >> rs_cov_fut(cm,c,yr);
+ END_CALCS   
+   init_matrix       BTempC_fut_all(1,num_runs,1,nyrs_fut)              // Bottom temperature for each scenario (actual Temp for bioenergetics)
+   init_matrix       SSTempC_fut_all(1,num_runs,1,nyrs_fut)             // Sea surface temperature (actual temperature)
+   4darray           overlap_fut(1,num_runs,1,nspp,1,nspp,1,nyrs_fut);  // pred prey overlap (scenario,pred,prey, yr); pred overlap with prey species (2-6/0-6 area)
+ LOCAL_CALCS
+                     for (int pred=1;pred<=nspp;pred++) 
+                       for (int prey=1;prey<=nspp;prey++) 
+                        for (int cm=1;cm<=num_runs;cm++)
+                          for(int yr=1;yr<=nyrs_fut;yr++)
+                            *(ad_comm::global_datafile) >> overlap_fut(cm,pred,prey,yr);
+ END_CALCS 
+   init_int         test_num_projection
+   !!               if (test_num_projection != 12345) {cout<<"Read file error projection data"<<endl<<test_num_projection<<endl;exit(1);}

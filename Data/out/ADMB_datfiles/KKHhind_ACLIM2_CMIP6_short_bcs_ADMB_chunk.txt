@@ -1,0 +1,46 @@
+GLOBALS_SECTION
+ adstring retrofile_name;
+
+
+ LOCAL_CALCS
+  retrofile_name      = adstring("Data/out/ADMB_datfiles/KKHhind_ACLIM2_CMIP6_short_bcs.dat");
+  dump_rep = 1;
+ END_CALCS
+
+
+// -------------------------------------------------------------------------
+// -------------------------------------------------------------------------
+// Read in retrospective hindcast data file e.g., Data/out/ADMB_datfiles/KKHhind_ACLIM2_CMIP6_short_bcs.dat
+// -------------------------------------------------------------------------
+// -------------------------------------------------------------------------
+
+ !!                 if(dump_rep) cout << "read in "<<retrofile_name<<endl;
+ !!                 ad_comm::change_datafile_name(retrofile_name);
+ init_int           nspp2
+ !! if(nspp2!=nspp){cout<<"number of species does not match"<<endl;exit(1);}
+ init_int           nTyrs                        // number years for the hindcast data
+ !!                 if(dump_rep) cout <<"nTyrs= "<<nTyrs<<endl;
+ int                nyrs_use
+ !!                 nyrs_use=min(nTyrs,nyrs);    // minimum number of years between the two - if hindcast is longer use nyrs, and vise versa
+ init_vector        Tyrs(1,nTyrs)                // years for the hindcast data , doesn't have to match model years
+ !!                 if(dump_rep) cout <<"Tyrs= "<<Tyrs<<endl;
+ init_int           ncov                         // number of covariates
+ matrix             rs_cov(1,ncov,1,nTyrs);      // covariate values (may be scaled)
+ LOCAL_CALCS
+               for (int c=1;c<=ncov;c++)
+                  for(int yr=1;yr<=nTyrs;yr++)
+                    *(ad_comm::global_datafile) >> rs_cov(c,yr);  // covariate values
+ END_CALCS
+
+  //!! cout<< rs_cov(ncov) <<endl;
+ init_vector        BTempC_retro(1,nTyrs)                              // Bottom Temperature (actual values)
+ init_vector        SSTempC_retro(1,nTyrs)                             // Sea surface Temperatuer (actual values) !!                 if(dump_rep) cout <<"SSTempC_retro= "<<SSTempC_retro<<endl;
+ 3darray            overlap_dat(1,nspp,1,nspp,1,nTyrs)               // pred prey overlap (scenario,pred,prey, yr); pred overlap with prey species (2-6/0-6 area)
+ LOCAL_CALCS
+                 for (int pred=1;pred<=nspp;pred++)
+                    for(int prey=1;prey<=nspp;prey++)
+                      for(int yr=1;yr<=nTyrs;yr++)
+                        *(ad_comm::global_datafile) >> overlap_dat(pred,prey,yr);          // overlap values
+ END_CALCS
+ init_int          test_numZ
+   !!               if (test_numZ != 12345) {cout<<"Read file error hindcast data"<<endl<<test_num_projection<<endl;exit(1);}

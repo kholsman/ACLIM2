@@ -840,7 +840,9 @@ SEBS''}
 \FunctionTok{suppressMessages}\NormalTok{(}\FunctionTok{source}\NormalTok{(}\StringTok{"R/make.R"}\NormalTok{))}
 
 \CommentTok{\# preview possible variables}
-\NormalTok{weekly\_vars }
+\FunctionTok{load}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(}\StringTok{"Data/out/K20P19\_CMIP6/allEBS\_means/ACLIM\_annual\_hind\_mn.Rdata"}\NormalTok{))}
+\NormalTok{varall  }\OtherTok{\textless{}{-}} \FunctionTok{unique}\NormalTok{(ACLIM\_annual\_hind}\SpecialCharTok{$}\NormalTok{var)}
+\NormalTok{varall}
 
 \NormalTok{scens   }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"ssp126"}\NormalTok{,}\StringTok{"ssp585"}\NormalTok{)}
 \NormalTok{GCMs    }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"miroc"}\NormalTok{,}\StringTok{"gfdl"}\NormalTok{,  }\StringTok{"cesm"}\NormalTok{ )}
@@ -880,27 +882,27 @@ SEBS''}
 \end{Shaded}
 
 \begin{verbatim}
-##   basin year     jday     mnDate   mn_val                          sim gcmcmip
-## 1  SEBS 1970 189.5000 1970-07-09 2.074569 ACLIMregion_B10K-K20_CORECFS    hind
-## 2  SEBS 1971 181.5000 1971-07-01 1.501867 ACLIMregion_B10K-K20_CORECFS    hind
-## 3  SEBS 1972 184.0000 1972-07-03 1.596919 ACLIMregion_B10K-K20_CORECFS    hind
-## 4  SEBS 1973 182.0000 1973-07-02 2.169304 ACLIMregion_B10K-K20_CORECFS    hind
-## 5  SEBS 1974 181.1373 1974-07-01 1.826142 ACLIMregion_B10K-K20_CORECFS    hind
-## 6  SEBS 1975 183.5000 1975-07-03 1.524967 ACLIMregion_B10K-K20_CORECFS    hind
-##    GCM   scen sim_type   units             bc     GCM_scen     GCM_scen_sim
-## 1 hind ssp126     hind Celsius bias corrected miroc_ssp126 hind_ssp126_hind
-## 2 hind ssp126     hind Celsius bias corrected miroc_ssp126 hind_ssp126_hind
-## 3 hind ssp126     hind Celsius bias corrected miroc_ssp126 hind_ssp126_hind
-## 4 hind ssp126     hind Celsius bias corrected miroc_ssp126 hind_ssp126_hind
-## 5 hind ssp126     hind Celsius bias corrected miroc_ssp126 hind_ssp126_hind
-## 6 hind ssp126     hind Celsius bias corrected miroc_ssp126 hind_ssp126_hind
-##           CMIP   type
-## 1 K20P19_CMIP6 annual
-## 2 K20P19_CMIP6 annual
-## 3 K20P19_CMIP6 annual
-## 4 K20P19_CMIP6 annual
-## 5 K20P19_CMIP6 annual
-## 6 K20P19_CMIP6 annual
+##             var basin year     jday     mnDate   mn_val
+## 1 temp_bottom5m  SEBS 1970 189.5000 1970-07-09 2.074569
+## 2 temp_bottom5m  SEBS 1971 181.5000 1971-07-01 1.501867
+## 3 temp_bottom5m  SEBS 1972 184.0000 1972-07-03 1.596919
+## 4 temp_bottom5m  SEBS 1973 182.0000 1973-07-02 2.169304
+## 5 temp_bottom5m  SEBS 1974 181.1373 1974-07-01 1.826142
+## 6 temp_bottom5m  SEBS 1975 183.5000 1975-07-03 1.524967
+##                            sim gcmcmip  GCM   scen sim_type   units
+## 1 ACLIMregion_B10K-K20_CORECFS    hind hind ssp126     hind Celsius
+## 2 ACLIMregion_B10K-K20_CORECFS    hind hind ssp126     hind Celsius
+## 3 ACLIMregion_B10K-K20_CORECFS    hind hind ssp126     hind Celsius
+## 4 ACLIMregion_B10K-K20_CORECFS    hind hind ssp126     hind Celsius
+## 5 ACLIMregion_B10K-K20_CORECFS    hind hind ssp126     hind Celsius
+## 6 ACLIMregion_B10K-K20_CORECFS    hind hind ssp126     hind Celsius
+##               bc     GCM_scen     GCM_scen_sim         CMIP   type
+## 1 bias corrected miroc_ssp126 hind_ssp126_hind K20P19_CMIP6 annual
+## 2 bias corrected miroc_ssp126 hind_ssp126_hind K20P19_CMIP6 annual
+## 3 bias corrected miroc_ssp126 hind_ssp126_hind K20P19_CMIP6 annual
+## 4 bias corrected miroc_ssp126 hind_ssp126_hind K20P19_CMIP6 annual
+## 5 bias corrected miroc_ssp126 hind_ssp126_hind K20P19_CMIP6 annual
+## 6 bias corrected miroc_ssp126 hind_ssp126_hind K20P19_CMIP6 annual
 \end{verbatim}
 
 \begin{Shaded}
@@ -910,13 +912,13 @@ SEBS''}
 \end{Shaded}
 
 \begin{verbatim}
-##     basin year   jday     mnDate   mn_val
-## 126  SEBS 2094 181.50 2094-07-01 2.680691
-## 127  SEBS 2095 180.50 2095-06-30 2.725785
-## 128  SEBS 2096 183.00 2096-07-02 2.241747
-## 129  SEBS 2097 184.50 2097-07-04 3.319004
-## 130  SEBS 2098 183.50 2098-07-03 2.968876
-## 131  SEBS 2099 175.92 2099-06-25 2.288020
+##               var basin year   jday     mnDate   mn_val
+## 126 temp_bottom5m  SEBS 2094 181.50 2094-07-01 2.680691
+## 127 temp_bottom5m  SEBS 2095 180.50 2095-06-30 2.725785
+## 128 temp_bottom5m  SEBS 2096 183.00 2096-07-02 2.241747
+## 129 temp_bottom5m  SEBS 2097 184.50 2097-07-04 3.319004
+## 130 temp_bottom5m  SEBS 2098 183.50 2098-07-03 2.968876
+## 131 temp_bottom5m  SEBS 2099 175.92 2099-06-25 2.288020
 ##                                            sim                 gcmcmip   GCM
 ## 126 ACLIMregion_B10K-K20P19_CMIP6_miroc_ssp126 B10K-K20P19_CMIP6_miroc miroc
 ## 127 ACLIMregion_B10K-K20P19_CMIP6_miroc_ssp126 B10K-K20P19_CMIP6_miroc miroc
@@ -978,7 +980,9 @@ SEBS''}
 \FunctionTok{suppressMessages}\NormalTok{(}\FunctionTok{source}\NormalTok{(}\StringTok{"R/make.R"}\NormalTok{))}
 
 \CommentTok{\# preview possible variables}
-\NormalTok{weekly\_vars }
+\FunctionTok{load}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(}\StringTok{"Data/out/K20P19\_CMIP6/allEBS\_means/ACLIM\_monthly\_hind\_mn.Rdata"}\NormalTok{))}
+\NormalTok{varall  }\OtherTok{\textless{}{-}} \FunctionTok{unique}\NormalTok{(ACLIM\_monthly\_hind}\SpecialCharTok{$}\NormalTok{var)}
+\NormalTok{varall}
 
 \NormalTok{scens   }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"ssp126"}\NormalTok{,}\StringTok{"ssp585"}\NormalTok{)}
 \NormalTok{GCMs    }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"miroc"}\NormalTok{,}\StringTok{"gfdl"}\NormalTok{,  }\StringTok{"cesm"}\NormalTok{ )}
@@ -1047,8 +1051,12 @@ SEBS''}
 \begin{Shaded}
 \begin{Highlighting}[]
 \FunctionTok{suppressMessages}\NormalTok{(}\FunctionTok{source}\NormalTok{(}\StringTok{"R/make.R"}\NormalTok{))}
+
 \CommentTok{\# preview possible variables}
-\NormalTok{weekly\_vars }
+\FunctionTok{load}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(}\StringTok{"Data/out/K20P19\_CMIP6/allEBS\_means/ACLIM\_weekly\_hind\_mn.Rdata"}\NormalTok{))}
+\NormalTok{varall  }\OtherTok{\textless{}{-}} \FunctionTok{unique}\NormalTok{(ACLIM\_weekly\_hind}\SpecialCharTok{$}\NormalTok{var)}
+\NormalTok{varall}
+
 
 \NormalTok{scens   }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"ssp126"}\NormalTok{,}\StringTok{"ssp585"}\NormalTok{)}
 \NormalTok{GCMs    }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"miroc"}\NormalTok{,}\StringTok{"gfdl"}\NormalTok{,  }\StringTok{"cesm"}\NormalTok{ )}
@@ -1112,6 +1120,263 @@ SEBS''}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
+\hypertarget{output-to-.dat-file-admb-tmb-users}{%
+\section{Output to .dat file (ADMB/ TMB
+users)}\label{output-to-.dat-file-admb-tmb-users}}
+
+For CEATTLE I create a .dat file that is read into the ADMB script. That
+.dat file includes the bias corrected values (e.g., bottom temperature
+in deg C) used for the bioenergetics and temperature-dependent growth
+functions as well as Z-score (scaled) values used as covariates on the
+recruitment function. The section below will step through that .dat file
+creation for a subset of variables as well as demo chunks of ADMB code
+for reading that into a ADMB based model.
+
+\hypertarget{use-r-to-make-.dat-file}{%
+\subsection{Use R to make .dat file}\label{use-r-to-make-.dat-file}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+  \CommentTok{\# 1 {-}{-} create .dat filename \& path}
+  \CommentTok{\# 2 {-}{-} rescale (Z{-}score) data and get variables}
+  \CommentTok{\# 3 {-}{-} write data to hind .dat file}
+  \CommentTok{\# 3 {-}{-} write data to fut  .dat file}
+  
+  \CommentTok{\# 1 {-}{-} create .dat filename \& path}
+  \CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+
+  \CommentTok{\# Define the name for the .dat file}
+\NormalTok{    file.name   }\OtherTok{\textless{}{-}} \StringTok{"ACLIM2\_CMIP6\_short"}
+\NormalTok{    fn          }\OtherTok{\textless{}{-}} \FunctionTok{paste}\NormalTok{(file.name,}\StringTok{"\_bcs.dat"}\NormalTok{,}\AttributeTok{sep=}\StringTok{""}\NormalTok{)}
+  \CommentTok{\# switches }
+\NormalTok{    hind\_yrs    }\OtherTok{\textless{}{-}} \DecValTok{1989}\SpecialCharTok{:}\DecValTok{2021}   \CommentTok{\# define the years of your estimation model}
+\NormalTok{    fut\_yrs     }\OtherTok{\textless{}{-}} \DecValTok{2022}\SpecialCharTok{:}\DecValTok{2100}   \CommentTok{\# define the years of your projections}
+\NormalTok{    archive\_old }\OtherTok{\textless{}{-}}\NormalTok{ T           }\CommentTok{\# Archive the older version of the .dat file?}
+    
+    
+\NormalTok{    outpath    }\OtherTok{\textless{}{-}} \StringTok{"Data/out/ADMB\_datfiles"}
+    \ControlFlowTok{if}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{dir.exists}\NormalTok{(outpath)) }\FunctionTok{dir.create}\NormalTok{(outpath)}
+    
+  \CommentTok{\# define hind and fut data files}
+\NormalTok{    fndat\_hind }\OtherTok{\textless{}{-}} \FunctionTok{file.path}\NormalTok{(outpath,}\FunctionTok{paste}\NormalTok{(}\StringTok{"KKHhind\_"}\NormalTok{,fn,}\AttributeTok{sep=}\StringTok{""}\NormalTok{))}
+\NormalTok{    fndat\_fut  }\OtherTok{\textless{}{-}} \FunctionTok{file.path}\NormalTok{(outpath,}\FunctionTok{paste}\NormalTok{(}\StringTok{"KKHfut\_"}\NormalTok{,fn,}\AttributeTok{sep=}\StringTok{""}\NormalTok{))}
+\NormalTok{    fndat\_hind2 }\OtherTok{\textless{}{-}} \FunctionTok{file.path}\NormalTok{(outpath,}\FunctionTok{paste}\NormalTok{(}\StringTok{"hind\_"}\NormalTok{,fn,}\AttributeTok{sep=}\StringTok{""}\NormalTok{))}
+\NormalTok{    fndat\_fut2  }\OtherTok{\textless{}{-}} \FunctionTok{file.path}\NormalTok{(outpath,}\FunctionTok{paste}\NormalTok{(}\StringTok{"fut\_"}\NormalTok{,fn,}\AttributeTok{sep=}\StringTok{""}\NormalTok{))}
+    
+    \CommentTok{\# create and archive .dat files}
+\NormalTok{      outfile    }\OtherTok{\textless{}{-}}\NormalTok{ fndat\_fut}
+    \ControlFlowTok{if}\NormalTok{(}\FunctionTok{file.exists}\NormalTok{(outfile)}\SpecialCharTok{\&}\NormalTok{archive\_old)\{   }
+        \CommentTok{\# archive older version}
+\NormalTok{            archivefl }\OtherTok{\textless{}{-}} \FunctionTok{paste0}\NormalTok{(}\FunctionTok{substr}\NormalTok{(outfile,}\AttributeTok{start=}\DecValTok{1}\NormalTok{,}\AttributeTok{stop=}\FunctionTok{nchar}\NormalTok{(outfile)}\SpecialCharTok{{-}}\DecValTok{4}\NormalTok{),}
+                            \FunctionTok{format}\NormalTok{(}\FunctionTok{Sys.time}\NormalTok{(), }\StringTok{"\%Y\%m\%d"}\NormalTok{),}\StringTok{".dat"}\NormalTok{)}
+            \FunctionTok{file.rename}\NormalTok{(outfile, archivefl)}
+            \FunctionTok{file.remove}\NormalTok{(outfile)}
+\NormalTok{    \}}
+    
+    \FunctionTok{file.create}\NormalTok{(outfile)}
+\NormalTok{    outfile  }\OtherTok{\textless{}{-}}\NormalTok{ outfile.hind}
+    \ControlFlowTok{if}\NormalTok{(}\FunctionTok{file.exists}\NormalTok{(outfile)}\SpecialCharTok{\&}\NormalTok{archive\_old)\{   }
+        \CommentTok{\# archive older version}
+\NormalTok{            archivefl }\OtherTok{\textless{}{-}} \FunctionTok{paste0}\NormalTok{(}\FunctionTok{substr}\NormalTok{(outfile,}\AttributeTok{start=}\DecValTok{1}\NormalTok{,}\AttributeTok{stop=}\FunctionTok{nchar}\NormalTok{(outfile)}\SpecialCharTok{{-}}\DecValTok{4}\NormalTok{),}
+                            \FunctionTok{format}\NormalTok{(}\FunctionTok{Sys.time}\NormalTok{(), }\StringTok{"\%Y\%m\%d"}\NormalTok{),}\StringTok{".dat"}\NormalTok{)}
+            \FunctionTok{file.rename}\NormalTok{(outfile, archivefl)}
+            \FunctionTok{file.remove}\NormalTok{(outfile)}
+\NormalTok{    \}}
+    
+    \FunctionTok{file.create}\NormalTok{(outfile)}
+
+    \CommentTok{\# 2 {-}{-} rescale (Z{-}score) data and get variables}
+    
+    \CommentTok{\# preview possible variables}
+    \FunctionTok{load}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(}\StringTok{"Data/out/K20P19\_CMIP6/allEBS\_means/ACLIM\_annual\_hind\_mn.Rdata"}\NormalTok{))}
+\NormalTok{    varall  }\OtherTok{\textless{}{-}} \FunctionTok{unique}\NormalTok{(ACLIM\_annual\_hind}\SpecialCharTok{$}\NormalTok{var)}
+\NormalTok{    varall}
+    
+    
+    \CommentTok{\# get each variable, convert to TS and rbind}
+   
+\NormalTok{    plotbasin }\OtherTok{\textless{}{-}} \StringTok{"SEBS"}
+    
+\NormalTok{    CMIPS }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"K20P19\_CMIP6"}\NormalTok{,}\StringTok{"K20P19\_CMIP5"}\NormalTok{)}
+\NormalTok{    CMIPS }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"K20P19\_CMIP6"}\NormalTok{)}
+    
+    \ControlFlowTok{for}\NormalTok{(c }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{length}\NormalTok{(CMIPS))\{}
+      
+      \CommentTok{\# first for annual mean values:}
+\NormalTok{      varlist }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"largeZoop\_integrated"}\NormalTok{,}\StringTok{"fracbelow2"}\NormalTok{,}\StringTok{"temp\_bottom5m"}\NormalTok{,}\StringTok{"temp\_surface5m"}\NormalTok{)}
+\NormalTok{      typeIN }\OtherTok{\textless{}{-}} \StringTok{"annual"}
+       
+      \FunctionTok{load}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(}\StringTok{"Data/out/"}\NormalTok{,CMIPS[c],}\StringTok{"/allEBS\_means/ACLIM\_"}\NormalTok{,typeIN,}\StringTok{"\_hind\_mn.Rdata"}\NormalTok{))}
+      \FunctionTok{load}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(}\StringTok{"Data/out/"}\NormalTok{,CMIPS[c],}\StringTok{"/allEBS\_means/ACLIM\_"}\NormalTok{,typeIN,}\StringTok{"\_fut\_mn.Rdata"}\NormalTok{))}
+      \FunctionTok{eval}\NormalTok{(}\FunctionTok{parse}\NormalTok{(}\AttributeTok{text =} \FunctionTok{paste0}\NormalTok{(}\StringTok{"dhind \textless{}{-} ACLIM\_"}\NormalTok{,typeIN,}\StringTok{"\_hind"}\NormalTok{)))}
+      \FunctionTok{eval}\NormalTok{(}\FunctionTok{parse}\NormalTok{(}\AttributeTok{text =} \FunctionTok{paste0}\NormalTok{(}\StringTok{"dfut  \textless{}{-} ACLIM\_"}\NormalTok{,typeIN,}\StringTok{"\_fut"}\NormalTok{)))}
+      
+       \CommentTok{\# rescale the data using mean of the hind}
+\NormalTok{       tmphind    }\OtherTok{\textless{}{-}}\NormalTok{ dhind}\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{         dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(var}\SpecialCharTok{\%in\%}\NormalTok{varlist,basin}\SpecialCharTok{==}\NormalTok{plotbasin,year}\SpecialCharTok{\%in\%}\NormalTok{hind\_yrs)}\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{         dplyr}\SpecialCharTok{::}\FunctionTok{select}\NormalTok{(var,basin,year, jday,mnDate,mn\_val, }
+\NormalTok{                       mnVal\_hind,sdVal\_hind, sim,gcmcmip,CMIP,GCM,scen,sim\_type ,units,long\_name)}\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{         dplyr}\SpecialCharTok{::}\FunctionTok{mutate}\NormalTok{(}\AttributeTok{bc =} \StringTok{"bias corrected"}\NormalTok{,}
+                       \AttributeTok{GCM\_scen =} \FunctionTok{paste0}\NormalTok{(GCM,}\StringTok{"\_"}\NormalTok{,scen),}
+                       \AttributeTok{mn\_val\_scaled =}\NormalTok{ (mn\_val}\SpecialCharTok{{-}}\NormalTok{mnVal\_hind )}\SpecialCharTok{/}\FunctionTok{sqrt}\NormalTok{(sdVal\_hind))}
+       
+\NormalTok{       tmpfut    }\OtherTok{\textless{}{-}}\NormalTok{ dfut}\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{         dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(var}\SpecialCharTok{\%in\%}\NormalTok{varlist,basin}\SpecialCharTok{==}\NormalTok{plotbasin,year}\SpecialCharTok{\%in\%}\NormalTok{fut\_yrs)}\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{         dplyr}\SpecialCharTok{::}\FunctionTok{select}\NormalTok{(var,basin,year, jday,mnDate,val\_biascorrected, }
+\NormalTok{                       mnVal\_hind,sdVal\_hind, sim,gcmcmip,CMIP,GCM,scen,sim\_type ,units,long\_name)}\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{         dplyr}\SpecialCharTok{::}\FunctionTok{rename}\NormalTok{(}\AttributeTok{mn\_val =}\NormalTok{ val\_biascorrected)}\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{         dplyr}\SpecialCharTok{::}\FunctionTok{mutate}\NormalTok{(}\AttributeTok{bc =} \StringTok{"bias corrected"}\NormalTok{,}
+                       \AttributeTok{GCM\_scen =} \FunctionTok{paste0}\NormalTok{(GCM,}\StringTok{"\_"}\NormalTok{,scen),}
+                       \AttributeTok{mn\_val\_scaled =}\NormalTok{ (mn\_val}\SpecialCharTok{{-}}\NormalTok{mnVal\_hind )}\SpecialCharTok{/}\FunctionTok{sqrt}\NormalTok{(sdVal\_hind))}
+      
+       
+       
+      \CommentTok{\# now for seasonal mean values:}
+\NormalTok{      typeIN  }\OtherTok{\textless{}{-}} \StringTok{"seasonal"}
+\NormalTok{      varlist }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"largeZoop\_integrated"}\NormalTok{)}
+
+\NormalTok{      seasonsIN }\OtherTok{\textless{}{-}} \FunctionTok{unique}\NormalTok{(seasons}\SpecialCharTok{$}\NormalTok{season)}
+      \FunctionTok{load}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(}\StringTok{"Data/out/"}\NormalTok{,CMIPS[c],}\StringTok{"/allEBS\_means/ACLIM\_"}\NormalTok{,typeIN,}\StringTok{"\_hind\_mn.Rdata"}\NormalTok{))}
+      \FunctionTok{load}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(}\StringTok{"Data/out/"}\NormalTok{,CMIPS[c],}\StringTok{"/allEBS\_means/ACLIM\_"}\NormalTok{,typeIN,}\StringTok{"\_fut\_mn.Rdata"}\NormalTok{))}
+      \FunctionTok{eval}\NormalTok{(}\FunctionTok{parse}\NormalTok{(}\AttributeTok{text =} \FunctionTok{paste0}\NormalTok{(}\StringTok{"dhind \textless{}{-} ACLIM\_"}\NormalTok{,typeIN,}\StringTok{"\_hind"}\NormalTok{)))}
+      \FunctionTok{eval}\NormalTok{(}\FunctionTok{parse}\NormalTok{(}\AttributeTok{text =} \FunctionTok{paste0}\NormalTok{(}\StringTok{"dfut  \textless{}{-} ACLIM\_"}\NormalTok{,typeIN,}\StringTok{"\_fut"}\NormalTok{)))}
+      
+      
+       \CommentTok{\# rescale the data using mean of the hind}
+\NormalTok{       tmphind2    }\OtherTok{\textless{}{-}}\NormalTok{ dhind}\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{         dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(var}\SpecialCharTok{\%in\%}\NormalTok{varlist,basin}\SpecialCharTok{==}\NormalTok{plotbasin,year}\SpecialCharTok{\%in\%}\NormalTok{hind\_yrs,season}\SpecialCharTok{\%in\%}\NormalTok{seasonsIN)}\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{          dplyr}\SpecialCharTok{::}\FunctionTok{mutate}\NormalTok{(}\AttributeTok{var =} \FunctionTok{paste0}\NormalTok{(var,}\StringTok{"\_"}\NormalTok{,season))}\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{         dplyr}\SpecialCharTok{::}\FunctionTok{select}\NormalTok{(var,basin,year,jday,mnDate,mn\_val, }
+\NormalTok{                       mnVal\_hind,sdVal\_hind, sim,gcmcmip,CMIP,GCM,scen,sim\_type ,units,long\_name)}\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{         dplyr}\SpecialCharTok{::}\FunctionTok{mutate}\NormalTok{(}\AttributeTok{bc =} \StringTok{"bias corrected"}\NormalTok{,}
+                       \AttributeTok{GCM\_scen =} \FunctionTok{paste0}\NormalTok{(GCM,}\StringTok{"\_"}\NormalTok{,scen),}
+                       \AttributeTok{mn\_val\_scaled =}\NormalTok{ (mn\_val}\SpecialCharTok{{-}}\NormalTok{mnVal\_hind )}\SpecialCharTok{/}\FunctionTok{sqrt}\NormalTok{(sdVal\_hind))}
+       
+\NormalTok{       tmpfut2    }\OtherTok{\textless{}{-}}\NormalTok{ dfut}\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{         dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(var}\SpecialCharTok{\%in\%}\NormalTok{varlist,basin}\SpecialCharTok{==}\NormalTok{plotbasin,year}\SpecialCharTok{\%in\%}\NormalTok{fut\_yrs,season}\SpecialCharTok{\%in\%}\NormalTok{seasonsIN)}\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{         dplyr}\SpecialCharTok{::}\FunctionTok{mutate}\NormalTok{(}\AttributeTok{var =} \FunctionTok{paste0}\NormalTok{(var,}\StringTok{"\_"}\NormalTok{,season))}\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{         dplyr}\SpecialCharTok{::}\FunctionTok{select}\NormalTok{(var,basin,year, jday,mnDate,val\_biascorrected, }
+\NormalTok{                       mnVal\_hind,sdVal\_hind, sim,gcmcmip,CMIP,GCM,scen,sim\_type ,units,long\_name)}\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{         dplyr}\SpecialCharTok{::}\FunctionTok{rename}\NormalTok{(}\AttributeTok{mn\_val =}\NormalTok{ val\_biascorrected)}\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{         dplyr}\SpecialCharTok{::}\FunctionTok{mutate}\NormalTok{(}\AttributeTok{bc =} \StringTok{"bias corrected"}\NormalTok{,}
+                       \AttributeTok{GCM\_scen =} \FunctionTok{paste0}\NormalTok{(GCM,}\StringTok{"\_"}\NormalTok{,scen),}
+                       \AttributeTok{mn\_val\_scaled =}\NormalTok{ (mn\_val}\SpecialCharTok{{-}}\NormalTok{mnVal\_hind )}\SpecialCharTok{/}\FunctionTok{sqrt}\NormalTok{(sdVal\_hind))}
+       \ControlFlowTok{if}\NormalTok{(c }\SpecialCharTok{==}\DecValTok{1}\NormalTok{)\{}
+\NormalTok{          hind  }\OtherTok{\textless{}{-}} \FunctionTok{rbind}\NormalTok{(tmphind,tmphind2)}
+\NormalTok{          fut   }\OtherTok{\textless{}{-}} \FunctionTok{rbind}\NormalTok{(tmpfut,tmpfut2)}
+\NormalTok{       \}}\ControlFlowTok{else}\NormalTok{\{}
+\NormalTok{          hind  }\OtherTok{\textless{}{-}} \FunctionTok{rbind}\NormalTok{(hind,tmphind,tmphind2)}
+\NormalTok{          fut   }\OtherTok{\textless{}{-}} \FunctionTok{rbind}\NormalTok{(fut,tmpfut,tmpfut2)}
+\NormalTok{       \}}
+       
+\NormalTok{    \}}
+    
+      \CommentTok{\# plot the data}
+\NormalTok{       p }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(hind)}\SpecialCharTok{+}
+         \FunctionTok{geom\_line}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{mnDate,}\AttributeTok{y=}\NormalTok{mn\_val,}\AttributeTok{color=}\NormalTok{GCM\_scen))}\SpecialCharTok{+}
+         \FunctionTok{geom\_line}\NormalTok{(}\AttributeTok{data=}\NormalTok{fut,}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{mnDate,}\AttributeTok{y=}\NormalTok{mn\_val,}\AttributeTok{color=}\NormalTok{GCM\_scen))}\SpecialCharTok{+}
+         \FunctionTok{facet\_wrap}\NormalTok{(.}\SpecialCharTok{\textasciitilde{}}\NormalTok{var,}\AttributeTok{scales=}\StringTok{"free\_y"}\NormalTok{)}\SpecialCharTok{+}
+         \FunctionTok{theme\_minimal}\NormalTok{()}
+\NormalTok{      p}
+      
+      \CommentTok{\# plot the data}
+\NormalTok{       p\_scaled }\OtherTok{\textless{}{-}} \FunctionTok{ggplot}\NormalTok{(hind)}\SpecialCharTok{+}
+         \FunctionTok{geom\_line}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{mnDate,}\AttributeTok{y=}\NormalTok{mn\_val\_scaled,}\AttributeTok{color=}\NormalTok{GCM\_scen))}\SpecialCharTok{+}
+         \FunctionTok{geom\_line}\NormalTok{(}\AttributeTok{data=}\NormalTok{fut,}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{mnDate,}\AttributeTok{y=}\NormalTok{mn\_val\_scaled,}\AttributeTok{color=}\NormalTok{GCM\_scen))}\SpecialCharTok{+}
+         \FunctionTok{facet\_wrap}\NormalTok{(.}\SpecialCharTok{\textasciitilde{}}\NormalTok{var,}\AttributeTok{scales=}\StringTok{"free\_y"}\NormalTok{)}\SpecialCharTok{+}
+         \FunctionTok{theme\_minimal}\NormalTok{()}
+\NormalTok{      p\_scaled}
+      
+\NormalTok{      d\_wide }\OtherTok{\textless{}{-}}\NormalTok{ reshape2}\SpecialCharTok{::}\FunctionTok{dcast}\NormalTok{(hind}\SpecialCharTok{\%\textgreater{}\%}\NormalTok{dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(year}\SpecialCharTok{!=}\DecValTok{2021}\NormalTok{),year}\SpecialCharTok{\textasciitilde{}}\FunctionTok{c}\NormalTok{(var),}\AttributeTok{value.var =} \StringTok{"mn\_val"}\NormalTok{)}
+\NormalTok{      corr   }\OtherTok{\textless{}{-}} \FunctionTok{cor}\NormalTok{(d\_wide[,}\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{])}
+      \CommentTok{\# remove those where cov is high (temp by season and cold pool by season)}
+\NormalTok{      long\_dat }\OtherTok{\textless{}{-}}\NormalTok{ reshape2}\SpecialCharTok{::}\FunctionTok{melt}\NormalTok{(corr,}\AttributeTok{variable.name =} \StringTok{"variable"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+      \FunctionTok{as.data.frame}\NormalTok{() }
+      
+\NormalTok{      long\_dat }\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{arrange}\NormalTok{(value)}\SpecialCharTok{\%\textgreater{}\%}
+      \FunctionTok{ggplot}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{Var1, }\AttributeTok{y=}\NormalTok{Var2, }\AttributeTok{fill=}\NormalTok{value)) }\SpecialCharTok{+} 
+      \FunctionTok{geom\_raster}\NormalTok{() }\SpecialCharTok{+} 
+      \FunctionTok{scale\_fill\_viridis\_c}\NormalTok{()}\SpecialCharTok{+}
+      \FunctionTok{theme\_minimal}\NormalTok{()}\SpecialCharTok{+}
+      \FunctionTok{theme}\NormalTok{(}\AttributeTok{axis.text.x =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{angle =} \DecValTok{90}\NormalTok{))}
+
+   \CommentTok{\# 3 {-}{-} write data to hind .dat file}
+   \CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
+      
+         
+      \CommentTok{\# CEATTLE uses a spp overlap index {-} you can skip this}
+          
+\NormalTok{                overlapdat }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+                    \AttributeTok{atf\_OL=}\FunctionTok{c}\NormalTok{(}\FloatTok{0.9391937}\NormalTok{,}\FloatTok{0.8167094}\NormalTok{,}\FloatTok{0.808367}\NormalTok{,}\FloatTok{0.5926875}\NormalTok{,}\FloatTok{0.7804481}\NormalTok{,}\FloatTok{0.5559549}\NormalTok{,}
+                             \FloatTok{0.4006931}\NormalTok{,}\FloatTok{0.5881404}\NormalTok{,}\FloatTok{0.7856776}\NormalTok{,}\FloatTok{0.511565}\NormalTok{,}\FloatTok{0.6352048}\NormalTok{,}\FloatTok{0.5583476}\NormalTok{,}
+                             \FloatTok{0.5792738}\NormalTok{,}\FloatTok{0.5417657}\NormalTok{,}\FloatTok{0.8212887}\NormalTok{,}\FloatTok{0.6287613}\NormalTok{,}\FloatTok{0.4536608}\NormalTok{,}\FloatTok{0.6587292}\NormalTok{,}
+                             \FloatTok{0.4884194}\NormalTok{,}\FloatTok{0.8289379}\NormalTok{,}\FloatTok{0.4399257}\NormalTok{,}\FloatTok{0.5950167}\NormalTok{,}\FloatTok{0.6388434}\NormalTok{,}\FloatTok{0.6111834}\NormalTok{,}
+                             \FloatTok{0.8742649}\NormalTok{,}\FloatTok{0.7868746}\NormalTok{,}\FloatTok{0.8024257}\NormalTok{,}\FloatTok{0.6227457}\NormalTok{,}\FloatTok{0.4956742}\NormalTok{,}\FloatTok{0.4347917}\NormalTok{,}
+                             \FloatTok{0.4791108}\NormalTok{,}\FloatTok{0.4369006}\NormalTok{,}\FloatTok{0.5613625}\NormalTok{,}\FloatTok{0.4353015}\NormalTok{),}
+                    \AttributeTok{south\_OL=}\FunctionTok{c}\NormalTok{(}\FloatTok{0.9980249}\NormalTok{,}\FloatTok{0.9390368}\NormalTok{,}\FloatTok{0.9959974}\NormalTok{,}\FloatTok{0.6130846}\NormalTok{,}\FloatTok{0.951234}\NormalTok{,}\FloatTok{0.5851891}\NormalTok{,}
+                               \FloatTok{0.4934879}\NormalTok{,}\FloatTok{0.641471}\NormalTok{,}\FloatTok{0.9809618}\NormalTok{,}\FloatTok{0.5596813}\NormalTok{,}\FloatTok{0.7196964}\NormalTok{,}\FloatTok{0.6754698}\NormalTok{,}
+                               \FloatTok{0.5774808}\NormalTok{,}\FloatTok{0.6041351}\NormalTok{,}\FloatTok{0.9406521}\NormalTok{,}\FloatTok{0.7949525}\NormalTok{,}\FloatTok{0.5306435}\NormalTok{,}\FloatTok{0.7977694}\NormalTok{,}
+                               \FloatTok{0.5345031}\NormalTok{,}\FloatTok{0.9879945}\NormalTok{,}\FloatTok{0.5079171}\NormalTok{,}\FloatTok{0.7148121}\NormalTok{,}\FloatTok{0.8997132}\NormalTok{,}\FloatTok{0.7340859}\NormalTok{,}
+                               \FloatTok{0.9962068}\NormalTok{,}\FloatTok{0.9627235}\NormalTok{,}\FloatTok{0.998043}\NormalTok{,}\FloatTok{0.8111}\NormalTok{,}\FloatTok{0.6087638}\NormalTok{,}\FloatTok{0.513057}\NormalTok{,}\FloatTok{0.5492621}\NormalTok{,}
+                               \FloatTok{0.4971361}\NormalTok{,}\FloatTok{0.665453}\NormalTok{,}\FloatTok{0.5969653}\NormalTok{)}
+\NormalTok{                    )}
+          
+            
+\NormalTok{              includeOverlap }\OtherTok{\textless{}{-}}\NormalTok{ F}
+\NormalTok{                  overlap        }\OtherTok{\textless{}{-}} \FunctionTok{matrix}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{3}\NormalTok{,}\FunctionTok{length}\NormalTok{(}\FunctionTok{sort}\NormalTok{(}\FunctionTok{unique}\NormalTok{(hind}\SpecialCharTok{$}\NormalTok{year))))}
+\NormalTok{                  overlap\_fut    }\OtherTok{\textless{}{-}} \FunctionTok{array}\NormalTok{(}\DecValTok{1}\NormalTok{,}\FunctionTok{c}\NormalTok{(}\DecValTok{3}\NormalTok{,}\FunctionTok{length}\NormalTok{(}\FunctionTok{unique}\NormalTok{(fut}\SpecialCharTok{$}\NormalTok{GCM\_scen))}\SpecialCharTok{+}\DecValTok{1}\NormalTok{,}\FunctionTok{length}\NormalTok{(}\FunctionTok{sort}\NormalTok{(}\FunctionTok{unique}\NormalTok{(fut}\SpecialCharTok{$}\NormalTok{year)))))}
+            \ControlFlowTok{if}\NormalTok{(includeOverlap)\{}
+\NormalTok{              overlap[}\DecValTok{3}\NormalTok{,] }\OtherTok{\textless{}{-}}\NormalTok{ overlapIN}
+\NormalTok{              overlap[}\DecValTok{3}\NormalTok{,][overlap[}\DecValTok{3}\NormalTok{,]}\SpecialCharTok{\textgreater{}}\DecValTok{1}\NormalTok{]}\OtherTok{\textless{}{-}}\DecValTok{1} \CommentTok{\#covs$BT2to6/covs$BT0to6}
+\NormalTok{            \}}
+     
+            \CommentTok{\# Pick up here}
+        
+        \CommentTok{\# Kir\textquotesingle{}s .dat file}
+\NormalTok{        covars   }\OtherTok{\textless{}{-}} \FunctionTok{unique}\NormalTok{(hind}\SpecialCharTok{$}\NormalTok{var)}
+        \FunctionTok{makeDat\_hind}\NormalTok{(}\AttributeTok{datIN   =}\NormalTok{ hind, }
+                     \AttributeTok{outfile =}\NormalTok{ fndat\_hind,}
+                     \AttributeTok{nsppIN    =} \DecValTok{3}\NormalTok{,}
+                     \AttributeTok{overlapIN =}\NormalTok{ overlap, }
+                     \AttributeTok{nonScaled\_covlist =} \FunctionTok{c}\NormalTok{(}\StringTok{"temp\_bottom5m"}\NormalTok{,}\StringTok{"temp\_surface5m"}\NormalTok{  ),}
+                     \AttributeTok{Scaled\_covlist    =}\NormalTok{ covars)}
+        
+        \CommentTok{\# generic .dat file}
+\NormalTok{        covars   }\OtherTok{\textless{}{-}} \FunctionTok{unique}\NormalTok{(hind}\SpecialCharTok{$}\NormalTok{var)}
+        \FunctionTok{makeDat\_fut}\NormalTok{( }\AttributeTok{datIN   =}\NormalTok{ fut, }
+                     \AttributeTok{hinddatIN  =}\NormalTok{ hind, }
+                     \AttributeTok{outfile =}\NormalTok{ fndat\_fut,}
+                     \AttributeTok{nsppIN    =} \DecValTok{3}\NormalTok{,}
+                     \AttributeTok{last\_nyrs\_avg   =} \DecValTok{10}\NormalTok{, }
+                     \AttributeTok{overlapIN =}\NormalTok{ overlap\_fut,  }\CommentTok{\#(nspp,nsim+1,nyrs\_fut) }
+                     \AttributeTok{overlap\_hind=}\NormalTok{overlap,}
+                     \AttributeTok{nonScaled\_covlist =} \FunctionTok{c}\NormalTok{(}\StringTok{"temp\_bottom5m"}\NormalTok{,}\StringTok{"temp\_surface5m"}\NormalTok{  ),}
+                     \AttributeTok{Scaled\_covlist    =}\NormalTok{ covars)}
+        
+        \DocumentationTok{\#\#\# Here\textquotesingle{}s a generic version that doesn\textquotesingle{}t include nspp and overla[]}
+            \CommentTok{\# generic .dat file}
+\NormalTok{        covars   }\OtherTok{\textless{}{-}} \FunctionTok{unique}\NormalTok{(hind}\SpecialCharTok{$}\NormalTok{var)}
+        \FunctionTok{makeDat\_hind}\NormalTok{(}\AttributeTok{datIN   =}\NormalTok{ hind, }
+                     \AttributeTok{outfile =}\NormalTok{ fndat\_hind2,}
+                     \AttributeTok{nsppIN    =} \ConstantTok{NULL}\NormalTok{,}
+                     \AttributeTok{overlapIN =} \ConstantTok{NULL}\NormalTok{, }
+                     \AttributeTok{nonScaled\_covlist =} \FunctionTok{c}\NormalTok{(}\StringTok{"temp\_bottom5m"}\NormalTok{,}\StringTok{"temp\_surface5m"}\NormalTok{  ),}
+                     \AttributeTok{Scaled\_covlist    =}\NormalTok{ covars)}
+        
+        \CommentTok{\# generic .dat file}
+\NormalTok{        covars   }\OtherTok{\textless{}{-}} \FunctionTok{unique}\NormalTok{(hind}\SpecialCharTok{$}\NormalTok{var)}
+                \FunctionTok{makeDat\_fut}\NormalTok{( }\AttributeTok{datIN   =}\NormalTok{ fut, }
+                     \AttributeTok{hinddatIN  =}\NormalTok{ hind, }
+                     \AttributeTok{outfile =}\NormalTok{ fndat\_fut2,}
+                     \AttributeTok{nsppIN    =} \ConstantTok{NULL}\NormalTok{,}
+                     \AttributeTok{last\_nyrs\_avg   =} \DecValTok{10}\NormalTok{, }
+                     \AttributeTok{overlapIN    =} \ConstantTok{NULL}\NormalTok{,  }\CommentTok{\#(nspp,nsim+1,nyrs\_fut) }
+                     \AttributeTok{overlap\_hind =} \ConstantTok{NULL}\NormalTok{,}
+                     \AttributeTok{nonScaled\_covlist =} \FunctionTok{c}\NormalTok{(}\StringTok{"temp\_bottom5m"}\NormalTok{,}\StringTok{"temp\_surface5m"}\NormalTok{  ),}
+                     \AttributeTok{Scaled\_covlist    =}\NormalTok{ covars)}
+\end{Highlighting}
+\end{Shaded}
+
 \hypertarget{appendix-a-create-bias-correct-aclim2-indices}{%
 \section{APPENDIX A: Create \& bias correct ACLIM2
 indices}\label{appendix-a-create-bias-correct-aclim2-indices}}
@@ -1150,6 +1415,7 @@ want to). To explore the indices skep to the next section.
                                   \StringTok{"Iron\_bottom5m"}\NormalTok{,}\StringTok{"Iron\_integrated"}\NormalTok{,}
                                   \StringTok{"Iron\_surface5m"}\NormalTok{,}\StringTok{"prod\_Eup\_integrated"}\NormalTok{,}
                                   \StringTok{"prod\_NCa\_integrated"}\NormalTok{)]}
+    
 \NormalTok{    vl2 }\OtherTok{\textless{}{-}}\NormalTok{ weekly\_vars[}\SpecialCharTok{!}\NormalTok{weekly\_vars}\SpecialCharTok{\%in\%}\FunctionTok{c}\NormalTok{(}\StringTok{"station\_id"}\NormalTok{,}\StringTok{"latitude"}\NormalTok{,}
                                     \StringTok{"longitude"}\NormalTok{,}\StringTok{"stratum"}\NormalTok{,}\StringTok{"doy"}\NormalTok{,}
                                   \StringTok{"Iron\_bottom5m"}\NormalTok{,}\StringTok{"Iron\_integrated"}\NormalTok{,}
@@ -1168,7 +1434,6 @@ want to). To explore the indices skep to the next section.
 
 \NormalTok{    normlist }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{var =}\NormalTok{ vl, }\AttributeTok{lognorm =} \ConstantTok{TRUE}\NormalTok{)}
 \NormalTok{    normlist}\SpecialCharTok{$}\NormalTok{lognorm[normlist}\SpecialCharTok{$}\NormalTok{var}\SpecialCharTok{\%in\%}\NormalTok{normvl] }\OtherTok{\textless{}{-}} \ConstantTok{FALSE}
-
     
     \CommentTok{\# generate indices and bias corrected projections }
     \CommentTok{\# This takes approx 30 mins each}
@@ -1246,10 +1511,6 @@ want to). To explore the indices skep to the next section.
 \NormalTok{    \}}
 \end{Highlighting}
 \end{Shaded}
-
-\hypertarget{appendix-boutput-to-.dat-file-admb-tmb-users}{%
-\section{APPENDIX B:Output to .dat file (ADMB/ TMB
-users)}\label{appendix-boutput-to-.dat-file-admb-tmb-users}}
 
 \begin{figure}
 \centering
