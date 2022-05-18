@@ -686,6 +686,7 @@ For CEATTLE I create a .dat file that is read into the ADMB script. That .dat fi
       long_dat <- reshape2::melt(corr,variable.name = "variable") %>% 
       as.data.frame() 
       
+      # plot covariation between variables
       long_dat %>%arrange(value)%>%
       ggplot(aes(x=Var1, y=Var2, fill=value)) + 
       geom_raster() + 
