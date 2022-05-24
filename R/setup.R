@@ -21,9 +21,11 @@
     # set this to TRUE to "update" the indices from the original files on mox
     redownload_level3_mox  <- FALSE
     update_base_data       <- FALSE
-    subfldr                <- "2022_03_07"
-    subfldrR               <- "2022_03_07_Rdata"
-    
+    # subfldr                <- "2022_03_07"
+    # subfldrR               <- "2022_03_07_Rdata"
+    subfldr                <- "2022_05_16"
+    subfldrR               <- "2022_05_16_Rdata"
+
     load_gis        <-  FALSE  # load mapfiles, note first time through downloading these may take a long time
     update.figs     <-  FALSE  # set to true to re-save figs
     update.outputs  <-  TRUE   # overwrite the existing Rdatafiles in out_fn
@@ -42,7 +44,9 @@
     localfolder   <- file.path(local_fl,remote_fl)
     data_path     <- file.path(local_fl,remote_fl)
     Rdata_path    <- file.path(file.path("Data/in",  subfldrR),remote_fl)
-    
+    data_path     <- file.path("/Volumes/LaCie/romsnpz",remote_fl)
+    Rdata_path    <- file.path(file.path("/Volumes/LaCie/romsnpz",  subfldrR),remote_fl)
+    Rdata_path_C    <- file.path(file.path("/Volumes/LaCie/romsnpz",  "2022_05_16_C_Rdata"),remote_fl)
     if(!dir.exists(local_fl))       
       dir.create(local_fl)
     if(!dir.exists(file.path(local_fl,remote_fl)))   

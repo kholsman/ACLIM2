@@ -26,8 +26,8 @@ save_indices <- function(
              "ACLIM_monthly_fut",
              "ACLIM_weekly_fut",
              "ACLIM_surveyrep_fut")  ){
-
-  cat("-- Files will be saved in",paste0("Data/out/",CMIP_fdlr,"/",subfl)," ....\n")
+  
+    cat("-- Files will be saved in",paste0("Data/out/",CMIP_fdlr,"/",subfl)," ....\n")
     # make root folders"
     if(!dir.exists("Data/out")) dir.create("Data/out")
     if(!dir.exists( paste0("Data/out") )) dir.create(paste0("Data/out"))
@@ -36,6 +36,7 @@ save_indices <- function(
     if(!dir.exists(file.path(fl_out,CMIP_fdlr))){
       dir.create(file.path(fl_out,CMIP_fdlr))
     }else{
+      
       dir.remove(file.path(fl_out,CMIP_fdlr))
       dir.create(file.path(fl_out,CMIP_fdlr))
     }
@@ -55,5 +56,6 @@ save_indices <- function(
         eval(parse(text = paste0("rm(",outfl,")")))
       }
     cat("-- Indices saved \n")
+    return(TRUE)
 }
 

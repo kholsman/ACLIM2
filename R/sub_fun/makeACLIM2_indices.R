@@ -23,8 +23,16 @@ makeACLIM2_Indices <- function(
   CMIP_fdlr = "CMIP6",
   hind_sim  =  "B10K-K20_CORECFS",
   histLIST,
+  regnm    = "ACLIMregion",
+  srvynm    = "ACLIMsurveyrep",
+  
+  Rdata_pathIN = Rdata_path,
+  normlist_IN = normlist,
   gcmcmipLIST = c("B10K-K20P19_CMIP6_miroc","B10K-K20P19_CMIP6_gfdl","B10K-K20P19_CMIP6_cesm"),
   sim_listIN){
+
+  reg_txtIN  = paste0("Level3/",regnm,"_")
+  srvy_txtIN =paste0("Level3/",srvynm,"_")
     # ------------------------------------
     # 1  -- Create indices from Hindcast
     cat("-- Starting analysis...\n")
@@ -35,10 +43,11 @@ makeACLIM2_Indices <- function(
   
     #sim <- "B10K-K20_CORECFS"
     sim  <- hind_sim
-    load(file.path(Rdata_path,file.path(sim,paste0(reg_txt,sim,".Rdata"))))
-    hnd       <- ACLIMregion; rm(ACLIMregion)
-    load(file.path(Rdata_path,file.path(sim,paste0(srvy_txt,sim,".Rdata"))))
-    hnd_srvy  <- ACLIMsurveyrep; rm(ACLIMsurveyrep)
+    load(file.path(Rdata_pathIN,file.path(sim,paste0(reg_txtIN,sim,".Rdata"))))
+    
+    load(file.path(Rdata_pathIN,file.path(sim,paste0(srvy_txtIN,sim,".Rdata"))))
+    eval(parse(text=paste0("hnd       <- ",regnm,"; rm(",regnm,")")))
+    eval(parse(text=paste0("hnd_srvy  <- ",srvynm,"; rm(",srvynm,")")))
     gc()
     # Get Indices: 
     # -------------------------
@@ -111,10 +120,12 @@ makeACLIM2_Indices <- function(
         sim     <- histLIST[ii]
         
         
-        load(file.path(Rdata_path,file.path(sim,paste0(reg_txt,sim,".Rdata"))))
-        hist  <- ACLIMregion; rm(ACLIMregion);gc()
-        load(file.path(Rdata_path,file.path(sim,paste0(srvy_txt,sim,".Rdata"))))
-        hist_srvy  <- ACLIMsurveyrep; rm(ACLIMsurveyrep);gc()
+        load(file.path(Rdata_pathIN,file.path(sim,paste0(reg_txtIN,sim,".Rdata"))))
+        load(file.path(Rdata_pathIN,file.path(sim,paste0(srvy_txtIN,sim,".Rdata"))))
+        eval(parse(text=paste0("hist       <- ",regnm,"; rm(",regnm,")")))
+        eval(parse(text=paste0("hist_srvy  <- ",srvynm,"; rm(",srvynm,")")))
+        gc()
+        
         
         # Get Historical Indices: 
         # -------------------------
@@ -196,10 +207,10 @@ makeACLIM2_Indices <- function(
           CMIP  <- strsplit(sim,"_")[[1]][2]
           GCM   <- strsplit(sim,"_")[[1]][3]
           
-          load(file.path(Rdata_path,file.path(sim,paste0(reg_txt,sim,".Rdata"))))
-          proj_wk  <- ACLIMregion; rm(ACLIMregion)
-          load(file.path(Rdata_path,file.path(sim,paste0(srvy_txt,sim,".Rdata"))))
-          proj_srvy  <- ACLIMsurveyrep; rm(ACLIMsurveyrep)
+          load(file.path(Rdata_pathIN,file.path(sim,paste0(reg_txtIN,sim,".Rdata"))))
+          load(file.path(Rdata_pathIN,file.path(sim,paste0(srvy_txtIN,sim,".Rdata"))))
+          eval(parse(text=paste0("proj_wk       <- ",regnm,"; rm(",regnm,")")))
+          eval(parse(text=paste0("proj_srvy  <- ",srvynm,"; rm(",srvynm,")")))
           gc()
           
           # Get Projection Indices: 
@@ -273,7 +284,7 @@ makeACLIM2_Indices <- function(
             futIN  = reg_indices_seasonal_proj,
             ref_yrs    = ref_years,
             group_byIN = c("var","basin","season"),
-            normlistIN =  normlist,
+            normlistIN =  normlist_IN,
             plotwk     = 2,
             plotvarIN  = "temp_bottom5m", # this is just one of the variables
             log_adj    = 1e-4))
@@ -288,7 +299,7 @@ makeACLIM2_Indices <- function(
             futIN  = reg_indices_weekly_proj,
             ref_yrs    = ref_years,
             group_byIN = c("var","basin","season","mo","wk"),
-            normlistIN =  normlist,
+            normlistIN =  normlist_IN,
             plotwk     = 2,
             plotvarIN  = "temp_bottom5m", # this is just one of the variables
             log_adj    = 1e-4))
@@ -304,7 +315,7 @@ makeACLIM2_Indices <- function(
             futIN  = reg_indices_monthly_proj,
             ref_yrs    = ref_years,
             group_byIN = c("var","basin","season","mo"),
-            normlistIN =  normlist,
+            normlistIN =  normlist_IN,
             plotwk     = 2,
             plotvarIN  = "temp_bottom5m", # this is just one of the variables
             log_adj    = 1e-4))
@@ -319,7 +330,7 @@ makeACLIM2_Indices <- function(
             futIN  = reg_indices_annual_proj,
             ref_yrs    = ref_years,
             group_byIN = c("var","basin"),
-            normlistIN =  normlist,
+            normlistIN =  normlist_IN,
             plotwk     = 2,
             plotvarIN  = "temp_bottom5m", # this is just one of the variables
             log_adj    = 1e-4))
@@ -335,7 +346,7 @@ makeACLIM2_Indices <- function(
             futIN  = srvy_indices_proj,
             ref_yrs    = ref_years,
             group_byIN = c("var","basin","season"),
-            normlistIN =  normlist,
+            normlistIN =  normlist_IN,
             plotIT = TRUE,
             plotwk = 45,
             plotvarIN  = "temp_bottom5m",
@@ -392,7 +403,7 @@ makeACLIM2_Indices <- function(
             "reg_indices_seasonal_proj",
             "reg_indices_monthly_proj",
             "reg_indices_weekly_proj",
-            "srvy_indices_proj","tmp",
+            "srvy_indices_proj",
             "surveyrep_adj",
             "annual_adj",
             "monthly_adj",
