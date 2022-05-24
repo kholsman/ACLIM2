@@ -105,6 +105,7 @@ If you have git installed and can work with it, this is the preferred method as 
 * [00_ACLIM_shared > 02_Data > Newest_Data(use this) > 2022_03_07_Rdata.zip](https://drive.google.com/drive/folders/11BQEfNEl9vvrN-V0LgS67XS4aLE9pNzz)
 
 * Unzip the folder and move the contents of the zipped folder to your local folder `ACLIM2/Data/in`.
+
 <!-- ![](Figs/DATA_dir.png){ width=50%} -->
 
 **Step 2)**
@@ -1099,6 +1100,7 @@ Where B0kinput is the unfished biomass used for setting inputs of  (e.g., B0ktar
 setwd("/Users/kholsman/Documents/GitHub/ACLIM2")
 file.remove(paste0("index",".html"))
 file.remove(paste0("README",".md"))
+# update github
 file.copy(from=paste0("ACLIM2_quickStart",".html"),to=paste0("index",".html"),overwrite=T)
 file.copy(from=paste0("ACLIM2_quickStart",".md"),to=paste0("README",".md"),overwrite=T)
 
