@@ -102,7 +102,7 @@ If you have git installed and can work with it, this is the preferred method as 
 **Step 1)**
 * Go to the google drive and download the zipped file with the R data `2022_03_07_Rdata.zip`:
 
-* [00_ACLIM_shared > 02_Data > Newest_Data(use this) > 2022_03_07_Rdata.zip](https://drive.google.com/drive/folders/11BQEfNEl9vvrN-V0LgS67XS4aLE9pNzz)
+* [00_ACLIM_shared > 02_Data > Newest_Data(use this) > 2022_05_16_unzip_and_putIN_Data_in_folder.zip](https://drive.google.com/drive/folders/11BQEfNEl9vvrN-V0LgS67XS4aLE9pNzz)
 
 * Unzip the folder and move the contents of the zipped folder to your local folder `ACLIM2/Data/in`.
 
@@ -111,7 +111,7 @@ If you have git installed and can work with it, this is the preferred method as 
 **Step 2)**
 * Go to the google drive and download the zipped file with the R ACLIM2 indices `ACLIM2_indices.zip`:
 
-* [00_ACLIM_shared > 02_Data > Newest_Data(use this) > 2022_05_16_unzip_and_put_contents_in_the_Data_out_folder.zip](https://drive.google.com/drive/folders/11BQEfNEl9vvrN-V0LgS67XS4aLE9pNzz)
+* [00_ACLIM_shared > 02_Data > Newest_Data(use this) > 2022_05_16_unzip_and_putIN_Data_out_folder](https://drive.google.com/drive/folders/11BQEfNEl9vvrN-V0LgS67XS4aLE9pNzz)
 
 * Unzip the folder and move the contents of the zipped folder to your local folder `ACLIM2/Data/out`.
 
@@ -344,7 +344,7 @@ suppressMessages(source("R/make.R"))
     load(file = "Data/out/srvy_vars_C.Rdata")
     load(file = "Data/out/srvy_vars.Rdata")
     
-load(paste0("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_annual_hind_mn.Rdata"))
+load(paste0("Data/out/K20P19_CMIP6_C/allEBS_means/ACLIM_annual_hind_mn.Rdata"))
 varall  <- unique(ACLIM_annual_hind$var)
 varall
 
@@ -599,9 +599,6 @@ For CEATTLE I create a .dat file that is read into the ADMB script. That .dat fi
   # Define the name for the .dat file
     file.name   <- "ACLIM2_CMIP6_short"
     fn          <- paste(file.name,"_bcs.dat",sep="")
-  # switches 
-    hind_yrs    <- 1989:2021   # define the years of your estimation model
-    fut_yrs     <- 2022:2100   # define the years of your projections
     archive_old <- T           # Archive the older version of the .dat file?
     
     
@@ -638,23 +635,30 @@ For CEATTLE I create a .dat file that is read into the ADMB script. That .dat fi
 
   	# 2 -- rescale (Z-score) data and get variables
   	
-  	# preview possible variables
-    load(paste0("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_annual_hind_mn.Rdata"))
+    # CMIPS <- c("K20P19_CMIP6","K20P19_CMIP5")
+    # CMIPS <- c("K20P19_CMIP6")
+    CMIPS <- c("K20P19_CMIP6_C")
+    
+    	# preview possible variables
+  	load(paste0("Data/out/",CMIPS[1],"/allEBS_means/ACLIM_annual_hind_mn.Rdata"))
     varall  <- unique(ACLIM_annual_hind$var)
     varall
-    
     
     # get each variable, convert to TS and rbind
    
     plotbasin <- "SEBS"
+    # switches 
+    lastyr_hind <- 2020
+    hind_yrs    <- 1989:lastyr_hind   # define the years of your estimation model
+    fut_yrs     <- (lastyr_hind+1):2100   # define the years of your projections
     
-    CMIPS <- c("K20P19_CMIP6","K20P19_CMIP5")
-    CMIPS <- c("K20P19_CMIP6")
     
     for(c in 1:length(CMIPS)){
       
       # first for annual mean values:
-      varlist <- c("largeZoop_integrated","fracbelow2","temp_bottom5m","temp_surface5m")
+      #varlist <- c("largeZoop_integrated","fracbelow2","temp_bottom5m","temp_surface5m")
+      varlist <- c("largeZoop_integrated","fracbelow2",
+                   "temp_bottom5m","temp_surface5m","pH_depthavg")
       typeIN <- "annual"
        
       load(paste0("Data/out/",CMIPS[c],"/allEBS_means/ACLIM_",typeIN,"_hind_mn.Rdata"))
@@ -1099,11 +1103,11 @@ Where B0kinput is the unfished biomass used for setting inputs of  (e.g., B0ktar
 ```{r makeReadME, echo=FALSE,eval=F, include =F}
 setwd("/Users/kholsman/Documents/GitHub/ACLIM2")
 file.remove(paste0("index",".html"))
-file.remove(paste0("README",".md"))
 # update github
 file.copy(from=paste0("ACLIM2_quickStart",".html"),to=paste0("index",".html"),overwrite=T)
-file.copy(from=paste0("ACLIM2_quickStart",".md"),to=paste0("README",".md"),overwrite=T)
 
+# file.copy(from=paste0("ACLIM2_quickStart",".md"),to=paste0("README",".md"),overwrite=T)
+# file.remove(paste0("README",".md"))
 
 # source("R/make.R")
  # copy and paste this into R window (won't work within markdown)

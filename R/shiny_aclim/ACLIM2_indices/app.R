@@ -13,14 +13,15 @@ library(plotly)
 library("dplyr")
 library("RColorBrewer")
 
-
-load("data/K20P19_CMIP6/allEBS_means/ACLIM_annual_fut_mn.Rdata")
+#data.path <- "../../../Data/out"
+data.path <- "data"
+plothist <- TRUE
+load(file.path(data.path,"K20P19_CMIP6/allEBS_means/ACLIM_annual_fut_mn.Rdata"))
 plotvars   <- unique(ACLIM_annual_fut$var)
 gcms       <- unique(ACLIM_annual_fut$GCM)
 CMIPs      <- unique(ACLIM_annual_fut$CMIP)
-scens      <-  unique(ACLIM_annual_fut$scen)
-
-    basins      <-  unique(ACLIM_annual_fut$basin)
+scens      <- unique(ACLIM_annual_fut$scen)
+basins    <-  unique(ACLIM_annual_fut$basin)
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -79,42 +80,38 @@ input$facet_colIN  <- "scen"
 # Define server logic required to draw a histogram
 server <- shinyServer(function(input, output, session) {
 
-    load("data/K20P19_CMIP6/allEBS_means/ACLIM_annual_fut_mn.Rdata")
-    plotvars   <- unique(ACLIM_annual_fut$var)
-    gcms       <- unique(ACLIM_annual_fut$GCM)
-    CMIPs      <- unique(ACLIM_annual_fut$CMIP)
-    scens      <-  unique(ACLIM_annual_fut$scen)
-    basins      <-  unique(ACLIM_annual_fut$basin)
-    months <-  seasons <- weeks <-"all"
+    load(file.path(data.path,"K20P19_CMIP6_C/allEBS_means/ACLIM_annual_fut_mn.Rdata"))
+    plotvars <- unique(ACLIM_annual_fut$var)
+    gcms     <- unique(ACLIM_annual_fut$GCM)
+    CMIPs    <- unique(ACLIM_annual_fut$CMIP)
+    scens    <- unique(ACLIM_annual_fut$scen)
+    basins   <- unique(ACLIM_annual_fut$basin)
+    months   <- seasons <- weeks <-"all"
 
     output$resetable_input <- renderUI({
-       
-         times   <-  input$reset_input
-          # load("data/K20P19_CMIP6/allEBS_means/ACLIM_annual_fut_mn.Rdata")
-
-        # months  <-  outdat()$months
-        # weeks   <-  outdat()$weeks
-        # seasons <-  outdat()$seasons
-
+         times  <-  input$reset_input
+         # load("data/K20P19_CMIP6/allEBS_means/ACLIM_annual_fut_mn.Rdata")
+         # months  <-  outdat()$months
+         # weeks   <-  outdat()$weeks
+         # seasons <-  outdat()$seasons
 
         div(id=letters[(times %% length(letters)) + 1],
-            selectInput("plothist","Plot historical runs too?",selected="TRUE",
-                        choices=c(TRUE,FALSE), multiple=F),
-            selectInput("removeyr1","Remove first year of projection ( burn in)",selected="TRUE",
-                choices=c(TRUE,FALSE), multiple=F),
+            selectInput("plothist","Plot historical runs too?",
+                        selected="TRUE",choices=c(TRUE,FALSE), multiple=F),
+            selectInput("removeyr1","Remove first year of projection ( burn in)",
+                        selected="TRUE",choices=c(TRUE,FALSE), multiple=F),
              selectInput("typeIN","ACLIM2 Index Type",selected=c("annual"),
                 choices=c("annual","seasonal" ,"monthly","weekly" , "surveyrep"), multiple=F),
             selectInput("plotvarIN","variable to plot",selected=c("temp_bottom5m"),choices= plotvars, multiple=F),
             selectInput("monthIN","Month",selected=months,choices=months, multiple=T),
             selectInput("weekIN","Week",selected=weeks,choices=weeks, multiple=T),
             selectInput("SeasonIN","Season",selected=seasons,choices=seasons, multiple=T),
-            selectInput("CMIPIN","CMIP",selected=c("K20P19_CMIP6"),choices=c("K20P19_CMIP5","K20P19_CMIP6"), multiple=T),
+            selectInput("CMIPIN","CMIP",selected=c("K20P19_CMIP6_C"),choices=c("K20P19_CMIP6_C","K20P19_CMIP6"), multiple=F), #"K20P19_CMIP5_C","K20P19_CMIP5","H16_CMIP5"
             selectInput("bcIN","bias corrected or raw",selected=c("raw","bias corrected"),choices=c("raw","bias corrected"), multiple=T),
             selectInput("GCMIN","GCM",selected=gcms,choices=gcms, multiple=T),
             selectInput("scenIN","climate scenario",selected=scens,choices=scens, multiple=T),
-            
             sliderInput("jday_rangeIN", label = h3("Julian Day"), min = 0, max = 365, value = c(0, 365)),
-            selectInput("plotbasinIN","basin",selected=basins[2],choices=basins, multiple=F),
+            selectInput("plotbasinIN","basin",selected=basins[2],choices=basins, multiple=T),
             selectInput("facet_rowIN","row",selected=c("bc"),choices=c("bc","basin","scen"), multiple=F),
             selectInput("facet_colIN","col",selected=c("scen"),choices=c("bc","basin","scen"), multiple=F),
             hr()
@@ -123,28 +120,32 @@ server <- shinyServer(function(input, output, session) {
 
 
     outdat <- reactive({
-        
-
-        typeIN     <-  input$typeIN
+        typeIN       <- input$typeIN
         bcIN         <- input$bcIN
         GCMIN        <- input$GCMIN
         scenIN       <- input$scenIN
-        plotvar    <- input$plotvarIN
-        plotbasin  <- input$plotbasinIN
-        facet_row <- input$facet_rowIN
-        facet_col  <- input$facet_colIN
-        jday_rangeIN   <- input$ jday_rangeIN
+        plotvar      <- input$plotvarIN
+        plotbasin    <- input$plotbasinIN
+        facet_row    <- input$facet_rowIN
+        facet_col    <- input$facet_colIN
+        jday_rangeIN <- input$jday_rangeIN
         
-
         for(c in 1:length(input$CMIPIN)){
-            load(paste0("data/",input$CMIPIN[c],"/allEBS_means/ACLIM_",typeIN,"_hind_mn.Rdata"))
-            load(paste0("data/",input$CMIPIN[c],"/allEBS_means/ACLIM_",typeIN,"_hist_mn.Rdata"))
-            load(paste0("data/",input$CMIPIN[c],"/allEBS_means/ACLIM_",typeIN,"_fut_mn.Rdata"))
+            load(file.path(data.path,paste0(input$CMIPIN[c],"/allEBS_means/ACLIM_",typeIN,"_hind_mn.Rdata")))
+            load(file.path(data.path,paste0(input$CMIPIN[c],"/allEBS_means/ACLIM_",typeIN,"_hist_mn.Rdata")))
+            load(file.path(data.path,paste0(input$CMIPIN[c],"/allEBS_means/ACLIM_",typeIN,"_fut_mn.Rdata")))
             
             eval(parse(text = paste0("dhindIN <- ACLIM_",typeIN,"_hind")))
             eval(parse(text = paste0("dhistIN <- ACLIM_",typeIN,"_hist")))
             eval(parse(text = paste0("dfut <- ACLIM_",typeIN,"_fut")))
-            #load(paste0("Data/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_fut_mn.Rdata"))
+            plotvars   <- unique(dfut$var)
+            gcms       <- unique(dfut$GCM)
+            CMIPs      <- unique(dfut$CMIP)
+            scens      <- unique(dfut$scen)
+            basins    <-  unique(dfut$basin)
+            
+            
+            #load(paste0("../Data/out/out/",input$CMIP[c],"/allEBS_means/ACLIM_annual_fut_mn.Rdata"))
             #plotvars   <- unique(ACLIM_annual_hind$var)
             if(typeIN == "monthly"){
               months <- unique(dhind$mo)
@@ -191,7 +192,6 @@ server <- shinyServer(function(input, output, session) {
             hind_bc    <- dhind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, jday,mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)%>%mutate(bc="bias corrected")
             fut_bc     <- dfut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, jday,mnDate,val_biascorrected, sim,gcmcmip,GCM,scen,sim_type ,units)
             fut_bc     <- fut_bc%>%mutate(bc="bias corrected")%>%rename(mn_val = val_biascorrected)
-
             fut_bc     <-rbind(hind_bc,fut_bc)
 
             plotdat          <- rbind(plotdat,fut_bc)

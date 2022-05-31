@@ -75,3 +75,4 @@ Data/in/.DS_Store
 .index.html.icloud
 .Rhistory
 .Rproj.user/shared/notebooks/paths
+R/shiny_aclim/ACLIM2_indices/data/*
