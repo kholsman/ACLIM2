@@ -1,0 +1,63 @@
+---
+title: "Projected Changes in the Bering Sea (CMIP5 via ACLIM)"
+author: K. Holsman and K. Aydin, A. Hermann, K. Kearney, W. Cheng, I. Ortiz (Bering10K)
+output:
+  pdf_document:
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 5
+    highlight: tango
+    keep_tex: yes
+    latex_engine: xelatex
+    toc: TRUE
+  word_document:
+    fig_caption: yes
+    fig_width: 4
+    keep_md: yes
+  header-includes:
+  - \usepackage{inputenc}
+  - \usepackage{unicode-math}
+  - \pagenumbering{gobble}
+  html_document:
+    df_print: kable
+    fig_caption: yes
+    theme: flatly
+    toc: true
+    toc_float: true
+---
+
+```{r startup, eval=TRUE, echo=FALSE, results='hide',message=FALSE}
+ 
+   #source("R/make.R")       # loads packages, data, setup, etc.
+   knitr::opts_chunk$set(echo = T, fig.align="center")
+   thisYr <- format(Sys.time(), "%Y")
+   today  <- format(Sys.time(), "%b %d, %Y")
+   
+     # --------------------------------------
+    # SETUP WORKSPACE
+
+    tmstp  <- format(Sys.time(), "%Y_%m_%d")
+    main   <- getwd()  #"~/GitHub_new/ACLIM2"
+```
+
+```{r startup2, eval=TRUE, echo=TRUE, results='hide',message=FALSE}
+    # loads packages, data, setup, etc.
+    suppressWarnings(source("R/make.R"))
+```
+
+
+
+
+# Methods
+Indices represent bias corrected downscaled projections for the EBS and SEBS, see Hermann et al. 2021 and Kearney et al. 2022 for more information
+
+
+# Figures
+```{r}
+ # plots of SST and BT under future climate change
+ # bias corrected
+
+ 
+
+```
+
