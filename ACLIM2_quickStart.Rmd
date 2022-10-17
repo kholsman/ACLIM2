@@ -604,6 +604,7 @@ For CEATTLE I create a .dat file that is read into the ADMB script. That .dat fi
   
   # 1 -- create .dat filename & path
   # -------------------------------------
+  suppressMessages(source("R/make.R"))
 
   # Define the name for the .dat file
     file.name   <- "ACLIM2_CMIP6_short"
@@ -645,8 +646,8 @@ For CEATTLE I create a .dat file that is read into the ADMB script. That .dat fi
   	# 2 -- rescale (Z-score) data and get variables
   	
     # CMIPS <- c("K20P19_CMIP6","K20P19_CMIP5")
-    # CMIPS <- c("K20P19_CMIP6")
-    CMIPS <- c("K20P19_CMIP6_C")
+    # CMIPS <- c("K20P19_CMIP6_C")
+    CMIPS <- c("K20P19_CMIP6")
     
     	# preview possible variables
   	load(paste0("Data/out/",CMIPS[1],"/allEBS_means/ACLIM_annual_hind_mn.Rdata"))
@@ -657,8 +658,9 @@ For CEATTLE I create a .dat file that is read into the ADMB script. That .dat fi
    
     plotbasin <- "SEBS"
     # switches 
-    lastyr_hind <- 2020
-    hind_yrs    <- 1989:lastyr_hind   # define the years of your estimation model
+    #lastyr_hind <- 2020
+    lastyr_hind <- 2021
+    hind_yrs    <- 1979:lastyr_hind   # define the years of your estimation model
     fut_yrs     <- (lastyr_hind+1):2100   # define the years of your projections
     
     
