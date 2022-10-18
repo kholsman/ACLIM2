@@ -350,14 +350,14 @@ varall
 
 scens   <- c("ssp126","ssp585")
 GCMs    <- c("miroc","gfdl",  "cesm" )
-varlist <- c("temp_bottom5m","fracbelow2","uEast_surface5m")
+varlist <- c("temp_bottom5m","fracbelow2","uEast_surface5m","vNorth_surface5m")
 
 # get the variable you want:
 df <- get_var( typeIN    = "annual", 
-               plotvar   = varlist[1],
+               plotvar   = varlist[3],
                bcIN      = "raw",
-               CMIPIN    = "K20P19_CMIP6", 
-               plothist  = F,  # ignore the hist runs
+               CMIPIN    = "K20P19_CMIP6_C", 
+               plothist  = T,  # ignore the hist runs
                removeyr1 = T)  #"Remove first year of projection ( burn in)")
 
 df$plot+coord_cartesian(ylim = c(0, 7)) 
@@ -468,7 +468,16 @@ GCMs    <- c("miroc","gfdl",  "cesm" )
 varlist <- c("temp_bottom5m","fracbelow2","uEast_surface5m")
 
 # get the variable you want:
+df <- get_var( typeIN    = "annual", 
+                CMIPIN    = "K20P19_CMIP6_C",
+                plotvar   = "uEast_surface5m",
+                bcIN      = "bias corrected",
+                plothist  = F,  # ignore the hist runs
+                removeyr1 = T)  #"Remove first year of projection ( burn in)")
+
 df <- get_var( typeIN    = "monthly", 
+               CMIPIN    = "K20P19_CMIP6_C",
+               monthIN   = 2,
                plotvar   = "temp_bottom5m",
                bcIN      = "bias corrected",
                plothist  = F,  # ignore the hist runs
