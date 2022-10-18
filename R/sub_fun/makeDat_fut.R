@@ -23,17 +23,16 @@ makeDat_fut <- function( datIN      = fut,
   GCM_sims   <- (unique(datIN$GCM_scen))
   num_runs      <- length(GCM_sims)
   
-  cat("#Covars covariate phase for each covs ",file=outfile,append=FALSE,sep="\n")
+  cat("#Covars (covariate phase for each covs - do not alter this line)",file=outfile,append=FALSE,sep="\n")
   cat(paste("#",Scaled_covlist),file=outfile,append=TRUE,sep=" ")
-  cat("#simulations ",file=outfile,append=TRUE,sep="\n")
+  cat("",file=outfile,append=TRUE,sep="\n")
+  cat("#Models ",file=outfile,append=TRUE,sep="\n")
   cat(paste("# ",c("mnhind",GCM_sims)),file=outfile,append=TRUE,sep=" ")
   cat("",file=outfile,append=TRUE,sep="\n")
   if(!is.null(nsppIN)){
     cat("#nspp2 : number of species ",file=outfile,append=TRUE,sep="\n")
     cat(nsppIN,file=outfile,append=TRUE,sep="\n")
   }
-  cat("#nyrs_fut : number years for the projection data ",file=outfile,append=TRUE,sep="\n")
-  cat(nfut_yrs,file=outfile,append=TRUE,sep="\n")
   cat("#num_runs : number of future temperature simulations + mnhind ",file=outfile,append=TRUE,sep="\n")
   cat(num_runs+1,file=outfile,append=TRUE,sep=" ");cat("",file=outfile,append=TRUE,sep="\n")
   cat("#nfut_yrs : number years for the projection data ",file=outfile,append=TRUE,sep="\n")
@@ -52,7 +51,7 @@ makeDat_fut <- function( datIN      = fut,
   for(m in 1:num_runs)
     eval(parse(text=paste("cat('#  | ",GCM_sims[m],"',file=outfile,append=TRUE,sep='\n')",sep="")))
   cat("###########################################################",file=outfile,append=TRUE,sep="\n")
-  cat("#Scaled_covlist ########################################################## ",file=outfile,append=TRUE,sep="\n")
+  cat("#COVAR_START ##############################################DO NOT REMOVE THIS LINE OR REC FIT WONT RUN!",file=outfile,append=TRUE,sep="\n")
   for(c in 1:ncov_fut){
     cat(paste("# ",Scaled_covlist[c],":",longnm[c]),file=outfile,append=TRUE,sep="\n")
     cat(rep(mean(rev((hinddatIN%>%dplyr::filter(var==Scaled_covlist[c])%>%dplyr::select(mn_val_scaled))[[1]])[1:last_nyrs_avg]),nfut_yrs),
@@ -66,7 +65,7 @@ makeDat_fut <- function( datIN      = fut,
       cat("",file=outfile,append=TRUE,sep="\n")
     }
   }
-  cat("#nonScaled_covlist ########################################################## ",file=outfile,append=TRUE,sep="\n")
+  cat("#COVAR_END ##########################################################DO NOT REMOVE THIS LINE OR REC FIT WONT RUN!",file=outfile,append=TRUE,sep="\n")
   for(c in 1:ncov_fut_nonS){
     cat(paste("# ",nonScaled_covlist[c],":",longnm[c]),file=outfile,append=TRUE,sep="\n")
     cat(rep(mean(rev((hinddatIN%>%dplyr::filter(var==nonScaled_covlist[c])%>%dplyr::select(mn_val))[[1]])[1:last_nyrs_avg]),nfut_yrs),

@@ -17,7 +17,7 @@ makeDat_hind <- function(datIN   = hind,
   longnm_nonS<- gsub("\n             "," ",datIN$long_nam[match(nonScaled_covlist,datIN$var)])
   yrs        <- sort(unique(datIN$year))
 
-  cat("#Covars covariate phase for each covs ",file=outfile,append=FALSE,sep="\n")
+  cat("#Covars (covariate phase for each covs - do not alter this line)",file=outfile,append=FALSE,sep="\n")
   cat(paste("#",Scaled_covlist),file=outfile,append=TRUE,sep=" ")
   cat("",file=outfile,append=TRUE,sep="\n")
   if(!is.null(nsppIN)){
@@ -26,14 +26,14 @@ makeDat_hind <- function(datIN   = hind,
   }
   cat("#nTyrs : number years for the zooplankton hindcast data ",file=outfile,append=TRUE,sep="\n")
   cat(length(yrs),file=outfile,append=TRUE,sep="\n")
-  cat("#Tyrs : years for covariates ",file=outfile,append=TRUE,sep="\n")
+  cat("#hind_years : years for covariates ",file=outfile,append=TRUE,sep="\n")
   cat(yrs,file=outfile,append=TRUE,sep=" ");cat("",file=outfile,append=TRUE,sep="\n")
   cat("#ncov : number of covariates ",file=outfile,append=TRUE,sep="\n")
   cat(ncovs,file=outfile,append=TRUE,sep=" ");cat("",file=outfile,append=TRUE,sep="\n")
   # cat("#ncovs_nonS : number of non-scaled covariates",file=outfile,append=TRUE,sep="\n")
   # cat(ncovs_nonS,file=outfile,append=TRUE,sep=" ");cat("",file=outfile,append=TRUE,sep="\n")
   
-  cat("#Scaled_covlist ########################################################## ",file=outfile,append=TRUE,sep="\n")
+  cat("#COVAR_START ##############################################DO NOT REMOVE THIS LINE OR REC FIT WONT RUN!",file=outfile,append=TRUE,sep="\n")
   for(c in 1:ncovs){
     #eval(parse(text=paste("tmp<-dd$",parmlist[p],sep="")))
     cat(paste("# ",Scaled_covlist[c],":",longnm[c]),file=outfile,append=TRUE,sep="\n")
@@ -41,7 +41,7 @@ makeDat_hind <- function(datIN   = hind,
     cat((datIN%>%dplyr::filter(var==Scaled_covlist[c])%>%dplyr::select(mn_val_scaled))[[1]],
         file=outfile,append=TRUE,sep=" ");cat("",file=outfile,append=TRUE,sep="\n")
   }
-  cat("#nonScaled_covlist ########################################################## ",file=outfile,append=TRUE,sep="\n")
+  cat("#COVAR_END ##########################################################DO NOT REMOVE THIS LINE OR REC FIT WONT RUN!",file=outfile,append=TRUE,sep="\n")
   for(c in 1:ncovs_nonS){
     #eval(parse(text=paste("tmp<-dd$",parmlist[p],sep="")))
     cat(paste("# ",nonScaled_covlist[c],":",longnm_nonS[c]),file=outfile,append=TRUE,sep="\n")
