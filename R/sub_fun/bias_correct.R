@@ -25,9 +25,10 @@ bias_correct <- function(
   plotvarIN  = "temp_bottom5m",
   log_adj    = 1e-4,
   outlist    = c("year","units",
-                      "long_name","sim","bcIT","val_biascorrected","jday","mnDate","type","lognorm",
-                      "sim_type","mnVal_hind","sdVal_hind","seVal_hind",
-                      "seVal_hind","mnVal_hist","sdVal_hist","seVal_hist")
+                 "long_name","sim","bcIT","val_biascorrected",
+                 "jday","mnDate","type","lognorm",
+                 "sim_type","mnVal_hind","sdVal_hind",
+                 "seVal_hind","seVal_hind","mnVal_hist","sdVal_hist","seVal_hist")
 ){
   
   # rename the target:
@@ -52,8 +53,8 @@ bias_correct <- function(
   eval(parse( text=paste0("sub <- histIN%>%dplyr::filter(year%in%ref_yrs)%>%
       dplyr::group_by(",paste(group_byIN,collapse=","),")%>%
       dplyr::summarize(mnVal_hist = mean(bcIT,na.rm=T),
-                sdVal_hist = sd(bcIT, na.rm = T),
-                nVal_hist  = length(!is.na(bcIT)),
+                sdVal_hist   = sd(bcIT, na.rm = T),
+                nVal_hist    = length(!is.na(bcIT)),
                 mnLNVal_hist = mean(LNval,na.rm=T),
                 sdLNVal_hist = sd(LNval, na.rm = T),
                 nLNVal_hist  = length(!is.na(LNval)))") ))
@@ -72,7 +73,7 @@ bias_correct <- function(
                 nLNVal_hind  = length(!is.na(LNval)))") ))
   
   sub$seVal_hind <- sub$sdVal_hind/sqrt(sub$nVal_hind)
-  hind_clim <- sub
+  hind_clim      <- sub
   rm(sub)
   
   refout <- merge(hind_clim,hist_clim,by = group_byIN,all.x=T)
@@ -100,9 +101,10 @@ bias_correct <- function(
                     by = group_byIN,all.x=T)
   
   futIN2<- futIN2%>%
-    dplyr::mutate(val_bc1 = mnVal_hind   + ((sdVal_hind/sdVal_hist)*(bcIT-mnVal_hist)),
-           val_bc2 = exp(mnLNVal_hind + ((sdLNVal_hind/sdLNVal_hist)*(LNval-mnLNVal_hist))),
-           val_bc3 = exp((mnLNVal_hind-mnLNVal_hist)+LNval))
+    dplyr::mutate(
+           val_bc1 = mnVal_hind + ((sdVal_hind/sdVal_hist)*(bcIT-mnVal_hist)),
+           val_bc2 = exp(mnLNVal_hind + ((sdLNVal_hind/sdLNVal_hist)*(LNval-mnLNVal_hist)))-log_adj,
+           val_bc3 = exp((mnLNVal_hind-mnLNVal_hist)+LNval)-log_adj )
           
   futIN2         <- merge(futIN2,normlistIN, by = "var", all.x =T)
   futIN2$val_biascorrected <- -9999
@@ -115,6 +117,10 @@ bias_correct <- function(
   hindIN2 <- hindIN2%>%dplyr::select(all_of(tt))%>%dplyr::arrange(var,year)
   tt      <- names(histIN2)[names(histIN2)%in%c(group_byIN,outlist)]
   histIN2 <- histIN2%>%dplyr::select(all_of(tt))%>%dplyr::arrange(var,year)
+  
+  hindIN2$mn_val_raw <- hindIN2$mn_val
+  histIN2$mn_val_raw <- histIN2$mn_val
+  futIN2$mn_val_raw  <- futIN2$mn_val
   
   # rename the target:
   eval(parse(text = paste0("hindIN2 <- hindIN2%>%dplyr::rename(",target,"= bcIT)") ))

@@ -23,8 +23,10 @@
     update_base_data       <- FALSE
     # subfldr                <- "2022_03_07"
     # subfldrR               <- "2022_03_07_Rdata"
-    subfldr                <- "2022_05_16"
-    subfldrR               <- "2022_05_16_Rdata"
+    subfldr                <- "2022_10_17"
+    subfldrR               <- "2022_10_17_Rdata"
+    
+    
 
     load_gis        <-  FALSE  # load mapfiles, note first time through downloading these may take a long time
     update.figs     <-  FALSE  # set to true to re-save figs
@@ -38,15 +40,27 @@
     remote_fl     <- "roms_for_public"
     #main          <- getwd()  #"~/GitHub_new/ACLIM2"
     local_fl      <- file.path("Data/in")
+    
+    
     if(redownload_level3_mox)
       subfldr     <- tmstp
     local_fl      <- file.path("Data/in",  subfldr)
     localfolder   <- file.path(local_fl,remote_fl)
-    data_path     <- file.path(local_fl,remote_fl)
-    Rdata_path    <- file.path(file.path("Data/in",  subfldrR),remote_fl)
-    data_path     <- file.path("/Volumes/LaCie/romsnpz",remote_fl)
-    Rdata_path    <- file.path(file.path("/Volumes/LaCie/romsnpz",  subfldrR),remote_fl)
-    Rdata_path_C    <- file.path(file.path("/Volumes/LaCie/romsnpz",  "2022_05_16_C_Rdata"),remote_fl)
+    # data_path     <- file.path(local_fl,remote_fl)
+    # Rdata_path    <- file.path(file.path("Data/in",  subfldrR),remote_fl)
+    # 
+    if(.Platform$OS.type == "unix") {
+      data_path     <- file.path("/Volumes/LaCie/romsnpz",remote_fl)
+      Rdata_path    <- file.path(file.path("/Volumes/LaCie/romsnpz",  subfldrR),remote_fl)
+      
+    }
+    if(.Platform$OS.type == "windows") {
+      data_path     <- file.path("D:/romsnpz",remote_fl)
+      Rdata_path    <- file.path(file.path("D:/romsnpz",  subfldrR),remote_fl)
+    }
+    
+    
+    #Rdata_path_C    <- file.path(file.path("/Volumes/LaCie/romsnpz",  "2022_05_16_C_Rdata"),remote_fl)
     if(!dir.exists(local_fl))       
       dir.create(local_fl)
     if(!dir.exists(file.path(local_fl,remote_fl)))   
@@ -60,9 +74,9 @@
    
     
     # create a directory for our new indices 
-    if(!dir.exists(Rdata_path))       dir.create(Rdata_path)
+    if(!dir.exists(Rdata_path))     dir.create(Rdata_path)
     if(!dir.exists(mapdata_path))     dir.create(mapdata_path)
-    
+   
     # dataset names:
     #-------------------------------------------
     weekly_flnm     <- "ACLIMregion"

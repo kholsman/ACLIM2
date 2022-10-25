@@ -72,6 +72,7 @@ makeACLIM2_Indices <- function(
     reg_indices_monthly_hind  <- tmp%>%
       dplyr::group_by(var,year,season,mo,units, long_name,basin,sim)%>%
       dplyr::summarize(mn_val  = mean(mn_val, na.rm = T),
+                       sd_val  = sd(mn_val, na.rm = T),
                 mnDate  = mean(mnDate, na.rm = T))%>%
       dplyr::mutate(type = "monthly means",
                     jday = mnDate,
@@ -82,6 +83,7 @@ makeACLIM2_Indices <- function(
     reg_indices_seasonal_hind  <- tmp%>%
       dplyr::group_by(var,year,season,units, long_name,basin,sim)%>%
       dplyr::summarize(mn_val  = mean(mn_val, na.rm = T),
+                       sd_val  = sd(mn_val, na.rm = T),
                 mnDate  = mean(mnDate, na.rm = T))%>%
       dplyr::mutate(type =  "seaonal means",
                     jday = mnDate,
@@ -92,6 +94,7 @@ makeACLIM2_Indices <- function(
     reg_indices_annual_hind <- tmp%>%
       dplyr::group_by(var,year,units, long_name,basin,sim)%>%
       dplyr::summarize(mn_val  = mean(mn_val, na.rm = T),
+                       sd_val  = sd(mn_val, na.rm = T),
                 mnDate  = mean(mnDate, na.rm = T))%>%
       dplyr::mutate(type = "annual means",
                     jday = mnDate,
@@ -151,6 +154,7 @@ makeACLIM2_Indices <- function(
         reg_indices_monthly_hist  <- tmp%>%
           dplyr::group_by(var,year,season,mo,units, long_name,basin,sim)%>%
           dplyr::summarize(mn_val  = mean(mn_val, na.rm = T),
+                           sd_val  = sd(mn_val, na.rm = T),
                     mnDate  = mean(mnDate, na.rm = T))%>%
           dplyr::mutate(type = "monthly means",
                         jday = mnDate,
@@ -161,6 +165,7 @@ makeACLIM2_Indices <- function(
         reg_indices_seasonal_hist  <- tmp%>%
           dplyr::group_by(var,year,season,units, long_name,basin,sim)%>%
           dplyr::summarize(mn_val  = mean(mn_val, na.rm = T),
+                           sd_val  = sd(mn_val, na.rm = T),
                     mnDate  = mean(mnDate, na.rm = T))%>%
           dplyr::mutate(type =  "seaonal means",
                         jday = mnDate,
@@ -171,6 +176,7 @@ makeACLIM2_Indices <- function(
         reg_indices_annual_hist  <- tmp%>%
           dplyr::group_by(var,year,units, long_name,basin,sim)%>%
           dplyr::summarize(mn_val  = mean(mn_val, na.rm = T),
+                           sd_val  = sd(mn_val, na.rm = T),
                     mnDate  = mean(mnDate, na.rm = T))%>%
           dplyr::mutate(type = "annual means",
                         jday = mnDate,
@@ -235,6 +241,7 @@ makeACLIM2_Indices <- function(
           reg_indices_monthly_proj  <- tmp%>%
             dplyr::group_by(var,year,season,mo,units, long_name,basin,sim)%>%
             dplyr::summarize(mn_val  = mean(mn_val, na.rm = T),
+                             sd_val  = sd(mn_val, na.rm = T),
                       mnDate  = mean(mnDate, na.rm = T))%>%
             dplyr::mutate(type = "monthly means",
                           jday = mnDate,
@@ -245,6 +252,7 @@ makeACLIM2_Indices <- function(
           reg_indices_seasonal_proj   <- tmp%>%
             dplyr::group_by(var,year,season,units, long_name,basin,sim)%>%
             dplyr::summarize(mn_val  = mean(mn_val, na.rm = T),
+                             sd_val  = sd(mn_val, na.rm = T),
                       mnDate  = mean(mnDate, na.rm = T))%>%
             dplyr::mutate(type =  "seaonal means",
                           jday = mnDate,
@@ -256,6 +264,7 @@ makeACLIM2_Indices <- function(
             dplyr::group_by(var,year,units, long_name,basin,sim)%>%
             dplyr::summarize(
               mn_val  = mean(mn_val, na.rm = T),
+              sd_val  = sd(mn_val, na.rm = T), 
               mnDate  = mean(mnDate, na.rm = T))%>%
             dplyr::mutate(type = "annual means",
                           jday = mnDate,
@@ -291,11 +300,14 @@ makeACLIM2_Indices <- function(
           # rm(list=c("reg_indices_seasonal_hind","reg_indices_seasonal_hist","reg_indices_seasonal_proj"))
           # gc()
           
+          
           cat("    -- bias correct weekly_adj ... \n")
           weekly_adj <- suppressWarnings(bias_correct( 
             target     = BC_target,
-            hindIN = reg_indices_weekly_hind,
-            histIN = reg_indices_weekly_hist,
+             hindIN = reg_indices_weekly_hind,
+             histIN = reg_indices_weekly_hist,     # this can result in weird values bc of /sd~0
+            # hindIN = reg_indices_monthly_hind,   # use monthly instead nbut need to update vectors to match
+            # histIN = reg_indices_monthly_hist,
             futIN  = reg_indices_weekly_proj,
             ref_yrs    = ref_years,
             group_byIN = c("var","basin","season","mo","wk"),

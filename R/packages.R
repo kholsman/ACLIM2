@@ -35,6 +35,7 @@ lib_list <- c(
     "kableExtra",
     
   # These for making plots:
+    "ggnewscale",
     "RColorBrewer",
     "ggplot2", 
     "mgcv",

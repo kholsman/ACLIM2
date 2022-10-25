@@ -1,6 +1,22 @@
 #' misc functions for ACLIM2
 #' 
 
+LNmean <-function(x,log_adj=1e-4,na.rm=F){
+  df <- data.frame(y =x, x = 0)
+  if(na.rm) df <-na.omit(df)
+  model <-  glm(y+log_adj ~ x,data=df,family = gaussian(link = "log"))
+  mn <- as.numeric(fitted(model)[1])-log_adj
+  
+  return(mn)
+}
+LNsd <-function(x,log_adj=1e-4,na.rm=F){
+  df <- data.frame(y =x, x = 0)
+  model <-  glm(y+log_adj ~ x,data=df,family = gaussian(link = "log"))
+  mn <- as.numeric(fitted(model)[1])-log_adj
+  if(na.rm) df <-na.omit(df)
+  sd <- exp(sqrt(diag(vcov(model)))[1])-log_adj
+  return(sd)
+}
 
 
 #' get_mlt

@@ -135,6 +135,7 @@ Open R() and used 'setwd()' to navigate to the root ACLIM2 folder (.e.g, ~/mydoc
     
     # loads packages, data, setup, etc.
     suppressWarnings(source("R/make.R"))
+    
 ```
 
 ---
@@ -173,6 +174,7 @@ In addition for CMIP6 "historical" runs are available for bias correcting. We wi
 
 For a list of the available simulations for ACLIM enter the following in R():
 ```{R, eval=TRUE, echo=T, results='show',message=FALSE}
+    
     # list of the climate scenarios
     data.frame(sim_list)
 
@@ -183,6 +185,7 @@ For a list of the available simulations for ACLIM enter the following in R():
 For a list of the available variables from the ROMSNPZ:
 
 ```{R, eval=TRUE, echo=T, results='show',message=FALSE}
+    
     # Metadata for variables
     (srvy_var_def[-(1:5),])
 
@@ -202,6 +205,7 @@ The ROMSNPZ team has developed a process to provide standardized post-processed 
 To get more information about each of these level 3 datasets enter this in R:
 
 ```{R, eval=TRUE, echo=T, results='show',message=FALSE}
+    
     # Metadata for Weekly ("ACLIMregion_...") indices
     head(all_info1)
     
@@ -293,15 +297,14 @@ The following code will open an interactive shiny() app for exploring the indice
 
 ```{r, eval=F, include=T,echo=T}
 
-shiny::runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
 
-# alternatively you can extract the data you want using the get_var()function
-
-df <- get_var(typeIN    = "annual", 
-         plotvar = "temp_bottom5m",plothist =F)
-
-df$plot
-head(df$dat)
+  shiny::runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+  # alternatively you can extract the data you want using the get_var()function
+  
+  df <- get_var(typeIN = "annual",plotvar = "temp_bottom5m",plothist = F)
+  
+  df$plot
+  head(df$dat)
 
 
 
@@ -335,68 +338,68 @@ head(df$dat)
 
 ```{r, eval=T, include=T,echo=T, results='hide',message=FALSE}
 
-suppressMessages(source("R/make.R"))
-
-# preview possible variables
+    suppressMessages(source("R/make.R"))
+    # preview possible variables
     
     load(file = "Data/out/weekly_vars_C.Rdata")
     load(file = "Data/out/weekly_vars.Rdata")
     load(file = "Data/out/srvy_vars_C.Rdata")
     load(file = "Data/out/srvy_vars.Rdata")
     
-load(paste0("Data/out/K20P19_CMIP6_C/allEBS_means/ACLIM_annual_hind_mn.Rdata"))
-varall  <- unique(ACLIM_annual_hind$var)
-varall
+    load(paste0("Data/out/K20P19_CMIP6_C/allEBS_means/ACLIM_annual_hind_mn.Rdata"))
+    varall  <- unique(ACLIM_annual_hind$var)
+    varall
+    
+    scens   <- c("ssp126", "ssp585")
+    GCMs    <- c("miroc", "gfdl", "cesm" )
+    varlist <- c("temp_bottom5m", "fracbelow2", "uEast_surface5m", "vNorth_surface5m")
 
-scens   <- c("ssp126","ssp585")
-GCMs    <- c("miroc","gfdl",  "cesm" )
-varlist <- c("temp_bottom5m","fracbelow2","uEast_surface5m","vNorth_surface5m")
+    # get the variable you want:
+    df <- get_var( typeIN    = "annual", 
+                   plotvar   = varlist[3],
+                   bcIN      = "raw",
+                   CMIPIN    = "K20P19_CMIP6_C", 
+                   plothist  = T,  # ignore the hist runs
+                   removeyr1 = T)  # "Remove first year of projection ( burn in)")
+    
+    df$plot+coord_cartesian(ylim = c(0, 7)) 
+    head(df$dat)
+    
+    # 
+    # # get the variable you want:
+    # df <- get_var( typeIN    = "annual", 
+    #                plotvar   = varlist[1],
+    #                bcIN      = "raw",
+    #                CMIPIN    = "K20P19_CMIP6_C", 
+    #                plothist  = F,  # ignore the hist runs
+    #                removeyr1 = T)  #"Remove first year of projection ( burn in)")
+    # 
+    # df$plot+coord_cartesian(ylim = c(0, 7)) 
+    # 
+    # head(df$dat)
+    
+    # 
+    # # get the variable you want:
+    # df <- get_var( typeIN    = "annual", 
+    #                plotvar   = "uEast_surface5m",
+    #                bcIN      = "bias corrected",
+    #                CMIPIN    = "K20P19_CMIP6_C", 
+    #                plothist  = F,  # ignore the hist runs
+    #                removeyr1 = T)  #"Remove first year of projection ( burn in)")
+    # 
+    # df$plot
+    # head(df$dat)
 
-# get the variable you want:
-df <- get_var( typeIN    = "annual", 
-               plotvar   = varlist[3],
-               bcIN      = "raw",
-               CMIPIN    = "K20P19_CMIP6_C", 
-               plothist  = T,  # ignore the hist runs
-               removeyr1 = T)  #"Remove first year of projection ( burn in)")
-
-df$plot+coord_cartesian(ylim = c(0, 7)) 
-head(df$dat)
-# 
-# # get the variable you want:
-# df <- get_var( typeIN    = "annual", 
-#                plotvar   = varlist[1],
-#                bcIN      = "raw",
-#                CMIPIN    = "K20P19_CMIP6_C", 
-#                plothist  = F,  # ignore the hist runs
-#                removeyr1 = T)  #"Remove first year of projection ( burn in)")
-# 
-# df$plot+coord_cartesian(ylim = c(0, 7)) 
-# 
-# head(df$dat)
-
-# 
-# # get the variable you want:
-# df <- get_var( typeIN    = "annual", 
-#                plotvar   = "uEast_surface5m",
-#                bcIN      = "bias corrected",
-#                CMIPIN    = "K20P19_CMIP6_C", 
-#                plothist  = F,  # ignore the hist runs
-#                removeyr1 = T)  #"Remove first year of projection ( burn in)")
-# 
-# df$plot
-# head(df$dat)
-
-# get the variable you want:
-df <- get_var( typeIN    = "annual", 
-               plotvar   = "pH_depthavg",
-               bcIN      = "bias corrected",
-               CMIPIN    = "K20P19_CMIP6_C", 
-               plothist  = F,  # ignore the hist runs
-               removeyr1 = T)  #"Remove first year of projection ( burn in)")
-
-df$plot
-head(df$dat)
+    # get the variable you want:
+    df <- get_var( typeIN    = "annual", 
+                   plotvar   = "pH_depthavg",
+                   bcIN      = "bias corrected",
+                   CMIPIN    = "K20P19_CMIP6_C", 
+                   plothist  = F,  # ignore the hist runs
+                   removeyr1 = T)  # "Remove first year of projection ( burn in)")
+    
+    df$plot
+    head(df$dat)
 
 
 
@@ -416,9 +419,9 @@ df$plot
 head(df$dat)
 
 # concat the hind and fut runs by removing years from projection
-maxDin <- max(as.vector(df$dat%>%dplyr::filter(sim_type=="hind")%>%dplyr::select(mnDate))[[1]])
-
-
+maxDin <- max(as.vector(df$dat%>%
+                          dplyr::filter(sim_type=="hind")%>%
+                          dplyr::select(mnDate))[[1]])
 
 newdat <- stitchTS(dat = df$dat,
                  maxD  = maxDin)
@@ -428,160 +431,173 @@ newdat <- stitchTS(dat = df$dat,
 head(newdat%>%dplyr::filter(GCM_scen==paste0(GCMs[1],"_",scens[1])))
 tail(newdat%>%dplyr::filter(GCM_scen==paste0(GCMs[1],"_",scens[1])))
 
-pp  <- ggplot(newdat)+
-          geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen, linetype = basin),
-                    alpha = 0.6,show.legend = FALSE)+
-          geom_smooth(aes(x=mnDate,y=mn_val,color= GCM_scen,
-                          fill=GCM_scen,linetype = basin),alpha=0.1,
-                      method="loess",formula='y ~ x',span = .5,show.legend=T)+
+pp  <-  ggplot(newdat) +
+        geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen, linetype = basin),
+                    alpha = 0.6,show.legend = FALSE) +
+        geom_smooth(aes(x = mnDate, 
+                        y = mn_val,
+                        color    = GCM_scen,
+                        fill     = GCM_scen,
+                        linetype = basin),
+                    alpha       = 0.1,
+                    method      = "loess",
+                    formula     = 'y ~ x',
+                    span        = .5,
+                    show.legend = T) +
           theme_minimal() + 
-          labs(x="Date",
-                 y=paste(newdat$var[1],"(",newdat$units[1],")"),
+          labs(x = "Date",
+               y = paste(newdat$var[1],"(",newdat$units[1],")"),
                  subtitle = "",
-                 legend = "",
-                 title = paste(newdat$var[1],"(",newdat$basin[1],",",newdat$type[1],")"))+
-        scale_color_discrete()+
+                 legend   = "",
+                 title    = paste(newdat$var[1],"(",newdat$basin[1],",",newdat$type[1],")"))+
+        scale_color_discrete() +
         facet_grid(scen~.)
-# plot it
 pp
+
+
         
 ```
 
 ```{r, fig.width=8, fig.height=6, fig.fullwidth=TRUE, echo =T, eval=T}
-# plot it interactively
-plotly::ggplotly(pp)
+ 
+  # plot it interactively
+  plotly::ggplotly(pp)
+
 ```
 
 ## monthly indices (Andy)
 
 ```{r ewe, eval=T, include=T,echo=T, results='hide',message=FALSE}
 
-suppressMessages(source("R/make.R"))
+  suppressMessages(source("R/make.R"))
+  
+  # preview possible variables
+  load(paste0("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_monthly_hind_mn.Rdata"))
+  varall  <- unique(ACLIM_monthly_hind$var)
+  varall
+  
+  scens   <- c("ssp126","ssp585")
+  GCMs    <- c("miroc","gfdl",  "cesm" )
+  varlist <- c("temp_bottom5m","fracbelow2","uEast_surface5m")
 
-# preview possible variables
-load(paste0("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_monthly_hind_mn.Rdata"))
-varall  <- unique(ACLIM_monthly_hind$var)
-varall
+  # get the variable you want:
+  df <- get_var( typeIN    = "annual", 
+                  CMIPIN    = "K20P19_CMIP6_C",
+                  plotvar   = "uEast_surface5m",
+                  bcIN      = "bias corrected",
+                  plothist  = F,  # ignore the hist runs
+                  removeyr1 = T)  #"Remove first year of projection ( burn in)")
 
-scens   <- c("ssp126","ssp585")
-GCMs    <- c("miroc","gfdl",  "cesm" )
-varlist <- c("temp_bottom5m","fracbelow2","uEast_surface5m")
-
-# get the variable you want:
-df <- get_var( typeIN    = "annual", 
-                CMIPIN    = "K20P19_CMIP6_C",
-                plotvar   = "uEast_surface5m",
-                bcIN      = "bias corrected",
-                plothist  = F,  # ignore the hist runs
-                removeyr1 = T)  #"Remove first year of projection ( burn in)")
-
-df <- get_var( typeIN    = "monthly", 
-               CMIPIN    = "K20P19_CMIP6_C",
-               monthIN   = 2,
-               plotvar   = "temp_bottom5m",
-               bcIN      = "bias corrected",
-               plothist  = F,  # ignore the hist runs
-               removeyr1 = T)  #"Remove first year of projection ( burn in)")
-
-
-head(df$dat)
-df$plot
-
-# concat the hind and fut runs by removing years from projection
-maxDin <- max(as.vector(df$dat%>%dplyr::filter(sim_type=="hind")%>%dplyr::select(mnDate))[[1]])
-
-newdat <- stitchTS(dat = df$dat,
-                 maxD  = maxDin)
-
-# newdat has the full set of data
-# select miroc_ssp126
-head(newdat%>%dplyr::filter(GCM_scen==paste0(GCMs[1],"_",scens[1])))
-tail(newdat%>%dplyr::filter(GCM_scen==paste0(GCMs[1],"_",scens[1])))
+  df <- get_var( typeIN    = "monthly", 
+                 CMIPIN    = "K20P19_CMIP6_C",
+                 monthIN   = 2,
+                 plotvar   = "temp_bottom5m",
+                 bcIN      = "bias corrected",
+                 plothist  = F,  # ignore the hist runs
+                 removeyr1 = T)  #"Remove first year of projection ( burn in)")
 
 
-pp  <- ggplot(newdat)+
-          geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen, linetype = basin),
-                    alpha = 0.6,show.legend = FALSE)+
-          geom_smooth(aes(x=mnDate,y=mn_val,color= GCM_scen,
-                          fill=GCM_scen,linetype = basin),alpha=0.1,
-                      method="loess",formula='y ~ x',span = .5,show.legend=T)+
-          theme_minimal() + 
-          labs(x="Date",
-                 y=paste(newdat$var[1],"(",newdat$units[1],")"),
-                 subtitle = "",
-                 legend = "",
-                 title = paste(newdat$var[1],"(",newdat$basin[1],",",newdat$type[1],")"))+
-        scale_color_discrete()+
-        facet_grid(scen~.)
-# plot it
-pp
+  head(df$dat)
+  df$plot
+  
+  # concat the hind and fut runs by removing years from projection
+  maxDin <- max(as.vector(df$dat%>%dplyr::filter(sim_type=="hind")%>%dplyr::select(mnDate))[[1]])
+  
+  newdat <- stitchTS(dat = df$dat,
+                   maxD  = maxDin)
+  
+  # newdat has the full set of data
+  # select miroc_ssp126
+  head(newdat%>%dplyr::filter(GCM_scen==paste0(GCMs[1],"_",scens[1])))
+  tail(newdat%>%dplyr::filter(GCM_scen==paste0(GCMs[1],"_",scens[1])))
+
+
+  pp  <- ggplot(newdat)+
+            geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen, linetype = basin),
+                      alpha = 0.6,show.legend = FALSE)+
+            geom_smooth(aes(x=mnDate,y=mn_val,color= GCM_scen,
+                            fill=GCM_scen,linetype = basin),alpha=0.1,
+                        method="loess",formula='y ~ x',span = .5,show.legend=T)+
+            theme_minimal() + 
+            labs(x="Date",
+                   y=paste(newdat$var[1],"(",newdat$units[1],")"),
+                   subtitle = "",
+                   legend = "",
+                   title = paste(newdat$var[1],"(",newdat$basin[1],",",newdat$type[1],")"))+
+          scale_color_discrete()+
+          facet_grid(scen~.)
+  pp
         
 ```
 
 ```{r, fig.width=8, fig.height=6, fig.fullwidth=TRUE, echo =T, eval=T}
-# plot it interactively
-plotly::ggplotly(pp)
+  
+  # plot it interactively
+  plotly::ggplotly(pp)
+
 ```
 
 ## weekly indices (Jon)
 
 ```{r sizespec, eval=T, include=T,echo=T, results='hide',message=FALSE}
 
-suppressMessages(source("R/make.R"))
-
-# preview possible variables
-load(paste0("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_weekly_hind_mn.Rdata"))
-varall  <- unique(ACLIM_weekly_hind$var)
-varall
-
-
-scens   <- c("ssp126","ssp585")
-GCMs    <- c("miroc","gfdl",  "cesm" )
-varlist <- c("temp_bottom5m","fracbelow2","uEast_surface5m")
-
-# get the variable you want:
-df <- get_var( typeIN    = "weekly", 
-               plotvar   = "temp_bottom5m",
-               bcIN      = "bias corrected",
-               plothist  = F,  # ignore the hist runs
-               removeyr1 = T)  #"Remove first year of projection ( burn in)")
-
-df$plot
-head(df$dat)
-
-# concat the hind and fut runs by removing years from projection
-maxDin <- max(as.vector(df$dat%>%dplyr::filter(sim_type=="hind")%>%dplyr::select(mnDate))[[1]])
-
-newdat <- stitchTS(dat = df$dat,
-                 maxD  = maxDin)
-
-# newdat has the full set of data
-# select miroc_ssp126
-head(newdat%>%dplyr::filter(GCM_scen==paste0(GCMs[1],"_",scens[1])))
+  suppressMessages(source("R/make.R"))
+  
+  # preview possible variables
+  load(paste0("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_weekly_hind_mn.Rdata"))
+  varall  <- unique(ACLIM_weekly_hind$var)
+  varall
 
 
-pp  <- ggplot(newdat)+
-          geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen, linetype = basin),
-                    alpha = 0.6,show.legend = FALSE)+
-          geom_smooth(aes(x=mnDate,y=mn_val,color= GCM_scen,
-                          fill=GCM_scen,linetype = basin),alpha=0.1,
-                      method="loess",formula='y ~ x',span = .5,show.legend=T)+
-          theme_minimal() + 
-          labs(x="Date",
-                 y=paste(newdat$var[1],"(",newdat$units[1],")"),
-                 subtitle = "",
-                 legend = "",
-                 title = paste(newdat$var[1],"(",newdat$basin[1],",",newdat$type[1],")"))+
-        scale_color_discrete()+
-        facet_grid(scen~.)
-# plot it
-pp
+  scens   <- c("ssp126","ssp585")
+  GCMs    <- c("miroc","gfdl",  "cesm" )
+  varlist <- c("temp_bottom5m","fracbelow2","uEast_surface5m")
+  
+  # get the variable you want:
+  df <- get_var( typeIN    = "weekly", 
+                 plotvar   = "temp_bottom5m",
+                 bcIN      = "bias corrected",
+                 plothist  = F,  # ignore the hist runs
+                 removeyr1 = T)  #"Remove first year of projection ( burn in)")
+  
+  df$plot
+  head(df$dat)
+
+  # concat the hind and fut runs by removing years from projection
+  maxDin <- max(as.vector(df$dat%>%dplyr::filter(sim_type=="hind")%>%dplyr::select(mnDate))[[1]])
+  
+  newdat <- stitchTS(dat = df$dat,
+                   maxD  = maxDin)
+  
+  # newdat has the full set of data
+  # select miroc_ssp126
+  head(newdat%>%dplyr::filter(GCM_scen==paste0(GCMs[1],"_",scens[1])))
+  
+  
+  pp  <- ggplot(newdat)+
+            geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen, linetype = basin),
+                      alpha = 0.6,show.legend = FALSE)+
+            geom_smooth(aes(x=mnDate,y=mn_val,color= GCM_scen,
+                            fill=GCM_scen,linetype = basin),alpha=0.1,
+                        method="loess",formula='y ~ x',span = .5,show.legend=T)+
+            theme_minimal() + 
+            labs(x="Date",
+                   y=paste(newdat$var[1],"(",newdat$units[1],")"),
+                   subtitle = "",
+                   legend = "",
+                   title = paste(newdat$var[1],"(",newdat$basin[1],",",newdat$type[1],")"))+
+          scale_color_discrete()+
+          facet_grid(scen~.)
+  # plot it
+  pp
         
 ```
 
 ```{r, fig.width=8, fig.height=6, fig.fullwidth=TRUE, echo =T, eval=T}
-# plot it interactively
-plotly::ggplotly(pp)
+
+  # plot it interactively
+  plotly::ggplotly(pp)
+
 ```
 
 <!-- ## Salmon index (Ellen) -->
@@ -606,18 +622,29 @@ For CEATTLE I create a .dat file that is read into the ADMB script. That .dat fi
   # -------------------------------------
   suppressMessages(source("R/make.R"))
 
+  
+  # switches 
+    thisYr <- format(Sys.time(), "%Y")
+    today  <- format(Sys.time(), "%b %d, %Y")
+    lastyr_hind <- as.numeric(thisYr)  #2021
+    hind_yrs    <- 1979:lastyr_hind   # define the years of your estimation model
+    fut_yrs     <- (lastyr_hind+1):2100   # define the years of your projections
+    log_adj     <- 1e-4
+    plotbasin   <- "SEBS"  
+  
   # Define the name for the .dat file
     file.name   <- "ACLIM2_CMIP6_short"
     fn          <- paste(file.name,"_bcs.dat",sep="")
     archive_old <- T           # Archive the older version of the .dat file?
+    normlist    <- read.csv(file=file.path(Rdata_path,"../normlist.csv"))
     
     
     outpath    <- "Data/out/ADMB_datfiles"
     if(!dir.exists(outpath)) dir.create(outpath)
     
   # define hind and fut data files
-    fndat_hind <- file.path(outpath,paste("KKHhind_",fn,sep=""))
-  	fndat_fut  <- file.path(outpath,paste("KKHfut_",fn,sep=""))
+    fndat_hind  <- file.path(outpath,paste("KKHhind_",fn,sep=""))
+  	fndat_fut   <- file.path(outpath,paste("KKHfut_",fn,sep=""))
   	fndat_hind2 <- file.path(outpath,paste("hind_",fn,sep=""))
   	fndat_fut2  <- file.path(outpath,paste("fut_",fn,sep=""))
   	
@@ -626,9 +653,9 @@ For CEATTLE I create a .dat file that is read into the ADMB script. That .dat fi
   	if(file.exists(outfile)&archive_old){	
   	    # archive older version
   			archivefl <- paste0(substr(outfile,start=1,stop=nchar(outfile)-4),
-  			                format(Sys.time(), "%Y%m%d"),".dat")
+  			                format(Sys.time(), "%Y%m%d_%H%M%S"),".dat")
   			file.rename(outfile, archivefl)
-  			file.remove(outfile)
+  			#file.remove(outfile)
   	}
   	
   	file.create(outfile)
@@ -636,64 +663,78 @@ For CEATTLE I create a .dat file that is read into the ADMB script. That .dat fi
   	if(file.exists(outfile)&archive_old){	
   	    # archive older version
   			archivefl <- paste0(substr(outfile,start=1,stop=nchar(outfile)-4),
-  			                format(Sys.time(), "%Y%m%d"),".dat")
+  			                format(Sys.time(), "%Y%m%d_%H%M%S"),".dat")
   			file.rename(outfile, archivefl)
-  			file.remove(outfile)
+  			#file.remove(outfile)
   	}
   	
   	file.create(outfile)
 
   	# 2 -- rescale (Z-score) data and get variables
-  	
     # CMIPS <- c("K20P19_CMIP6","K20P19_CMIP5")
     # CMIPS <- c("K20P19_CMIP6_C")
+  	
     CMIPS <- c("K20P19_CMIP6")
     
-    	# preview possible variables
+    # preview possible variables
   	load(paste0("Data/out/",CMIPS[1],"/allEBS_means/ACLIM_annual_hind_mn.Rdata"))
     varall  <- unique(ACLIM_annual_hind$var)
     varall
     
     # get each variable, convert to TS and rbind
-   
-    plotbasin <- "SEBS"
-    # switches 
-    #lastyr_hind <- 2020
-    lastyr_hind <- 2021
-    hind_yrs    <- 1979:lastyr_hind   # define the years of your estimation model
-    fut_yrs     <- (lastyr_hind+1):2100   # define the years of your projections
-    
     
     for(c in 1:length(CMIPS)){
       
       # first for annual mean values:
-      #varlist <- c("largeZoop_integrated","fracbelow2","temp_bottom5m","temp_surface5m")
-      varlist <- c("largeZoop_integrated","fracbelow2",
-                   "temp_bottom5m","temp_surface5m","pH_depthavg")
-      typeIN <- "annual"
-       
-      load(paste0("Data/out/",CMIPS[c],"/allEBS_means/ACLIM_",typeIN,"_hind_mn.Rdata"))
-      load(paste0("Data/out/",CMIPS[c],"/allEBS_means/ACLIM_",typeIN,"_fut_mn.Rdata"))
-      eval(parse(text = paste0("dhind <- ACLIM_",typeIN,"_hind")))
-      eval(parse(text = paste0("dfut  <- ACLIM_",typeIN,"_fut")))
+        varlist <- c("largeZoop_integrated","fracbelow2",
+                     "temp_bottom5m","temp_surface5m","pH_depthavg")
+       # norm_sub <- normlist%>%filter(var%in%varlist)
+        typeIN <- "annual"
+         
+        load(paste0("Data/out/",CMIPS[c],"/allEBS_means/ACLIM_",typeIN,"_hind_mn.Rdata"))
+        load(paste0("Data/out/",CMIPS[c],"/allEBS_means/ACLIM_",typeIN,"_fut_mn.Rdata"))
+        eval(parse(text = paste0("dhind <- ACLIM_",typeIN,"_hind")))
+        eval(parse(text = paste0("dfut  <- ACLIM_",typeIN,"_fut")))
+      # 
+      #  # rescale the data using mean of the hind if norm distributed
+      # dhind$log_mn_val <- log(dhind$mn_val+log_adj)
+      # dfut$log_mn_val  <- log(dfut$mn_val+log_adj)
       
-       # rescale the data using mean of the hind
-       tmphind    <- dhind%>%
+       tmphind    <- suppressWarnings(dhind%>%
          dplyr::filter(var%in%varlist,basin==plotbasin,year%in%hind_yrs)%>%
-         dplyr::select(var,basin,year, jday,mnDate,mn_val, 
+        # dplyr::left_join(norm_sub,by=c("var"="var"))%>%
+         dplyr::select(var,basin,year, jday,mnDate,mn_val, lognorm,
                        mnVal_hind,sdVal_hind, sim,gcmcmip,CMIP,GCM,scen,sim_type ,units,long_name)%>%
          dplyr::mutate(bc = "bias corrected",
                        GCM_scen = paste0(GCM,"_",scen),
-                       mn_val_scaled = (mn_val-mnVal_hind )/sqrt(sdVal_hind))
+                       mn_val_scaled = (mn_val-mnVal_hind )/(sdVal_hind) ) )
+                       # mn_val_scaled = ifelse(lognorm,
+                       #      ((log(mn_val+log_adj)-log(mnVal_hind+log_adj) )
+                       #      /sqrt(log(sdVal_hind+log_adj)) )-log_adj,
+                       #      (mn_val-mnVal_hind )/sqrt(sdVal_hind)  )) )
+      
+                     
+                    # mn_val_scaled = (mn_val-mnVal_hind )/sqrt(sdVal_hind))
+    
        
-       tmpfut    <- dfut%>%
+       tmpfut    <-  suppressWarnings(dfut%>%
          dplyr::filter(var%in%varlist,basin==plotbasin,year%in%fut_yrs)%>%
          dplyr::select(var,basin,year, jday,mnDate,val_biascorrected, 
                        mnVal_hind,sdVal_hind, sim,gcmcmip,CMIP,GCM,scen,sim_type ,units,long_name)%>%
          dplyr::rename(mn_val = val_biascorrected)%>%
          dplyr::mutate(bc = "bias corrected",
                        GCM_scen = paste0(GCM,"_",scen),
-                       mn_val_scaled = (mn_val-mnVal_hind )/sqrt(sdVal_hind))
+                       mn_val_scaled = (mn_val-mnVal_hind )/(sdVal_hind) ) )
+  
+       p_raw <- ggplot(tmphind)+geom_line(aes(x=year,y=mn_val,color=scen),size=.8)+
+         geom_line(data =tmpfut,aes(x=year,y=mn_val,color=scen, linetype = GCM ),size=.8)+
+         facet_wrap(var~.,scales="free_y")+theme_minimal()
+       p_scaled <- ggplot(tmphind)+
+         geom_line(aes(x=year,y=mn_val_scaled,color=scen),size=.8)+
+         geom_line(data =tmpfut,aes(x=year,y=mn_val_scaled,color=scen, linetype = GCM ),size=.8)+
+         facet_wrap(var~.,scales="free_y")+theme_minimal()
+      p_raw
+      p_scaled
       
        
        
@@ -753,8 +794,8 @@ For CEATTLE I create a .dat file that is read into the ADMB script. That .dat fi
          theme_minimal()
       p_scaled
       
-      d_wide <- reshape2::dcast(hind%>%dplyr::filter(year!=2021),year~c(var),value.var = "mn_val")
-      corr   <- cor(d_wide[,-1])
+      d_wide   <- reshape2::dcast(hind%>%dplyr::filter(year!=2021),year~c(var),value.var = "mn_val")
+      corr     <- cor(d_wide[,-1])
       # remove those where cov is high (temp by season and cold pool by season)
       long_dat <- reshape2::melt(corr,variable.name = "variable") %>% 
       as.data.frame() 
@@ -810,35 +851,35 @@ For CEATTLE I create a .dat file that is read into the ADMB script. That .dat fi
 	    
 	    # generic .dat file
 	    covars   <- unique(hind$var)
-	    makeDat_fut( datIN   = fut, 
-	                 hinddatIN  = hind, 
-	                 outfile = fndat_fut,
-	                 nsppIN    = 3,
-	                 last_nyrs_avg   = 10, 
-	                 overlapIN = overlap_fut,  #(nspp,nsim+1,nyrs_fut) 
-	                 overlap_hind=overlap,
+	    makeDat_fut( datIN             = fut, 
+	                 hinddatIN         = hind, 
+	                 outfile           = fndat_fut,
+	                 nsppIN            = 3,
+	                 last_nyrs_avg     = 10, 
+	                 overlapIN         = overlap_fut,  #(nspp,nsim+1,nyrs_fut) 
+	                 overlap_hind      = overlap,
 	                 nonScaled_covlist = c("temp_bottom5m","temp_surface5m"  ),
 	                 Scaled_covlist    = covars)
 	    
 	    ### Here's a generic version that doesn't include nspp and overla[]
 			# generic .dat file
 	    covars   <- unique(hind$var)
-	    makeDat_hind(datIN   = hind, 
-	                 outfile = fndat_hind2,
-	                 nsppIN    = NULL,
-	                 overlapIN = NULL, 
+	    makeDat_hind(datIN             = hind, 
+	                 outfile           = fndat_hind2,
+	                 nsppIN            = NULL,
+	                 overlapIN         = NULL, 
 	                 nonScaled_covlist = c("temp_bottom5m","temp_surface5m"  ),
 	                 Scaled_covlist    = covars)
 	    
 	    # generic .dat file
 	    covars   <- unique(hind$var)
-	    	    makeDat_fut( datIN   = fut, 
-	                 hinddatIN  = hind, 
-	                 outfile = fndat_fut2,
-	                 nsppIN    = NULL,
-	                 last_nyrs_avg   = 10, 
-	                 overlapIN    = NULL,  #(nspp,nsim+1,nyrs_fut) 
-	                 overlap_hind = NULL,
+	    	    makeDat_fut( datIN       = fut, 
+	                 hinddatIN         = hind, 
+	                 outfile           = fndat_fut2,
+	                 nsppIN            = NULL,
+	                 last_nyrs_avg     = 10, 
+	                 overlapIN         = NULL,  #(nspp,nsim+1,nyrs_fut) 
+	                 overlap_hind      = NULL,
 	                 nonScaled_covlist = c("temp_bottom5m","temp_surface5m"  ),
 	                 Scaled_covlist    = covars)
 	    
@@ -856,15 +897,14 @@ The following code shows how the ACLIM2 indices and bias correction was done. Yo
     # SETUP WORKSPACE
     # rm(list=ls())
     # setwd("../ACLIM2")
+    # rm(list=ls()); setwd("D:/GitHub_cloud/ACLIM2")
     # loads packages, data, setup, etc.
+    tmstp       <- "2022_10_17"
     suppressMessages(source("R/make.R"))
-    tmstp      <- "2022_10_17"
-    Rdata_path <- paste0("/Volumes/LaCie/romsnpz/",tmstp,"_Rdata")
-    main   <- getwd()  #"~/GitHub_new/ACLIM2"
-    
-  
-    
-    tmstamp1  <- format(Sys.time(), "%Y%m%d")
+    tmstp       <- "2022_10_17"
+    Rdata_path  <- paste0("../../romsnpz/",tmstp,"_Rdata")
+    main        <- getwd()  #"~/GitHub_new/ACLIM2"
+    tmstamp1    <- format(Sys.time(), "%Y%m%d")
     # tmstamp1  <- "20220428"
     
     update_hind  <- TRUE   # set to true to update hind and hindS; needed annually
@@ -885,45 +925,42 @@ The following code shows how the ACLIM2 indices and bias correction was done. Yo
     #load(file.path(Rdata_path,"../srvy_vars_C.Rdata"))
     load(file.path(Rdata_path,"srvy_vars.Rdata"))
     
-   load(file.path(Rdata_path,"rm_wk_list.Rdata"))
-   load(file.path(Rdata_path,"rm_var_list.Rdata"))
-   load(file.path(Rdata_path,"l3srvy_varlist.Rdata"))
-   load(file.path(Rdata_path,"l3wk_varlist.Rdata"))
-   load(file.path(Rdata_path,"l2_vars.Rdata"))
-   
-    # remove these variables:
-    vl1   <- l3srvy_varlist #srvy_vars[!srvy_vars%in%rm_var_list]
-    #vl1_c <- srvy_vars_C[!srvy_vars_C%in%rm_var_list_C]
+    # load(file.path(Rdata_path,"rm_wk_list.Rdata"))
+    # load(file.path(Rdata_path,"rm_var_list.Rdata"))
+    # 
+    # 
     
+    load(file.path(Rdata_path,"l3srvy_varlist.Rdata"))
+    load(file.path(Rdata_path,"l3wk_varlist.Rdata"))
+    load(file.path(Rdata_path,"l3srvy_varlist_H16.Rdata"))
+    load(file.path(Rdata_path,"l3wk_varlist_H16.Rdata"))
+    
+    load(file.path(Rdata_path,"l2_vars.Rdata"))
+   
+    
+    vl1   <- l3srvy_varlist #srvy_vars[!srvy_vars%in%rm_var_list]
     vl2   <- l3wk_varlist# weekly_vars[!weekly_vars%in%rm_wk_list]
-    #vl2_c <- weekly_vars_C[!weekly_vars_C%in%rm_wk_list_C]
-
-    vl<-unique(c(vl1,vl2))
-    #vl_c<-unique(c(vl1_c,vl2_c))
+    
     # add in largeZoop (gets generated in make_indices_region_new.R)
-    vl <- c(vl,"largeZoop_integrated")
-    #vl_c <- c(vl_c,"largeZoop_integrated")
-
+    vl <- c(unique(c(vl1,vl2)),"largeZoop_integrated")
+   
     # Identify which variables would be normally 
     # distributed (i.e., can have negative values)
-     normvl <- c("shflux","ssflux","temp_bottom5m",
-      "temp_integrated","temp_surface5m",
-      "uEast_bottom5m","uEast_surface5m",
-      "vNorth_bottom5m","vNorth_surface5m")
+     normvl <- c( vl[grep("pH",vl)],
+                  vl[grep("temp",vl)],
+                  vl[grep("vNorth",vl)],
+                  vl[grep("uEast",vl)])
 
     normlist <- data.frame(var = vl, lognorm = TRUE)
     normlist$lognorm[normlist$var%in%normvl] <- FALSE
-    save(normlist,file=file.path(Rdata_path,"normlist.Rdata"))
-    write.csv(normlist,file=file.path(Rdata_path,"normlist.csv"))
-    # 
-    # normlist_c <- data.frame(var = vl_c, lognorm = TRUE)
-    #normlist_c$lognorm[normlist_c$var%in%normvl] <- FALSE
     
-    #save(weekly_vars_C,file = "Data/out/weekly_vars_C.Rdata")
-    save(weekly_vars,file = "Data/out/weekly_vars.Rdata")
-    #save(srvy_vars_C,file = "Data/out/srvy_vars_C.Rdata")
-    save(srvy_vars,file = "Data/out/srvy_vars.Rdata")
-     write.csv(normlist,file=file.path("Data/out/","normlist.csv"))
+    save(normlist,file      = file.path(Rdata_path,"normlist.Rdata"))
+    write.csv(normlist,file = file.path(Rdata_path,"normlist.csv"))
+    save(weekly_vars,file   = "Data/out/weekly_vars.Rdata")
+    save(srvy_vars,file     = "Data/out/srvy_vars.Rdata")
+    write.csv(normlist,file = file.path("Data/out/","normlist.csv"))
+    
+    
     # generate indices and bias corrected projections 
     # This takes approx 30 mins each
     
@@ -940,8 +977,7 @@ The following code shows how the ACLIM2 indices and bias correction was done. Yo
                         Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
                         regnm    = "ACLIMregion",
                         srvynm    = "ACLIMsurveyrep",
-  
-                        normlist_IN = normlist_c,
+                        normlist_IN = normlist,
                         sim_listIN = sim_list[-grep("historical",sim_list)]))
     
      if("CMIP6_K20P19_Indices"%in%ls()){                 
@@ -960,7 +996,8 @@ The following code shows how the ACLIM2 indices and bias correction was done. Yo
         }
       gc()
      }
-    
+    if(10==1){
+      # Depreciated - now using K20P19 hindcast instead
      CMIP6_K20_Indices <- suppressMessages(
                         makeACLIM2_Indices(
                         BC_target = "mn_val",
@@ -987,9 +1024,13 @@ The following code shows how the ACLIM2 indices and bias correction was done. Yo
         }
       gc()
      }
-    
+    }
+     
     # CMIP5 K20P19
-    gcmcmipL2 <- c("B10K-K20P19_CMIP5_MIROC","B10K-K20P19_CMIP5_GFDL","B10K-K20P19_CMIP5_CESM") 
+    gcmcmipL2 <- c("B10K-K20P19_CMIP5_MIROC",
+                   "B10K-K20P19_CMIP5_GFDL",
+                   "B10K-K20P19_CMIP5_CESM")
+    
     CMIP5_K20P19_Indices <- suppressMessages(
                         makeACLIM2_Indices(
                         BC_target = "mn_val",
@@ -1019,38 +1060,11 @@ The following code shows how the ACLIM2 indices and bias correction was done. Yo
         }
         gc()
     }
-    
-    CMIP5_K20P19_Indices <- suppressMessages(
-                        makeACLIM2_Indices(
-                        BC_target = "mn_val",
-                        hind_sim  =  "B10K-K20P19_CORECFS",
-                        histLIST  = rep("B10K-K20P19_CORECFS",3),
-                        gcmcmipLIST = gcmcmipL2,
-                        Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
-                        regnm     = "ACLIMregion",
-                        srvynm    = "ACLIMsurveyrep",
-  
-                        normlist_IN = normlist_c,
-                        sim_listIN = sim_list[-grep("historical",sim_list)]))
-    
-    if("CMIP5_K20P19_Indices"%in%ls()){
-      saved <- FALSE
-      saved <- save_indices(flIN = CMIP5_K20P19_Indices_C, 
-                     subfl = "allEBS_means",
-                     post_txt = "_mn",
-                     CMIP_fdlr ="K20P19_CMIP5_C")
-        
-        fl <- "Data/out/CMIP5_K20P19_Indices_list_C.Rdata"
-        if(file.exists(fl)) file.remove(fl)
-        save(CMIP5_K20P19_Indices_C, file = fl)
-         if(saved){
-        rm(CMIP5_K20P19_Indices_C)}else{
-          stop("Indices not saved!")
-        }
-        gc()
-    }
+
     # CMIP5 H16
-    gcmcmipL2 <- c("B10K-H16_CMIP5_MIROC","B10K-H16_CMIP5_GFDL","B10K-H16_CMIP5_CESM") 
+    gcmcmipL2 <- c("B10K-H16_CMIP5_MIROC",
+                   "B10K-H16_CMIP5_GFDL",
+                   "B10K-H16_CMIP5_CESM") 
     CMIP5_H16_Indices <- suppressMessages(
                         makeACLIM2_Indices(
                         BC_target = "mn_val",

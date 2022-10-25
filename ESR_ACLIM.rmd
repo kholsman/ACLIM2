@@ -3,24 +3,16 @@ title: "ACLIM2 ESR indices"
 author: K. Holsman
 always_allow_html: true
 output:
-  html_document:
-    df_print: paged
-    toc: true
-    toc_depth: 3
-    number_sections: true
-    toc_float:
-      collapsed: false
-      smooth_scroll: true
+  word_document:
+    fig_caption: yes
+    fig_width: 4
+    keep_md: yes
   header-includes:
   - \usepackage{knputenc}
   - \usepackage{unicode-math}
   - \pagenumbering{gobble}
   - \documentclass{article}
   - \usepackage{amsmath}
-  word_document:
-    fig_caption: yes
-    fig_width: 4
-    keep_md: yes
   pdf_document:
     toc: TRUE
     toc_depth: 3
@@ -30,10 +22,16 @@ output:
     highlight: tango
     keep_tex: yes
     latex_engine: xelatex
+  html_document:
+    df_print: paged
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
 #runtime: shiny
 ---
-
-
 
 ```{r startup, eval=TRUE, echo=FALSE, results='hide',message=FALSE}
  
@@ -44,1112 +42,449 @@ output:
  thisYr <- format(Sys.time(), "%Y")
  today  <- format(Sys.time(), "%b %d, %Y")
  
-```
-
-
-## Set up the Workspace
-
-Open R() and used 'setwd()' to navigate to the root ACLIM2 folder (.e.g, ~/mydocuments/ACLIM2)
-
-```{R  start, eval=TRUE, echo=T, results='show',message=FALSE}
-    
-    # set the workspace to your local ACLIM2 folder
-    # e.g., "/Users/kholsman/Documents/GitHub/ACLIM2"
-    # setwd( path.expand("~/Documents/GitHub/ACLIM2") )
-   
-    # --------------------------------------
-    # SETUP WORKSPACE
-    tmstp  <- format(Sys.time(), "%Y_%m_%d")
-    main   <- getwd()  #"~/GitHub_new/ACLIM2"
-    
-    # loads packages, data, setup, etc.
-    suppressWarnings(source("R/make.R"))
-```
-
-
-
-## ROMSNPZ variables
-
-For a list of the available variables from the ROMSNPZ:
-
-```{R, eval=TRUE, echo=T, results='show',message=FALSE}
-    # Metadata for variables
-    (srvy_var_def[-(1:5),])
-
-```
-
-
-```{R, eval=TRUE, echo=T, results='show',message=FALSE}
-    # Metadata for Weekly ("ACLIMregion_...") indices
-    head(all_info1)
-    
-    # Metadata for Weekly ("ACLIMsurveyrep_...") indices
-    head(all_info2)
-    
-```
-
-# Indices & bias correction {.tabset}
-
-```{r, eval=F, include=T,echo=T}
-
-shiny::runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
-
-# alternatively you can extract the data you want using the get_var()function
-
-df <- get_var(typeIN    = "annual", 
-         plotvar = "temp_bottom5m",plothist =F)
-
-df$plot
-head(df$dat)
-
-
-
-```
-
-!["Raw (top row) and bias corrected (bottom row)bottom temperature indices based on survey replicated Level3 outputs for the SEBS"](Figs/biascorrected_temp2.png){width=100%}
-
-<!-- ## Annual indices -->
-
-<!-- ```{r explore, eval=F, include=T,echo=T} -->
-<!--     # -------------------------------------- -->
-<!--     # SETUP WORKSPACE -->
-<!--     main   <- getwd()  #"~/GitHub_new/ACLIM2" -->
-
-<!--     # loads packages, data, setup, etc. -->
-<!--     suppressMessages(source("R/make.R")) -->
-
-
-<!--     # load the Indices: -->
-<!--     fldr <- "Data/out/K20P19_CMIP6/allEBS_means" -->
-<!--     dirlist <-grep ("annual", dir(fldr)) -->
-<!--     for(d in dirlist) -->
-<!--       load(file.path(fldr,d)) -->
-<!--     hnd <- ACLIM_annual_fut_mn -->
-
-<!-- ```` -->
-
-
-<!-- # Special cases {.tabset} -->
-## NRS indices (André)
-
-```{r, eval=T, include=T,echo=T, results='hide',message=FALSE}
-
-suppressMessages(source("R/make.R"))
-
-# preview possible variables
-    
-    load(file = "Data/out/weekly_vars_C.Rdata")
-    load(file = "Data/out/weekly_vars.Rdata")
-    load(file = "Data/out/srvy_vars_C.Rdata")
-    load(file = "Data/out/srvy_vars.Rdata")
-    
-load(paste0("Data/out/K20P19_CMIP5_C/allEBS_means/ACLIM_annual_hind_mn.Rdata"))
-load(paste0("Data/out/K20P19_CMIP5_C/allEBS_means/ACLIM_annual_fut_mn.Rdata"))
-
-load(paste0("Data/out/K20P19_CMIP5_C/allEBS_means/ACLIM_seasonal_hind_mn.Rdata"))
-load(paste0("Data/out/K20P19_CMIP5_C/allEBS_means/ACLIM_seasonal_fut_mn.Rdata"))
-
-ACLIM_seasonal_hind_mn
-
-varall  <- unique(ACLIM_annual_hind$var)
-varall
-
-df <- ACLIM_annual_hind%>%filter(var%in%c("temp_bottom5m",
-                                          "temp_depthavg",
-                                          "pH_bottom5m",
-                                          "pH_depthavg"))%>%
-  cast(basin +year+type+scen~var,mean,value="mn_val")%>%
-  rename(season =type)
-df$scen <- "hind_cmip5"
+source("R/make.R")
+load("ESR_EBS/endofCent.Rdata")
+load("ESR_EBS/midCent.Rdata")
+load("ESR_EBS/endofCent_N.Rdata")
+load("ESR_EBS/midCent_N.Rdata")
  
-df_season <- ACLIM_seasonal_hind%>%
-  filter(var%in%c("temp_bottom5m",
-                  "temp_depthavg",
-                  "pH_bottom5m",
-                  "pH_depthavg")
-         # ,season%in%c(
-         #   "Spring","Summer")
-         )%>%
-  cast(basin +year+season+scen~var,mean,value="mn_val")   
-df_season$scen <- "hind_cmip5"
-  
-dfF <- ACLIM_annual_fut%>%filter(var%in%c("temp_bottom5m",
-                                          "temp_depthavg",
-                                          "pH_bottom5m",
-                                          "pH_depthavg"))%>%
-  cast(basin +year+type+scen~var,mean,value="mn_val")%>%
-  rename(season =type)
- 
-df_seasonF <- ACLIM_seasonal_fut%>%
-  filter(var%in%c("temp_bottom5m",
-                  "temp_depthavg",
-                  "pH_bottom5m",
-                  "pH_depthavg")
-         # ,season%in%c(
-         #   "Spring","Summer")
-         )%>%
-  cast(basin +year+season+scen~var,mean,value="mn_val")   
- 
- df_5 <- rbind(df,dfF,df_season,df_seasonF)
- 
-    
-load(paste0("Data/out/K20P19_CMIP6_C/allEBS_means/ACLIM_annual_hind_mn.Rdata"))
-load(paste0("Data/out/K20P19_CMIP6_C/allEBS_means/ACLIM_annual_fut_mn.Rdata"))
-
-load(paste0("Data/out/K20P19_CMIP6_C/allEBS_means/ACLIM_seasonal_hind_mn.Rdata"))
-load(paste0("Data/out/K20P19_CMIP6_C/allEBS_means/ACLIM_seasonal_fut_mn.Rdata"))
- 
- df <- ACLIM_annual_hind%>%filter(var%in%c("temp_bottom5m",
-                                          "temp_depthavg",
-                                          "pH_bottom5m",
-                                          "pH_depthavg"))%>%
-  cast(basin +year+type+scen~var,mean,value="mn_val")%>%
-  rename(season =type)
- #df$scen <- "hind_cmip6"
- 
-df_season <- ACLIM_seasonal_hind%>%
-  filter(var%in%c("temp_bottom5m",
-                  "temp_depthavg",
-                  "pH_bottom5m",
-                  "pH_depthavg")
-         # ,season%in%c(
-         #   "Spring","Summer")
-         )%>%
-  cast(basin +year+season+scen~var,mean,value="mn_val")   
- #df_season$scen <- "hind_cmip6"
-dfF <- ACLIM_annual_fut%>%filter(var%in%c("temp_bottom5m",
-                                          "temp_depthavg",
-                                          "pH_bottom5m",
-                                          "pH_depthavg"))%>%
-  cast(basin +year+type+scen~var,mean,value="mn_val")%>%
-  rename(season =type)
- 
-df_seasonF <- ACLIM_seasonal_fut%>%
-  filter(var%in%c("temp_bottom5m",
-                  "temp_depthavg",
-                  "pH_bottom5m",
-                  "pH_depthavg")
-         # ,season%in%c(
-         #   "Spring","Summer")
-         )%>%
-  cast(basin +year+season+scen~var,mean,value="mn_val")   
- 
- df_6 <- rbind(df,dfF,df_season,df_seasonF)
- df <-rbind(df_5,df_6)
- df$season<-factor(df$season,levels=c("annual means","Winter","Spring","Summer","Fall"))
-
-ggplot(data = sub )+
-  geom_line(aes(x=year,y= mn_val))+
-  facet_wrap(basin~var)+theme_minimal()
-# swinny et al
-# ambient ph = 7.99; pH 7.8,, ambient temperature, ambientþ2C, andambient þ4C, 
-# ) red king crab
-# survival, growth, and morphology, we conducted a long-term, fully
-# crossed experiment with two pHs and three temperatures: ambient
-# pH (7.99), pH 7.8, ambient temperature, ambientþ2C, and
-# ambient þ4C, for a total of 6 treatments. A pH treatment lower
-# than pH 7.8 was not included in this study because in a previous
-# study 100% mortality occurred within 95 d for young-of-the-year
-# red king crab exposed to pH 7.5 waters (Long et al., 2013b).
-
-ggplot(data = df )+
-  geom_hline(yintercept = 7.8, linetype="dashed",color="gray",size=1)+
-  geom_point(aes(x=temp_depthavg,y= pH_depthavg, color=year), size=2)+
-    geom_text(aes(x=temp_depthavg,y= pH_depthavg, color=year,label=year ), size=3, vjust = 1,hjust = -.5)+
-  theme_minimal()+scale_color_viridis_c(end=0,begin=.9)+facet_grid(basin~season)
-
-ggplot(data = df )+
-  geom_hline(yintercept = c(7.8), linetype=("dashed"),color="gray",size=1)+
-  geom_hline(yintercept = c(7.5), linetype=("solid"),color="gray",size=1)+
-  geom_point(aes(x=year,y= pH_bottom5m, color=scen), size=2,alpha=.5)+
-  geom_smooth(aes(x=year,y= pH_bottom5m, color=scen),fill=NA,method = loess,size=1.5)+
-  theme_minimal()+scale_color_viridis_d(end=0,begin=.9)+
-  #scale_fill_viridis_d(end=0,begin=.9)+
-  facet_grid(basin~season)
-
-ggplot(data = df )+
-   geom_point(aes(x=year,y= temp_bottom5m, color=scen), size=2,alpha=.5)+
-  geom_smooth(aes(x=year,y= temp_bottom5m, color=scen),fill=NA,method = loess,size=1.5)+
-  theme_minimal()+scale_color_viridis_d(end=0,begin=.9)+
-  #scale_fill_viridis_d(end=0,begin=.9)+
-  facet_grid(basin~season)
-
 ```
 
-```{r}
-library("cluster")
-library("factoextra")
-library("magrittr")
-
-
-
-df2 <- df_6 %>%
-  filter(season=="Summer",scen%in%c("hind","ssp585"), basin =="NEBS",year>2010,year<2060)%>%
-  mutate(id = factor(paste(year, scen),levels=paste(year,scen)))
-  #mutate(id = factor(paste(year, scen,basin),levels=paste(year,scen,basin)))
-rownames(df2)<-df2$id
-df3<-data.frame(na.omit(df2[,5:8]))
-df3<-data.frame(na.omit(df2[,c(5,7)]))
-
-
-# Compute hierarchical clustering
-res.hc <- df3 %>%
-  scale() %>%                    # Scale the data
-  dist(method = "euclidean") %>% # Compute dissimilarity matrix
-  hclust(method = "ward.D2")     # Compute hierachical clustering
-
-# Visualize using factoextra
-# Cut in 4 groups and color by groups
-p <- fviz_dend(res.hc, k = 4, # Cut in four groups
-          cex = 0.5, # label size
-          k_colors = c("#2E9FDF", "#00AFBB", "#E7B800", "#FC4E07"),
-          color_labels_by_k = TRUE, # color labels by groups
-          rect = TRUE # Add rectangle around groups
-          )
-dpi = 350
-w <-7
-h =5
-jpeg(filename = "Figs/cluster_NEBS.jpg",width = w, height = h, res=dpi,units="in")
-p
-dev.off()
-
-#########################################
-
-
-res.dist <- get_dist(df3, stand = TRUE, method = "pearson")
-
-fviz_dist(res.dist,  show_labels = TRUE,
-   gradient = list(low = "#00AFBB", mid = "white", high = "#FC4E07"))
-
-
-set.seed(123)
-km.res <- kmeans(df3, 3, nstart = 25)
-# Visualize
-library("factoextra")
-fviz_cluster(km.res, data = df3,
-             ellipse.type = "convex",
-             palette = "jco",
-             ggtheme = theme_minimal())
-
-
-
-set.seed(123)
-# Enhanced hierarchical clustering, cut in 3 groups
-res.hc <- df3%>%
-  scale() %>%
-  eclust("hclust", k = 3, graph = FALSE)
-
-# Visualize with factoextra
-fviz_dend(res.hc, palette = "jco",
-          rect = TRUE, show_labels = FALSE)
-
-
-library(dendextend)
-library(circlize)
-# Distance matrix
-d <- dist(df3)
-
-# Hierarchical clustering dendrogram
-hc <- as.dendrogram(hclust(d))
-
-# Circular dendrogram
-circlize_dendrogram(hc,
-                    labels_track_height = NA,
-                    dend_track_height = 0.5,
-                    facing = "inside")
-
-
-```
-
-
-
-```{r}
-
-ggplot(data = df)+
-  geom_point(aes(x=year,y= temp_bottom5m, color=scen), size=2,alpha=.5)+
-   # geom_text(aes(x=year,y= pH_depthavg, color=year,label=year ), size=3, vjust = 1,hjust = -.5)+
-  geom_smooth(aes(x=year,y= temp_bottom5m, color=scen),fill=NA,method = loess,size=1.5)+
-  theme_minimal()+scale_color_viridis_d(end=0,begin=.9)+
-  #scale_fill_viridis_d(end=0,begin=.9)+
-  facet_grid(basin~season)
-
-
-
-# get the variable you want:
-df <- get_var( typeIN    = "annual", 
-               plotvar   = varlist[3],
-               bcIN      = "raw",
-               CMIPIN    = "K20P19_CMIP6_C", 
-               plothist  = T,  # ignore the hist runs
-               removeyr1 = T)  #"Remove first year of projection ( burn in)")
-
-df$plot+coord_cartesian(ylim = c(0, 7)) 
-head(df$dat)
-# 
-# # get the variable you want:
-# df <- get_var( typeIN    = "annual", 
-#                plotvar   = varlist[1],
-#                bcIN      = "raw",
-#                CMIPIN    = "K20P19_CMIP6_C", 
-#                plothist  = F,  # ignore the hist runs
-#                removeyr1 = T)  #"Remove first year of projection ( burn in)")
-# 
-# df$plot+coord_cartesian(ylim = c(0, 7)) 
-# 
-# head(df$dat)
-
-# 
-# # get the variable you want:
-# df <- get_var( typeIN    = "annual", 
-#                plotvar   = "uEast_surface5m",
-#                bcIN      = "bias corrected",
-#                CMIPIN    = "K20P19_CMIP6_C", 
-#                plothist  = F,  # ignore the hist runs
-#                removeyr1 = T)  #"Remove first year of projection ( burn in)")
-# 
-# df$plot
-# head(df$dat)
-
-# get the variable you want:
-df <- get_var( typeIN    = "annual", 
-               plotvar   = "pH_depthavg",
-               bcIN      = "bias corrected",
-               CMIPIN    = "K20P19_CMIP6_C", 
-               plothist  = F,  # ignore the hist runs
-               removeyr1 = T)  #"Remove first year of projection ( burn in)")
-
-df$plot
-head(df$dat)
-
-
-
-```
-
-```{r, eval=T, include=T,echo=T, results='show',message=FALSE}
-
-# get the variable you want:
-df <- get_var( typeIN    = "annual", 
-               plotvar   = "pH_depthavg",
-               bcIN      = "bias corrected",
-               CMIPIN    = "K20P19_CMIP6_C", 
-               plothist  = F,  # ignore the hist runs
-               removeyr1 = T)  #"Remove first year of projection ( burn in)")
-
-df$plot
-head(df$dat)
-
-# concat the hind and fut runs by removing years from projection
-maxDin <- max(as.vector(df$dat%>%dplyr::filter(sim_type=="hind")%>%dplyr::select(mnDate))[[1]])
-
-
-
-newdat <- stitchTS(dat = df$dat,
-                 maxD  = maxDin)
-
-# newdat has the full set of data
-# select miroc_ssp126
-head(newdat%>%dplyr::filter(GCM_scen==paste0(GCMs[1],"_",scens[1])))
-tail(newdat%>%dplyr::filter(GCM_scen==paste0(GCMs[1],"_",scens[1])))
-
-pp  <- ggplot(newdat)+
-          geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen, linetype = basin),
-                    alpha = 0.6,show.legend = FALSE)+
-          geom_smooth(aes(x=mnDate,y=mn_val,color= GCM_scen,
-                          fill=GCM_scen,linetype = basin),alpha=0.1,
-                      method="loess",formula='y ~ x',span = .5,show.legend=T)+
-          theme_minimal() + 
-          labs(x="Date",
-                 y=paste(newdat$var[1],"(",newdat$units[1],")"),
-                 subtitle = "",
-                 legend = "",
-                 title = paste(newdat$var[1],"(",newdat$basin[1],",",newdat$type[1],")"))+
-        scale_color_discrete()+
-        facet_grid(scen~.)
-# plot it
-pp
-        
-```
-
-```{r, fig.width=8, fig.height=6, fig.fullwidth=TRUE, echo =T, eval=T}
-# plot it interactively
-plotly::ggplotly(pp)
-```
-
-## monthly indices (Andy)
-
-```{r ewe, eval=T, include=T,echo=T, results='hide',message=FALSE}
-
-suppressMessages(source("R/make.R"))
-
-# preview possible variables
-load(paste0("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_monthly_hind_mn.Rdata"))
-varall  <- unique(ACLIM_monthly_hind$var)
-varall
-
-scens   <- c("ssp126","ssp585")
-GCMs    <- c("miroc","gfdl",  "cesm" )
-varlist <- c("temp_bottom5m","fracbelow2","uEast_surface5m")
-
-# get the variable you want:
-df <- get_var( typeIN    = "annual", 
-                CMIPIN    = "K20P19_CMIP6_C",
-                plotvar   = "uEast_surface5m",
-                bcIN      = "bias corrected",
-                plothist  = F,  # ignore the hist runs
-                removeyr1 = T)  #"Remove first year of projection ( burn in)")
-
-df <- get_var( typeIN    = "monthly", 
-               CMIPIN    = "K20P19_CMIP6_C",
-               monthIN   = 2,
-               plotvar   = "temp_bottom5m",
-               bcIN      = "bias corrected",
-               plothist  = F,  # ignore the hist runs
-               removeyr1 = T)  #"Remove first year of projection ( burn in)")
-
-
-head(df$dat)
-df$plot
-
-# concat the hind and fut runs by removing years from projection
-maxDin <- max(as.vector(df$dat%>%dplyr::filter(sim_type=="hind")%>%dplyr::select(mnDate))[[1]])
-
-newdat <- stitchTS(dat = df$dat,
-                 maxD  = maxDin)
-
-# newdat has the full set of data
-# select miroc_ssp126
-head(newdat%>%dplyr::filter(GCM_scen==paste0(GCMs[1],"_",scens[1])))
-tail(newdat%>%dplyr::filter(GCM_scen==paste0(GCMs[1],"_",scens[1])))
-
-
-pp  <- ggplot(newdat)+
-          geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen, linetype = basin),
-                    alpha = 0.6,show.legend = FALSE)+
-          geom_smooth(aes(x=mnDate,y=mn_val,color= GCM_scen,
-                          fill=GCM_scen,linetype = basin),alpha=0.1,
-                      method="loess",formula='y ~ x',span = .5,show.legend=T)+
-          theme_minimal() + 
-          labs(x="Date",
-                 y=paste(newdat$var[1],"(",newdat$units[1],")"),
-                 subtitle = "",
-                 legend = "",
-                 title = paste(newdat$var[1],"(",newdat$basin[1],",",newdat$type[1],")"))+
-        scale_color_discrete()+
-        facet_grid(scen~.)
-# plot it
-pp
-        
-```
-
-```{r, fig.width=8, fig.height=6, fig.fullwidth=TRUE, echo =T, eval=T}
-# plot it interactively
-plotly::ggplotly(pp)
-```
-
-## weekly indices (Jon)
-
-```{r sizespec, eval=T, include=T,echo=T, results='hide',message=FALSE}
-
-suppressMessages(source("R/make.R"))
-
-# preview possible variables
-load(paste0("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_weekly_hind_mn.Rdata"))
-varall  <- unique(ACLIM_weekly_hind$var)
-varall
-
-
-scens   <- c("ssp126","ssp585")
-GCMs    <- c("miroc","gfdl",  "cesm" )
-varlist <- c("temp_bottom5m","fracbelow2","uEast_surface5m")
-
-# get the variable you want:
-df <- get_var( typeIN    = "weekly", 
-               plotvar   = "temp_bottom5m",
-               bcIN      = "bias corrected",
-               plothist  = F,  # ignore the hist runs
-               removeyr1 = T)  #"Remove first year of projection ( burn in)")
-
-df$plot
-head(df$dat)
-
-# concat the hind and fut runs by removing years from projection
-maxDin <- max(as.vector(df$dat%>%dplyr::filter(sim_type=="hind")%>%dplyr::select(mnDate))[[1]])
-
-newdat <- stitchTS(dat = df$dat,
-                 maxD  = maxDin)
-
-# newdat has the full set of data
-# select miroc_ssp126
-head(newdat%>%dplyr::filter(GCM_scen==paste0(GCMs[1],"_",scens[1])))
-
-
-pp  <- ggplot(newdat)+
-          geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen, linetype = basin),
-                    alpha = 0.6,show.legend = FALSE)+
-          geom_smooth(aes(x=mnDate,y=mn_val,color= GCM_scen,
-                          fill=GCM_scen,linetype = basin),alpha=0.1,
-                      method="loess",formula='y ~ x',span = .5,show.legend=T)+
-          theme_minimal() + 
-          labs(x="Date",
-                 y=paste(newdat$var[1],"(",newdat$units[1],")"),
-                 subtitle = "",
-                 legend = "",
-                 title = paste(newdat$var[1],"(",newdat$basin[1],",",newdat$type[1],")"))+
-        scale_color_discrete()+
-        facet_grid(scen~.)
-# plot it
-pp
-        
-```
-
-```{r, fig.width=8, fig.height=6, fig.fullwidth=TRUE, echo =T, eval=T}
-# plot it interactively
-plotly::ggplotly(pp)
-```
-
-<!-- ## Salmon index (Ellen) -->
-
-<!-- ## NFS index (Jeremy ) -->
-
----
-
-# Output to .dat file (ADMB/ TMB users)
-
-For CEATTLE I create a .dat file that is read into the ADMB script. That .dat file includes the bias corrected values (e.g., bottom temperature in deg C) used for the bioenergetics and temperature-dependent growth functions as well as Z-score (scaled) values used as covariates on the recruitment function. The section below will step through that .dat file creation for a subset of variables as well as demo chunks of ADMB code for reading that into a ADMB based model.
-
-## Use R to make .dat file
-```{r makedat, eval=F, include=T,echo=T}
-  
-  # 1 -- create .dat filename & path
-  # 2 -- rescale (Z-score) data and get variables
-  # 3 -- write data to hind .dat file
-  # 3 -- write data to fut  .dat file
-  
-  # 1 -- create .dat filename & path
-  # -------------------------------------
-
-  # Define the name for the .dat file
-    file.name   <- "ACLIM2_CMIP6_short"
-    fn          <- paste(file.name,"_bcs.dat",sep="")
-    archive_old <- T           # Archive the older version of the .dat file?
+```{r echo=FALSE, eval=FALSE, include = FALSE}
+
+    rm(list=ls())
+    # load data, packages, and functions
+    # ------------------------------------
+    source("R/make.R")
+
+    #---------------------------------------------------
+    # ---->  !!! MANUALLY UPDATE THIS SECTION !!! <-----
+  	#---------------------------------------------------
+    # use this to get vals for the table for current_yr+1 and current_yr +2
+    thisYr <- as.numeric(format(Sys.time(), "%Y"))
+    today  <- format(Sys.time(), "%b %d, %Y")
+    
+    # setwd("D:/GitHub_cloud/ACLIM2")
     
     
-    outpath    <- "Data/out/ADMB_datfiles"
-    if(!dir.exists(outpath)) dir.create(outpath)
+    cat("Rdata_path : ", Rdata_path,"\n") 
     
-  # define hind and fut data files
-    fndat_hind <- file.path(outpath,paste("KKHhind_",fn,sep=""))
-  	fndat_fut  <- file.path(outpath,paste("KKHfut_",fn,sep=""))
-  	fndat_hind2 <- file.path(outpath,paste("hind_",fn,sep=""))
-  	fndat_fut2  <- file.path(outpath,paste("fut_",fn,sep=""))
-  	
-	# create and archive .dat files
-	  outfile    <- fndat_fut
-  	if(file.exists(outfile)&archive_old){	
-  	    # archive older version
-  			archivefl <- paste0(substr(outfile,start=1,stop=nchar(outfile)-4),
-  			                format(Sys.time(), "%Y%m%d"),".dat")
-  			file.rename(outfile, archivefl)
-  			file.remove(outfile)
-  	}
-  	
-  	file.create(outfile)
-  	outfile  <- fndat_hind
-  	if(file.exists(outfile)&archive_old){	
-  	    # archive older version
-  			archivefl <- paste0(substr(outfile,start=1,stop=nchar(outfile)-4),
-  			                format(Sys.time(), "%Y%m%d"),".dat")
-  			file.rename(outfile, archivefl)
-  			file.remove(outfile)
-  	}
-  	
-  	file.create(outfile)
+    hind_yearsIN    <- 1979:thisYr
+    proj_yearsIN    <- (thisYr+1):2100
 
-  	# 2 -- rescale (Z-score) data and get variables
-  	
-    # CMIPS <- c("K20P19_CMIP6","K20P19_CMIP5")
-    # CMIPS <- c("K20P19_CMIP6")
-    CMIPS <- c("K20P19_CMIP6_C")
+    yrs             <- hind_yearsIN
+    plot_vars      <- c("fracbelow2",
+                        "fracbelow0",
+                        "temp_bottom5m",
+                        "temp_surface5m",
+                        "oxygen_bottom5m",
+                        "pH_bottom5m",
+                        "pH_surface5m")
     
-    	# preview possible variables
-  	load(paste0("Data/out/",CMIPS[1],"/allEBS_means/ACLIM_annual_hind_mn.Rdata"))
-    varall  <- unique(ACLIM_annual_hind$var)
-    varall
+    # set up directories
+    # proj_dir  <-  path.expand("~/Documents/GitHub/CEATTLE_projects")
+    # proj      <- "2021_Multispp_assessment"
+    # DIR_main <-  path.expand("~/Documents/GitHub/CEATTLE")
+    # setwd(DIR_main)
     
-    # get each variable, convert to TS and rbind
-   
-    plotbasin <- "SEBS"
-    # switches 
-    lastyr_hind <- 2020
-    hind_yrs    <- 1989:lastyr_hind   # define the years of your estimation model
-    fut_yrs     <- (lastyr_hind+1):2100   # define the years of your projections
+    fl <- paste0(reg_txt,dir(Rdata_path)[11],".Rdata")
     
+    # load(file.path(Rdata_path,dir(Rdata_path)[11],fl))
+    # dat       <- ACLIMregion%>%filter(var%in%plot_vars)
+    # load("Data/out/H16_CMIP5/allEBS_means/ACLIM_weekly_fut_mn.Rdata")
+    # ACLIM_weekly_futCMIP5H16 <- ACLIM_weekly_fut
+    # ACLIM_weekly_futCMIP5H16$GCM <- gsub("MIROC","miroc_h16",ACLIM_weekly_futCMIP5H16$GCM)
+    # ACLIM_weekly_futCMIP5H16$GCM <- gsub("CESM","cesm_h16",  ACLIM_weekly_futCMIP5H16$GCM)
+    # ACLIM_weekly_futCMIP5H16$GCM <- gsub("GFDL","gfdl_h16",  ACLIM_weekly_futCMIP5H16$GCM)
     
-    for(c in 1:length(CMIPS)){
-      
-      # first for annual mean values:
-      #varlist <- c("largeZoop_integrated","fracbelow2","temp_bottom5m","temp_surface5m")
-      varlist <- c("largeZoop_integrated","fracbelow2",
-                   "temp_bottom5m","temp_surface5m","pH_depthavg")
-      typeIN <- "annual"
-       
-      load(paste0("Data/out/",CMIPS[c],"/allEBS_means/ACLIM_",typeIN,"_hind_mn.Rdata"))
-      load(paste0("Data/out/",CMIPS[c],"/allEBS_means/ACLIM_",typeIN,"_fut_mn.Rdata"))
-      eval(parse(text = paste0("dhind <- ACLIM_",typeIN,"_hind")))
-      eval(parse(text = paste0("dfut  <- ACLIM_",typeIN,"_fut")))
-      
-       # rescale the data using mean of the hind
-       tmphind    <- dhind%>%
-         dplyr::filter(var%in%varlist,basin==plotbasin,year%in%hind_yrs)%>%
-         dplyr::select(var,basin,year, jday,mnDate,mn_val, 
-                       mnVal_hind,sdVal_hind, sim,gcmcmip,CMIP,GCM,scen,sim_type ,units,long_name)%>%
-         dplyr::mutate(bc = "bias corrected",
-                       GCM_scen = paste0(GCM,"_",scen),
-                       mn_val_scaled = (mn_val-mnVal_hind )/sqrt(sdVal_hind))
-       
-       tmpfut    <- dfut%>%
-         dplyr::filter(var%in%varlist,basin==plotbasin,year%in%fut_yrs)%>%
-         dplyr::select(var,basin,year, jday,mnDate,val_biascorrected, 
-                       mnVal_hind,sdVal_hind, sim,gcmcmip,CMIP,GCM,scen,sim_type ,units,long_name)%>%
-         dplyr::rename(mn_val = val_biascorrected)%>%
-         dplyr::mutate(bc = "bias corrected",
-                       GCM_scen = paste0(GCM,"_",scen),
-                       mn_val_scaled = (mn_val-mnVal_hind )/sqrt(sdVal_hind))
-      
-       
-       
-      # now for seasonal mean values:
-      typeIN  <- "seasonal"
-      varlist <- c("largeZoop_integrated")
-
-      seasonsIN <- unique(seasons$season)
-      load(paste0("Data/out/",CMIPS[c],"/allEBS_means/ACLIM_",typeIN,"_hind_mn.Rdata"))
-      load(paste0("Data/out/",CMIPS[c],"/allEBS_means/ACLIM_",typeIN,"_fut_mn.Rdata"))
-      eval(parse(text = paste0("dhind <- ACLIM_",typeIN,"_hind")))
-      eval(parse(text = paste0("dfut  <- ACLIM_",typeIN,"_fut")))
-      
-      
-       # rescale the data using mean of the hind
-       tmphind2    <- dhind%>%
-         dplyr::filter(var%in%varlist,basin==plotbasin,year%in%hind_yrs,season%in%seasonsIN)%>%
-          dplyr::mutate(var = paste0(var,"_",season))%>%
-         dplyr::select(var,basin,year,jday,mnDate,mn_val, 
-                       mnVal_hind,sdVal_hind, sim,gcmcmip,CMIP,GCM,scen,sim_type ,units,long_name)%>%
-         dplyr::mutate(bc = "bias corrected",
-                       GCM_scen = paste0(GCM,"_",scen),
-                       mn_val_scaled = (mn_val-mnVal_hind )/sqrt(sdVal_hind))
-       
-       tmpfut2    <- dfut%>%
-         dplyr::filter(var%in%varlist,basin==plotbasin,year%in%fut_yrs,season%in%seasonsIN)%>%
-         dplyr::mutate(var = paste0(var,"_",season))%>%
-         dplyr::select(var,basin,year, jday,mnDate,val_biascorrected, 
-                       mnVal_hind,sdVal_hind, sim,gcmcmip,CMIP,GCM,scen,sim_type ,units,long_name)%>%
-         dplyr::rename(mn_val = val_biascorrected)%>%
-         dplyr::mutate(bc = "bias corrected",
-                       GCM_scen = paste0(GCM,"_",scen),
-                       mn_val_scaled = (mn_val-mnVal_hind )/sqrt(sdVal_hind))
-       if(c ==1){
-          hind  <- rbind(tmphind,tmphind2)
-          fut   <- rbind(tmpfut,tmpfut2)
-       }else{
-          hind  <- rbind(hind,tmphind,tmphind2)
-          fut   <- rbind(fut,tmpfut,tmpfut2)
-       }
-       
-    }
+    # Load weekly data:
+    # ----------------------------------------------
+    load("Data/out/K20P19_CMIP5/allEBS_means/ACLIM_weekly_fut_mn.Rdata")
+      ACLIM_weekly_futCMIP5 <- ACLIM_weekly_fut
+    load("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_weekly_fut_mn.Rdata")
+    load("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_weekly_hind_mn.Rdata")
+    ACLIM_weekly_futCMIP6 <- ACLIM_weekly_fut
+    ACLIM_weekly_futCMIP5$GCM <- gsub("MIROC","miroc",ACLIM_weekly_futCMIP5$GCM)
+    ACLIM_weekly_futCMIP5$GCM <- gsub("CESM","cesm",  ACLIM_weekly_futCMIP5$GCM)
+    ACLIM_weekly_futCMIP5$GCM <- gsub("GFDL","gfdl",  ACLIM_weekly_futCMIP5$GCM)
+    ACLIM_weekly_fut    <- rbind(ACLIM_weekly_futCMIP6,ACLIM_weekly_futCMIP5)
     
-      # plot the data
-       p <- ggplot(hind)+
-         geom_line(aes(x=mnDate,y=mn_val,color=GCM_scen))+
-         geom_line(data=fut,aes(x=mnDate,y=mn_val,color=GCM_scen))+
-         facet_wrap(.~var,scales="free_y")+
-         theme_minimal()
-      p
-      
-      # plot the data
-       p_scaled <- ggplot(hind)+
-         geom_line(aes(x=mnDate,y=mn_val_scaled,color=GCM_scen))+
-         geom_line(data=fut,aes(x=mnDate,y=mn_val_scaled,color=GCM_scen))+
-         facet_wrap(.~var,scales="free_y")+
-         theme_minimal()
-      p_scaled
-      
-      d_wide <- reshape2::dcast(hind%>%dplyr::filter(year!=2021),year~c(var),value.var = "mn_val")
-      corr   <- cor(d_wide[,-1])
-      # remove those where cov is high (temp by season and cold pool by season)
-      long_dat <- reshape2::melt(corr,variable.name = "variable") %>% 
-      as.data.frame() 
-      
-      # plot covariation between variables
-      long_dat %>%arrange(value)%>%
-      ggplot(aes(x=Var1, y=Var2, fill=value)) + 
-      geom_raster() + 
-      scale_fill_viridis_c()+
-      theme_minimal()+
-      theme(axis.text.x = element_text(angle = 90))
-
-   # 3 -- write data to hind .dat file
-   # ------------------------------------
-      
-		 
-      # CEATTLE uses a spp overlap index - you can skip this
-          
-    			overlapdat <- data.frame(
-    				atf_OL=c(0.9391937,0.8167094,0.808367,0.5926875,0.7804481,0.5559549,
-    				         0.4006931,0.5881404,0.7856776,0.511565,0.6352048,0.5583476,
-    				         0.5792738,0.5417657,0.8212887,0.6287613,0.4536608,0.6587292,
-    				         0.4884194,0.8289379,0.4399257,0.5950167,0.6388434,0.6111834,
-    				         0.8742649,0.7868746,0.8024257,0.6227457,0.4956742,0.4347917,
-    				         0.4791108,0.4369006,0.5613625,0.4353015),
-    				south_OL=c(0.9980249,0.9390368,0.9959974,0.6130846,0.951234,0.5851891,
-    				           0.4934879,0.641471,0.9809618,0.5596813,0.7196964,0.6754698,
-    				           0.5774808,0.6041351,0.9406521,0.7949525,0.5306435,0.7977694,
-    				           0.5345031,0.9879945,0.5079171,0.7148121,0.8997132,0.7340859,
-    				           0.9962068,0.9627235,0.998043,0.8111,0.6087638,0.513057,0.5492621,
-    				           0.4971361,0.665453,0.5969653)
-    				)
-          
-            
-    	      includeOverlap <- F
-    			  overlap        <- matrix(1,3,length(sort(unique(hind$year))))
-    			  overlap_fut    <- array(1,c(3,length(unique(fut$GCM_scen))+1,length(sort(unique(fut$year)))))
-            if(includeOverlap){
-              overlap[3,] <- overlapIN
-              overlap[3,][overlap[3,]>1]<-1 #covs$BT2to6/covs$BT0to6
-            }
+    # Load surveyrep data:
+    # ----------------------------------------------
+    load("Data/out/K20P19_CMIP5/allEBS_means/ACLIM_surveyrep_fut_mn.Rdata")
+    ACLIM_surveyrep_futCMIP5     <- ACLIM_surveyrep_fut
+    load("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_surveyrep_fut_mn.Rdata")
+    load("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_surveyrep_hind_mn.Rdata")
+    ACLIM_surveyrep_futCMIP6     <- ACLIM_surveyrep_fut
+    ACLIM_surveyrep_futCMIP5$GCM <- gsub("MIROC","miroc",ACLIM_surveyrep_futCMIP5$GCM)
+    ACLIM_surveyrep_futCMIP5$GCM <- gsub("CESM","cesm",  ACLIM_surveyrep_futCMIP5$GCM)
+    ACLIM_surveyrep_futCMIP5$GCM <- gsub("GFDL","gfdl",  ACLIM_surveyrep_futCMIP5$GCM)
+     ACLIM_surveyrep_fut         <- rbind(ACLIM_surveyrep_futCMIP6,ACLIM_surveyrep_futCMIP5)
      
-			# Pick up here
-	    
-    	# Kir's .dat file
-	    covars   <- unique(hind$var)
-	    makeDat_hind(datIN   = hind, 
-	                 outfile = fndat_hind,
-	                 nsppIN    = 3,
-	                 overlapIN = overlap, 
-	                 nonScaled_covlist = c("temp_bottom5m","temp_surface5m"  ),
-	                 Scaled_covlist    = covars)
-	    
-	    # generic .dat file
-	    covars   <- unique(hind$var)
-	    makeDat_fut( datIN   = fut, 
-	                 hinddatIN  = hind, 
-	                 outfile = fndat_fut,
-	                 nsppIN    = 3,
-	                 last_nyrs_avg   = 10, 
-	                 overlapIN = overlap_fut,  #(nspp,nsim+1,nyrs_fut) 
-	                 overlap_hind=overlap,
-	                 nonScaled_covlist = c("temp_bottom5m","temp_surface5m"  ),
-	                 Scaled_covlist    = covars)
-	    
-	    ### Here's a generic version that doesn't include nspp and overla[]
-			# generic .dat file
-	    covars   <- unique(hind$var)
-	    makeDat_hind(datIN   = hind, 
-	                 outfile = fndat_hind2,
-	                 nsppIN    = NULL,
-	                 overlapIN = NULL, 
-	                 nonScaled_covlist = c("temp_bottom5m","temp_surface5m"  ),
-	                 Scaled_covlist    = covars)
-	    
-	    # generic .dat file
-	    covars   <- unique(hind$var)
-	    	    makeDat_fut( datIN   = fut, 
-	                 hinddatIN  = hind, 
-	                 outfile = fndat_fut2,
-	                 nsppIN    = NULL,
-	                 last_nyrs_avg   = 10, 
-	                 overlapIN    = NULL,  #(nspp,nsim+1,nyrs_fut) 
-	                 overlap_hind = NULL,
-	                 nonScaled_covlist = c("temp_bottom5m","temp_surface5m"  ),
-	                 Scaled_covlist    = covars)
-	    
-			
-```
-
-
-# APPENDIX A: Create & bias correct ACLIM2 indices
-
-
-The following code shows how the ACLIM2 indices and bias correction was done. You do not need to re-run this (it is included so you can if you want to). To explore the indices skep to the next section.
-
-```{r annual_aclim_indices, eval=F, include=T,echo=T}
-    # --------------------------------------
-    # SETUP WORKSPACE
-    # rm(list=ls())
-    # setwd("Documents/GitHub/ACLIM2")
-    tmstp  <- format(Sys.time(), "%Y_%m_%d")
-    main   <- getwd()  #"~/GitHub_new/ACLIM2"
-    
-    # loads packages, data, setup, etc.
-    suppressMessages(source("R/make.R"))
-    
-    tmstamp1  <- format(Sys.time(), "%Y%m%d")
-    # tmstamp1  <- "20220428"
-    
-    update_hind  <- TRUE   # set to true to update hind and hindS; needed annually
-    update_proj  <- TRUE   # set to true to update fut; not needed
-    update_hist  <- TRUE   # set to true to update fut; not needed
-     
-    # the reference years for bias correcting in R/setup.R
-    ref_years 
-    
-    # the year to z-score scale / delta in R/setup.R
-    deltayrs 
-    # the year to z-score scale / delta in R/setup.R
-    deltayrs 
-    data_path
-    load(file.path(Rdata_path,"../weekly_vars_C.Rdata"))
-    load(file.path(Rdata_path,"../weekly_vars.Rdata"))
-    load(file.path(Rdata_path,"../srvy_vars_C.Rdata"))
-    load(file.path(Rdata_path,"../srvy_vars.Rdata"))
-  rm_wk_list <- c(
-    "Iron_bottom5m","Iron_integrated","Iron_surface5m",
-    "prod_Eup_integrated","prod_NCa_integrated",
-    "region_area")
-  rm_wk_list_C <- c( "Iron_bottom5m",
-    "prod_Cop_integrated","prod_EupO_integrated","prod_EupS_integrated",
-    "prod_Jel_integrated","prod_MZL_integrated",
-    "prod_NCaO_integrated","prod_NCaS_integrated","Fe_depthavg",
-    "region_area")
-  rm_var_list <- c(
-    "station_id","latitude",
-    "longitude","stratum",
-     "Iron_integrated","Iron_surface5m",
-     "Iron_bottom5m","prod_Eup_integrated","prod_NCa_integrated",
-    "doy")
-  rm_var_list_C <- c(
-    "station_id","latitude",
-    "longitude","stratum",
-     "prod_Cop_integrated","prod_EupO_integrated","prod_EupS_integrated",
-    "prod_Jel_integrated","prod_MZL_integrated","Fe_depthavg",
-    "prod_NCaO_integrated","prod_NCaS_integrated",
-    # "Iron_integrated","Iron_surface5m",
-    # "Iron_bottom5m","prod_Eup_integrated","prod_NCa_integrated"
-    "doy")
-    # remove these variables:
-    l3srvy_varlist <- srvy_vars[!srvy_vars%in%rm_var_list]
-    l3wk_varlist   <- weekly_vars[!weekly_vars%in%rm_wk_list]
-    
-    l3wk_varlist_C   <- weekly_vars_C[!weekly_vars_C%in%rm_wk_list_C]
-    l3srvy_varlist_C <- srvy_vars_C[!srvy_vars_C%in%rm_var_list_C]
-    l2_vars        <- c("temp_bottom5m", "temp_surface5m", "average_oxygen_bottom5m")
-    # remove these variables:
-    vl1   <- srvy_vars[!srvy_vars%in%rm_var_list]
-    vl1_c <- srvy_vars_C[!srvy_vars_C%in%rm_var_list_C]
-    
-    vl2   <- weekly_vars[!weekly_vars%in%rm_wk_list]
-    vl2_c <- weekly_vars_C[!weekly_vars_C%in%rm_wk_list_C]
-
-    vl<-unique(c(vl1,vl2))
-    vl_c<-unique(c(vl1_c,vl2_c))
-    # add in largeZoop (gets generated in make_indices_region_new.R)
-    vl <- c(vl,"largeZoop_integrated")
-    vl_c <- c(vl_c,"largeZoop_integrated")
-
-    # Identify which variables would be normally 
-    # distributed (i.e., can have negative values)
-     normvl <- c("shflux","ssflux","temp_bottom5m",
-      "temp_integrated","temp_surface5m",
-      "uEast_bottom5m","uEast_surface5m",
-      "vNorth_bottom5m","vNorth_surface5m")
-
-     normlist <- data.frame(var = vl, lognorm = TRUE)
-    normlist$lognorm[normlist$var%in%normvl] <- FALSE
-    
-    normlist_c <- data.frame(var = vl_c, lognorm = TRUE)
-    normlist$lognorm[normlist$var%in%normvl] <- FALSE
-    
-    save(weekly_vars_C,file = "Data/out/weekly_vars_C.Rdata")
-    save(weekly_vars,file = "Data/out/weekly_vars.Rdata")
-    save(srvy_vars_C,file = "Data/out/srvy_vars_C.Rdata")
-    save(srvy_vars,file = "Data/out/srvy_vars.Rdata")
-    
-    # generate indices and bias corrected projections 
-    # This takes approx 30 mins each
-    
-    gcmcmipL <- c("B10K-K20P19_CMIP6_miroc",
-                  "B10K-K20P19_CMIP6_gfdl",
-                  "B10K-K20P19_CMIP6_cesm") 
+    # Load annual data:
+    # ----------------------------------------------    
+    load("Data/out/K20P19_CMIP5/allEBS_means/ACLIM_annual_fut_mn.Rdata")
+    ACLIM_annual_futCMIP5     <- ACLIM_annual_fut
+    load("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_annual_fut_mn.Rdata")
+    load("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_annual_hind_mn.Rdata")
+    ACLIM_annual_futCMIP6     <- ACLIM_annual_fut
+    ACLIM_annual_futCMIP5$GCM <- gsub("MIROC","miroc",ACLIM_annual_futCMIP5$GCM)
+    ACLIM_annual_futCMIP5$GCM <- gsub("CESM","cesm",  ACLIM_annual_futCMIP5$GCM)
+    ACLIM_annual_futCMIP5$GCM <- gsub("GFDL","gfdl",  ACLIM_annual_futCMIP5$GCM)
+    ACLIM_annual_fut          <- rbind(ACLIM_annual_futCMIP6,ACLIM_annual_futCMIP5)
+      
+    # Load seasonal data:
+    # ----------------------------------------------    
+    load("Data/out/K20P19_CMIP5/allEBS_means/ACLIM_seasonal_fut_mn.Rdata")
+    ACLIM_seasonal_futCMIP5     <- ACLIM_seasonal_fut
+    load("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_seasonal_fut_mn.Rdata")
+    load("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_seasonal_hind_mn.Rdata")
+    ACLIM_seasonal_futCMIP6     <- ACLIM_seasonal_fut
+    ACLIM_seasonal_futCMIP5$GCM <- gsub("MIROC","miroc",ACLIM_seasonal_futCMIP5$GCM)
+    ACLIM_seasonal_futCMIP5$GCM <- gsub("CESM","cesm",  ACLIM_seasonal_futCMIP5$GCM)
+    ACLIM_seasonal_futCMIP5$GCM <- gsub("GFDL","gfdl",  ACLIM_seasonal_futCMIP5$GCM)
+    ACLIM_seasonal_fut          <- rbind(ACLIM_seasonal_futCMIP6,ACLIM_seasonal_futCMIP5)
+    # Load monthly data:
+    # ----------------------------------------------
+    load("Data/out/K20P19_CMIP5/allEBS_means/ACLIM_monthly_fut_mn.Rdata")
+    ACLIM_monthly_futCMIP5 <- ACLIM_monthly_fut
+    load("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_monthly_fut_mn.Rdata")
+    load("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_monthly_hind_mn.Rdata")
+    ACLIM_monthly_futCMIP6 <- ACLIM_monthly_fut
+    ACLIM_monthly_futCMIP5$GCM <- gsub("MIROC","miroc",ACLIM_monthly_futCMIP5$GCM)
+    ACLIM_monthly_futCMIP5$GCM <- gsub("CESM","cesm",  ACLIM_monthly_futCMIP5$GCM)
+    ACLIM_monthly_futCMIP5$GCM <- gsub("GFDL","gfdl",  ACLIM_monthly_futCMIP5$GCM)
+    ACLIM_monthly_fut          <- rbind(ACLIM_monthly_futCMIP6,ACLIM_monthly_futCMIP5)
    
+    #ACLIM_weekly_fut<-rbind(ACLIM_weekly_fut,ACLIM_weekly_futCMIP5,ACLIM_weekly_futCMIP5H16)
+   
+    allyears   <- min(ACLIM_weekly_hind$year,
+                      na.rm=T):max(ACLIM_weekly_fut$year,na.rm=T)
+    hindyrs    <- min(ACLIM_weekly_hind$year,
+                      na.rm=T):max(ACLIM_weekly_hind$year,na.rm=T)
+    futyrs     <- min(ACLIM_weekly_fut$year,
+                      na.rm=T):max(ACLIM_weekly_fut$year,na.rm=T)
+    scens      <- c("ssp126"  ,"rcp45"  ,"ssp585","rcp85")
+    GCMs       <- c("miroc", "gfdl" , "cesm" )
     
-     CMIP6_K20P19_Indices_C <- suppressMessages(
-                        makeACLIM2_Indices(
-                        BC_target = "mn_val",
-                        hind_sim  =  "B10K-K20P19_CORECFS",
-                        histLIST  = paste0(gcmcmipL,"_historical"),
-                        gcmcmipLIST = gcmcmipL,  
-                        Rdata_pathIN = Rdata_path_C,
-                        regnm    = "ACLIMregion_C",
-                        srvynm    = "ACLIMsurveyrep_C",
-  
-                        normlist_IN = normlist_c,
-                        sim_listIN = sim_list[-grep("historical",sim_list)]))
+    blocks     <- round(unique(round(allyears/1000,2)*1000))
+    if(any(blocks>max(futyrs))) blocks<- blocks[-which(blocks>max(futyrs))]
+    blocks_fut  <- unique(round(futyrs/1000,2)*1000)
+    blocks_hind <- unique(10+round(hindyrs/1000,2)*1000)
+    subyear     <- blocks
     
-     if("CMIP6_K20P19_Indices_C"%in%ls()){                 
-      saved <- FALSE
-      saved <- save_indices(flIN = CMIP6_K20P19_Indices_C, 
-                   subfl = "allEBS_means",
-                   post_txt = "_mn",
-                   CMIP_fdlr ="K20P19_CMIP6_C")
-      fl <- "Data/out/CMIP6_K20P19_Indices_list_C.Rdata"
-      
-      if(file.exists(fl)) file.remove(fl)
-      save(CMIP6_K20P19_Indices_C, file = fl)
-       if(saved){
-        rm(CMIP6_K20P19_Indices_C)}else{
-          stop("Indices not saved!")
-        }
-      gc()
-     }
+    dat        <- ACLIM_weekly_fut%>%
+      filter(var%in%plot_vars)%>%
+      mutate(yrFactor = factor(as.character(year),levels= allyears),
+             year_block= 10+round(year/1000,2)*1000)%>%
+      mutate(year_block = factor(as.character(year_block),levels=blocks),
+              scen = factor(scen,levels= scens))
     
-     CMIP6_K20_Indices <- suppressMessages(
-                        makeACLIM2_Indices(
-                        BC_target = "mn_val",
-                        hind_sim  =  "B10K-K20_CORECFS",
-                        histLIST  = paste0(gcmcmipL,"_historical"),
-                        gcmcmipLIST = gcmcmipL,
-                        normlist_IN = normlist,
-                        sim_listIN = sim_list[-grep("historical",sim_list)]))
+    dat_hind   <- ACLIM_weekly_hind%>%
+      filter(var%in%plot_vars)%>%
+      mutate(yrFactor = factor(as.character(year),levels= allyears),
+             year_block= 10+round(year/1000,2)*1000)%>%
+      mutate(year_block = factor(as.character(year_block),levels=blocks),
+              scen = factor(scen,levels= scens))
     
-     if("CMIP6_K20_Indices"%in%ls()){  
-      saved <- FALSE
-      saved <- save_indices(flIN = CMIP6_K20_Indices, 
-                   subfl = "allEBS_means",
-                   post_txt = "_mn",
-                   CMIP_fdlr ="K20P19_CMIP6")
-      fl <- "Data/out/CMIP6_K20_Indices_list.Rdata"
-      
-      if(file.exists(fl)) file.remove(fl)
-      save(CMIP6_K20_Indices, file = fl)
-      if(saved){
-        rm(CMIP6_K20_Indices)}else{
-          stop("Indices not saved!")
-        }
-      gc()
-     }
+    dat_b <- dat%>%group_by(basin ,GCM, sim,scen, var, units,
+                            jday,long_name,sdVal_hind,mnVal_hind,year_block )%>%
+      summarize(
+        mn_val = mean(mn_val,na.rm=T),
+        val_biascorrected = mean(val_biascorrected,na.rm=T))%>%
+      rename(yrFactor = year_block)
     
-    # CMIP5 K20P19
-    gcmcmipL2 <- c("B10K-K20P19_CMIP5_MIROC","B10K-K20P19_CMIP5_GFDL","B10K-K20P19_CMIP5_CESM") 
-    CMIP5_K20P19_Indices <- suppressMessages(
-                        makeACLIM2_Indices(
-                        BC_target = "mn_val",
-                        hind_sim  =  "B10K-K20_CORECFS",
-                        histLIST  = rep("B10K-K20_CORECFS",3),
-                        gcmcmipLIST = gcmcmipL2,
-                        normlist_IN = normlist,
-                        regnm    = "ACLIMregion",
-                        srvynm    = "ACLIMsurveyrep",
-                        sim_listIN = sim_list[-grep("historical",sim_list)]))
+    dat_hind_b <- dat_hind%>%
+      group_by(basin ,GCM, sim, scen, var, units, jday,
+               long_name,sdVal_hind,mnVal_hind,year_block )%>%
+      summarize(
+        mn_val = mean(mn_val,na.rm=T))%>%
+      rename(yrFactor = year_block)
     
-    if("CMIP5_K20P19_Indices"%in%ls()){
-      saved <- FALSE
-      saved <- save_indices(flIN = CMIP5_K20P19_Indices, 
-                     subfl = "allEBS_means",
-                     post_txt = "_mn",
-                     CMIP_fdlr ="K20P19_CMIP5")
+    dat_s      <- ACLIM_seasonal_fut%>%mutate(
+      gcmscen = paste0(GCM,"_",scen),
+      season_var = paste0(season,"_",var))
+    dat_m      <- ACLIM_monthly_fut%>%mutate(
+      gcmscen = paste0(GCM,"_",scen),
+      mo_var  = paste0(mo,"_",var))
+   
+    i<- 0
+    for(s in 1:length(scens)){
+      for(g in 1:length(GCMs)){
+        i <- i +1
+        if(i == 1){
+          dat_mn_hind    <- dat_hind%>%
+            mutate(scen = factor(scens[s],levels= scens), GCM = GCMs[g])
+          dat_mn_hind_b  <- dat_hind_b%>%
+            mutate(scen = factor(scens[s],levels= scens), GCM = GCMs[g])
+          dat_mn_s_hind  <- ACLIM_seasonal_hind%>%
+            mutate(scen = factor(scens[s],levels= scens), GCM = GCMs[g])
+          dat_mn_m_hind  <- ACLIM_monthly_hind%>%
+            mutate(scen = factor(scens[s],levels= scens), GCM = GCMs[g])
         
-        fl <- "Data/out/CMIP5_K20P19_Indices_list.Rdata"
-        if(file.exists(fl)) file.remove(fl)
-        save(CMIP5_K20P19_Indices, file = fl)
-        
-        if(saved){
-        rm(CMIP5_K20P19_Indices)}else{
-          stop("Indices not saved!")
+        }else{
+          dat_mn_hind    <- rbind(dat_mn_hind,dat_hind%>%
+                                    mutate(scen = factor(scens[s],levels= scens), GCM = GCMs[g]))
+          dat_mn_hind_b  <- rbind(dat_mn_hind_b,dat_hind_b%>%
+                                    mutate(scen = factor(scens[s],levels= scens), GCM = GCMs[g]))
+          dat_mn_s_hind  <- rbind(dat_mn_s_hind,ACLIM_seasonal_hind%>%
+                                    mutate(scen = factor(scens[s],levels= scens), GCM = GCMs[g]))
+          dat_mn_m_hind  <- rbind(dat_mn_m_hind,ACLIM_monthly_hind%>%
+                                    mutate(scen = factor(scens[s],levels= scens), GCM = GCMs[g]))
         }
-        gc()
+      }
     }
+    dat_mn_s_hind <- dat_mn_s_hind%>%mutate(
+      gcmscen    = paste0(GCM,"_",scen),
+      season_var = paste0(season,"_",var))
+    dat_mn_m_hind <- dat_mn_m_hind%>%mutate(
+      gcmscen = paste0(GCM,"_",scen),
+      mo_var  = paste0(mo,"_",var))
     
-    CMIP5_K20P19_Indices_C <- suppressMessages(
-                        makeACLIM2_Indices(
-                        BC_target = "mn_val",
-                        hind_sim  =  "B10K-K20P19_CORECFS",
-                        histLIST  = rep("B10K-K20P19_CORECFS",3),
-                        gcmcmipLIST = gcmcmipL2,
-                         Rdata_pathIN = Rdata_path_C,
-                        regnm     = "ACLIMregion_C",
-                        srvynm    = "ACLIMsurveyrep_C",
-  
-                        normlist_IN = normlist_c,
-                        sim_listIN = sim_list[-grep("historical",sim_list)]))
+    dat_mn_hind_sub <- dat_mn_hind%>%filter(year == 2010)%>%
+      mutate(yrFactor = factor("[1980-2010] mean",levels=c("[1980-2010] mean")))
     
-    if("CMIP5_K20P19_Indices_C"%in%ls()){
-      saved <- FALSE
-      saved <- save_indices(flIN = CMIP5_K20P19_Indices_C, 
-                     subfl = "allEBS_means",
-                     post_txt = "_mn",
-                     CMIP_fdlr ="K20P19_CMIP5_C")
-        
-        fl <- "Data/out/CMIP5_K20P19_Indices_list_C.Rdata"
-        if(file.exists(fl)) file.remove(fl)
-        save(CMIP5_K20P19_Indices_C, file = fl)
-         if(saved){
-        rm(CMIP5_K20P19_Indices_C)}else{
-          stop("Indices not saved!")
-        }
-        gc()
-    }
-    # CMIP5 H16
-    gcmcmipL2 <- c("B10K-H16_CMIP5_MIROC","B10K-H16_CMIP5_GFDL","B10K-H16_CMIP5_CESM") 
-    CMIP5_H16_Indices <- suppressMessages(
-                        makeACLIM2_Indices(
-                        BC_target = "mn_val",
-                        hind_sim  =  "B10K-H16_CORECFS",
-                        histLIST  = rep("B10K-H16_CORECFS",3),
-                        gcmcmipLIST = gcmcmipL2,
-                        sim_listIN = sim_list[-grep("historical",sim_list)]))
-    if("CMIP5_H16_Indices"%in%ls()){
-      saved <- FALSE
-      saved <- save_indices(flIN = CMIP5_H16_Indices, 
-                   subfl = "allEBS_means",
-                   post_txt = "_mn",
-                   CMIP_fdlr ="H16_CMIP5")
+    dat_sub<- dat%>%filter(year%in%subyear, year>2010)%>%
+      mutate(yrFactor = factor(as.character(year),levels =subyear))
+    
+        # datIN        <- dat%>%filter(scen%in%c("ssp126"  ,"rcp45","rcp85"))
+        # dat_hindIN   <- dat_hind
+       
+      scensIN      <- c("ssp126","ssp585")
+      GCMsIN       <- GCMs
+      thinline     <- 0.7
+      alpha_annual <- 0.6
+      alpha_blocks <- 1
+
+      
+     pvar2       <- c("temp_bottom5m","fracbelow2","pH_bottom5m")
+     pseason <- c("Summer","Summer","Winter")
+     pvar       <- c("temp_bottom5m","pH_bottom5m")
+     pseason <- c("Summer","Winter")
+     pvar2    <- c("temp_surface5m","temp_bottom5m")
+     pseason2 <- c("Summer","Summer")
+     season_varIN <- paste0(pseason,"_",pvar)
+      season_varIN <- paste0(pseason2,"_",pvar2)
      
-      fl <- "Data/out/CMIP5_H16_Indices_list.Rdata"
-      if(file.exists(fl)) file.remove(fl)
-      save(CMIP5_H16_Indices, file = fl)
-      if(saved){
-        rm(CMIP5_H16_Indices)}else{
-          stop("Indices not saved!")
-        }
-      gc()
-    }
-    if(1==10){
-      save(CMIP6_Indices, file = "Data/out/CMIP6_Indices_List.Rdata")
-      save(CMIP5_K20_Indices, file = "Data/out/CMIP5_K20_Indices_List.Rdata")
-      save(CMIP5_H16_Indices, file = "Data/out/CMIP5_H16_Indices_List.Rdata")
-    }
-         
+     	pp_BT <-   plot_weekly( varIN = "temp_bottom5m",  basinIN = "SEBS")
+     	pp_pH <-   plot_weekly( varIN = "pH_bottom5m",    basinIN = "SEBS")
+     	pp_O2 <-   plot_weekly( varIN = "oxygen_bottom5m",basinIN = "SEBS")
+     	pp_CP <-   plot_weekly( varIN = "fracbelow2",     basinIN = "SEBS")
+      
+     	basinIN <- "NEBS"
+     	 season_varIN <- paste0(pseason,"_",pvar)
+     	source("D:/GitHub_cloud/ACLIM2/R/sub_scripts/plot_annual.R")
+     	sclr <-1.2
+      png("ESR_EBS/Figs/annualTS_NEBS.png", 
+          width =6*sclr, height =6*sclr, units = "in",res = 150)
+      print( pp)  # hypoxic (O2<70mmol m−3) or suboxic (O2<5mmol m−3),
+      dev.off()
+      
+      season_varIN <- paste0(pseason2,"_",pvar2)
+     	source("D:/GitHub_cloud/ACLIM2/R/sub_scripts/plot_annual.R")
+      png("ESR_EBS/Figs/annualTS_NEBS_SSTBT.png", 
+          width =6*sclr, height =6*sclr, units = "in",res = 150)
+      print( pp)  # hypoxic (O2<70mmol m−3) or suboxic (O2<5mmol m−3),
+      dev.off()
+      
+      
+     	endofCentN<-fut%>%ungroup()%>%filter(year>2079)%>%group_by(scen,basin, var)%>%
+        summarize(mn = mean(mn_val), min =mean(mn_val),max=max(mn_val), 
+                  sd = sd(mn_val), hind = mean(mnVal_hind) )
+      midCentN<-fut%>%ungroup()%>%filter(year>2039&year<2061)%>%group_by(scen,basin, var)%>%
+        summarize(mn = mean(mn_val), min =mean(mn_val),max=max(mn_val), 
+                  sd = sd(mn_val), hind = mean(mnVal_hind) )
+      
+      save(endofCentN,file="ESR_EBS/endofCent_N.Rdata")
+      save(midCentN,file="ESR_EBS/midCent_N.Rdata")
+
+     	basinIN <- "SEBS"
+     	source("D:/GitHub_cloud/ACLIM2/R/sub_scripts/plot_annual.R")
+     	
+      sclr <-1.2
+      season_varIN <- paste0(pseason,"_",pvar)
+      png("ESR_EBS/Figs/annualTS.png", 
+          width =6*sclr, height =6*sclr, units = "in",res = 150)
+      print( pp)  # hypoxic (O2<70mmol m−3) or suboxic (O2<5mmol m−3),
+      dev.off()
+      
+       season_varIN <- paste0(pseason2,"_",pvar2)
+      png("ESR_EBS/Figs/annualTS_SSTBT.png", 
+          width =6*sclr, height =6*sclr, units = "in",res = 150)
+      print( pp)  # hypoxic (O2<70mmol m−3) or suboxic (O2<5mmol m−3),
+      dev.off()
+
+
+     	endofCent<-fut%>%ungroup()%>%filter(year>2079)%>%group_by(scen,basin, var)%>%
+     	  summarize(mn = mean(mn_val), min =mean(mn_val),max=max(mn_val), 
+            sd = sd(mn_val), hind = mean(mnVal_hind) )
+
+     	midCent<-fut%>%ungroup()%>%filter(year>2039&year<2061)%>%
+     	  group_by(scen,basin, var)%>%summarize(mn = mean(mn_val), min =mean(mn_val),
+            max=max(mn_val), 
+            sd = sd(mn_val), hind = mean(mnVal_hind) )
+
+save(endofCent,file="ESR_EBS/endofCent.Rdata")
+save(midCent,file="ESR_EBS/midCent.Rdata")
+     	
+       sclr <-1.3
+      if(!dir.exists("ESR_EBS/Figs")) dir.create("ESR_EBS/Figs")
+      png("ESR_EBS/Figs/nonBC_weeklyProj_BT.png", 
+          width =6*sclr, height =6*sclr, units = "in",res = 150)
+      print( pp_BT)
+      dev.off()
+    
+      png("ESR_EBS/Figs/nonBC_weeklyProj_pH.png", 
+           width =6*sclr, height =6*sclr, units = "in",res = 150)
+      print( pp_pH)
+      dev.off()
+      
+      png("ESR_EBS/Figs/nonBC_weeklyProj_O2.png", 
+              width =6*sclr, height =6*sclr, units = "in",res = 150)
+      print( pp_O2)
+      dev.off()
+     
+      png("ESR_EBS/Figs/nonBC_weeklyProj_CP.png", 
+              width =6*sclr, height =6*sclr, units = "in",res = 150)
+      print( pp_CP)  # hypoxic (O2<70mmol m−3) or suboxic (O2<5mmol m−3),
+      dev.off()
+      
+     	pp_BTN <-   plot_weekly( varIN = "temp_bottom5m",  basinIN = "NEBS")
+     	pp_pHN <-   plot_weekly( varIN = "pH_bottom5m",    basinIN = "NEBS")
+     	pp_O2N <-   plot_weekly( varIN = "oxygen_bottom5m",basinIN = "NEBS")
+     	pp_CPN <-   plot_weekly( varIN = "fracbelow2",     basinIN = "NEBS")
+     
+      
+       sclr <-1.3
+      if(!dir.exists("ESR_EBS/Figs")) dir.create("ESR_EBS/Figs")
+      png("ESR_EBS/Figs/nonBC_weeklyProj_BT_N.png", 
+          width =6*sclr, height =6*sclr, units = "in",res = 150)
+      print( pp_BTN)
+      dev.off()
+    
+      png("ESR_EBS/Figs/nonBC_weeklyProj_pH_N.png", 
+           width =6*sclr, height =6*sclr, units = "in",res = 150)
+      print( pp_pHN)
+      dev.off()
+      
+      png("ESR_EBS/Figs/nonBC_weeklyProj_O2_N.png", 
+              width =6*sclr, height =6*sclr, units = "in",res = 150)
+      print( pp_O2N)  # hypoxic (O2<70mmol m−3) or suboxic (O2<5mmol m−3),
+      dev.off()
+      
+       png("ESR_EBS/Figs/nonBC_weeklyProj_CP_N.png", 
+              width =6*sclr, height =6*sclr, units = "in",res = 150)
+      print( pp_CPN)  # hypoxic (O2<70mmol m−3) or suboxic (O2<5mmol m−3),
+      dev.off()
+  #     
+  #     
+  # 	# now set up the docs folder
+  # 	EcoCons_path <- file.path("docs/EcoCons")
+  # 	data_oath  <- file.path("docs/MSM_Assessment")
+  # 	
+  # 	if(!dir.exists(file.path(proj_dir,proj,"docs")))
+  # 	   dir.create(file.path(proj_dir,proj,"docs"))
+  # 	if(!dir.exists(EcoCons_path))
+  # 	   dir.create(EcoCons_path)
+  # 	if(!dir.exists(assmnt_path))
+  # 	   dir.create(assmnt_path)
+  # 	
+  # 	main       <- (file.path(proj_dir,proj,"runs",fldr_use))
+  # 	data_fl    <- file.path(proj_dir,proj,"data/in/dat_input_files")
+  # 	fl_0       <- file.path(main,paste0(filenm,"_0"))
+  # 	fl_2       <- file.path(main,paste0(filenm,"_2"))
+  #   load(file.path(fl_0,"R_figures/plotdata.Rdata"))
+  #   load(file.path(fl_2,"results/Mort.Rdata"))
+  #   
+  #   dir("Data/out/K20P19_CMIP5/allEBS_means/ACLIM_weekly_fut_mn.Rdata")
+  # 
+  #   Ecodoc     <- EcoCons_path
+  #   doc        <- assmnt_path
+  #   
+  #    if(!file.exists(file.path(Ecodoc,"Figs")))
+  #       dir.create(file.path(Ecodoc,"Figs"))
+  #    if(!file.exists(file.path(doc,"Figs")))
+  #       dir.create(file.path(doc,"Figs"))
+  #   setwd(Ecodoc)
+    
 ```
 
 
-![September large zooplankton integrated concentration](Figs/Hind_Sept_large_Zoop.jpg){ width=75% }
+## High resolution climate change projections for the Eastern Bering Sea
+Albert Hermann, Wei Cheng, Kelly Kearney, Darren Pilcher, Kerim Aydin, Ivonne Ortiz, Kirstin K. Holsman*
+
+*ESR contribution POC: Kirstin Holsman (kirstin.holsman@noaa.gov)
+
+Alaska Fisheries Science Center, NOAA, 7600 Sand Point Way N.E., Bld. 4, Seattle, Washington 98115
+
+**Last Updated: October `r thisYr`** 
+
+## Summary statement:
+
+Projections of a high resolution oceanographic model for the Bering Sea projects wide spread warming across the region under high emission scenarios (SSP585) with bottom temperatures exceeding historical ranges by mid-century onward. Low emission scenarios also project less warming over the next century but modeled temperatures do not exceed historical ranges (1980-2013) under the latter part of the century. *[ADD Caveat - ? Model results are not observations and should be considered in the context of ongoing ocean observations].*
+Under both low and high emission scenarios the model projects continued declines in ocean pH in bottom waters of the both the North and Southern Bering Sea, especially during winter months but declines are markedly larger and reach thresholds associated with decreased survival of crab larvae (7.8 Long et al. 20XX) by mid-century, and critical thresholds of high larval mortality by end of century (7.5 Long et al. 20xx). 
+
+## Status and trends:  
+Summer bottom temperatures in both the SEBS and NEBS are projected to increase, with higher rates of warming associated with higher greenhouse gas emission scenarios (SSP585). There is general agreement in all three models with respect to trends in warming and across the three GCMS. For the SEBS, estimates of end of century warming [2080-2100] range from 0.7 to 4.2 deg C and 2.8 to 6.1 deg C for SSP126 and SSP585, respectively. For the NEBS, estimates of end of century warming of bottom temperatures [(2080-2100)-(1980-2000)] range from +0.5 to +5.4 deg C and +2.6 to +7.8 deg C for SSP126 and SSP585, respectively. In high emission scenarios, bottom temperatures for the SEBS and NEBS are projected to consistently to exceed the upper range of historical temperatures predicted from the hindcast between 2050 and 2060. Model projected patterns for SST are similar to those of bottom temperature and with high agreement for all three models under SSP585. Under higher emission scenarios (SSP585), of century SST range from 13.5 to 16.2 deg. C for the SEBS (historically mean of 9.7 deg C) and range from 12.3 to 15.7 deg. C for the NEBS (historically 8.3 deg. C). 
+
+[add pH details]
+
+## Factors influencing observed trends
+[ Kirstin to add statements from IPCC Ar6 WGI]
+* uptake of CO2 by oceans
+* uptake of atmospheric heat by oceans 
+
+Global increases in warming driven of approximately 1.1 deg. C over postindustrial timeperiod is associated with significant warming of the world's oceans and ....[ use details from IPCC AR6]
+
+## Implications: 
 
 
-# misc
+## Description of index: 
+
+We report trends in modeled bottom temperature and modeled bottom pH from the Bering10K K20P19 Regional Oceanographic model projected under ACLIM2 CMIP6 simulations. The IEA operational hindcast and the ACLIM2 projections presented here are based on the K20P19 30-layer variant of the Bering10K model that merges the biological module source code and parameter updates from the K20 version (Kearney et al. 2020) with the carbonate chemistry updates from the P19 (Pilcher et al. 2019) version. See the [Bering 10K dataset documentation](https://zenodo.org/record/4586950/files/Bering10K_dataset_documentation.pdf) for more information and technical details. The two climate scenarios and three global General Circulation Models (GCMs) were selected from the Coupled Model Intercomparison Project phase 6 (CMIP6) and used to force the boundary conditions of the regional model. See Hermann et al. 2021, Cheng et al. 2021, Kearney et al. 2020, and Pilcher et al. 2019 for details about model parameterization and Hollowed et al. 2020 for details about the Alaska Climate Integrated Modeling project and climate and GCM selection. 
+
+In support of the [Alaska Climate Integrated Modeling (ACLIM) project](www.fisheries.noaa.gov/alaska/ecosystems/alaska-climate-integrated-modeling-project), a number of different biophysical index timeseries were calculated based on the Bering10K simulations and provide the primary means of linking the physical and lower trophic level dynamics simulated by the Bering10K long-term forecast simulations to the ACLIM suite of upper trophic level and socioeconomic models; see Hollowed et al. [2020]() for further details.The timeseries reported here are derived from the area-weighted strata averages for Summer (months `r paste(seasons%>%filter(season=="Summer")%>%select(mo),collapse=", ")`) and Winter for the Northern Bering Sea (strata `r paste(NEBS_strata,collapse=", ")`) and Southern Bering sea. The timerseries were bias corrected to the IEA operational hindcast using historical runs for each GCM. More detail on this approach is available by request.
+
+The climate simulations presented here are dynamically downscaled from a selection of the historical and shared socioeconomic pathway simulations from the sixth phase of the [Climate Model Intercomparison Project (CMIP6)](https://www.wcrp-climate.org/wgcm-cmip/wgcm-cmip6). Names reflect the parent model simulation (miroc
+= MIROC ES2L, cesm = CESM2, gfdl = GFDL ESM4) and emissions scenario via Shared Socioeconomic Pathways (SSPs) (ssp126 = SSP1-2.6, ssp585 = SSP5-8.5, historical = Historical). SSP126 represents a lower atmospheric carbon emissions scenario; SSP585 represents the high baseline emissions scenario. More information on the SSPs and their use in climate projections is available at O'Neil et al. [2017](
+https://link.springer.com/article/10.1007/s10584-013-0905-2).
 
 
-$$B0^k_{input}= \bar{B0}^k_{(2004:2014)}\left(\frac{B0^{a}_{2015}}{\bar{B0}^a_{(2004:2014)}}\right) $$
-Where B0kinput is the unfished biomass used for setting inputs of  (e.g., B0ktarget = 0.4B0kinput) and is determined by re-scaling the spawning stock biomass from the status quo assessment in 2015 (B0a2015) to the average model spawning stock biomass for your model between 2004-2014  (i.e., B0k) using the average unfished biomass from the stock assessment model during the same period (B0a).
+## Literature Cited
+Hermann et al., 2021 A.J. Hermann, K. Kearney, W. Cheng, D. Pilcher, K. Aydin, K.K. Holsman, et al.
+Coupled modes of projected regional change in the Bering Sea from a dynamically downscaling model under CMIP6 forcing Deep-Sea Res. II (2021), 10.1016/j.dsr2.2021.104974 194 104974
+
+Cheng et al., 2021 W. Cheng, A.J. Hermann, A.B. Hollowed, K.K. Holsman, K.A. Kearney, D.J. Pilcher, et al.
+Eastern Bering Sea shelf environmental and lower trophic level responses to climate forcing: results of dynamical downscaling from CMIP6 Deep-Sea Res. II, 193 (2021), Article 104975, 10.1016/j.dsr2.2021.104975
+
+K. Kearney, A. Hermann, W. Cheng, I. Ortiz, and K. Aydin. A coupled pelagicbenthic-sympagic biogeochemical
+model for the Bering Sea: documentation and validation of the BESTNPZ model (v2019.08.23) within a highresolution regional ocean model. Geoscientific Model Development, 13 (2):597–650, 2020. DOI: 10.5194/gmd13-597-2020. URL https://www.geosci-model-dev.net/13/597/2020/10 https://github.com/beringnpz/roms-bering-sea
+
+Pilcher, D. J.,  D. M. Naiman, J. N. Cross, A. J. Hermann, S. A. Siedlecki, G. A. Gibson, and J. T. Mathis. Modeled Effect of Coastal Biogeochemical Processes, Climate Variability, and Ocean Acidification on Aragonite Saturation State in the Bering Sea. Frontiers in Marine Science, 5(January):1–18, 2019. DOI: 10.3389/fmars.2018.00508
+12 https://github.com/beringnpz/ roms-bering-sea
+
+Hollowed, K. K. Holsman, A. C. Haynie, A. J. Hermann, A. E. Punt, K. Y. Aydin, J. N. Ianelli, S. Kasperski,
+W. Cheng, A. Faig, K. Kearney, J. C. P. Reum, P. D. Spencer, I. Spies, W. J. Stockhausen, C. S. Szuwalski, G. Whitehouse, and T. K. Wilderbuer. Integrated modeling to evaluate climate change impacts on coupled social-ecological systems in Alaska. Frontiers in Marine Science, 6(January):1–18, 2020. DOI: 10.3389/fmars.2019.00775
 
 
-```{r makeReadME, echo=FALSE,eval=F, include =F}
-setwd("/Users/kholsman/Documents/GitHub/ACLIM2")
-file.remove(paste0("index",".html"))
-# update github
-file.copy(from=paste0("ACLIM2_quickStart",".html"),to=paste0("index",".html"),overwrite=T)
-
-# file.copy(from=paste0("ACLIM2_quickStart",".md"),to=paste0("README",".md"),overwrite=T)
-# file.remove(paste0("README",".md"))
-
-# source("R/make.R")
- # copy and paste this into R window (won't work within markdown)
- rmd2md(rmd_fl = "ACLIM2_quickStart",md_fl = "README")
+Projections of the high resolution Bering10K 30 layer model for the Eastern Bering Sea. For more information see Hermman et al. 2021, Kearney et al. 2020 and Pilcher et al. 2019. For more information about climate scenarios selection see the Alaska Climate Integrate Modeling project (ACLIM) website at www.fisheries.noaa.gov/alaska/ecosystems/alaska-climate-integrated-modeling-project and the Alaska NOAA Integrated Ecosystem Assessment program www.integratedecosystemassessment.noaa.gov
 
 
-```
+## Figures: 
+
+![Bias corrected summer bottom temperature and winter pH for the SEBS under low (SSP126) and high (SSP585) emission scenarios).](ESR_EBS/Figs/annualTS_SSTBT.png){ width=100% }
+
+![Bias corrected summer bottom temperature and winter pH for the SEBS under low (SSP126) and high (SSP585) emission scenarios).](ESR_EBS/Figs/annualTS.png){ width=100% }
 
 
 
+![Bottom water temperature (degC) pojected under two climate scenarios ( high carbon mitigation (ssp126); low carbon mitigation, (SSP585) from three General Circulation Models (GCMs) dynamically downscaled to a high resolution regional model (Bering10K 30 layer ROMSNPZ model).  `r thisYr`).](ESR_EBS/Figs/nonBC_weeklyProj_BT.png){ width=100% }
+
+![Bottom water temperature (degC) pojected under two climate scenarios ( high carbon mitigation (ssp126); low carbon mitigation, (SSP585) from three General Circulation Models (GCMs) dynamically downscaled to a high resolution regional model (Bering10K 30 layer ROMSNPZ model).](ESR_EBS/Figs/nonBC_weeklyProj_BT_N.png){ width=100% }
+
+![Bottom water pH pojected under two climate scenarios ( high carbon mitigation (ssp126); low carbon mitigation, (SSP585) from three General Circulation Models (GCMs) dynamically downscaled to a high resolution regional model (Bering10K 30 layer ROMSNPZ model).](ESR_EBS/Figs/nonBC_weeklyProj_pH.png){ width=100% }
+
+![Bottom water pH pojected under two climate scenarios ( high carbon mitigation (ssp126); low carbon mitigation, (SSP585) from three General Circulation Models (GCMs) dynamically downscaled to a high resolution regional model (Bering10K 30 layer ROMSNPZ model).](ESR_EBS/Figs/nonBC_weeklyProj_pH_N.png){ width=100% }
 
 
 

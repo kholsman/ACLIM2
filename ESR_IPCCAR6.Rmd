@@ -1,0 +1,120 @@
+---
+title: "IPCC ESR"
+author: "K. Holsman"
+date: "10/22/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Headline Statements
+## WGI Physical basis
+
+A.1 It is unequivocal that human influence has warmed the atmosphere, ocean and land. Widespread and rapid
+changes in the atmosphere, ocean, cryosphere and biosphere have occurred.
+ {2.2, 2.3, Cross-Chapter Box 2.3, 3.3, 3.4, 3.5, 3.6, 3.8, 5.2, 5.3, 6.4, 7.3, 8.3, 9.2
+ 
+ 
+ A.1.1 Observed increases in well-mixed greenhouse gas (GHG) concentrations since around 1750 are unequivocally caused by human activities. Since 2011 (measurements reported in AR5), concentrations have continued to increase in the atmosphere, reaching annual averages of 410 parts per million (ppm) for carbon dioxide (CO2), 1866 parts per billion (ppb) for methane (CH4), and 332 ppb for nitrous oxide (N2O) in 2019. Land and ocean have taken up a near-constant proportion (globally about 56% per year) of CO2 emissions from human activities over the past six decades, with regional differences (high confidence).
+
+
+A.1.3 The likely range of total human-caused global surface temperature increase from 1850–1900 to 2010–201911 is 0.8°C to
+1.3°C, with a best estimate of 1.07°C. It is likely that well-mixed GHGs contributed a warming of 1.0°C to 2.0°C, other
+human drivers (principally aerosols) contributed a cooling of 0.0°C to 0.8°C, natural drivers changed global surface
+temperature by –0.1°C to +0.1°C, and internal variability changed it by –0.2°C to +0.2°C. It is very likely that well-mixed
+GHGs were the main driver12 of tropospheric warming since 1979 and extremely likely that human-caused stratospheric
+ozone depletion was the main driver of cooling of the lower stratosphere between 1979 and the mid-1990s.
+ {3.3, 6.4, 7.3, TS.2.3, Cross-Section Box TS.1} (Figure SPM.2)
+A.1.4 Globally averaged precipitation over land has likely increased since 1950, with a faster rate of increase since the 1980s
+(medium confidence). It is likely that human influence contributed to the pattern of observed precipitation changes
+since the mid-20th century and extremely likely that human influence contributed to the pattern of observed changes
+in near-surface ocean salinity. Mid-latitude storm tracks have likely shifted poleward in both hemispheres since the
+1980s, with marked seasonality in trends (medium confidence). For the Southern Hemisphere, human influence very likely
+contributed to the poleward shift of the closely related extratropical jet in austral summer.
+ {2.3, 3.3, 8.3, 9.2, TS.2.3, TS.2.4, Box TS.6}
+A.1.5 Human influence is very likely the main driver of the global retreat of glaciers since the 1990s and the decrease in Arctic
+sea ice area between 1979–1988 and 2010–2019 (decreases of about 40% in September and about 10% in March). There
+has been no significant trend in Antarctic sea ice area from 1979 to 2020 due to regionally opposing trends and large
+internal variability. Human influence very likely contributed to the decrease in Northern Hemisphere spring snow cover
+since 1950. It is very likely that human influence has contributed to the observed surface melting of the Greenland Ice
+Sheet over the past two decades, but there is only limited evidence, with medium agreement, of human influence on the
+Antarctic Ice Sheet mass loss.
+ {2.3, 3.4, 8.3, 9.3, 9.5, TS.2.5}
+A.1.6 It is virtually certain that the global upper ocean (0–700 m) has warmed since the 1970s and extremely likely that human
+influence is the main driver. It is virtually certain that human-caused CO2 emissions are the main driver of current global
+acidification of the surface open ocean. There is high confidence that oxygen levels have dropped in many upper ocean
+regions since the mid-20th century and medium confidence that human influence contributed to this drop.
+ {2.3, 3.5, 3.6, 5.3, 9.2, TS.2.4}
+A.1.7 Global mean sea level increased by 0.20 [0.15 to 0.25] m between 1901 and 2018. The average rate of sea level rise was
+1.3 [0.6 to 2.1] mm yr–1 between 1901 and 1971, increasing to 1.9 [0.8 to 2.9] mm yr–1 between 1971 and 2006, and
+further increasing to 3.7 [3.2 to 4.2] mm yr–1 between 2006 and 2018 (high confidence). Human influence was very likely
+the main driver of these increases since at least 1971.
+ {2.3, 3.5, 9.6, Cross-Chapter Box 9.1, Box TS.4}
+ 
+## WGII Impacts and adaptation
+## B.3
+
+Global warming, reaching 1.5°C in the near-term, would cause unavoidable increases in multiple climate hazards and present multiple risks to ecosystems and humans (very high confidence). The level of risk will depend on concurrent near-term trends in vulnerability, exposure, level of socioeconomic development and adaptation (high confidence). Near-term actions that limit global warming to close to 1.5°C would substantially reduce projected losses and damages related to climate change in human systems and ecosystems, compared to higher warming levels, but cannot eliminate them all (very high confidence). 
+
+
+## C.5
+
+Enabling conditions are key for implementing, accelerating and sustaining adaptation in human systems and ecosystems. These include political commitment and follow-through, institutional frameworks, policies and instruments with clear goals and priorities, enhanced knowledge on impacts and solutions, mobilization of and access to adequate financial resources, monitoring and evaluation, and inclusive governance processes (high confidence).
+
+## D. Climate Resilient Development
+
+### D.4
+
+Safeguarding biodiversity and ecosystems is fundamental to climate resilient development, in light of the threats climate change poses to them and their roles in adaptation and mitigation (very high confidence). Recent analyses, drawing on a range of lines of evidence, suggest that maintaining the resilience of biodiversity and ecosystem services at a global scale depends on effective and equitable conservation of approximately 30% to 50% of Earth’s land, freshwater and ocean areas, including currently near-natural ecosystems (high confidence).
+
+### D.5
+
+It is unequivocal that climate change has already disrupted human and natural systems. Past and current development trends (past emissions, development and climate change) have not advanced global climate resilient development (very high confidence). Societal choices and actions implemented in the next decade determine the extent to which medium- and long-term pathways will deliver higher or lower climate resilient development (high confidence). Importantly climate resilient development prospects are increasingly limited if current greenhouse gas emissions do not rapidly decline, especially if 1.5°C global warming is exceeded in the near term (high confidence). These prospects are constrained by past development, emissions and climate change, and enabled by inclusive governance, adequate and appropriate human and technological resources, information, capacities and finance (high confidence).
+
+## WGIII Key Messages
+### Selected messages from the WGIII summary for Policy Makers
+
+[link](https://www.ipcc.ch/report/ar6/wg3/downloads/report/IPCC_AR6_WGIII_SPM.pdf)
+B.1 Total net anthropogenic GHG emissions6
+ have continued to rise during the period 2010–2019, as have
+cumulative net CO2 emissions since 1850. Average annual GHG emissions during 2010–2019 were
+higher than in any previous decade, but the rate of growth between 2010 and 2019 was lower than
+that between 2000 and 2009. (high confidence) (Figure SPM.1) {Figure 2.2, Figure 2.5, Table 2.1, 2.2,
+Figure TS.2}
+
+C.1 Global GHG emissions are projected to peak between 2020 and at the latest before 2025 in global
+modelled pathways that limit warming to 1.5°C (>50%) with no or limited overshoot and in those that
+limit warming to 2°C (>67%) and assume immediate action.i,37 In both types of modelled pathways,
+rapid and deep GHG emissions reductions follow throughout 2030, 2040 and 2050 (high confidence).
+Without a  strengthening of policies beyond those that are implemented by the end of 2020, GHG
+emissions are projected to rise beyond 2025, leading to a median global warming of 3.2 [2.2 to 3.5] °C
+by 2100  (medium confidence).
+
+C.1.3 In modelled pathways consistent with the continuation of policies implemented by the end of 2020, GHG emissions continue to rise, leading to global warming of 3.2 [2.2–3.5] °C by 2100 (within C5–C7, Table SPM.2) (medium confidence). Pathways that exceed warming of >4°C (≥50%) (C8, SSP5-8.5, Table SPM.2) would imply a reversal of current technology and/or mitigation policy trends (medium confidence). Such warming could occur in emission pathways consistent with policies implemented by the end of 2020 if climate sensitivity is higher than central estimates (high confidence).
+
+
+
+IPCC, 2021: Summary for Policymakers. In: Climate Change 2021: The Physical Science Basis. Contribution of Working Group I to the Sixth Assessment Report of the Intergovernmental Panel on Climate Change [Masson-Delmotte, V., P. Zhai, A. Pirani, S.L. Connors, C. Péan, S. Berger, N. Caud, Y. Chen, L. Goldfarb, M.I. Gomis, M. Huang, K. Leitzell, E. Lonnoy, J.B.R. Matthews, T.K. Maycock, T. Waterfield, O. Yelekçi, R. Yu, and B. Zhou (eds.)]. In Press.
+
+
+
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
