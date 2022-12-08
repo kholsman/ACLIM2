@@ -211,14 +211,15 @@ clone the full ACLIM2 directory and sub-directories:
 \hypertarget{get-the-data}{%
 \subsection{Get the data}\label{get-the-data}}
 
-\textbf{Step 1)} * Go to the google drive and download the zipped file
-with the R data \texttt{2022\_03\_07\_Rdata.zip}:
+\textbf{Step 1){[} can skip if not using .nc files directly{]} } * Go to
+the google drive and download the zipped file with the R data
+\texttt{2022\_03\_07\_Rdata.zip}:
 
 \begin{itemize}
 \item
   \href{https://drive.google.com/drive/folders/11BQEfNEl9vvrN-V0LgS67XS4aLE9pNzz}{00\_ACLIM\_shared
   \textgreater{} 02\_Data \textgreater{} Newest\_Data(use this)
-  \textgreater{} 2022\_05\_16\_unzip\_and\_putIN\_Data\_in\_folder.zip}
+  \textgreater{} unzip\_and\_putin\_Data\_in\_folder.zip}
 \item
   Unzip the folder and move the contents of the zipped folder to your
   local folder \texttt{ACLIM2/Data/in}.
@@ -231,7 +232,7 @@ with the R ACLIM2 indices \texttt{ACLIM2\_indices.zip}:
 \item
   \href{https://drive.google.com/drive/folders/11BQEfNEl9vvrN-V0LgS67XS4aLE9pNzz}{00\_ACLIM\_shared
   \textgreater{} 02\_Data \textgreater{} Newest\_Data(use this)
-  \textgreater{} 2022\_05\_16\_unzip\_and\_putIN\_Data\_out\_folder}
+  \textgreater{} unzip\_and\_putin\_Data\_out\_folder.zip}
 \item
   Unzip the folder and move the contents of the zipped folder to your
   local folder \texttt{ACLIM2/Data/out}.
@@ -659,7 +660,7 @@ SEBS}}
 \end{figure}
 
 \textbf{Important!} Note that for projections the `mn\_val' represents
-raw mean values, while `val\_bias-corrected' is the bias corrected
+raw mean values, while `val\_biascorrected' is the bias corrected
 mn\_val (should be used instead of the raw values). In all cases, for
 variables that are log-normally distributed (cannot be \textless{} 0),
 the ln(mn\_val) were used to bias correct and were then back transformed
@@ -867,37 +868,20 @@ SEBS''}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{center}\includegraphics{ACLIM2_quickStart_files/figure-latex/unnamed-chunk-6-1} \end{center}
+\begin{center}\includegraphics{ACLIM2_quickStart_files/figure-latex/nrs-1} \end{center}
 
 \begin{Shaded}
 \begin{Highlighting}[]
     \FunctionTok{head}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{dat)}
-    
-    \CommentTok{\# }
-    \CommentTok{\# \# get the variable you want:}
-    \CommentTok{\# df \textless{}{-} get\_var( typeIN    = "annual", }
-    \CommentTok{\#                plotvar   = varlist[1],}
-    \CommentTok{\#                bcIN      = "raw",}
-    \CommentTok{\#                CMIPIN    = "K20P19\_CMIP6\_C", }
-    \CommentTok{\#                plothist  = F,  \# ignore the hist runs}
-    \CommentTok{\#                removeyr1 = T)  \#"Remove first year of projection ( burn in)")}
-    \CommentTok{\# }
-    \CommentTok{\# df$plot+coord\_cartesian(ylim = c(0, 7)) }
-    \CommentTok{\# }
-    \CommentTok{\# head(df$dat)}
-    
-    \CommentTok{\# }
-    \CommentTok{\# \# get the variable you want:}
-    \CommentTok{\# df \textless{}{-} get\_var( typeIN    = "annual", }
-    \CommentTok{\#                plotvar   = "uEast\_surface5m",}
-    \CommentTok{\#                bcIN      = "bias corrected",}
-    \CommentTok{\#                CMIPIN    = "K20P19\_CMIP6\_C", }
-    \CommentTok{\#                plothist  = F,  \# ignore the hist runs}
-    \CommentTok{\#                removeyr1 = T)  \#"Remove first year of projection ( burn in)")}
-    \CommentTok{\# }
-    \CommentTok{\# df$plot}
-    \CommentTok{\# head(df$dat)}
+\end{Highlighting}
+\end{Shaded}
 
+\hypertarget{continuous-timeseries-of-hind-fut}{%
+\subsection{Continuous timeseries of hind +
+fut}\label{continuous-timeseries-of-hind-fut}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
     \CommentTok{\# get the variable you want:}
 \NormalTok{    df }\OtherTok{\textless{}{-}} \FunctionTok{get\_var}\NormalTok{( }\AttributeTok{typeIN    =} \StringTok{"annual"}\NormalTok{, }
                    \AttributeTok{plotvar   =} \StringTok{"pH\_depthavg"}\NormalTok{,}
@@ -910,65 +894,15 @@ SEBS''}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{center}\includegraphics{ACLIM2_quickStart_files/figure-latex/unnamed-chunk-6-2} \end{center}
+\begin{center}\includegraphics{ACLIM2_quickStart_files/figure-latex/ts-1} \end{center}
 
 \begin{Shaded}
 \begin{Highlighting}[]
     \FunctionTok{head}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{dat)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\# get the variable you want:}
-\NormalTok{df }\OtherTok{\textless{}{-}} \FunctionTok{get\_var}\NormalTok{( }\AttributeTok{typeIN    =} \StringTok{"annual"}\NormalTok{, }
-               \AttributeTok{plotvar   =} \StringTok{"pH\_depthavg"}\NormalTok{,}
-               \AttributeTok{bcIN      =} \StringTok{"bias corrected"}\NormalTok{,}
-               \AttributeTok{CMIPIN    =} \StringTok{"K20P19\_CMIP6"}\NormalTok{, }
-               \AttributeTok{plothist  =}\NormalTok{ F,  }\CommentTok{\# ignore the hist runs}
-               \AttributeTok{removeyr1 =}\NormalTok{ T)  }\CommentTok{\#"Remove first year of projection ( burn in)")}
-
-\NormalTok{df}\SpecialCharTok{$}\NormalTok{plot}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{center}\includegraphics{ACLIM2_quickStart_files/figure-latex/unnamed-chunk-7-1} \end{center}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{head}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{dat)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-##           var basin year     jday     mnDate   mn_val
-## 1 pH_depthavg  SEBS 1970 189.5000 1970-07-09 8.002964
-## 2 pH_depthavg  SEBS 1971 181.5000 1971-07-01 8.008074
-## 3 pH_depthavg  SEBS 1972 184.0000 1972-07-03 7.996702
-## 4 pH_depthavg  SEBS 1973 182.0000 1973-07-02 8.022209
-## 5 pH_depthavg  SEBS 1974 181.1373 1974-07-01 8.023676
-## 6 pH_depthavg  SEBS 1975 183.5000 1975-07-03 8.030164
-##                               sim gcmcmip  GCM   scen sim_type units
-## 1 ACLIMregion_B10K-K20P19_CORECFS    hind hind ssp126     hind      
-## 2 ACLIMregion_B10K-K20P19_CORECFS    hind hind ssp126     hind      
-## 3 ACLIMregion_B10K-K20P19_CORECFS    hind hind ssp126     hind      
-## 4 ACLIMregion_B10K-K20P19_CORECFS    hind hind ssp126     hind      
-## 5 ACLIMregion_B10K-K20P19_CORECFS    hind hind ssp126     hind      
-## 6 ACLIMregion_B10K-K20P19_CORECFS    hind hind ssp126     hind      
-##               bc    GCM_scen     GCM_scen_sim         CMIP   type
-## 1 bias corrected hind_ssp126 hind_ssp126_hind K20P19_CMIP6 annual
-## 2 bias corrected hind_ssp126 hind_ssp126_hind K20P19_CMIP6 annual
-## 3 bias corrected hind_ssp126 hind_ssp126_hind K20P19_CMIP6 annual
-## 4 bias corrected hind_ssp126 hind_ssp126_hind K20P19_CMIP6 annual
-## 5 bias corrected hind_ssp126 hind_ssp126_hind K20P19_CMIP6 annual
-## 6 bias corrected hind_ssp126 hind_ssp126_hind K20P19_CMIP6 annual
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
+    
 \CommentTok{\# concat the hind and fut runs by removing years from projection}
 \NormalTok{maxDin }\OtherTok{\textless{}{-}} \FunctionTok{max}\NormalTok{(}\FunctionTok{as.vector}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{dat}\SpecialCharTok{\%\textgreater{}\%}
-\NormalTok{                          dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(sim\_type}\SpecialCharTok{==}\StringTok{"hind"}\NormalTok{)}\SpecialCharTok{\%\textgreater{}\%}
+\NormalTok{                          dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(sim\_type}\SpecialCharTok{==}\StringTok{"hind"}\NormalTok{)}\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{ungroup}\NormalTok{()}\SpecialCharTok{\%\textgreater{}\%}
 \NormalTok{                          dplyr}\SpecialCharTok{::}\FunctionTok{select}\NormalTok{(mnDate))[[}\DecValTok{1}\NormalTok{]])}
 
 \NormalTok{newdat }\OtherTok{\textless{}{-}} \FunctionTok{stitchTS}\NormalTok{(}\AttributeTok{dat =}\NormalTok{ df}\SpecialCharTok{$}\NormalTok{dat,}
@@ -977,72 +911,8 @@ SEBS''}
 \CommentTok{\# newdat has the full set of data}
 \CommentTok{\# select miroc\_ssp126}
 \FunctionTok{head}\NormalTok{(newdat}\SpecialCharTok{\%\textgreater{}\%}\NormalTok{dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(GCM\_scen}\SpecialCharTok{==}\FunctionTok{paste0}\NormalTok{(GCMs[}\DecValTok{1}\NormalTok{],}\StringTok{"\_"}\NormalTok{,scens[}\DecValTok{1}\NormalTok{])))}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-##           var basin year     jday     mnDate   mn_val
-## 1 pH_depthavg  SEBS 1970 189.5000 1970-07-09 8.002964
-## 2 pH_depthavg  SEBS 1971 181.5000 1971-07-01 8.008074
-## 3 pH_depthavg  SEBS 1972 184.0000 1972-07-03 7.996702
-## 4 pH_depthavg  SEBS 1973 182.0000 1973-07-02 8.022209
-## 5 pH_depthavg  SEBS 1974 181.1373 1974-07-01 8.023676
-## 6 pH_depthavg  SEBS 1975 183.5000 1975-07-03 8.030164
-##                               sim gcmcmip  GCM   scen sim_type units
-## 1 ACLIMregion_B10K-K20P19_CORECFS    hind hind ssp126     hind      
-## 2 ACLIMregion_B10K-K20P19_CORECFS    hind hind ssp126     hind      
-## 3 ACLIMregion_B10K-K20P19_CORECFS    hind hind ssp126     hind      
-## 4 ACLIMregion_B10K-K20P19_CORECFS    hind hind ssp126     hind      
-## 5 ACLIMregion_B10K-K20P19_CORECFS    hind hind ssp126     hind      
-## 6 ACLIMregion_B10K-K20P19_CORECFS    hind hind ssp126     hind      
-##               bc     GCM_scen     GCM_scen_sim         CMIP   type
-## 1 bias corrected miroc_ssp126 hind_ssp126_hind K20P19_CMIP6 annual
-## 2 bias corrected miroc_ssp126 hind_ssp126_hind K20P19_CMIP6 annual
-## 3 bias corrected miroc_ssp126 hind_ssp126_hind K20P19_CMIP6 annual
-## 4 bias corrected miroc_ssp126 hind_ssp126_hind K20P19_CMIP6 annual
-## 5 bias corrected miroc_ssp126 hind_ssp126_hind K20P19_CMIP6 annual
-## 6 bias corrected miroc_ssp126 hind_ssp126_hind K20P19_CMIP6 annual
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
 \FunctionTok{tail}\NormalTok{(newdat}\SpecialCharTok{\%\textgreater{}\%}\NormalTok{dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(GCM\_scen}\SpecialCharTok{==}\FunctionTok{paste0}\NormalTok{(GCMs[}\DecValTok{1}\NormalTok{],}\StringTok{"\_"}\NormalTok{,scens[}\DecValTok{1}\NormalTok{])))}
-\end{Highlighting}
-\end{Shaded}
 
-\begin{verbatim}
-##             var basin year   jday     mnDate   mn_val
-## 126 pH_depthavg  SEBS 2094 181.50 2094-07-01 7.878994
-## 127 pH_depthavg  SEBS 2095 180.50 2095-06-30 7.886542
-## 128 pH_depthavg  SEBS 2096 183.00 2096-07-02 7.858186
-## 129 pH_depthavg  SEBS 2097 184.50 2097-07-04 7.903907
-## 130 pH_depthavg  SEBS 2098 183.50 2098-07-03 7.933488
-## 131 pH_depthavg  SEBS 2099 175.92 2099-06-25 7.883494
-##                                            sim                 gcmcmip   GCM
-## 126 ACLIMregion_B10K-K20P19_CMIP6_miroc_ssp126 B10K-K20P19_CMIP6_miroc miroc
-## 127 ACLIMregion_B10K-K20P19_CMIP6_miroc_ssp126 B10K-K20P19_CMIP6_miroc miroc
-## 128 ACLIMregion_B10K-K20P19_CMIP6_miroc_ssp126 B10K-K20P19_CMIP6_miroc miroc
-## 129 ACLIMregion_B10K-K20P19_CMIP6_miroc_ssp126 B10K-K20P19_CMIP6_miroc miroc
-## 130 ACLIMregion_B10K-K20P19_CMIP6_miroc_ssp126 B10K-K20P19_CMIP6_miroc miroc
-## 131 ACLIMregion_B10K-K20P19_CMIP6_miroc_ssp126 B10K-K20P19_CMIP6_miroc miroc
-##       scen sim_type units             bc     GCM_scen      GCM_scen_sim
-## 126 ssp126     proj       bias corrected miroc_ssp126 miroc_ssp126_proj
-## 127 ssp126     proj       bias corrected miroc_ssp126 miroc_ssp126_proj
-## 128 ssp126     proj       bias corrected miroc_ssp126 miroc_ssp126_proj
-## 129 ssp126     proj       bias corrected miroc_ssp126 miroc_ssp126_proj
-## 130 ssp126     proj       bias corrected miroc_ssp126 miroc_ssp126_proj
-## 131 ssp126     proj       bias corrected miroc_ssp126 miroc_ssp126_proj
-##             CMIP   type
-## 126 K20P19_CMIP6 annual
-## 127 K20P19_CMIP6 annual
-## 128 K20P19_CMIP6 annual
-## 129 K20P19_CMIP6 annual
-## 130 K20P19_CMIP6 annual
-## 131 K20P19_CMIP6 annual
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
 \NormalTok{pp  }\OtherTok{\textless{}{-}}  \FunctionTok{ggplot}\NormalTok{(newdat) }\SpecialCharTok{+}
         \FunctionTok{geom\_line}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{mnDate,}\AttributeTok{y=}\NormalTok{mn\_val,}\AttributeTok{color=}\NormalTok{ GCM\_scen, }\AttributeTok{linetype =}\NormalTok{ basin),}
                     \AttributeTok{alpha =} \FloatTok{0.6}\NormalTok{,}\AttributeTok{show.legend =} \ConstantTok{FALSE}\NormalTok{) }\SpecialCharTok{+}
@@ -1068,7 +938,7 @@ SEBS''}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{center}\includegraphics{ACLIM2_quickStart_files/figure-latex/unnamed-chunk-7-2} \end{center}
+\begin{center}\includegraphics{ACLIM2_quickStart_files/figure-latex/ts-2} \end{center}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1077,7 +947,7 @@ SEBS''}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{center}\includegraphics{ACLIM2_quickStart_files/figure-latex/unnamed-chunk-8-1} \end{center}
+\begin{center}\includegraphics{ACLIM2_quickStart_files/figure-latex/unnamed-chunk-5-1} \end{center}
 
 \hypertarget{monthly-indices-andy}{%
 \subsection{monthly indices (Andy)}\label{monthly-indices-andy}}
@@ -1122,7 +992,8 @@ SEBS''}
 \begin{Shaded}
 \begin{Highlighting}[]
   \CommentTok{\# concat the hind and fut runs by removing years from projection}
-\NormalTok{  maxDin }\OtherTok{\textless{}{-}} \FunctionTok{max}\NormalTok{(}\FunctionTok{as.vector}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{dat}\SpecialCharTok{\%\textgreater{}\%}\NormalTok{dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(sim\_type}\SpecialCharTok{==}\StringTok{"hind"}\NormalTok{)}\SpecialCharTok{\%\textgreater{}\%}\NormalTok{dplyr}\SpecialCharTok{::}\FunctionTok{select}\NormalTok{(mnDate))[[}\DecValTok{1}\NormalTok{]])}
+\NormalTok{  maxDin }\OtherTok{\textless{}{-}} \FunctionTok{max}\NormalTok{(}\FunctionTok{as.vector}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{dat}\SpecialCharTok{\%\textgreater{}\%}\NormalTok{dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(sim\_type}\SpecialCharTok{==}\StringTok{"hind"}\NormalTok{)}\SpecialCharTok{\%\textgreater{}\%}
+                            \FunctionTok{ungroup}\NormalTok{()}\SpecialCharTok{\%\textgreater{}\%}\NormalTok{dplyr}\SpecialCharTok{::}\FunctionTok{select}\NormalTok{(mnDate))[[}\DecValTok{1}\NormalTok{]])}
   
 \NormalTok{  newdat }\OtherTok{\textless{}{-}} \FunctionTok{stitchTS}\NormalTok{(}\AttributeTok{dat =}\NormalTok{ df}\SpecialCharTok{$}\NormalTok{dat,}
                    \AttributeTok{maxD  =}\NormalTok{ maxDin)}
@@ -1160,7 +1031,7 @@ SEBS''}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{center}\includegraphics{ACLIM2_quickStart_files/figure-latex/unnamed-chunk-9-1} \end{center}
+\begin{center}\includegraphics{ACLIM2_quickStart_files/figure-latex/unnamed-chunk-6-1} \end{center}
 
 \hypertarget{weekly-indices-jon}{%
 \subsection{weekly indices (Jon)}\label{weekly-indices-jon}}
@@ -1195,7 +1066,15 @@ SEBS''}
 \begin{Shaded}
 \begin{Highlighting}[]
   \FunctionTok{head}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{dat)}
+  
+  \FunctionTok{ggplot}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{dat}\SpecialCharTok{\%\textgreater{}\%}\FunctionTok{filter}\NormalTok{(basin}\SpecialCharTok{==}\StringTok{"SEBS"}\NormalTok{))}\SpecialCharTok{+} \FunctionTok{geom\_line}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x=}\NormalTok{jday, }\AttributeTok{y=}\NormalTok{ mn\_val, }\AttributeTok{color=}\FunctionTok{factor}\NormalTok{(year)))}\SpecialCharTok{+}\FunctionTok{facet\_wrap}\NormalTok{(GCM\_scen\_sim}\SpecialCharTok{\textasciitilde{}}\NormalTok{.)}
+\end{Highlighting}
+\end{Shaded}
 
+\begin{center}\includegraphics{ACLIM2_quickStart_files/figure-latex/sizespec-2} \end{center}
+
+\begin{Shaded}
+\begin{Highlighting}[]
   \CommentTok{\# concat the hind and fut runs by removing years from projection}
 \NormalTok{  maxDin }\OtherTok{\textless{}{-}} \FunctionTok{max}\NormalTok{(}\FunctionTok{as.vector}\NormalTok{(df}\SpecialCharTok{$}\NormalTok{dat}\SpecialCharTok{\%\textgreater{}\%}\NormalTok{dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(sim\_type}\SpecialCharTok{==}\StringTok{"hind"}\NormalTok{)}\SpecialCharTok{\%\textgreater{}\%}\NormalTok{dplyr}\SpecialCharTok{::}\FunctionTok{select}\NormalTok{(mnDate))[[}\DecValTok{1}\NormalTok{]])}
   
@@ -1226,7 +1105,7 @@ SEBS''}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{center}\includegraphics{ACLIM2_quickStart_files/figure-latex/sizespec-2} \end{center}
+\begin{center}\includegraphics{ACLIM2_quickStart_files/figure-latex/sizespec-3} \end{center}
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1235,7 +1114,7 @@ SEBS''}
 \end{Highlighting}
 \end{Shaded}
 
-\begin{center}\includegraphics{ACLIM2_quickStart_files/figure-latex/unnamed-chunk-10-1} \end{center}
+\begin{center}\includegraphics{ACLIM2_quickStart_files/figure-latex/unnamed-chunk-7-1} \end{center}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -2141,6 +2020,7 @@ want to). To explore the indices skep to the next section.
                         \AttributeTok{regnm    =} \StringTok{"ACLIMregion"}\NormalTok{,}
                         \AttributeTok{srvynm    =} \StringTok{"ACLIMsurveyrep"}\NormalTok{,}
                         \AttributeTok{normlist\_IN =}\NormalTok{ normlist,}
+                        \AttributeTok{usehist    =} \ConstantTok{TRUE}\NormalTok{,}
                         \AttributeTok{sim\_listIN =}\NormalTok{ sim\_list[}\SpecialCharTok{{-}}\FunctionTok{grep}\NormalTok{(}\StringTok{"historical"}\NormalTok{,sim\_list)]))}
     
      \ControlFlowTok{if}\NormalTok{(}\StringTok{"CMIP6\_K20P19\_Indices"}\SpecialCharTok{\%in\%}\FunctionTok{ls}\NormalTok{())\{                 }
@@ -2261,203 +2141,6 @@ want to). To explore the indices skep to the next section.
 \NormalTok{        \}}
       \FunctionTok{gc}\NormalTok{()}
 \NormalTok{    \}}
-    \ControlFlowTok{if}\NormalTok{(}\DecValTok{1}\SpecialCharTok{==}\DecValTok{10}\NormalTok{)\{}
-      \FunctionTok{save}\NormalTok{(CMIP6\_Indices, }\AttributeTok{file =} \StringTok{"Data/out/CMIP6\_Indices\_List.Rdata"}\NormalTok{)}
-      \FunctionTok{save}\NormalTok{(CMIP5\_K20\_Indices, }\AttributeTok{file =} \StringTok{"Data/out/CMIP5\_K20\_Indices\_List.Rdata"}\NormalTok{)}
-      \FunctionTok{save}\NormalTok{(CMIP5\_H16\_Indices, }\AttributeTok{file =} \StringTok{"Data/out/CMIP5\_H16\_Indices\_List.Rdata"}\NormalTok{)}
-\NormalTok{    \}}
-\end{Highlighting}
-\end{Shaded}
-
-\hypertarget{appendix-b-create-bias-correct-aclim2-indices-to-operational-hindcast}{%
-\section{APPENDIX B: Create \& bias correct ACLIM2 indices to
-operational
-hindcast}\label{appendix-b-create-bias-correct-aclim2-indices-to-operational-hindcast}}
-
-The following code shows how the ACLIM2 indices and bias correction was
-done. You do not need to re-run this (it is included so you can if you
-want to). To explore the indices skep to the next section.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-    \CommentTok{\# {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}
-    \CommentTok{\# SETUP WORKSPACE}
-    \CommentTok{\# rm(list=ls())}
-    \CommentTok{\# setwd("../ACLIM2")}
-    \CommentTok{\# rm(list=ls()); setwd("D:/GitHub\_cloud/ACLIM2")}
-    \CommentTok{\# loads packages, data, setup, etc.}
-\NormalTok{    tmstp       }\OtherTok{\textless{}{-}} \StringTok{"2022\_10\_17"}
-    \FunctionTok{suppressMessages}\NormalTok{(}\FunctionTok{source}\NormalTok{(}\StringTok{"R/make.R"}\NormalTok{))}
-\NormalTok{    tmstp       }\OtherTok{\textless{}{-}} \StringTok{"2022\_10\_17"}
-\NormalTok{    Rdata\_path  }\OtherTok{\textless{}{-}} \FunctionTok{paste0}\NormalTok{(}\StringTok{"../../romsnpz/"}\NormalTok{,tmstp,}\StringTok{"\_Rdata"}\NormalTok{)}
-\NormalTok{    main        }\OtherTok{\textless{}{-}} \FunctionTok{getwd}\NormalTok{()  }\CommentTok{\#"\textasciitilde{}/GitHub\_new/ACLIM2"}
-\NormalTok{    tmstamp1    }\OtherTok{\textless{}{-}} \FunctionTok{format}\NormalTok{(}\FunctionTok{Sys.time}\NormalTok{(), }\StringTok{"\%Y\%m\%d"}\NormalTok{)}
-    \CommentTok{\# tmstamp1  \textless{}{-} "20220428"}
-    
-  \CommentTok{\#  rd\_path   \textless{}{-} "Data/out/operationalHindForcast" }
-\NormalTok{    rd\_path   }\OtherTok{\textless{}{-}} \FunctionTok{file.path}\NormalTok{(}\FunctionTok{getwd}\NormalTok{(),Rdata\_path,}\StringTok{"roms\_for\_public"}\NormalTok{)}
-   
-    
-    
-\NormalTok{    update\_OPhind  }\OtherTok{\textless{}{-}} \ConstantTok{FALSE}   \CommentTok{\# set to true to update hind and hindS; needed annually}
-    \CommentTok{\# update\_proj  \textless{}{-} TRUE   \# set to true to update fut; not needed}
-    \CommentTok{\# update\_hist  \textless{}{-} TRUE   \# set to true to update fut; not needed}
-    \CommentTok{\#  }
-    \CommentTok{\# the reference years for bias correcting in R/setup.R}
-\NormalTok{    ref\_years }
-    
-    \CommentTok{\# the year to z{-}score scale / delta in R/setup.R}
-\NormalTok{    deltayrs }
-    \CommentTok{\# the year to z{-}score scale / delta in R/setup.R}
-\NormalTok{    deltayrs }
-\NormalTok{    data\_path}
-    
-    \CommentTok{\#load(file.path(Rdata\_path,"../weekly\_vars\_C.Rdata"))}
-    \FunctionTok{load}\NormalTok{(}\FunctionTok{file.path}\NormalTok{(Rdata\_path,}\StringTok{"weekly\_vars.Rdata"}\NormalTok{))}
-    \CommentTok{\#load(file.path(Rdata\_path,"../srvy\_vars\_C.Rdata"))}
-    \FunctionTok{load}\NormalTok{(}\FunctionTok{file.path}\NormalTok{(Rdata\_path,}\StringTok{"srvy\_vars.Rdata"}\NormalTok{))}
-    
-    \FunctionTok{load}\NormalTok{(}\FunctionTok{file.path}\NormalTok{(Rdata\_path,}\StringTok{"l3srvy\_varlist.Rdata"}\NormalTok{))}
-    \FunctionTok{load}\NormalTok{(}\FunctionTok{file.path}\NormalTok{(Rdata\_path,}\StringTok{"l3wk\_varlist.Rdata"}\NormalTok{))}
-    \FunctionTok{load}\NormalTok{(}\FunctionTok{file.path}\NormalTok{(Rdata\_path,}\StringTok{"l3srvy\_varlist\_H16.Rdata"}\NormalTok{))}
-    \FunctionTok{load}\NormalTok{(}\FunctionTok{file.path}\NormalTok{(Rdata\_path,}\StringTok{"l3wk\_varlist\_H16.Rdata"}\NormalTok{))}
-    
-    \FunctionTok{load}\NormalTok{(}\FunctionTok{file.path}\NormalTok{(Rdata\_path,}\StringTok{"l2\_vars.Rdata"}\NormalTok{))}
-    
-    
-    
-    \ControlFlowTok{if}\NormalTok{(update\_OPhind)}
-      \FunctionTok{source}\NormalTok{(}\StringTok{"R/sub\_scripts/get\_OpHindcast.R"}\NormalTok{)}
-    \ControlFlowTok{if}\NormalTok{(}\SpecialCharTok{!}\NormalTok{update\_OPhind)\{}
-      \FunctionTok{load}\NormalTok{(}\FunctionTok{file.path}\NormalTok{(rd\_path,}\StringTok{"l3wk\_varlistOP.Rdata"}\NormalTok{))}
-      \FunctionTok{load}\NormalTok{(}\FunctionTok{file.path}\NormalTok{(rd\_path,}\StringTok{"l3srvy\_varlistOP.Rdata"}\NormalTok{))}
-\NormalTok{    \}}
-\NormalTok{    l3wk\_varlistOP}
-\NormalTok{    l3srvy\_varlistOP}
-    
-\NormalTok{    vl1   }\OtherTok{\textless{}{-}}\NormalTok{ l3srvy\_varlistOP }\CommentTok{\#srvy\_vars[!srvy\_vars\%in\%rm\_var\_list]}
-\NormalTok{    vl2   }\OtherTok{\textless{}{-}}\NormalTok{ l3wk\_varlistOP}\CommentTok{\# weekly\_vars[!weekly\_vars\%in\%rm\_wk\_list]}
-    
-    \CommentTok{\# add in largeZoop (gets generated in make\_indices\_region\_new.R)}
-\NormalTok{    vl }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\FunctionTok{unique}\NormalTok{(}\FunctionTok{c}\NormalTok{(vl1,vl2)),}\StringTok{"largeZoop\_integrated"}\NormalTok{)}
-   
-    \CommentTok{\# Identify which variables would be normally }
-    \CommentTok{\# distributed (i.e., can have negative values)}
-\NormalTok{     normvl }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{( vl[}\FunctionTok{grep}\NormalTok{(}\StringTok{"pH"}\NormalTok{,vl)],}
-\NormalTok{                  vl[}\FunctionTok{grep}\NormalTok{(}\StringTok{"temp"}\NormalTok{,vl)],}
-\NormalTok{                  vl[}\FunctionTok{grep}\NormalTok{(}\StringTok{"vNorth"}\NormalTok{,vl)],}
-\NormalTok{                  vl[}\FunctionTok{grep}\NormalTok{(}\StringTok{"uEast"}\NormalTok{,vl)])}
-
-\NormalTok{    normlist }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{var =}\NormalTok{ vl, }\AttributeTok{lognorm =} \ConstantTok{TRUE}\NormalTok{)}
-\NormalTok{    normlist}\SpecialCharTok{$}\NormalTok{lognorm[normlist}\SpecialCharTok{$}\NormalTok{var}\SpecialCharTok{\%in\%}\NormalTok{normvl] }\OtherTok{\textless{}{-}} \ConstantTok{FALSE}
-    
-
-    \CommentTok{\# generate indices and bias corrected projections }
-    \CommentTok{\# This takes approx 30 mins each}
-    
-\NormalTok{    gcmcmipL }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"B10K{-}K20P19\_CMIP6\_miroc"}\NormalTok{,}
-                  \StringTok{"B10K{-}K20P19\_CMIP6\_gfdl"}\NormalTok{,}
-                  \StringTok{"B10K{-}K20P19\_CMIP6\_cesm"}\NormalTok{) }
-    
-\NormalTok{     CMIP6\_K20P19\_Indices\_operational }\OtherTok{\textless{}{-}} \FunctionTok{suppressMessages}\NormalTok{(}
-                        \FunctionTok{makeACLIM2\_Indices}\NormalTok{(}
-                        \AttributeTok{BC\_target =} \StringTok{"mn\_val"}\NormalTok{,}
-                        \AttributeTok{hind\_sim  =}  \StringTok{"OperationalHindcast"}\NormalTok{,}
-                        \AttributeTok{histLIST  =} \FunctionTok{paste0}\NormalTok{(gcmcmipL,}\StringTok{"\_historical"}\NormalTok{),}
-                        \AttributeTok{gcmcmipLIST =}\NormalTok{ gcmcmipL, }
-                        \AttributeTok{scenIN    =} \FunctionTok{c}\NormalTok{(}\StringTok{"ssp126"}\NormalTok{,}\StringTok{"ssp585"}\NormalTok{),}
-                        \AttributeTok{Rdata\_pathIN =} \FunctionTok{file.path}\NormalTok{(Rdata\_path,}\StringTok{"roms\_for\_public"}\NormalTok{),}
-                        \AttributeTok{regnm    =} \StringTok{"ACLIMregion"}\NormalTok{,}
-                        \AttributeTok{srvynm    =} \StringTok{"ACLIMsurveyrep"}\NormalTok{,}
-                        \AttributeTok{normlist\_IN =}\NormalTok{ normlist,}
-                        \AttributeTok{sim\_listIN =}\NormalTok{ sim\_list[}\SpecialCharTok{{-}}\FunctionTok{grep}\NormalTok{(}\StringTok{"historical"}\NormalTok{,sim\_list)]))}
-    
-     \ControlFlowTok{if}\NormalTok{(}\StringTok{"CMIP6\_K20P19\_Indices\_operational"}\SpecialCharTok{\%in\%}\FunctionTok{ls}\NormalTok{())\{                 }
-\NormalTok{      saved }\OtherTok{\textless{}{-}} \ConstantTok{FALSE}
-\NormalTok{      saved }\OtherTok{\textless{}{-}} \FunctionTok{save\_indices}\NormalTok{(}\AttributeTok{flIN =}\NormalTok{ CMIP6\_K20P19\_Indices\_operational, }
-                   \AttributeTok{subfl =} \StringTok{"allEBS\_means"}\NormalTok{,}
-                   \AttributeTok{post\_txt =} \StringTok{"\_mn"}\NormalTok{,}
-                   \AttributeTok{CMIP\_fdlr =}\StringTok{"CMIP6\_K20P19\_Indices\_operational"}\NormalTok{)}
-\NormalTok{      fl }\OtherTok{\textless{}{-}} \StringTok{"Data/out/CMIP6\_K20P19\_Indices\_operational\_list.Rdata"}
-      
-      \ControlFlowTok{if}\NormalTok{(}\FunctionTok{file.exists}\NormalTok{(fl)) }\FunctionTok{file.remove}\NormalTok{(fl)}
-      \FunctionTok{save}\NormalTok{(CMIP6\_K20P19\_Indices\_operational, }\AttributeTok{file =}\NormalTok{ fl)}
-       \ControlFlowTok{if}\NormalTok{(saved)\{}
-        \FunctionTok{rm}\NormalTok{(CMIP6\_K20P19\_Indices\_operational)\}}\ControlFlowTok{else}\NormalTok{\{}
-          \FunctionTok{stop}\NormalTok{(}\StringTok{"Indices not saved!"}\NormalTok{)}
-\NormalTok{        \}}
-      \FunctionTok{gc}\NormalTok{()}
-\NormalTok{     \}}
-     
-    \CommentTok{\# 30 layer model:}
-    \CommentTok{\# CMIP5 K20P19}
-\NormalTok{    gcmcmipL2 }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"B10K{-}K20P19\_CMIP5\_MIROC"}\NormalTok{,}
-                   \StringTok{"B10K{-}K20P19\_CMIP5\_GFDL"}\NormalTok{,}
-                   \StringTok{"B10K{-}K20P19\_CMIP5\_CESM"}\NormalTok{)}
-    
-\NormalTok{    CMIP5\_K20P19\_Indices\_operational }\OtherTok{\textless{}{-}} \FunctionTok{suppressMessages}\NormalTok{(}
-                        \FunctionTok{makeACLIM2\_Indices}\NormalTok{(}
-                        \AttributeTok{BC\_target =} \StringTok{"mn\_val"}\NormalTok{,}
-                        \AttributeTok{hind\_sim  =}  \StringTok{"OperationalHindcast"}\NormalTok{,}
-                        \AttributeTok{histLIST  =}\NormalTok{ gcmcmipL2,}
-                        \AttributeTok{gcmcmipLIST =}\NormalTok{ gcmcmipL2,}
-                        \AttributeTok{scenIN    =} \FunctionTok{c}\NormalTok{(}\StringTok{"rcp45"}\NormalTok{,}\StringTok{"rcp85"}\NormalTok{),}
-                        \AttributeTok{normlist\_IN =}\NormalTok{ normlist,}
-                        \AttributeTok{Rdata\_pathIN =} \FunctionTok{file.path}\NormalTok{(Rdata\_path,}
-                                                 \StringTok{"roms\_for\_public"}\NormalTok{),}
-                        \AttributeTok{regnm    =} \StringTok{"ACLIMregion"}\NormalTok{,}
-                        \AttributeTok{srvynm    =} \StringTok{"ACLIMsurveyrep"}\NormalTok{,}
-                        \AttributeTok{sim\_listIN =}\NormalTok{ sim\_list[}\SpecialCharTok{{-}}\FunctionTok{grep}\NormalTok{(}\StringTok{"historical"}\NormalTok{,sim\_list)]))}
-    
-    \ControlFlowTok{if}\NormalTok{(}\StringTok{"CMIP5\_K20P19\_Indices\_operational"}\SpecialCharTok{\%in\%}\FunctionTok{ls}\NormalTok{())\{}
-\NormalTok{      saved }\OtherTok{\textless{}{-}} \ConstantTok{FALSE}
-\NormalTok{      saved }\OtherTok{\textless{}{-}} \FunctionTok{save\_indices}\NormalTok{(}\AttributeTok{flIN =}\NormalTok{ CMIP5\_K20P19\_Indices\_operational, }
-                     \AttributeTok{subfl =} \StringTok{"allEBS\_means"}\NormalTok{,}
-                     \AttributeTok{post\_txt =} \StringTok{"\_mn"}\NormalTok{,}
-                     \AttributeTok{CMIP\_fdlr =}\StringTok{"CMIP5\_K20P19\_Indices\_operational"}\NormalTok{)}
-        
-\NormalTok{        fl }\OtherTok{\textless{}{-}} \StringTok{"Data/out/CMIP5\_K20P19\_Indices\_operational\_list.Rdata"}
-        \ControlFlowTok{if}\NormalTok{(}\FunctionTok{file.exists}\NormalTok{(fl)) }\FunctionTok{file.remove}\NormalTok{(fl)}
-        \FunctionTok{save}\NormalTok{(CMIP5\_K20P19\_Indices\_operational, }\AttributeTok{file =}\NormalTok{ fl)}
-        
-        \ControlFlowTok{if}\NormalTok{(saved)\{}
-        \FunctionTok{rm}\NormalTok{(CMIP5\_K20P19\_Indices\_operational)\}}\ControlFlowTok{else}\NormalTok{\{}
-          \FunctionTok{stop}\NormalTok{(}\StringTok{"Indices not saved!"}\NormalTok{)}
-\NormalTok{        \}}
-        \FunctionTok{gc}\NormalTok{()}
-\NormalTok{    \}}
-
-   \CommentTok{\# 10 layer model:}
-    \CommentTok{\# CMIP5 H16}
-\NormalTok{    gcmcmipL2 }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"B10K{-}H16\_CMIP5\_MIROC"}\NormalTok{,}
-                   \StringTok{"B10K{-}H16\_CMIP5\_GFDL"}\NormalTok{,}
-                   \StringTok{"B10K{-}H16\_CMIP5\_CESM"}\NormalTok{) }
-\NormalTok{    CMIP5\_H16\_Indices\_operational }\OtherTok{\textless{}{-}} \FunctionTok{suppressMessages}\NormalTok{(}
-                        \FunctionTok{makeACLIM2\_Indices}\NormalTok{(}
-                        \AttributeTok{BC\_target =} \StringTok{"mn\_val"}\NormalTok{,}
-                        \AttributeTok{hind\_sim  =}  \StringTok{"OperationalHindcast"}\NormalTok{,}
-                        \AttributeTok{histLIST  =}\NormalTok{ gcmcmipL2,}
-                        \AttributeTok{scenIN    =} \FunctionTok{c}\NormalTok{(}\StringTok{"rcp45"}\NormalTok{,}\StringTok{"rcp85"}\NormalTok{),}
-                        \AttributeTok{gcmcmipLIST =}\NormalTok{ gcmcmipL2,}
-                        \AttributeTok{Rdata\_pathIN =} \FunctionTok{file.path}\NormalTok{(Rdata\_path,}\StringTok{"roms\_for\_public"}\NormalTok{),}
-                        \AttributeTok{sim\_listIN =}\NormalTok{ sim\_list[}\SpecialCharTok{{-}}\FunctionTok{grep}\NormalTok{(}\StringTok{"historical"}\NormalTok{,sim\_list)]))}
-    \ControlFlowTok{if}\NormalTok{(}\StringTok{"CMIP5\_H16\_Indices\_operational"}\SpecialCharTok{\%in\%}\FunctionTok{ls}\NormalTok{())\{}
-\NormalTok{      saved }\OtherTok{\textless{}{-}} \ConstantTok{FALSE}
-\NormalTok{      saved }\OtherTok{\textless{}{-}} \FunctionTok{save\_indices}\NormalTok{(}\AttributeTok{flIN =}\NormalTok{ CMIP5\_H16\_Indices\_operational, }
-                   \AttributeTok{subfl =} \StringTok{"allEBS\_means"}\NormalTok{,}
-                   \AttributeTok{post\_txt =} \StringTok{"\_mn"}\NormalTok{,}
-                   \AttributeTok{CMIP\_fdlr =}\StringTok{"CMIP5\_H16\_Indices\_operational"}\NormalTok{)}
-     
-\NormalTok{      fl }\OtherTok{\textless{}{-}} \StringTok{"Data/out/CMIP5\_H16\_Indices\_operational\_list.Rdata"}
-      \ControlFlowTok{if}\NormalTok{(}\FunctionTok{file.exists}\NormalTok{(fl)) }\FunctionTok{file.remove}\NormalTok{(fl)}
-      \FunctionTok{save}\NormalTok{(CMIP5\_H16\_Indices\_operational, }\AttributeTok{file =}\NormalTok{ fl)}
-      \ControlFlowTok{if}\NormalTok{(saved)\{}
-        \FunctionTok{rm}\NormalTok{(CMIP5\_H16\_Indices\_operational)\}}\ControlFlowTok{else}\NormalTok{\{}
-          \FunctionTok{stop}\NormalTok{(}\StringTok{"Indices not saved!"}\NormalTok{)}
-\NormalTok{        \}}
-      \FunctionTok{gc}\NormalTok{()}
-\NormalTok{    \}}
-    
     \ControlFlowTok{if}\NormalTok{(}\DecValTok{1}\SpecialCharTok{==}\DecValTok{10}\NormalTok{)\{}
       \FunctionTok{save}\NormalTok{(CMIP6\_Indices, }\AttributeTok{file =} \StringTok{"Data/out/CMIP6\_Indices\_List.Rdata"}\NormalTok{)}
       \FunctionTok{save}\NormalTok{(CMIP5\_K20\_Indices, }\AttributeTok{file =} \StringTok{"Data/out/CMIP5\_K20\_Indices\_List.Rdata"}\NormalTok{)}
