@@ -16,6 +16,7 @@ library("RColorBrewer")
 #data.path <- "../../../Data/out"
 data.path <- "data"
 plothist <- TRUE
+print(getwd())
 load(file.path(data.path,"K20P19_CMIP6/allEBS_means/ACLIM_annual_fut_mn.Rdata"))
 plotvars   <- unique(ACLIM_annual_fut$var)
 gcms       <- unique(ACLIM_annual_fut$GCM)
@@ -76,17 +77,20 @@ input$plotvarIN    <- "temp_bottom5m"
 input$plotbasinIN  <- "SEBS"
 input$facet_rowIN  <- "bc"
 input$facet_colIN  <- "scen"
+input$plothist     <- FALSE
 }
 # Define server logic required to draw a histogram
 server <- shinyServer(function(input, output, session) {
 
-    load(file.path(data.path,"K20P19_CMIP6_C/allEBS_means/ACLIM_annual_fut_mn.Rdata"))
+    load(file.path(data.path,"K20P19_CMIP6/allEBS_means/ACLIM_annual_fut_mn.Rdata"))
     plotvars <- unique(ACLIM_annual_fut$var)
     gcms     <- unique(ACLIM_annual_fut$GCM)
     CMIPs    <- unique(ACLIM_annual_fut$CMIP)
     scens    <- unique(ACLIM_annual_fut$scen)
+    scens    <- c("ssp126","ssp585","rcp45","rcp85")
     basins   <- unique(ACLIM_annual_fut$basin)
     months   <- seasons <- weeks <-"all"
+    opts     <- dir("data")
 
     output$resetable_input <- renderUI({
          times  <-  input$reset_input
@@ -96,8 +100,9 @@ server <- shinyServer(function(input, output, session) {
          # seasons <-  outdat()$seasons
 
         div(id=letters[(times %% length(letters)) + 1],
+            selectInput("plotbasinIN","basin",selected=basins[2],choices=basins, multiple=T),
             selectInput("plothist","Plot historical runs too?",
-                        selected="TRUE",choices=c(TRUE,FALSE), multiple=F),
+                        selected="FALSE",choices=c(TRUE,FALSE), multiple=F),
             selectInput("removeyr1","Remove first year of projection ( burn in)",
                         selected="TRUE",choices=c(TRUE,FALSE), multiple=F),
              selectInput("typeIN","ACLIM2 Index Type",selected=c("annual"),
@@ -106,12 +111,12 @@ server <- shinyServer(function(input, output, session) {
             selectInput("monthIN","Month",selected=months,choices=months, multiple=T),
             selectInput("weekIN","Week",selected=weeks,choices=weeks, multiple=T),
             selectInput("SeasonIN","Season",selected=seasons,choices=seasons, multiple=T),
-            selectInput("CMIPIN","CMIP",selected=c("K20P19_CMIP6_C"),choices=c("K20P19_CMIP6_C","K20P19_CMIP6"), multiple=F), #"K20P19_CMIP5_C","K20P19_CMIP5","H16_CMIP5"
+            selectInput("CMIPIN","Model & CMIP",selected=c("K20P19_CMIP6"),choices=opts, multiple=F), #"K20P19_CMIP5_C","K20P19_CMIP5","H16_CMIP5"
             selectInput("bcIN","bias corrected or raw",selected=c("raw","bias corrected"),choices=c("raw","bias corrected"), multiple=T),
             selectInput("GCMIN","GCM",selected=gcms,choices=gcms, multiple=T),
-            selectInput("scenIN","climate scenario",selected=scens,choices=scens, multiple=T),
+            selectInput("scenIN","climate scenario",selected=c("ssp126","ssp585"),choices=scens, multiple=T),
             sliderInput("jday_rangeIN", label = h3("Julian Day"), min = 0, max = 365, value = c(0, 365)),
-            selectInput("plotbasinIN","basin",selected=basins[2],choices=basins, multiple=T),
+            
             selectInput("facet_rowIN","row",selected=c("bc"),choices=c("bc","basin","scen"), multiple=F),
             selectInput("facet_colIN","col",selected=c("scen"),choices=c("bc","basin","scen"), multiple=F),
             hr()
@@ -121,6 +126,7 @@ server <- shinyServer(function(input, output, session) {
 
     outdat <- reactive({
         typeIN       <- input$typeIN
+        plothist     <- input$plothist
         bcIN         <- input$bcIN
         GCMIN        <- input$GCMIN
         scenIN       <- input$scenIN
@@ -132,13 +138,19 @@ server <- shinyServer(function(input, output, session) {
         
         for(c in 1:length(input$CMIPIN)){
             load(file.path(data.path,paste0(input$CMIPIN[c],"/allEBS_means/ACLIM_",typeIN,"_hind_mn.Rdata")))
-            load(file.path(data.path,paste0(input$CMIPIN[c],"/allEBS_means/ACLIM_",typeIN,"_hist_mn.Rdata")))
+            if(plothist) load(file.path(data.path,paste0(input$CMIPIN[c],"/allEBS_means/ACLIM_",typeIN,"_hist_mn.Rdata")))
             load(file.path(data.path,paste0(input$CMIPIN[c],"/allEBS_means/ACLIM_",typeIN,"_fut_mn.Rdata")))
             
+            
             eval(parse(text = paste0("dhindIN <- ACLIM_",typeIN,"_hind")))
-            eval(parse(text = paste0("dhistIN <- ACLIM_",typeIN,"_hist")))
+            if(plothist)
+             eval(parse(text = paste0("dhistIN <- ACLIM_",typeIN,"_hist")))
             eval(parse(text = paste0("dfut <- ACLIM_",typeIN,"_fut")))
             plotvars   <- unique(dfut$var)
+                dfut$GCM <- gsub("MIROC", "miroc",dfut$GCM)
+                dfut$GCM <- gsub("GFDL", "gfdl",dfut$GCM)
+                dfut$GCM <- gsub("CESM", "cesm",dfut$GCM)
+                
             gcms       <- unique(dfut$GCM)
             CMIPs      <- unique(dfut$CMIP)
             scens      <- unique(dfut$scen)
@@ -171,35 +183,33 @@ server <- shinyServer(function(input, output, session) {
                
                 if(s ==1){
                     dhind <- dhindIN%>%dplyr::mutate(scen = scenIN[s],gcmcmip="hind",GCM ="hind")
-                    dhist <- dhistIN%>%dplyr::mutate(scen = scenIN[s],gcmcmip="hist")
+                    if(plothist) dhist <- dhistIN%>%dplyr::mutate(scen = scenIN[s],gcmcmip="hist")
                 }
                 if(s>1){
                     dhind <- rbind(dhind,dhindIN%>%dplyr::mutate(scen = scenIN[s],gcmcmip="hind",GCM ="hind"))
-                    dhist <- rbind(dhist,dhistIN%>%dplyr::mutate(scen = scenIN[s],gcmcmip="hist"))
+                    if(plothist) dhist <- rbind(dhist,dhistIN%>%dplyr::mutate(scen = scenIN[s],gcmcmip="hist"))
                 }
             }
 
             hind     <- dhind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, jday,mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)
-            hist     <- dhist%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, jday,mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)
+            if(plothist) hist     <- dhist%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, jday,mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)
             fut      <- dfut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, jday,mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)
            
-
-            plotdat    <- rbind(hind,hist,fut)%>%mutate(bc = "raw")
-            # print(head(plotdat))
-            # print(plotdat$GCM[1:3])
-            # print(plotdat$scen[1:3])
-
+            plotdat    <- rbind(hind,fut)%>%mutate(bc = "raw")
+            if(plothist) 
+              plotdat    <- rbind(hind,hist,fut)%>%mutate(bc = "raw")
+           
             hind_bc    <- dhind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, jday,mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)%>%mutate(bc="bias corrected")
             fut_bc     <- dfut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, jday,mnDate,val_biascorrected, sim,gcmcmip,GCM,scen,sim_type ,units)
             fut_bc     <- fut_bc%>%mutate(bc="bias corrected")%>%rename(mn_val = val_biascorrected)
-            fut_bc     <-rbind(hind_bc,fut_bc)
+            fut_bc     <- rbind(hind_bc,fut_bc)
 
             plotdat          <- rbind(plotdat,fut_bc)
             plotdat$bc       <- factor(plotdat$bc, levels =c("raw","bias corrected"))
             plotdat$GCM_scen <- paste0(plotdat$GCM,"_",plotdat$scen) 
 
             plotdat$GCM_scen_sim <- paste0(plotdat$GCM,"_",plotdat$scen,"_",plotdat$sim_type) 
-            plotdat$CMIP <- input$CMIPIN[c]
+            plotdat$CMIP         <- input$CMIPIN[c]
 
             if(c ==1 ){
                 plotdatout <- plotdat
@@ -215,8 +225,8 @@ server <- shinyServer(function(input, output, session) {
             scen%in%scenIN,GCM%in%gcmlist,
             bc%in%bcIN,
             dplyr::between(jday, jday_rangeIN[1], jday_rangeIN[2]))
-        if(!plothist)
-            plotdatout<- plotdatout%>%dplyr::filter(gcmcmip!="hist")
+        # if(!plothist)
+        #     plotdatout<- plotdatout%>%dplyr::filter(gcmcmip!="hist")
         units <- plotdatout$units[1]
 
         nyrs <- length(unique(plotdatout$year))

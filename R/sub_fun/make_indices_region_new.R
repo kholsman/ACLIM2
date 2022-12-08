@@ -32,7 +32,7 @@ make_indices_region<-function(
              sim)%>%
     dplyr::summarise(val =sum(val))%>%
     dplyr::mutate(var = "largeZoop_integrated",
-           long_name ="Total On-shelf 
+                  longname ="Total On-shelf 
              large zooplankton concentration, 
              integrated over depth (NCa, Eup)")
   
@@ -44,13 +44,14 @@ make_indices_region<-function(
              units,
              sim, val, var)
   
-  tmp_var$long_name <- srvy_var_def$longname[match(tmp_var$var,srvy_var_def$name)]
-  
+  #tmp_var$long_name <- srvy_var_def$longname[match(tmp_var$var,srvy_var_def$name)]
+  tmp_var <- tmp_var%>%left_join(srvy_var_def, by=c("units"="units","var"="name"))
   tmp_var<-rbind(tmp_var,
-                 tmp_var_zoop[,match(names(tmp_var),names(tmp_var_zoop))])
+                 data.frame(tmp_var_zoop)[,match(names(tmp_var),names(tmp_var_zoop))])
+  tmp_var <- tmp_var%>%rename(long_name=longname)
   
   tmp_var$date   <- tmp_var$time
-  tmptt <- strptime(as.Date(tmp_var$time),format="%Y-%m-%d")
+  tmptt          <- strptime(as.Date(tmp_var$time),format="%Y-%m-%d")
   
   #tmp_var$date   <- as.Date(tmp_var$time)
   # define some columns for year mo and julian day
@@ -66,7 +67,7 @@ make_indices_region<-function(
                              dplyr::group_by(strata,strata_area_km2, basin,units,season,
              yr, mo, wk,sim,long_name,var)%>%
               dplyr::summarise(
-                val= mean(val, na.rm=T),
+                val  = mean(val, na.rm=T),
                 jday = mean(jday, na.rm=T),
                 date = mean(jday, na.rm=T)))
               #date = mean(date, na.rm=T)))

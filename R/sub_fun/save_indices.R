@@ -13,18 +13,21 @@ save_indices <- function(
              "ACLIM_seasonal_hind",
              "ACLIM_monthly_hind",
              "ACLIM_weekly_hind",
+             "ACLIM_weekly_hind2",
              "ACLIM_surveyrep_hind",
              
              "ACLIM_annual_hist",
              "ACLIM_seasonal_hist",
              "ACLIM_monthly_hist",
              "ACLIM_weekly_hist",
+             "ACLIM_weekly_hist2",
              "ACLIM_surveyrep_hist",
              
              "ACLIM_annual_fut",
              "ACLIM_seasonal_fut",
              "ACLIM_monthly_fut",
              "ACLIM_weekly_fut",
+             "ACLIM_weekly_fut2",
              "ACLIM_surveyrep_fut")  ){
   
     cat("-- Files will be saved in",paste0("Data/out/",CMIP_fdlr,"/",subfl)," ....\n")

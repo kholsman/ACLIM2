@@ -42,6 +42,7 @@ convert2df_forecast<- function(ncIN,
       tmp$time      <- t[y]
       tmp$t         <- y
       tmp$val       <- as.vector(val[,,y])
+      tmp$long_name  <- ncIN$var[[eval(varIN)]]$longname
       if(y == 1) val_long <- tmp
       if(y !=1 ) val_long <- rbind(val_long,tmp)
     }

@@ -364,14 +364,12 @@ Now we can download a subset of the Level2 data (full 10KM Lat Lon re-gridded da
     
     # Simulation list:
     # --> --> Tinker:add additional projection scenarios here
-    sl <- c(hind, proj)
+    sl  <- c(hind, proj)
 
     # Currently available Level 2 variables
-    dl     <- proj_l2_datasets$dataset  # datasets
+    dl  <- proj_l2_datasets$dataset  # datasets
     
     # variables to pull from each data set
-    # --> --> Tinker: try subbing in other Integrated variables 
-    # (l2_info[["Integrated"]]$vars) into the third list vector 
     svl <- list(
       'Bottom 5m' = "temp",
       'Surface 5m' = "temp",

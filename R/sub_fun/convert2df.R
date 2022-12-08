@@ -14,7 +14,7 @@ convert2df <- function(ncIN, type=1,varIN = "temp_bottom5m",
     val      <- ncvar_get(ncIN, varid = varIN)
     unit_txt <- ncIN$var[[eval(varIN)]]$dim[[2]]$units
     mlt      <- get_mlt(unit_txt)$mlt
-    ntxt     <-  get_mlt(unit_txt)$ntxt
+    ntxt     <- get_mlt(unit_txt)$ntxt
     t        <- as.POSIXct(
                     ncIN$var[[eval(varIN)]]$dim[[2]]$vals*mlt, 
                        origin = substr(unit_txt,ntxt+1,ntxt+10),

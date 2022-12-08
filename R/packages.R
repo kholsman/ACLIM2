@@ -19,6 +19,7 @@ lib_list <- c(
     "readxl", 
     "tidyverse",
    "shiny",
+   "fuzzyjoin",
     #"usethis",
     
   # # these for ggplot mapping:

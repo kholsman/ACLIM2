@@ -17,6 +17,7 @@ get_var <- function(
   GCMIN     = c("miroc" ,"gfdl" , "cesm" ), #
   scenIN    = c("ssp126", "ssp585"),
   jday_rangeIN = c(0,365), #"
+  smoothed = T,
   plotbasin  = c("SEBS"),
   facet_rowIN  = "bc", #choices=c("bc","basin","scen")
   facet_colIN  = "scen", # ,"col",selected=c("scen"),choices=c("bc","basin","scen"), multiple=F),
@@ -27,6 +28,7 @@ get_var <- function(
     load(paste0("Data/out/",CMIPIN[c],"/allEBS_means/ACLIM_",typeIN,"_hind_mn.Rdata"))
     load(paste0("Data/out/",CMIPIN[c],"/allEBS_means/ACLIM_",typeIN,"_hist_mn.Rdata"))
     load(paste0("Data/out/",CMIPIN[c],"/allEBS_means/ACLIM_",typeIN,"_fut_mn.Rdata"))
+    if(smoothed)load(paste0("Data/out/",CMIPIN[c],"/allEBS_means/ACLIM_",typeIN,"_fut2_mn.Rdata"))
     
     eval(parse(text = paste0("dhindIN <- ACLIM_",typeIN,"_hind")))
     eval(parse(text = paste0("dhistIN <- ACLIM_",typeIN,"_hist")))
@@ -34,10 +36,11 @@ get_var <- function(
     #load(paste0("Data/out/",CMIP[c],"/allEBS_means/ACLIM_annual_fut_mn.Rdata"))
     #plotvars   <- unique(ACLIM_annual_hind$var)
     if(typeIN == "monthly"){
-      months <- unique(dhindIN$mo)
-      seasons <- unique(dhindIN$season)}
-    
-    
+     
+        months <- unique(dhindIN$mo)
+        seasons <- unique(dhindIN$season)
+        }
+
     if(typeIN == "seasonal"){
       seasons <- unique(dhindIN$season)}
     

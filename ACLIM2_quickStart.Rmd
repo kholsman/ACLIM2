@@ -3,14 +3,15 @@ title: "ACLIM2 CMIP6 ROMSNPZ Indices quick start guide"
 author: K. Holsman
 always_allow_html: true
 output:
-  html_document:
-    df_print: paged
-    toc: true
+  pdf_document:
+    toc: TRUE
     toc_depth: 3
-    number_sections: true
-    toc_float:
-      collapsed: false
-      smooth_scroll: true
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 5
+    highlight: tango
+    keep_tex: yes
+    latex_engine: xelatex
   header-includes:
   - \usepackage{knputenc}
   - \usepackage{unicode-math}
@@ -21,15 +22,14 @@ output:
     fig_caption: yes
     fig_width: 4
     keep_md: yes
-  pdf_document:
-    toc: TRUE
+  html_document:
+    df_print: paged
+    toc: true
     toc_depth: 3
-    fig_caption: yes
-    fig_height: 4
-    fig_width: 5
-    highlight: tango
-    keep_tex: yes
-    latex_engine: xelatex
+    number_sections: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
 #runtime: shiny
 ---
 
@@ -76,6 +76,11 @@ This set of commands, run within R, downloads the ACLIM2 repository and unpacks 
     file.rename(paste0(main_nm,"-main"), main_nm)
     setwd(main_nm)
     
+    
+# Caption: Timeseries of season Aug East Bering Sea bottom temp or 400m temp (which ever is shallower) for the 1955-2099 period. The simulations are forced using historical emission (1955 to 2014) and SSP1-2.6 scenario for future projection (2015 to 2099). A 1-year running mean is applied. Figures show, in colors, CESM2-WACCM ensemble mean, in light grey, the spread of all the CMIP6 models, and in medium grey, and dark grey, 80% and 50% the spread of all the CMIP6 members, respectively. Left panel shows the mean values and right panel shows the anomalies relative to the 1980-2013 climatology.
+    
+    
+    
 ```
 
 ### Option 2: Download the zipped repo  
@@ -99,10 +104,10 @@ If you have git installed and can work with it, this is the preferred method as 
 
 ## Get the data
 
-**Step 1)**
+**Step 1)[ can skip if not using .nc files directly] **
 * Go to the google drive and download the zipped file with the R data `2022_03_07_Rdata.zip`:
 
-* [00_ACLIM_shared > 02_Data > Newest_Data(use this) > 2022_05_16_unzip_and_putIN_Data_in_folder.zip](https://drive.google.com/drive/folders/11BQEfNEl9vvrN-V0LgS67XS4aLE9pNzz)
+* [00_ACLIM_shared > 02_Data > Newest_Data(use this) > unzip_and_putin_Data_in_folder.zip](https://drive.google.com/drive/folders/11BQEfNEl9vvrN-V0LgS67XS4aLE9pNzz)
 
 * Unzip the folder and move the contents of the zipped folder to your local folder `ACLIM2/Data/in`.
 
@@ -111,7 +116,7 @@ If you have git installed and can work with it, this is the preferred method as 
 **Step 2)**
 * Go to the google drive and download the zipped file with the R ACLIM2 indices `ACLIM2_indices.zip`:
 
-* [00_ACLIM_shared > 02_Data > Newest_Data(use this) > 2022_05_16_unzip_and_putIN_Data_out_folder](https://drive.google.com/drive/folders/11BQEfNEl9vvrN-V0LgS67XS4aLE9pNzz)
+* [00_ACLIM_shared > 02_Data > Newest_Data(use this) > unzip_and_putin_Data_out_folder.zip](https://drive.google.com/drive/folders/11BQEfNEl9vvrN-V0LgS67XS4aLE9pNzz)
 
 * Unzip the folder and move the contents of the zipped folder to your local folder `ACLIM2/Data/out`.
 
@@ -296,9 +301,11 @@ Appendix A includes the code used to generate the ACLIM2 indices and bias correc
 The following code will open an interactive shiny() app for exploring the indices. You can also view this online at (kkh2022.shinyapps.io/ACLIM2_indices)[https://kkh2022.shinyapps.io/ACLIM2_indices/].
 
 ```{r, eval=F, include=T,echo=T}
-
-
-  shiny::runApp("/Users/kholsman/Documents/GitHub/ACLIM2/R/shiny_aclim/ACLIM2_indices/app.R")
+ 
+  tmpwd<-getwd()
+  setwd("R/shiny_aclim/ACLIM2_indices")  
+  shiny::runApp("app.R")
+  setwd(tmpwd)
   # alternatively you can extract the data you want using the get_var()function
   
   df <- get_var(typeIN = "annual",plotvar = "temp_bottom5m",plothist = F)
@@ -341,12 +348,12 @@ The following code will open an interactive shiny() app for exploring the indice
     suppressMessages(source("R/make.R"))
     # preview possible variables
     
-    load(file = "Data/out/weekly_vars_C.Rdata")
+    #load(file = "Data/out/weekly_vars_C.Rdata")
     load(file = "Data/out/weekly_vars.Rdata")
-    load(file = "Data/out/srvy_vars_C.Rdata")
+    #load(file = "Data/out/srvy_vars_C.Rdata")
     load(file = "Data/out/srvy_vars.Rdata")
     
-    load(paste0("Data/out/K20P19_CMIP6_C/allEBS_means/ACLIM_annual_hind_mn.Rdata"))
+    load(paste0("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_annual_hind_mn.Rdata"))
     varall  <- unique(ACLIM_annual_hind$var)
     varall
     
@@ -358,7 +365,7 @@ The following code will open an interactive shiny() app for exploring the indice
     df <- get_var( typeIN    = "annual", 
                    plotvar   = varlist[3],
                    bcIN      = "raw",
-                   CMIPIN    = "K20P19_CMIP6_C", 
+                   CMIPIN    = "K20P19_CMIP6", 
                    plothist  = T,  # ignore the hist runs
                    removeyr1 = T)  # "Remove first year of projection ( burn in)")
     
@@ -394,7 +401,7 @@ The following code will open an interactive shiny() app for exploring the indice
     df <- get_var( typeIN    = "annual", 
                    plotvar   = "pH_depthavg",
                    bcIN      = "bias corrected",
-                   CMIPIN    = "K20P19_CMIP6_C", 
+                   CMIPIN    = "K20P19_CMIP6", 
                    plothist  = F,  # ignore the hist runs
                    removeyr1 = T)  # "Remove first year of projection ( burn in)")
     
@@ -411,7 +418,7 @@ The following code will open an interactive shiny() app for exploring the indice
 df <- get_var( typeIN    = "annual", 
                plotvar   = "pH_depthavg",
                bcIN      = "bias corrected",
-               CMIPIN    = "K20P19_CMIP6_C", 
+               CMIPIN    = "K20P19_CMIP6", 
                plothist  = F,  # ignore the hist runs
                removeyr1 = T)  #"Remove first year of projection ( burn in)")
 
@@ -482,14 +489,14 @@ pp
 
   # get the variable you want:
   df <- get_var( typeIN    = "annual", 
-                  CMIPIN    = "K20P19_CMIP6_C",
+                  CMIPIN    = "K20P19_CMIP6",
                   plotvar   = "uEast_surface5m",
                   bcIN      = "bias corrected",
                   plothist  = F,  # ignore the hist runs
                   removeyr1 = T)  #"Remove first year of projection ( burn in)")
 
   df <- get_var( typeIN    = "monthly", 
-                 CMIPIN    = "K20P19_CMIP6_C",
+                 CMIPIN    = "K20P19_CMIP6",
                  monthIN   = 2,
                  plotvar   = "temp_bottom5m",
                  bcIN      = "bias corrected",
@@ -562,6 +569,8 @@ pp
   
   df$plot
   head(df$dat)
+  
+  ggplot(df$dat%>%filter(basin=="SEBS"))+ geom_line(aes(x=jday, y= mn_val, color=factor(year)))+facet_wrap(GCM_scen_sim~.)
 
   # concat the hind and fut runs by removing years from projection
   maxDin <- max(as.vector(df$dat%>%dplyr::filter(sim_type=="hind")%>%dplyr::select(mnDate))[[1]])
@@ -610,8 +619,8 @@ pp
 
 For CEATTLE I create a .dat file that is read into the ADMB script. That .dat file includes the bias corrected values (e.g., bottom temperature in deg C) used for the bioenergetics and temperature-dependent growth functions as well as Z-score (scaled) values used as covariates on the recruitment function. The section below will step through that .dat file creation for a subset of variables as well as demo chunks of ADMB code for reading that into a ADMB based model.
 
-## Use R to make .dat file
-```{r makedat, eval=F, include=T,echo=T}
+## Use R to make .dat file using ACLIM suite
+```{r makedat1, eval=F, include=T,echo=T}
   
   # 1 -- create .dat filename & path
   # 2 -- rescale (Z-score) data and get variables
@@ -635,11 +644,10 @@ For CEATTLE I create a .dat file that is read into the ADMB script. That .dat fi
   # Define the name for the .dat file
     file.name   <- "ACLIM2_CMIP6_short"
     fn          <- paste(file.name,"_bcs.dat",sep="")
-    archive_old <- T           # Archive the older version of the .dat file?
+    archive_old <- T  # Archive the older version of the .dat file?
     normlist    <- read.csv(file=file.path(Rdata_path,"../normlist.csv"))
     
-    
-    outpath    <- "Data/out/ADMB_datfiles"
+    outpath     <- "Data/out/ADMB_datfiles"
     if(!dir.exists(outpath)) dir.create(outpath)
     
   # define hind and fut data files
@@ -674,7 +682,7 @@ For CEATTLE I create a .dat file that is read into the ADMB script. That .dat fi
     # CMIPS <- c("K20P19_CMIP6","K20P19_CMIP5")
     # CMIPS <- c("K20P19_CMIP6_C")
   	
-    CMIPS <- c("K20P19_CMIP6")
+    CMIPS <- c("K20P19_CMIP6","K20P19_CMIP5")
     
     # preview possible variables
   	load(paste0("Data/out/",CMIPS[1],"/allEBS_means/ACLIM_annual_hind_mn.Rdata"))
@@ -684,90 +692,105 @@ For CEATTLE I create a .dat file that is read into the ADMB script. That .dat fi
     # get each variable, convert to TS and rbind
     
     for(c in 1:length(CMIPS)){
-      
+
       # first for annual mean values:
         varlist <- c("largeZoop_integrated","fracbelow2",
                      "temp_bottom5m","temp_surface5m","pH_depthavg")
-       # norm_sub <- normlist%>%filter(var%in%varlist)
+        varlist <- c("largeZoop_integrated","fracbelow2",
+                     "temp_bottom5m","temp_surface5m","pH_depthavg")
+        
+      # norm_sub <- normlist%>%filter(var%in%varlist)
         typeIN <- "annual"
-         
         load(paste0("Data/out/",CMIPS[c],"/allEBS_means/ACLIM_",typeIN,"_hind_mn.Rdata"))
         load(paste0("Data/out/",CMIPS[c],"/allEBS_means/ACLIM_",typeIN,"_fut_mn.Rdata"))
         eval(parse(text = paste0("dhind <- ACLIM_",typeIN,"_hind")))
         eval(parse(text = paste0("dfut  <- ACLIM_",typeIN,"_fut")))
-      # 
-      #  # rescale the data using mean of the hind if norm distributed
-      # dhind$log_mn_val <- log(dhind$mn_val+log_adj)
-      # dfut$log_mn_val  <- log(dfut$mn_val+log_adj)
-      
+       
+      # Z-score the data
        tmphind    <- suppressWarnings(dhind%>%
          dplyr::filter(var%in%varlist,basin==plotbasin,year%in%hind_yrs)%>%
-        # dplyr::left_join(norm_sub,by=c("var"="var"))%>%
-         dplyr::select(var,basin,year, jday,mnDate,mn_val, lognorm,
-                       mnVal_hind,sdVal_hind, sim,gcmcmip,CMIP,GCM,scen,sim_type ,units,long_name)%>%
+       # dplyr::left_join(normlist,by=c("var"="var"))%>%
+         dplyr::select(var,basin,year,mnDate,mn_val, 
+                       mnVal_hind,sdVal_hind, sim,gcmcmip,
+                       CMIP,GCM,scen,sim_type ,units,long_name)%>%
          dplyr::mutate(bc = "bias corrected",
                        GCM_scen = paste0(GCM,"_",scen),
-                       mn_val_scaled = (mn_val-mnVal_hind )/(sdVal_hind) ) )
-                       # mn_val_scaled = ifelse(lognorm,
-                       #      ((log(mn_val+log_adj)-log(mnVal_hind+log_adj) )
-                       #      /sqrt(log(sdVal_hind+log_adj)) )-log_adj,
-                       #      (mn_val-mnVal_hind )/sqrt(sdVal_hind)  )) )
-      
-                     
-                    # mn_val_scaled = (mn_val-mnVal_hind )/sqrt(sdVal_hind))
-    
+                       mn_val_scaled =  (mn_val-mnVal_hind )/sdVal_hind ))
        
        tmpfut    <-  suppressWarnings(dfut%>%
          dplyr::filter(var%in%varlist,basin==plotbasin,year%in%fut_yrs)%>%
-         dplyr::select(var,basin,year, jday,mnDate,val_biascorrected, 
-                       mnVal_hind,sdVal_hind, sim,gcmcmip,CMIP,GCM,scen,sim_type ,units,long_name)%>%
-         dplyr::rename(mn_val = val_biascorrected)%>%
+         dplyr::select(var,basin,year,mnDate,mn_val, val_biascorrected, 
+                       mnVal_hind,sdVal_hind, sim,gcmcmip,
+                       CMIP,GCM,scen,sim_type ,units,long_name)%>%         
          dplyr::mutate(bc = "bias corrected",
                        GCM_scen = paste0(GCM,"_",scen),
-                       mn_val_scaled = (mn_val-mnVal_hind )/(sdVal_hind) ) )
-  
-       p_raw <- ggplot(tmphind)+geom_line(aes(x=year,y=mn_val,color=scen),size=.8)+
-         geom_line(data =tmpfut,aes(x=year,y=mn_val,color=scen, linetype = GCM ),size=.8)+
-         facet_wrap(var~.,scales="free_y")+theme_minimal()
-       p_scaled <- ggplot(tmphind)+
-         geom_line(aes(x=year,y=mn_val_scaled,color=scen),size=.8)+
-         geom_line(data =tmpfut,aes(x=year,y=mn_val_scaled,color=scen, linetype = GCM ),size=.8)+
-         facet_wrap(var~.,scales="free_y")+theme_minimal()
-      p_raw
-      p_scaled
-      
+                       mn_val_scaled =  (val_biascorrected-mnVal_hind )/sdVal_hind))
        
+       if(1==2){
+         
+          hind2 <- rbind(
+            tmphind%>%select(year,var, mn_val, scen, GCM)%>%mutate(type = "a) raw"),
+            tmphind%>%select(year,var, mn_val, scen, GCM)%>%mutate(type = "b) bias corrected"),
+            tmphind%>%select(year,var, mn_val_scaled, scen, GCM)%>%
+              rename(mn_val = mn_val_scaled)%>%mutate(type = "c) bias corrected &  scaled"))
+          fut2 <- rbind(
+            tmpfut%>%select(year,var, mn_val, scen, GCM)%>%mutate(type = "a) raw"),
+            tmpfut%>%select(year,var, val_biascorrected, scen, GCM)%>%
+              rename(mn_val = val_biascorrected)%>%mutate(type = "b) bias corrected"),
+            tmpfut%>%select(year,var, mn_val_scaled, scen, GCM)%>%
+              rename(mn_val = mn_val_scaled)%>%mutate(type = "c) bias corrected &  scaled"))
+         
+          pcompare <- ggplot(hind2)+
+           geom_line(aes(x=year,y=mn_val ,color=scen),size=.8)+
+           geom_line(data =fut2,aes(x=year,y=mn_val,color=scen, linetype = GCM ),size=.8)+
+           facet_wrap(var~type,scales="free_y",nrow =length(varlist))+theme_minimal()
+          pcompare
+          
+          sclr <-1.2
+          png("Figs/compare_scaled2raw_2022.png", 
+              width =6*sclr, height =9*sclr, units = "in",res = 150)
+          print( pcompare)  # hypoxic (O2<70mmol m−3) or suboxic (O2<5mmol m−3),
+          dev.off()
+      
+          
+       }
        
       # now for seasonal mean values:
-      typeIN  <- "seasonal"
-      varlist <- c("largeZoop_integrated")
-
+       
+      typeIN    <- "seasonal"
       seasonsIN <- unique(seasons$season)
+      
       load(paste0("Data/out/",CMIPS[c],"/allEBS_means/ACLIM_",typeIN,"_hind_mn.Rdata"))
       load(paste0("Data/out/",CMIPS[c],"/allEBS_means/ACLIM_",typeIN,"_fut_mn.Rdata"))
       eval(parse(text = paste0("dhind <- ACLIM_",typeIN,"_hind")))
       eval(parse(text = paste0("dfut  <- ACLIM_",typeIN,"_fut")))
       
       
-       # rescale the data using mean of the hind
+       # z-score the data
        tmphind2    <- dhind%>%
-         dplyr::filter(var%in%varlist,basin==plotbasin,year%in%hind_yrs,season%in%seasonsIN)%>%
-          dplyr::mutate(var = paste0(var,"_",season))%>%
-         dplyr::select(var,basin,year,jday,mnDate,mn_val, 
-                       mnVal_hind,sdVal_hind, sim,gcmcmip,CMIP,GCM,scen,sim_type ,units,long_name)%>%
+         dplyr::filter(var%in%varlist,basin==plotbasin,
+                       year%in%hind_yrs,
+                       season%in%seasonsIN)%>%
+         dplyr::mutate(var = paste0(var,"_",season))%>%
+          dplyr::select(var,basin,year,mnDate,mn_val, 
+                       mnVal_hind,sdVal_hind, sim,gcmcmip,
+                       CMIP,GCM,scen,sim_type ,units,long_name)%>%
          dplyr::mutate(bc = "bias corrected",
                        GCM_scen = paste0(GCM,"_",scen),
-                       mn_val_scaled = (mn_val-mnVal_hind )/sqrt(sdVal_hind))
+                       mn_val_scaled = (mn_val-mnVal_hind )/sdVal_hind)
        
        tmpfut2    <- dfut%>%
-         dplyr::filter(var%in%varlist,basin==plotbasin,year%in%fut_yrs,season%in%seasonsIN)%>%
+         dplyr::filter(var%in%varlist,basin==plotbasin,
+                       year%in%fut_yrs,season%in%seasonsIN)%>%
          dplyr::mutate(var = paste0(var,"_",season))%>%
-         dplyr::select(var,basin,year, jday,mnDate,val_biascorrected, 
-                       mnVal_hind,sdVal_hind, sim,gcmcmip,CMIP,GCM,scen,sim_type ,units,long_name)%>%
-         dplyr::rename(mn_val = val_biascorrected)%>%
+         dplyr::select(var,basin,year,mnDate,mn_val, val_biascorrected, 
+                       mnVal_hind,sdVal_hind, sim,gcmcmip,
+                       CMIP,GCM,scen,sim_type ,units,long_name)%>%
          dplyr::mutate(bc = "bias corrected",
                        GCM_scen = paste0(GCM,"_",scen),
-                       mn_val_scaled = (mn_val-mnVal_hind )/sqrt(sdVal_hind))
+                       mn_val_scaled = (val_biascorrected-mnVal_hind )/
+                         (sdVal_hind))
+       
        if(c ==1){
           hind  <- rbind(tmphind,tmphind2)
           fut   <- rbind(tmpfut,tmpfut2)
@@ -777,6 +800,39 @@ For CEATTLE I create a .dat file that is read into the ADMB script. That .dat fi
        }
        
     }
+    
+    if(1==2){
+         
+          hind2 <- rbind(
+            hind%>%select(year,var, mn_val, scen, GCM)%>%mutate(type = "a) raw"),
+            hind%>%select(year,var, mn_val, scen, GCM)%>%mutate(type = "b) bias corrected"),
+            hind%>%select(year,var, mn_val_scaled, scen, GCM)%>%
+              rename(mn_val = mn_val_scaled)%>%mutate(type = "c) bias corrected &  scaled"))
+          
+          fut2 <- rbind(
+            fut%>%select(year,var, mn_val, scen, GCM)%>%mutate(type = "a) raw"),
+            fut%>%select(year,var, val_biascorrected, scen, GCM)%>%
+              rename(mn_val = val_biascorrected)%>%mutate(type = "b) bias corrected"),
+            fut%>%select(year,var, mn_val_scaled, scen, GCM)%>%
+              rename(mn_val = mn_val_scaled)%>%mutate(type = "c) bias corrected &  scaled"))
+         
+          pcompare2 <- ggplot(hind2[grep("largeZoop",x=hind2$var),])+
+            geom_line(aes(x=year,y=mn_val ,color=scen),size=.8)+
+            geom_line(data =fut2[grep("largeZoop",x=fut2$var),],
+                      aes(x=year,y=mn_val,color=scen, linetype = GCM ),size=.8)+
+            facet_wrap(var~type,scales="free_y",ncol =3)+theme_minimal()
+          pcompare2
+          
+          sclr <-1.4
+          png("Figs/compare_scaled2raw_2022_all.png", 
+              width =6*sclr, height =9*sclr, units = "in",res = 150)
+          print( pcompare2)  # hypoxic (O2<70mmol m−3) or suboxic (O2<5mmol m−3),
+          dev.off()
+      
+          
+    }
+    
+    
     
       # plot the data
        p <- ggplot(hind)+
@@ -794,19 +850,40 @@ For CEATTLE I create a .dat file that is read into the ADMB script. That .dat fi
          theme_minimal()
       p_scaled
       
-      d_wide   <- reshape2::dcast(hind%>%dplyr::filter(year!=2021),year~c(var),value.var = "mn_val")
-      corr     <- cor(d_wide[,-1])
-      # remove those where cov is high (temp by season and cold pool by season)
+      # now identify which covars are highly correlated
+      
+      #convert wide matrix
+      d_wide   <- reshape2::dcast(hind%>%dplyr::filter(year!=thisYr)%>%
+                                    select(year, var, mn_val_scaled),
+                                 year~var,mean,
+                                 value.var = "mn_val_scaled")
+      
+    
+      # calculate correlations and display in column format
+      #
+      num_col  <- ncol(d_wide[,-1])
+      out_indx <- which(upper.tri(diag(num_col))) 
+      cor_cols <- d_wide %>%
+                  do(melt(cor(.[,-1], 
+                              method="spearman", 
+                              use="pairwise.complete.obs"),
+                          value.name="cor")[out_indx,])
+
+      corr     <- cor(na.omit(d_wide[,-1]))
+      
       long_dat <- reshape2::melt(corr,variable.name = "variable") %>% 
       as.data.frame() 
       
-      # plot covariation between variables
-      long_dat %>%arrange(value)%>%
-      ggplot(aes(x=Var1, y=Var2, fill=value)) + 
-      geom_raster() + 
-      scale_fill_viridis_c()+
-      theme_minimal()+
-      theme(axis.text.x = element_text(angle = 90))
+      # plot co variation between variables
+      corplot <- long_dat %>%arrange(value)%>%
+                    ggplot(aes(x=Var1, y=Var2, fill=value)) + 
+                    geom_raster() + 
+                    scale_fill_viridis_c()+
+                    theme_minimal()+
+                    theme(axis.text.x = element_text(angle = 90))
+      
+      # # remove those where cov is high (temp by season and cold pool by season)
+      # subset <- long_dat$>$filter(abs(value)<0.6)
 
    # 3 -- write data to hind .dat file
    # ------------------------------------
@@ -838,41 +915,41 @@ For CEATTLE I create a .dat file that is read into the ADMB script. That .dat fi
               overlap[3,][overlap[3,]>1]<-1 #covs$BT2to6/covs$BT0to6
             }
      
-			# Pick up here
+			# replace NA values with the mean 
 	    
     	# Kir's .dat file
-	    covars   <- unique(hind$var)
 	    makeDat_hind(datIN   = hind, 
 	                 outfile = fndat_hind,
+	                 value2use = "mn_val_scaled",
+	                 NAVal     = "mean",  
 	                 nsppIN    = 3,
 	                 overlapIN = overlap, 
 	                 nonScaled_covlist = c("temp_bottom5m","temp_surface5m"  ),
-	                 Scaled_covlist    = covars)
+	                 Scaled_covlist    = unique(hind$var))
 	    
-	    # generic .dat file
-	    covars   <- unique(hind$var)
 	    makeDat_fut( datIN             = fut, 
 	                 hinddatIN         = hind, 
 	                 outfile           = fndat_fut,
+	                 value2use         = "mn_val_scaled",
+	                 NAVal             = "mean", 
 	                 nsppIN            = 3,
 	                 last_nyrs_avg     = 10, 
 	                 overlapIN         = overlap_fut,  #(nspp,nsim+1,nyrs_fut) 
 	                 overlap_hind      = overlap,
 	                 nonScaled_covlist = c("temp_bottom5m","temp_surface5m"  ),
-	                 Scaled_covlist    = covars)
+	                 Scaled_covlist    = unique(hind$var))
 	    
 	    ### Here's a generic version that doesn't include nspp and overla[]
 			# generic .dat file
-	    covars   <- unique(hind$var)
+	    
 	    makeDat_hind(datIN             = hind, 
 	                 outfile           = fndat_hind2,
 	                 nsppIN            = NULL,
 	                 overlapIN         = NULL, 
 	                 nonScaled_covlist = c("temp_bottom5m","temp_surface5m"  ),
-	                 Scaled_covlist    = covars)
+	                 Scaled_covlist    = unique(hind$var))
 	    
 	    # generic .dat file
-	    covars   <- unique(hind$var)
 	    	    makeDat_fut( datIN       = fut, 
 	                 hinddatIN         = hind, 
 	                 outfile           = fndat_fut2,
@@ -881,22 +958,470 @@ For CEATTLE I create a .dat file that is read into the ADMB script. That .dat fi
 	                 overlapIN         = NULL,  #(nspp,nsim+1,nyrs_fut) 
 	                 overlap_hind      = NULL,
 	                 nonScaled_covlist = c("temp_bottom5m","temp_surface5m"  ),
-	                 Scaled_covlist    = covars)
+	                 Scaled_covlist    = unique(hind$var))
 	    
 			
 ```
 
+## Use R to make .dat file using operational hindcast
+```{r makedat, eval=F, include=T,echo=T}
+  
+  # 1 -- create .dat filename & path
+  # 2 -- rescale (Z-score) data and get variables
+  # 3 -- write data to hind .dat file
+  # 3 -- write data to fut  .dat file
+  
+  # 1 -- create .dat filename & path
+  # -------------------------------------
+  suppressMessages(source("R/make.R"))
+
+  
+  # switches 
+    thisYr <- format(Sys.time(), "%Y")
+    today  <- format(Sys.time(), "%b %d, %Y")
+    lastyr_hind <- as.numeric(thisYr)  #2021
+    hind_yrs    <- 1979:lastyr_hind   # define the years of your estimation model
+    fut_yrs     <- (lastyr_hind+1):2100   # define the years of your projections
+    log_adj     <- 1e-4
+    plotbasin   <- "SEBS"  
+  
+  # Define the name for the .dat file
+    file.name   <- "ACLIM2_CMIP5n6_operational_short"
+    fn          <- paste(file.name,"_bcs.dat",sep="")
+    archive_old <- T  # Archive the older version of the .dat file?
+   # normlist    <- read.csv(file=file.path(Rdata_path,"../normlist.csv"))
+    
+    outpath     <- "Data/out/ADMB_datfiles"
+    if(!dir.exists(outpath)) dir.create(outpath)
+    
+  # define hind and fut data files
+    fndat_hind  <- file.path(outpath,paste("KKHhind_operat_",fn,sep=""))
+  	fndat_fut   <- file.path(outpath,paste("KKHfut_operat_",fn,sep=""))
+  	fndat_hind2 <- file.path(outpath,paste("hind_operat_",fn,sep=""))
+  	fndat_fut2  <- file.path(outpath,paste("fut_operat_",fn,sep=""))
+  	
+	# create and archive .dat files
+	  outfile    <- fndat_fut
+  	if(file.exists(outfile)&archive_old){	
+  	    # archive older version
+  			archivefl <- paste0(substr(outfile,start=1,stop=nchar(outfile)-4),
+  			                format(Sys.time(), "%Y%m%d_%H%M%S"),".dat")
+  			file.rename(outfile, archivefl)
+  			#file.remove(outfile)
+  	}
+  	
+  	file.create(outfile)
+  	outfile  <- fndat_hind
+  	if(file.exists(outfile)&archive_old){	
+  	    # archive older version
+  			archivefl <- paste0(substr(outfile,start=1,stop=nchar(outfile)-4),
+  			                format(Sys.time(), "%Y%m%d_%H%M%S"),".dat")
+  			file.rename(outfile, archivefl)
+  			#file.remove(outfile)
+  	}
+  	
+  	file.create(outfile)
+
+  	# 2 -- rescale (Z-score) data and get variables
+    # CMIPS <- c("K20P19_CMIP6","K20P19_CMIP5")
+    # CMIPS <- c("K20P19_CMIP6_C")
+  	
+    CMIPS <- c("CMIP5_H16_operational","CMIP6_K20P19_Indices_operational")
+    CMIPS <- c("H16_CMIP5","CMIP6_K20P19_Indices_operational")
+    CMIPS <- c("CMIP5_H16_operational","CMIP6_K20P19_Indices_operational")
+    hinduse<- "CMIP6_K20P19_Indices_operational"
+    # preview possible variables
+  	load(paste0("Data/out/",CMIPS[1],"/allEBS_means/ACLIM_annual_hind_mn.Rdata"))
+    varall  <- unique(ACLIM_annual_hind$var)
+    varall
+    
+    # get each variable, convert to TS and rbind
+    
+    for(c in 1:length(CMIPS)){
+
+      # first for annual mean values:
+        varlist <- c("largeZoop_integrated","fracbelow2",
+                     "temp_bottom5m","temp_surface5m","pH_depthavg")
+        varlist <- c("largeZoop_integrated","fracbelow2",
+                     "temp_bottom5m","temp_surface5m","pH_depthavg")
+        
+      # norm_sub <- normlist%>%filter(var%in%varlist)
+        typeIN <- "annual"
+        load(paste0("Data/out/",hinduse,"/allEBS_means/ACLIM_",typeIN,"_hind_mn.Rdata"))
+        load(paste0("Data/out/",CMIPS[c],"/allEBS_means/ACLIM_",typeIN,"_fut_mn.Rdata"))
+        eval(parse(text = paste0("dhind <- ACLIM_",typeIN,"_hind")))
+        eval(parse(text = paste0("dfut  <- ACLIM_",typeIN,"_fut")))
+     
+      # Z-score and recenter the data
+       tmphind    <- suppressWarnings(dhind%>%
+         dplyr::filter(var%in%varlist,basin==plotbasin,year%in%hind_yrs)%>%
+         dplyr::select(var,basin,year,mnDate,mn_val,
+                       mnVal_hind,sdVal_hind, sim,gcmcmip,
+                       CMIP,GCM,scen,sim_type ,units,long_name)%>%
+         dplyr::mutate(bc = "bias corrected",
+                       GCM_scen = paste0(GCM,"_",scen),
+                       mn_val_scaled =  (mn_val-mnVal_hind )/sdVal_hind))
+       
+        tmphind    <- suppressWarnings(dhind%>%
+         dplyr::filter(var%in%varlist,basin==plotbasin,year%in%hind_yrs)%>%
+           dplyr::mutate(  mnVal_hindUSE=mnVal_hind,sdVal_hindUSE=sdVal_hind)%>%
+         dplyr::select(var,basin,year,mnDate,mn_val,
+                        mnVal_hindUSE,sdVal_hindUSE,
+                       mnVal_hind,sdVal_hind,mnVal_hist,sdVal_hist,sim,gcmcmip,
+                       CMIP,GCM,scen,sim_type ,units,long_name)%>%
+         dplyr::mutate(bc = "bias corrected",
+                       GCM_scen = paste0(GCM,"_",scen),
+                       mn_val_scaled =  (mn_val-mnVal_hind )/sdVal_hind,
+                       mn_val_BCRC = mn_val,
+                       mn_val_scaledBCRC = mn_val_scaled))
+       
+       tmp1 <- dhind%>%
+         dplyr::filter(var%in%varlist,basin==plotbasin,year%in%hind_yrs)%>%
+         dplyr::group_by(var,basin)%>%
+         dplyr::summarize(sdVal_hindUSE = mean(sdVal_hind, na.rm=T),
+                          mnVal_hindUSE = mean(mnVal_hind, na.rm=T))%>%ungroup()
+
+       
+       tmpfut    <-  suppressWarnings(dfut%>%
+         dplyr::filter(var%in%varlist,basin==plotbasin,year%in%fut_yrs)%>%
+         dplyr::select(var,basin,year,mnDate,mn_val, val_biascorrected, 
+                       mnVal_hind,sdVal_hind,sim,gcmcmip,
+                       CMIP,GCM,scen,sim_type ,units,long_name)%>%         
+         dplyr::mutate(bc = "bias corrected",
+                       GCM_scen = paste0(GCM,"_",scen),
+                       mn_val_scaled =  
+                         (val_biascorrected-mnVal_hind )/sdVal_hind))
+        tmpfut    <-  suppressWarnings(dfut%>%left_join(tmp1)%>%
+         dplyr::filter(var%in%varlist,basin==plotbasin,year%in%fut_yrs)%>%
+         dplyr::select(var,basin,year,mnDate,mn_val, val_biascorrected,
+                        mnVal_hindUSE,sdVal_hindUSE,
+                       mnVal_hind,sdVal_hind,mnVal_hist,sdVal_hist,sim,gcmcmip,
+                       CMIP,GCM,scen,sim_type ,units,long_name)%>%         
+         dplyr::mutate(bc = "bias corrected",
+                       GCM_scen = paste0(GCM,"_",scen),
+                       mn_val_scaled =  
+                         (val_biascorrected-mnVal_hind )/sdVal_hind))%>%
+          dplyr::mutate(mn_val_BCRC = mnVal_hindUSE + ((sdVal_hindUSE/sdVal_hist)*
+                                                      (val_biascorrected-mnVal_hist)), 
+                     mn_val_scaledBCRC = (mn_val_BCRC-mnVal_hindUSE )/sdVal_hindUSE)
+
+
+#mnVal_hind + ((sdVal_hind/sdVal_hist)*(bcIT-mnVal_hist)),
+       
+       if(1==2){
+         
+          hind2 <- rbind(
+            tmphind%>%select(year,var, mn_val, scen, GCM)%>%mutate(type = "a) raw"),
+            tmphind%>%select(year,var, mn_val, scen, GCM)%>%mutate(type = "b) bias corrected"),
+            tmphind%>%select(year,var, mn_val_scaled, scen, GCM)%>%
+              rename(mn_val = mn_val_scaled)%>%mutate(type = "c) bias corrected &  scaled"))
+          fut2 <- rbind(
+            tmpfut%>%select(year,var, mn_val, scen, GCM)%>%mutate(type = "a) raw"),
+            tmpfut%>%select(year,var, mn_val_BCRC, scen, GCM)%>%
+              rename(mn_val = mn_val_BCRC)%>%mutate(type = "b) bias corrected"),
+            tmpfut%>%select(year,var, mn_val_scaledBCRC, scen, GCM)%>%
+              rename(mn_val = mn_val_scaledBCRC)%>%mutate(type = "c) bias corrected &  scaled"))
+         
+          pcompare <- ggplot(hind2)+
+           geom_line(aes(x=year,y=mn_val ,color=scen),size=.8)+
+           geom_line(data =fut2,aes(x=year,y=mn_val,color=scen, linetype = GCM ),size=.8)+
+           facet_wrap(var~type,scales="free_y",nrow =length(varlist))+theme_minimal()
+          pcompare
+          
+          sclr <-1.2
+          png("Figs/compare_scaled2raw_2022.png", 
+              width =6*sclr, height =9*sclr, units = "in",res = 150)
+          print( pcompare)  # hypoxic (O2<70mmol m−3) or suboxic (O2<5mmol m−3),
+          dev.off()
+      
+          
+       }
+       
+      # now for seasonal mean values:
+       
+      typeIN    <- "seasonal"
+      seasonsIN <- unique(seasons$season)
+      rm("dhind")
+      rm("dfut")
+      load(paste0("Data/out/",hinduse,"/allEBS_means/ACLIM_",typeIN,"_hind_mn.Rdata"))
+      load(paste0("Data/out/",CMIPS[c],"/allEBS_means/ACLIM_",typeIN,"_fut_mn.Rdata"))
+      eval(parse(text = paste0("dhind <- ACLIM_",typeIN,"_hind")))
+      eval(parse(text = paste0("dfut  <- ACLIM_",typeIN,"_fut")))
+       rm("ACLIM_annual_hind")
+      rm("ACLIM_annual_fut")
+       rm("ACLIM_seasonal_hind")
+      rm("ACLIM_seasonal_fut")
+      
+       # z-score the data
+       tmphind2    <- dhind%>%
+         dplyr::filter(var%in%varlist,basin==plotbasin,
+                       year%in%hind_yrs,
+                       season%in%seasonsIN)%>%
+         dplyr::mutate(var = paste0(var,"_",season))%>%
+          dplyr::select(var,basin,year,mnDate,mn_val, 
+                       mnVal_hind,sdVal_hind, sim,gcmcmip,
+                       CMIP,GCM,scen,sim_type ,units,long_name)%>%
+         dplyr::mutate(bc = "bias corrected",
+                       GCM_scen = paste0(GCM,"_",scen),
+                       mn_val_scaled = (mn_val-mnVal_hind )/sdVal_hind)
+       
+         # z-score the data
+       tmphind2    <- dhind%>%
+         dplyr::filter(var%in%varlist,basin==plotbasin,
+                       year%in%hind_yrs,
+                       season%in%seasonsIN)%>%
+         dplyr::mutate(var = paste0(var,"_",season),
+                       mnVal_hindUSE=mnVal_hind,sdVal_hindUSE=sdVal_hind)%>%
+          dplyr::select(var,basin,year,mnDate,mn_val, 
+                        mnVal_hindUSE,sdVal_hindUSE,
+                       mnVal_hind,sdVal_hind, mnVal_hist,sdVal_hist, sim,gcmcmip,
+                       CMIP,GCM,scen,sim_type ,units,long_name)%>%
+         dplyr::mutate(bc = "bias corrected",
+                       GCM_scen = paste0(GCM,"_",scen),
+                       mn_val_scaled = (mn_val-mnVal_hind )/sdVal_hind,
+                       mn_val_BCRC = mn_val,
+                       mn_val_scaledBCRC = mn_val_scaled)
+       
+       tmp1 <- dhind%>%
+         dplyr::filter(var%in%varlist,basin==plotbasin,
+                       year%in%hind_yrs,
+                       season%in%seasonsIN)%>%
+         dplyr::group_by(var,basin,season)%>%
+         dplyr::summarize(sdVal_hindUSE = mean(sdVal_hind, na.rm=T),
+                          mnVal_hindUSE = mean(mnVal_hind, na.rm=T))%>%ungroup()
+       
+       tmpfut2    <- dfut%>%
+         dplyr::filter(var%in%varlist,basin==plotbasin,
+                       year%in%fut_yrs,season%in%seasonsIN)%>%
+         dplyr::mutate(var = paste0(var,"_",season))%>%
+         dplyr::select(var,basin,year,mnDate,mn_val, val_biascorrected, 
+                       mnVal_hind,sdVal_hind, sim,gcmcmip,
+                       CMIP,GCM,scen,sim_type ,units,long_name)%>%
+         dplyr::mutate(bc = "bias corrected",
+                       GCM_scen = paste0(GCM,"_",scen),
+                       mn_val_scaled = (val_biascorrected-mnVal_hind )/
+                         (sdVal_hind))
+       
+         tmpfut2    <- dfut%>%left_join(tmp1)%>%
+         dplyr::filter(var%in%varlist,basin==plotbasin,
+                       year%in%fut_yrs,season%in%seasonsIN)%>%
+         dplyr::mutate(var = paste0(var,"_",season))%>%
+         dplyr::select(var,basin,year,mnDate,mn_val, val_biascorrected, 
+                        mnVal_hindUSE,sdVal_hindUSE,
+                       mnVal_hind,sdVal_hind, mnVal_hist,sdVal_hist, sim,gcmcmip,
+                       CMIP,GCM,scen,sim_type ,units,long_name)%>%
+         dplyr::mutate(bc = "bias corrected",
+                       GCM_scen = paste0(GCM,"_",scen),
+                       mn_val_scaled = (val_biascorrected-mnVal_hind )/
+                         (sdVal_hind))%>%
+          dplyr::mutate(mn_val_BCRC = mnVal_hindUSE + ((sdVal_hindUSE/sdVal_hist)*
+                                                      (val_biascorrected-mnVal_hist)), 
+                     mn_val_scaledBCRC = (mn_val_BCRC-mnVal_hindUSE )/sdVal_hindUSE)
+       
+       if(c==1){
+          hind  <- rbind(tmphind,tmphind2)
+          fut   <- rbind(tmpfut,tmpfut2)
+       }else{
+          #hind  <- rbind(hind,tmphind,tmphind2)
+          fut   <- rbind(fut,tmpfut,tmpfut2)
+       }
+     
+    }
+    
+    if(1==3){
+         
+          hind2 <- rbind(
+            hind%>%select(year,var, mn_val, scen, GCM)%>%mutate(type = "a) raw"),
+            hind%>%select(year,var, mn_val, scen, GCM)%>%mutate(type = "b) bias corrected"),
+            hind%>%select(year,var, mn_val_scaled, scen, GCM)%>%
+              rename(mn_val = mn_val_scaled)%>%mutate(type = "c) bias corrected &  scaled"))
+          
+          fut2 <- rbind(
+            fut%>%select(year,var, mn_val, scen, GCM)%>%mutate(type = "a) raw"),
+            fut%>%select(year,var, val_biascorrected, scen, GCM)%>%
+              rename(mn_val = val_biascorrected)%>%mutate(type = "b) bias corrected"),
+            fut%>%select(year,var, mn_val_scaled, scen, GCM)%>%
+              rename(mn_val = mn_val_scaled)%>%mutate(type = "c) bias corrected &  scaled"))
+         
+          pcompare2 <- ggplot(hind2[grep("largeZoop",x=hind2$var),])+
+            geom_line(aes(x=year,y=mn_val ,color=scen),size=.8)+
+            geom_line(data =fut2[grep("largeZoop",x=fut2$var),],
+                      aes(x=year,y=mn_val,color=scen, linetype = GCM ),size=.8)+
+            facet_wrap(var~type,scales="free_y",ncol =3)+theme_minimal()
+          pcompare2
+          
+          sclr <-1.4
+          png("Figs/compare_scaled2raw_2022_all.png", 
+              width =6*sclr, height =9*sclr, units = "in",res = 150)
+          print( pcompare2)  # hypoxic (O2<70mmol m−3) or suboxic (O2<5mmol m−3),
+          dev.off()
+      
+          
+    }
+    
+    
+    if(!dir.exists("Data/out/ADMB_datfiles/Figs")) dir.create("Data/out/ADMB_datfiles/Figs")
+    
+      # plot the data
+    linew <-.6
+       p <- ggplot(hind)+
+         geom_line(aes(x=mnDate,y=mn_val,color=GCM_scen),size=linew)+
+          geom_line(aes(x=mnDate,y=mnVal_hind,color=GCM_scen),size=1,linetype="dashed")+
+         geom_line(data=fut,aes(x=mnDate,y=val_biascorrected,color=GCM_scen),size=linew)+
+          geom_line(data=fut,aes(x=mnDate,y=mnVal_hist,color=GCM_scen),size=1,linetype="dashed")+
+         facet_wrap(.~var,scales="free_y")+
+         theme_minimal()
+      p
+      
+      # plot the data
+       p_scaled <- ggplot(hind)+
+         geom_line(aes(x=mnDate,y=mn_val,color=GCM_scen),size=linew)+
+          geom_line(aes(x=mnDate,y=mnVal_hind,color=GCM_scen),size=1,linetype="dashed")+
+         geom_line(data=fut,aes(x=mnDate,y=mn_val_BCRC,color=GCM_scen),size=linew)+
+          geom_line(data=fut,aes(x=mnDate,y=mnVal_hist,color=GCM_scen),size=1,linetype="dashed")+
+         facet_wrap(.~var,scales="free_y")+
+         theme_minimal()
+      p_scaled
+      
+      h <- 8; w <-12; sclr <- 1.2
+      png(filename = "Data/out/ADMB_datfiles/Figs/scaled_covars.png",units="in",res = 250, height=h*sclr,width=w*sclr)
+      # now identify which covars are highly correlated
+      print(p_scaled)
+      dev.off()
+     
+      png(filename = "Data/out/ADMB_datfiles/Figs/nonscaled_covars.png",units="in",res = 250, height=h*sclr,width=w*sclr)
+      # now identify which covars are highly correlated
+      print(p)
+      dev.off()
+      
+      
+      #convert wide matrix
+      d_wide   <- reshape2::dcast(hind%>%dplyr::filter(year!=thisYr)%>%
+                                    select(year, var, mn_val_scaled),
+                                 year~var,mean,
+                                 value.var = "mn_val_scaled")
+      
+    
+      # calculate correlations and display in column format
+      #
+      num_col  <- ncol(d_wide[,-1])
+      out_indx <- which(upper.tri(diag(num_col))) 
+      cor_cols <- d_wide %>%
+                  do(melt(cor(.[,-1], 
+                              method="spearman", 
+                              use="pairwise.complete.obs"),
+                          value.name="cor")[out_indx,])
+
+      corr     <- cor(na.omit(d_wide[,-1]))
+      
+      long_dat <- reshape2::melt(corr,variable.name = "variable") %>% 
+      as.data.frame() 
+      
+      # plot co variation between variables
+      corplot <- long_dat %>%arrange(value)%>%
+                    ggplot(aes(x=Var1, y=Var2, fill=value)) + 
+                    geom_raster() + 
+                    scale_fill_viridis_c()+
+                    theme_minimal()+
+                    theme(axis.text.x = element_text(angle = 90))
+        h <- 5; w <-6
+      png(filename = "Data/out/ADMB_datfiles/Figs/corplot.png",units="in",res = 250, height=h,width=w)
+      # now identify which covars are highly correlated
+      print(corplot)
+      dev.off()
+      
+      # # remove those where cov is high (temp by season and cold pool by season)
+      # subset <- long_dat$>$filter(abs(value)<0.6)
+
+   # 3 -- write data to hind .dat file
+   # ------------------------------------
+      
+		 
+      # CEATTLE uses a spp overlap index - you can skip this
+          
+    			overlapdat <- data.frame(
+    				atf_OL=c(0.9391937,0.8167094,0.808367,0.5926875,0.7804481,0.5559549,
+    				         0.4006931,0.5881404,0.7856776,0.511565,0.6352048,0.5583476,
+    				         0.5792738,0.5417657,0.8212887,0.6287613,0.4536608,0.6587292,
+    				         0.4884194,0.8289379,0.4399257,0.5950167,0.6388434,0.6111834,
+    				         0.8742649,0.7868746,0.8024257,0.6227457,0.4956742,0.4347917,
+    				         0.4791108,0.4369006,0.5613625,0.4353015),
+    				south_OL=c(0.9980249,0.9390368,0.9959974,0.6130846,0.951234,0.5851891,
+    				           0.4934879,0.641471,0.9809618,0.5596813,0.7196964,0.6754698,
+    				           0.5774808,0.6041351,0.9406521,0.7949525,0.5306435,0.7977694,
+    				           0.5345031,0.9879945,0.5079171,0.7148121,0.8997132,0.7340859,
+    				           0.9962068,0.9627235,0.998043,0.8111,0.6087638,0.513057,0.5492621,
+    				           0.4971361,0.665453,0.5969653)
+    				)
+          
+            
+    	      includeOverlap <- F
+    			  overlap        <- matrix(1,3,length(sort(unique(hind$year))))
+    			  overlap_fut    <- array(1,c(3,length(unique(fut$GCM_scen))+1,length(sort(unique(fut$year)))))
+            if(includeOverlap){
+              overlap[3,] <- overlapIN
+              overlap[3,][overlap[3,]>1]<-1 #covs$BT2to6/covs$BT0to6
+            }
+     
+			# replace NA values with the mean 
+	    
+    	# Kir's .dat file
+	    makeDat_hind(datIN   = hind, 
+	                 outfile = fndat_hind,
+	                 value2use = "mn_val_scaled",
+	                 NAVal     = "mean",  
+	                 nsppIN    = 3,
+	                 overlapIN = overlap, 
+	                 nonScaled_covlist = c("temp_bottom5m","temp_surface5m"  ),
+	                 Scaled_covlist    = unique(hind$var))
+	    
+	    makeDat_fut( datIN             = fut, 
+	                 hinddatIN         = hind, 
+	                 outfile           = fndat_fut,
+	                 value2use         = "mn_val_scaled",
+	                 NAVal             = "mean", 
+	                 nsppIN            = 3,
+	                 last_nyrs_avg     = 10, 
+	                 overlapIN         = overlap_fut,  #(nspp,nsim+1,nyrs_fut) 
+	                 overlap_hind      = overlap,
+	                 nonScaled_covlist = c("temp_bottom5m","temp_surface5m"  ),
+	                 Scaled_covlist    = unique(hind$var))
+	    
+	    ### Here's a generic version that doesn't include nspp and overla[]
+			# generic .dat file
+	    
+	    makeDat_hind(datIN             = hind, 
+	                 outfile           = fndat_hind2,
+	                 nsppIN            = NULL,
+	                 overlapIN         = NULL, 
+	                 nonScaled_covlist = c("temp_bottom5m","temp_surface5m"  ),
+	                 Scaled_covlist    = unique(hind$var))
+	    
+	    # generic .dat file
+	    	    makeDat_fut( datIN       = fut, 
+	                 hinddatIN         = hind, 
+	                 outfile           = fndat_fut2,
+	                 nsppIN            = NULL,
+	                 last_nyrs_avg     = 10, 
+	                 overlapIN         = NULL,  #(nspp,nsim+1,nyrs_fut) 
+	                 overlap_hind      = NULL,
+	                 nonScaled_covlist = c("temp_bottom5m","temp_surface5m"  ),
+	                 Scaled_covlist    = unique(hind$var))
+	    save(fut, file=paste0("Data/out/ADMB_datfiles/Figs/fut_",format(Sys.time(), "%Y%m%d_%H%M"),".Rdata"), overwrite=T)
+	    save(hind, file=paste0("Data/out/ADMB_datfiles/Figs/hind_",format(Sys.time(), "%Y%m%d_%H%M"),".Rdata"), overwrite=T)
+	    save(fut, file="Data/out/ADMB_datfiles/Figs/fut.Rdata", overwrite=T)
+	    save(hind, file="Data/out/ADMB_datfiles/Figs/hind.Rdata", overwrite=T)
+			
+```
 
 # APPENDIX A: Create & bias correct ACLIM2 indices
 
 
 The following code shows how the ACLIM2 indices and bias correction was done. You do not need to re-run this (it is included so you can if you want to). To explore the indices skep to the next section.
 
-```{r annual_aclim_indices, eval=F, include=T,echo=T}
+```{r annual_aclim_indicesA, eval=F, include=T,echo=T}
     # --------------------------------------
     # SETUP WORKSPACE
-    # rm(list=ls())
-    # setwd("../ACLIM2")
     # rm(list=ls()); setwd("D:/GitHub_cloud/ACLIM2")
     # loads packages, data, setup, etc.
     tmstp       <- "2022_10_17"
@@ -906,6 +1431,7 @@ The following code shows how the ACLIM2 indices and bias correction was done. Yo
     main        <- getwd()  #"~/GitHub_new/ACLIM2"
     tmstamp1    <- format(Sys.time(), "%Y%m%d")
     # tmstamp1  <- "20220428"
+    
     
     update_hind  <- TRUE   # set to true to update hind and hindS; needed annually
     update_proj  <- TRUE   # set to true to update fut; not needed
@@ -924,11 +1450,6 @@ The following code shows how the ACLIM2 indices and bias correction was done. Yo
     load(file.path(Rdata_path,"weekly_vars.Rdata"))
     #load(file.path(Rdata_path,"../srvy_vars_C.Rdata"))
     load(file.path(Rdata_path,"srvy_vars.Rdata"))
-    
-    # load(file.path(Rdata_path,"rm_wk_list.Rdata"))
-    # load(file.path(Rdata_path,"rm_var_list.Rdata"))
-    # 
-    # 
     
     load(file.path(Rdata_path,"l3srvy_varlist.Rdata"))
     load(file.path(Rdata_path,"l3wk_varlist.Rdata"))
@@ -974,10 +1495,12 @@ The following code shows how the ACLIM2 indices and bias correction was done. Yo
                         hind_sim  =  "B10K-K20P19_CORECFS",
                         histLIST  = paste0(gcmcmipL,"_historical"),
                         gcmcmipLIST = gcmcmipL,  
+                        scenIN    = c("ssp126","ssp585"),
                         Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
                         regnm    = "ACLIMregion",
                         srvynm    = "ACLIMsurveyrep",
                         normlist_IN = normlist,
+                        usehist    = TRUE,
                         sim_listIN = sim_list[-grep("historical",sim_list)]))
     
      if("CMIP6_K20P19_Indices"%in%ls()){                 
@@ -996,12 +1519,15 @@ The following code shows how the ACLIM2 indices and bias correction was done. Yo
         }
       gc()
      }
+     
+     
     if(10==1){
       # Depreciated - now using K20P19 hindcast instead
      CMIP6_K20_Indices <- suppressMessages(
                         makeACLIM2_Indices(
                         BC_target = "mn_val",
                         hind_sim  =  "B10K-K20_CORECFS",
+                        scenIN    = c("ssp126","ssp585"),
                         histLIST  = paste0(gcmcmipL,"_historical"),
                         gcmcmipLIST = gcmcmipL,
                         Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
@@ -1034,15 +1560,18 @@ The following code shows how the ACLIM2 indices and bias correction was done. Yo
     CMIP5_K20P19_Indices <- suppressMessages(
                         makeACLIM2_Indices(
                         BC_target = "mn_val",
-                        hind_sim  =  "B10K-K20_CORECFS",
-                        histLIST  = rep("B10K-K20_CORECFS",3),
+                        hind_sim  =  "B10K-K20P19_CORECFS",
+                        #histLIST  = rep("B10K-K20P19_CORECFS",3),
+                        histLIST  = gcmcmipL2,
+                        usehist   = FALSE,
                         gcmcmipLIST = gcmcmipL2,
                         normlist_IN = normlist,
+                        scenIN    = c("rcp45","rcp85"),
                         Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
                         regnm    = "ACLIMregion",
                         srvynm    = "ACLIMsurveyrep",
                         sim_listIN = sim_list[-grep("historical",sim_list)]))
-    
+
     if("CMIP5_K20P19_Indices"%in%ls()){
       saved <- FALSE
       saved <- save_indices(flIN = CMIP5_K20P19_Indices, 
@@ -1068,8 +1597,11 @@ The following code shows how the ACLIM2 indices and bias correction was done. Yo
     CMIP5_H16_Indices <- suppressMessages(
                         makeACLIM2_Indices(
                         BC_target = "mn_val",
+                        scenIN    = c("rcp45","rcp85"),
                         hind_sim  =  "B10K-H16_CORECFS",
-                        histLIST  = rep("B10K-H16_CORECFS",3),
+                        histLIST = gcmcmipL2,
+                          usehist   = FALSE,
+                        #histLIST  = rep("B10K-H16_CORECFS",3),
                         gcmcmipLIST = gcmcmipL2,
                         Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
                         sim_listIN = sim_list[-grep("historical",sim_list)]))
@@ -1089,6 +1621,198 @@ The following code shows how the ACLIM2 indices and bias correction was done. Yo
         }
       gc()
     }
+    if(1==10){
+      save(CMIP6_Indices, file = "Data/out/CMIP6_Indices_List.Rdata")
+      save(CMIP5_K20_Indices, file = "Data/out/CMIP5_K20_Indices_List.Rdata")
+      save(CMIP5_H16_Indices, file = "Data/out/CMIP5_H16_Indices_List.Rdata")
+    }
+         
+```
+
+# APPENDIX B: Create & bias correct ACLIM2 indices to operational hindcast
+
+
+The following code shows how the ACLIM2 indices and bias correction was done. You do not need to re-run this (it is included so you can if you want to). To explore the indices skep to the next section.
+
+```{r annual_aclim_indices, eval=F, include=T,echo=T}
+    # --------------------------------------
+    # SETUP WORKSPACE
+    # rm(list=ls())
+    # setwd("../ACLIM2")
+    # rm(list=ls()); setwd("D:/GitHub_cloud/ACLIM2")
+    # loads packages, data, setup, etc.
+    tmstp       <- "2022_10_17"
+    suppressMessages(source("R/make.R"))
+    tmstp       <- "2022_10_17"
+    Rdata_path  <- paste0("../../romsnpz/",tmstp,"_Rdata")
+    main        <- getwd()  #"~/GitHub_new/ACLIM2"
+    tmstamp1    <- format(Sys.time(), "%Y%m%d")
+    # tmstamp1  <- "20220428"
+    
+  #  rd_path   <- "Data/out/operationalHindForcast" 
+    rd_path   <- file.path(getwd(),Rdata_path,"roms_for_public")
+   
+    
+    
+    update_OPhind  <- FALSE   # set to true to update hind and hindS; needed annually
+    # update_proj  <- TRUE   # set to true to update fut; not needed
+    # update_hist  <- TRUE   # set to true to update fut; not needed
+    #  
+    # the reference years for bias correcting in R/setup.R
+    ref_years 
+    
+    # the year to z-score scale / delta in R/setup.R
+    deltayrs 
+    # the year to z-score scale / delta in R/setup.R
+    deltayrs 
+    data_path
+    
+    #load(file.path(Rdata_path,"../weekly_vars_C.Rdata"))
+    load(file.path(Rdata_path,"weekly_vars.Rdata"))
+    #load(file.path(Rdata_path,"../srvy_vars_C.Rdata"))
+    load(file.path(Rdata_path,"srvy_vars.Rdata"))
+    
+    load(file.path(Rdata_path,"l3srvy_varlist.Rdata"))
+    load(file.path(Rdata_path,"l3wk_varlist.Rdata"))
+    load(file.path(Rdata_path,"l3srvy_varlist_H16.Rdata"))
+    load(file.path(Rdata_path,"l3wk_varlist_H16.Rdata"))
+    
+    load(file.path(Rdata_path,"l2_vars.Rdata"))
+    
+    
+    
+    if(update_OPhind)
+      source("R/sub_scripts/get_OpHindcast.R")
+    if(!update_OPhind){
+      load(file.path(rd_path,"l3wk_varlistOP.Rdata"))
+      load(file.path(rd_path,"l3srvy_varlistOP.Rdata"))
+    }
+    l3wk_varlistOP
+    l3srvy_varlistOP
+    
+    vl1   <- l3srvy_varlistOP #srvy_vars[!srvy_vars%in%rm_var_list]
+    vl2   <- l3wk_varlistOP# weekly_vars[!weekly_vars%in%rm_wk_list]
+    
+    # add in largeZoop (gets generated in make_indices_region_new.R)
+    vl <- c(unique(c(vl1,vl2)),"largeZoop_integrated")
+   
+    # Identify which variables would be normally 
+    # distributed (i.e., can have negative values)
+     normvl <- c( vl[grep("pH",vl)],
+                  vl[grep("temp",vl)],
+                  vl[grep("vNorth",vl)],
+                  vl[grep("uEast",vl)])
+
+    normlist <- data.frame(var = vl, lognorm = TRUE)
+    normlist$lognorm[normlist$var%in%normvl] <- FALSE
+    
+
+    # generate indices and bias corrected projections 
+    # This takes approx 30 mins each
+    
+    gcmcmipL <- c("B10K-K20P19_CMIP6_miroc",
+                  "B10K-K20P19_CMIP6_gfdl",
+                  "B10K-K20P19_CMIP6_cesm") 
+    
+     CMIP6_K20P19_Indices_operational <- suppressMessages(
+                        makeACLIM2_Indices(
+                        BC_target = "mn_val",
+                        hind_sim  =  "OperationalHindcast",
+                        histLIST  = paste0(gcmcmipL,"_historical"),
+                        gcmcmipLIST = gcmcmipL, 
+                        scenIN    = c("ssp126","ssp585"),
+                        Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
+                        regnm    = "ACLIMregion",
+                        srvynm    = "ACLIMsurveyrep",
+                        normlist_IN = normlist,
+                        sim_listIN = sim_list[-grep("historical",sim_list)]))
+    
+     if("CMIP6_K20P19_Indices_operational"%in%ls()){                 
+      saved <- FALSE
+      saved <- save_indices(flIN = CMIP6_K20P19_Indices_operational, 
+                   subfl = "allEBS_means",
+                   post_txt = "_mn",
+                   CMIP_fdlr ="CMIP6_K20P19_Indices_operational")
+      fl <- "Data/out/CMIP6_K20P19_Indices_operational_list.Rdata"
+      
+      if(file.exists(fl)) file.remove(fl)
+      save(CMIP6_K20P19_Indices_operational, file = fl)
+       if(saved){
+        rm(CMIP6_K20P19_Indices_operational)}else{
+          stop("Indices not saved!")
+        }
+      gc()
+     }
+     
+    # 30 layer model:
+    # CMIP5 K20P19
+    gcmcmipL2 <- c("B10K-K20P19_CMIP5_MIROC",
+                   "B10K-K20P19_CMIP5_GFDL",
+                   "B10K-K20P19_CMIP5_CESM")
+    
+    CMIP5_K20P19_Indices_operational <- suppressMessages(
+                        makeACLIM2_Indices(
+                        BC_target = "mn_val",
+                        hind_sim  =  "OperationalHindcast",
+                        histLIST  = gcmcmipL2,
+                        gcmcmipLIST = gcmcmipL2,
+                        scenIN    = c("rcp45","rcp85"),
+                        normlist_IN = normlist,
+                        Rdata_pathIN = file.path(Rdata_path,
+                                                 "roms_for_public"),
+                        regnm    = "ACLIMregion",
+                        srvynm    = "ACLIMsurveyrep",
+                        sim_listIN = sim_list[-grep("historical",sim_list)]))
+    
+    if("CMIP5_K20P19_Indices_operational"%in%ls()){
+      saved <- FALSE
+      saved <- save_indices(flIN = CMIP5_K20P19_Indices_operational, 
+                     subfl = "allEBS_means",
+                     post_txt = "_mn",
+                     CMIP_fdlr ="CMIP5_K20P19_Indices_operational")
+        
+        fl <- "Data/out/CMIP5_K20P19_Indices_operational_list.Rdata"
+        if(file.exists(fl)) file.remove(fl)
+        save(CMIP5_K20P19_Indices_operational, file = fl)
+        
+        if(saved){
+        rm(CMIP5_K20P19_Indices_operational)}else{
+          stop("Indices not saved!")
+        }
+        gc()
+    }
+
+   # 10 layer model:
+    # CMIP5 H16
+    gcmcmipL2 <- c("B10K-H16_CMIP5_MIROC",
+                   "B10K-H16_CMIP5_GFDL",
+                   "B10K-H16_CMIP5_CESM") 
+    CMIP5_H16_Indices_operational <- suppressMessages(
+                        makeACLIM2_Indices(
+                        BC_target = "mn_val",
+                        hind_sim  =  "OperationalHindcast",
+                        histLIST  = gcmcmipL2,
+                        scenIN    = c("rcp45","rcp85"),
+                        gcmcmipLIST = gcmcmipL2,
+                        Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
+                        sim_listIN = sim_list[-grep("historical",sim_list)]))
+    if("CMIP5_H16_Indices_operational"%in%ls()){
+      saved <- FALSE
+      saved <- save_indices(flIN = CMIP5_H16_Indices_operational, 
+                   subfl = "allEBS_means",
+                   post_txt = "_mn",
+                   CMIP_fdlr ="CMIP5_H16_Indices_operational")
+     
+      fl <- "Data/out/CMIP5_H16_Indices_operational_list.Rdata"
+      if(file.exists(fl)) file.remove(fl)
+      save(CMIP5_H16_Indices_operational, file = fl)
+      if(saved){
+        rm(CMIP5_H16_Indices_operational)}else{
+          stop("Indices not saved!")
+        }
+      gc()
+    }
+    
     if(1==10){
       save(CMIP6_Indices, file = "Data/out/CMIP6_Indices_List.Rdata")
       save(CMIP5_K20_Indices, file = "Data/out/CMIP5_K20_Indices_List.Rdata")

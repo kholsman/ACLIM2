@@ -7,11 +7,11 @@
   
     # switches and options:
     #-------------------------------------------
-    # set the reference years for bias correcting:
+    # set the reference years for bias correcting:CMIP5 doesn't start until 2005
     ref_years <- 1980:2013
     
-    # identify the year to z-score scale / delta
-    deltayrs  <- 1970:2000
+    # identify the year to z-score scale / delta (note that )
+    deltayrs  <- 1970:2012
     
     # Designate strata:
     NEBS_strata <- c(70,81,82,90) #c(70,81) 

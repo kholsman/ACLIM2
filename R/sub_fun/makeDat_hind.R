@@ -5,49 +5,97 @@
 #' 
 makeDat_hind <- function(datIN   = hind, 
                          makeADMB_chunk = T,
-                         outfile,
+                         NAVal     = "mean", 
+                         value2use = "mn_val_scaled",
+                         outfile = fndat_hind,
                          nonScaled_covlist = c("temp_bottom5m","temp_surface5m"  ),
                          Scaled_covlist    = covars,
                          nsppIN    = NULL,
                          overlapIN = NULL){
-
+  
+   if(is.null(NAVal)){
+    myfun <- function(x){
+      return(x)
+    }}
+  
+   if(NAVal == "mean"){
+    myfun <- function(x){
+      if(any(is.na(x))) 
+        x[is.na(x)] <- mean(x, na.rm=T) 
+      return(x)
+    }}
+   if(NAVal == "last"){
+    myfun <- function(x){
+      if(any(is.na(x))) 
+        x[is.na(x)] <- rev(x[!is.na(x)])[1]
+      return(x)
+    }}
+   if(NAVal == "5Yrmean"){
+      myfun <- function(x){
+        if(any(is.na(x))) 
+          x[is.na(x)] <- mean(rev(x[!is.na(x)])[1:5])
+      return(x)
+    }}
+    
+   
+  eval(parse(text = paste0("datIN<- datIN%>%dplyr::rename(covuse = ",value2use,")")))
   ncovs      <- length(Scaled_covlist)
   ncovs_nonS <- length(nonScaled_covlist)
-  longnm     <- gsub("\n             "," ",datIN$long_nam[match(Scaled_covlist,datIN$var)])
-  longnm_nonS<- gsub("\n             "," ",datIN$long_nam[match(nonScaled_covlist,datIN$var)])
+  
+  # longnm     <- gsub("\n             "," ",datIN$long_nam[match(Scaled_covlist,datIN$var)])
+  # longnm_nonS<- gsub("\n             "," ",datIN$long_nam[match(nonScaled_covlist,datIN$var)])
   yrs        <- sort(unique(datIN$year))
 
   cat("#Covars (covariate phase for each covs - do not alter this line)",file=outfile,append=FALSE,sep="\n")
   cat(paste("#",Scaled_covlist),file=outfile,append=TRUE,sep=" ")
   cat("",file=outfile,append=TRUE,sep="\n")
-  if(!is.null(nsppIN)){
-    cat("#nspp2 : number of species ",file=outfile,append=TRUE,sep="\n")
-    cat(nsppIN,file=outfile,append=TRUE,sep="\n")
-  }
+  cat("#nspp2 : ",file=outfile,append=TRUE,sep="\n")
+  cat(nsppIN,file=outfile,append=TRUE,sep="\n")
   cat("#nTyrs : number years for the zooplankton hindcast data ",file=outfile,append=TRUE,sep="\n")
   cat(length(yrs),file=outfile,append=TRUE,sep="\n")
   cat("#hind_years : years for covariates ",file=outfile,append=TRUE,sep="\n")
   cat(yrs,file=outfile,append=TRUE,sep=" ");cat("",file=outfile,append=TRUE,sep="\n")
   cat("#ncov : number of covariates ",file=outfile,append=TRUE,sep="\n")
   cat(ncovs,file=outfile,append=TRUE,sep=" ");cat("",file=outfile,append=TRUE,sep="\n")
+  
+  cat("#nEatcovs : DEFUNCT ",file=outfile,append=TRUE,sep="\n")
+  cat(1,file=outfile,append=TRUE,sep=" ");cat("",file=outfile,append=TRUE,sep="\n")
+  cat("#Eat_covs : DEFUNCT ",file=outfile,append=TRUE,sep="\n")
+  cat(3,file=outfile,append=TRUE,sep=" ");cat("",file=outfile,append=TRUE,sep="\n")
+
   # cat("#ncovs_nonS : number of non-scaled covariates",file=outfile,append=TRUE,sep="\n")
   # cat(ncovs_nonS,file=outfile,append=TRUE,sep=" ");cat("",file=outfile,append=TRUE,sep="\n")
   
   cat("#COVAR_START ##############################################DO NOT REMOVE THIS LINE OR REC FIT WONT RUN!",file=outfile,append=TRUE,sep="\n")
   for(c in 1:ncovs){
     #eval(parse(text=paste("tmp<-dd$",parmlist[p],sep="")))
-    cat(paste("# ",Scaled_covlist[c],":",longnm[c]),file=outfile,append=TRUE,sep="\n")
+    cat(paste("# ",Scaled_covlist[c],":",(datIN%>%
+                                            dplyr::filter(var==Scaled_covlist[c])%>%
+                                            select(long_name))[[1]][1]),file=outfile,append=TRUE,sep="\n")
+    dd <- (datIN%>%
+             dplyr::filter(var==Scaled_covlist[c])%>%
+             dplyr::mutate(covuse = myfun(covuse))%>%
+             dplyr::select(covuse))[[1]]
     
-    cat((datIN%>%dplyr::filter(var==Scaled_covlist[c])%>%dplyr::select(mn_val_scaled))[[1]],
-        file=outfile,append=TRUE,sep=" ");cat("",file=outfile,append=TRUE,sep="\n")
+    cat(dd,file=outfile,append=TRUE,sep=" ");cat("",file=outfile,append=TRUE,sep="\n")
+    rm(dd)
   }
   cat("#COVAR_END ##########################################################DO NOT REMOVE THIS LINE OR REC FIT WONT RUN!",file=outfile,append=TRUE,sep="\n")
   for(c in 1:ncovs_nonS){
+   
     #eval(parse(text=paste("tmp<-dd$",parmlist[p],sep="")))
-    cat(paste("# ",nonScaled_covlist[c],":",longnm_nonS[c]),file=outfile,append=TRUE,sep="\n")
-    
-    cat((datIN%>%dplyr::filter(var==Scaled_covlist[c])%>%dplyr::select(mn_val))[[1]],
+    cat(paste("# ",nonScaled_covlist[c],":",(datIN%>%
+                                               dplyr::filter(var==nonScaled_covlist[c])%>%
+                                               select(long_name))[[1]][1]),
+        
+        file=outfile,append=TRUE,sep="\n")
+    dd <- (datIN%>%
+             dplyr::filter(var==nonScaled_covlist[c])%>%
+             dplyr::mutate(mn_val = myfun(mn_val))%>%
+             dplyr::select(mn_val))[[1]]
+    cat(dd,
         file=outfile,append=TRUE,sep=" ");cat("",file=outfile,append=TRUE,sep="\n")
+    rm(dd)
   }
  
   cat("########################################################### ",file=outfile,append=TRUE,sep="\n")
