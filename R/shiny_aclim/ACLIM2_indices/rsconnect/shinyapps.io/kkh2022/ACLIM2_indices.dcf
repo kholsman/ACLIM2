@@ -5,10 +5,10 @@ account: kkh2022
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 6226841
-bundleId: 6568817
+bundleId: 6613207
 url: https://kkh2022.shinyapps.io/ACLIM2_indices/
-when: 1669749073.43585
-lastSyncTime: 1669749073.43585
+when: 1670547946.84553
+lastSyncTime: 1670547946.84553
 asMultiple: FALSE
 asStatic: FALSE
 ignoredFiles: .Rapp.history
