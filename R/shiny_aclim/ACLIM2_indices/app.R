@@ -60,7 +60,7 @@ ui <- fluidPage(
                    # hr(),
                     #plotlyOutput("matimage", width = 600,height = 300),
                            hr(),
-                   helpText("For more info see https://github.com/kholsman/ACLIM2/blob/main/ACLIM2_quickStart.html")
+                   helpText("Please ignore error on load, app takes ~1 min to load data.\n For more info on indices see https://kholsman.github.io/ACLIM2")
 #                   
                 ))
             )

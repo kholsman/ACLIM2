@@ -68,10 +68,13 @@ get_var <- function(
       
     }
     
-    hind     <- dhind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%dplyr::select(var,basin,year, jday,mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)
-    hist     <- dhist%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%dplyr::select(var,basin,year, jday,mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)
+    hind     <- dhind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%
+      dplyr::select(var,basin,year, jday,mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)
+    hist     <- dhist%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%
+      dplyr::select(var,basin,year, jday,mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)
   
-    fut      <- dfut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%dplyr::select(var,basin,year, jday,mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)
+    fut      <- dfut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%
+      dplyr::select(var,basin,year, jday,mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)
     
     
     plotdat    <- rbind(hind,hist,fut)%>%dplyr::mutate(bc = "raw")
