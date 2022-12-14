@@ -246,63 +246,120 @@ For a list of the available variables from the ROMSNPZ:
     (srvy_var_def[-(1:5),])
 ```
 
-    ##                    name                            units                                                    longname
-    ## 6                   Ben                        mg C m^-2                               Benthic infauna concentration
-    ## 7                DetBen                        mg C m^-2                              Benthic detritus concentration
-    ## 8                  Hsbl                            meter                     depth of oceanic surface boundary layer
-    ## 9                IceNH4                      mmol N m^-3                                  Ice ammonium concentration
-    ## 10               IceNO3                      mmol N m^-3                                   Ice nitrate concentration
-    ## 11               IcePhL                        mg C m^-3                                     Ice algae concentration
-    ## 12                 aice                                                              fraction of cell covered by ice
-    ## 13                 hice                            meter                               average ice thickness in cell
-    ## 14               shflux                     watt meter-2                                       surface net heat flux
-    ## 15               ssflux                   meter second-1                           surface net salt flux, (E-P)*SALT
-    ## 16       Cop_integrated                    (mg C m^-3)*m          Small copepod concentration, integrated over depth
-    ## 17        Cop_surface5m                        mg C m^-3                Small copepod concentration, surface 5m mean
-    ## 18      EupO_integrated                    (mg C m^-3)*m    Offshore euphausiid concentration, integrated over depth
-    ## 19       EupO_surface5m                        mg C m^-3          Offshore euphausiid concentration, surface 5m mean
-    ## 20      EupS_integrated                    (mg C m^-3)*m    On-shelf euphausiid concentration, integrated over depth
-    ## 21       EupS_surface5m                        mg C m^-3          On-shelf euphausiid concentration, surface 5m mean
-    ## 22        Iron_bottom5m                  micromol Fe m-3                          iron concentration, bottom 5m mean
-    ## 23      Iron_integrated              (micromol Fe m-3)*m                   iron concentration, integrated over depth
-    ## 24       Iron_surface5m                  micromol Fe m-3                         iron concentration, surface 5m mean
-    ## 25       Jel_integrated                    (mg C m^-3)*m              Jellyfish concentration, integrated over depth
-    ## 26        Jel_surface5m                        mg C m^-3                    Jellyfish concentration, surface 5m mean
-    ## 27       MZL_integrated                    (mg C m^-3)*m       Microzooplankton concentration, integrated over depth
-    ## 28        MZL_surface5m                        mg C m^-3             Microzooplankton concentration, surface 5m mean
-    ## 29      NCaO_integrated                    (mg C m^-3)*m Offshore large copepod concentration, integrated over depth
-    ## 30       NCaO_surface5m                        mg C m^-3       Offshore large copepod concentration, surface 5m mean
-    ## 31      NCaS_integrated                    (mg C m^-3)*m On-shelf large copepod concentration, integrated over depth
-    ## 32       NCaS_surface5m                        mg C m^-3       On-shelf large copepod concentration, surface 5m mean
-    ## 33         NH4_bottom5m                      mmol N m^-3                      Ammonium concentration, bottom 5m mean
-    ## 34       NH4_integrated                  (mmol N m^-3)*m               Ammonium concentration, integrated over depth
-    ## 35        NH4_surface5m                      mmol N m^-3                     Ammonium concentration, surface 5m mean
-    ## 36         NO3_bottom5m                      mmol N m^-3                       Nitrate concentration, bottom 5m mean
-    ## 37       NO3_integrated                  (mmol N m^-3)*m                Nitrate concentration, integrated over depth
-    ## 38        NO3_surface5m                      mmol N m^-3                      Nitrate concentration, surface 5m mean
-    ## 39       PhL_integrated                    (mg C m^-3)*m    Large phytoplankton concentration, integrated over depth
-    ## 40        PhL_surface5m                        mg C m^-3          Large phytoplankton concentration, surface 5m mean
-    ## 41       PhS_integrated                    (mg C m^-3)*m    Small phytoplankton concentration, integrated over depth
-    ## 42        PhS_surface5m                        mg C m^-3          Small phytoplankton concentration, surface 5m mean
-    ## 43  prod_Cop_integrated                   mg C m^-2 d^-1                  Cop net production rate, summed over depth
-    ## 44 prod_EupO_integrated                   mg C m^-2 d^-1                 EupO net production rate, summed over depth
-    ## 45 prod_EupS_integrated                   mg C m^-2 d^-1                 EupS net production rate, summed over depth
-    ## 46  prod_Eup_integrated (milligram carbon meter-3 d-1)*m     secondary production Euphausiids, integrated over depth
-    ## 47  prod_Jel_integrated                   mg C m^-2 d^-1                  Jel net production rate, summed over depth
-    ## 48  prod_MZL_integrated                   mg C m^-2 d^-1                  MZL net production rate, summed over depth
-    ## 49 prod_NCaO_integrated                   mg C m^-2 d^-1                 NCaO net production rate, summed over depth
-    ## 50 prod_NCaS_integrated                   mg C m^-2 d^-1                 NCaS net production rate, summed over depth
-    ## 51  prod_NCa_integrated (milligram carbon meter-3 d-1)*m      secondary production Neocalanus, integrated over depth
-    ## 52  prod_PhL_integrated                   mg C m^-2 d^-1                  PhL net production rate, summed over depth
-    ## 53  prod_PhS_integrated                   mg C m^-2 d^-1                  PhS net production rate, summed over depth
-    ## 54       salt_surface5m                                                                    salinity, surface 5m mean
-    ## 55        temp_bottom5m                          Celsius                       potential temperature, bottom 5m mean
-    ## 56      temp_integrated                      (Celsius)*m                potential temperature, integrated over depth
-    ## 57       temp_surface5m                          Celsius                      potential temperature, surface 5m mean
-    ## 58       uEast_bottom5m                   meter second-1           u-momentum component, geo-rotated, bottom 5m mean
-    ## 59      uEast_surface5m                   meter second-1          u-momentum component, geo-rotated, surface 5m mean
-    ## 60      vNorth_bottom5m                   meter second-1           v-momentum component, geo-rotated, bottom 5m mean
-    ## 61     vNorth_surface5m                   meter second-1          v-momentum component, geo-rotated, surface 5m mean
+    ##                    name                            units
+    ## 6                   Ben                        mg C m^-2
+    ## 7                DetBen                        mg C m^-2
+    ## 8                  Hsbl                            meter
+    ## 9                IceNH4                      mmol N m^-3
+    ## 10               IceNO3                      mmol N m^-3
+    ## 11               IcePhL                        mg C m^-3
+    ## 12                 aice                                 
+    ## 13                 hice                            meter
+    ## 14               shflux                     watt meter-2
+    ## 15               ssflux                   meter second-1
+    ## 16       Cop_integrated                    (mg C m^-3)*m
+    ## 17        Cop_surface5m                        mg C m^-3
+    ## 18      EupO_integrated                    (mg C m^-3)*m
+    ## 19       EupO_surface5m                        mg C m^-3
+    ## 20      EupS_integrated                    (mg C m^-3)*m
+    ## 21       EupS_surface5m                        mg C m^-3
+    ## 22        Iron_bottom5m                  micromol Fe m-3
+    ## 23      Iron_integrated              (micromol Fe m-3)*m
+    ## 24       Iron_surface5m                  micromol Fe m-3
+    ## 25       Jel_integrated                    (mg C m^-3)*m
+    ## 26        Jel_surface5m                        mg C m^-3
+    ## 27       MZL_integrated                    (mg C m^-3)*m
+    ## 28        MZL_surface5m                        mg C m^-3
+    ## 29      NCaO_integrated                    (mg C m^-3)*m
+    ## 30       NCaO_surface5m                        mg C m^-3
+    ## 31      NCaS_integrated                    (mg C m^-3)*m
+    ## 32       NCaS_surface5m                        mg C m^-3
+    ## 33         NH4_bottom5m                      mmol N m^-3
+    ## 34       NH4_integrated                  (mmol N m^-3)*m
+    ## 35        NH4_surface5m                      mmol N m^-3
+    ## 36         NO3_bottom5m                      mmol N m^-3
+    ## 37       NO3_integrated                  (mmol N m^-3)*m
+    ## 38        NO3_surface5m                      mmol N m^-3
+    ## 39       PhL_integrated                    (mg C m^-3)*m
+    ## 40        PhL_surface5m                        mg C m^-3
+    ## 41       PhS_integrated                    (mg C m^-3)*m
+    ## 42        PhS_surface5m                        mg C m^-3
+    ## 43  prod_Cop_integrated                   mg C m^-2 d^-1
+    ## 44 prod_EupO_integrated                   mg C m^-2 d^-1
+    ## 45 prod_EupS_integrated                   mg C m^-2 d^-1
+    ## 46  prod_Eup_integrated (milligram carbon meter-3 d-1)*m
+    ## 47  prod_Jel_integrated                   mg C m^-2 d^-1
+    ## 48  prod_MZL_integrated                   mg C m^-2 d^-1
+    ## 49 prod_NCaO_integrated                   mg C m^-2 d^-1
+    ## 50 prod_NCaS_integrated                   mg C m^-2 d^-1
+    ## 51  prod_NCa_integrated (milligram carbon meter-3 d-1)*m
+    ## 52  prod_PhL_integrated                   mg C m^-2 d^-1
+    ## 53  prod_PhS_integrated                   mg C m^-2 d^-1
+    ## 54       salt_surface5m                                 
+    ## 55        temp_bottom5m                          Celsius
+    ## 56      temp_integrated                      (Celsius)*m
+    ## 57       temp_surface5m                          Celsius
+    ## 58       uEast_bottom5m                   meter second-1
+    ## 59      uEast_surface5m                   meter second-1
+    ## 60      vNorth_bottom5m                   meter second-1
+    ## 61     vNorth_surface5m                   meter second-1
+    ##                                                       longname
+    ## 6                                Benthic infauna concentration
+    ## 7                               Benthic detritus concentration
+    ## 8                      depth of oceanic surface boundary layer
+    ## 9                                   Ice ammonium concentration
+    ## 10                                   Ice nitrate concentration
+    ## 11                                     Ice algae concentration
+    ## 12                             fraction of cell covered by ice
+    ## 13                               average ice thickness in cell
+    ## 14                                       surface net heat flux
+    ## 15                           surface net salt flux, (E-P)*SALT
+    ## 16          Small copepod concentration, integrated over depth
+    ## 17                Small copepod concentration, surface 5m mean
+    ## 18    Offshore euphausiid concentration, integrated over depth
+    ## 19          Offshore euphausiid concentration, surface 5m mean
+    ## 20    On-shelf euphausiid concentration, integrated over depth
+    ## 21          On-shelf euphausiid concentration, surface 5m mean
+    ## 22                          iron concentration, bottom 5m mean
+    ## 23                   iron concentration, integrated over depth
+    ## 24                         iron concentration, surface 5m mean
+    ## 25              Jellyfish concentration, integrated over depth
+    ## 26                    Jellyfish concentration, surface 5m mean
+    ## 27       Microzooplankton concentration, integrated over depth
+    ## 28             Microzooplankton concentration, surface 5m mean
+    ## 29 Offshore large copepod concentration, integrated over depth
+    ## 30       Offshore large copepod concentration, surface 5m mean
+    ## 31 On-shelf large copepod concentration, integrated over depth
+    ## 32       On-shelf large copepod concentration, surface 5m mean
+    ## 33                      Ammonium concentration, bottom 5m mean
+    ## 34               Ammonium concentration, integrated over depth
+    ## 35                     Ammonium concentration, surface 5m mean
+    ## 36                       Nitrate concentration, bottom 5m mean
+    ## 37                Nitrate concentration, integrated over depth
+    ## 38                      Nitrate concentration, surface 5m mean
+    ## 39    Large phytoplankton concentration, integrated over depth
+    ## 40          Large phytoplankton concentration, surface 5m mean
+    ## 41    Small phytoplankton concentration, integrated over depth
+    ## 42          Small phytoplankton concentration, surface 5m mean
+    ## 43                  Cop net production rate, summed over depth
+    ## 44                 EupO net production rate, summed over depth
+    ## 45                 EupS net production rate, summed over depth
+    ## 46     secondary production Euphausiids, integrated over depth
+    ## 47                  Jel net production rate, summed over depth
+    ## 48                  MZL net production rate, summed over depth
+    ## 49                 NCaO net production rate, summed over depth
+    ## 50                 NCaS net production rate, summed over depth
+    ## 51      secondary production Neocalanus, integrated over depth
+    ## 52                  PhL net production rate, summed over depth
+    ## 53                  PhS net production rate, summed over depth
+    ## 54                                   salinity, surface 5m mean
+    ## 55                       potential temperature, bottom 5m mean
+    ## 56                potential temperature, integrated over depth
+    ## 57                      potential temperature, surface 5m mean
+    ## 58           u-momentum component, geo-rotated, bottom 5m mean
+    ## 59          u-momentum component, geo-rotated, surface 5m mean
+    ## 60           v-momentum component, geo-rotated, bottom 5m mean
+    ## 61          v-momentum component, geo-rotated, surface 5m mean
 
 ## Data outputs
 
@@ -330,33 +387,40 @@ in R:
     head(all_info1)
 ```
 
-    ##                            name                    Type B10KVersion  CMIP  GCM   BIO Carbon_scenario               Start
-    ## 1 B10K-H16_CMIP5_CESM_BIO_rcp85 Weekly regional indices         H16 CMIP5 CESM  TRUE           rcp85 2006-01-22 12:00:00
-    ## 2     B10K-H16_CMIP5_CESM_rcp45 Weekly regional indices         H16 CMIP5 CESM FALSE           rcp45 2006-01-22 12:00:00
-    ## 3     B10K-H16_CMIP5_CESM_rcp85 Weekly regional indices         H16 CMIP5 CESM FALSE           rcp85 2006-01-22 12:00:00
-    ## 4 B10K-H16_CMIP5_GFDL_BIO_rcp85 Weekly regional indices         H16 CMIP5 GFDL  TRUE           rcp85 2006-01-22 12:00:00
-    ## 5     B10K-H16_CMIP5_GFDL_rcp45 Weekly regional indices         H16 CMIP5 GFDL FALSE           rcp45 2006-01-22 12:00:00
-    ## 6     B10K-H16_CMIP5_GFDL_rcp85 Weekly regional indices         H16 CMIP5 GFDL FALSE           rcp85 2006-01-22 12:00:00
-    ##                   End nvars
-    ## 1 2099-12-27 12:00:00    59
-    ## 2 2081-02-16 12:00:00    59
-    ## 3 2099-12-27 12:00:00    59
-    ## 4 2099-12-27 12:00:00    59
-    ## 5 2099-12-27 12:00:00    59
-    ## 6 2099-12-27 12:00:00    59
+    ##                            name                    Type B10KVersion  CMIP  GCM
+    ## 1 B10K-H16_CMIP5_CESM_BIO_rcp85 Weekly regional indices         H16 CMIP5 CESM
+    ## 2     B10K-H16_CMIP5_CESM_rcp45 Weekly regional indices         H16 CMIP5 CESM
+    ## 3     B10K-H16_CMIP5_CESM_rcp85 Weekly regional indices         H16 CMIP5 CESM
+    ## 4 B10K-H16_CMIP5_GFDL_BIO_rcp85 Weekly regional indices         H16 CMIP5 GFDL
+    ## 5     B10K-H16_CMIP5_GFDL_rcp45 Weekly regional indices         H16 CMIP5 GFDL
+    ## 6     B10K-H16_CMIP5_GFDL_rcp85 Weekly regional indices         H16 CMIP5 GFDL
+    ##     BIO Carbon_scenario               Start                 End nvars
+    ## 1  TRUE           rcp85 2006-01-22 12:00:00 2099-12-27 12:00:00    59
+    ## 2 FALSE           rcp45 2006-01-22 12:00:00 2081-02-16 12:00:00    59
+    ## 3 FALSE           rcp85 2006-01-22 12:00:00 2099-12-27 12:00:00    59
+    ## 4  TRUE           rcp85 2006-01-22 12:00:00 2099-12-27 12:00:00    59
+    ## 5 FALSE           rcp45 2006-01-22 12:00:00 2099-12-27 12:00:00    59
+    ## 6 FALSE           rcp85 2006-01-22 12:00:00 2099-12-27 12:00:00    59
 
 ``` r
     # Metadata for Weekly ("ACLIMsurveyrep_...") indices
     head(all_info2)
 ```
 
-    ##                            name              Type B10KVersion  CMIP  GCM   BIO Carbon_scenario Start  End nvars
-    ## 1 B10K-H16_CMIP5_CESM_BIO_rcp85 Survey replicated         H16 CMIP5 CESM  TRUE           rcp85  1970 2100    60
-    ## 2     B10K-H16_CMIP5_CESM_rcp45 Survey replicated         H16 CMIP5 CESM FALSE           rcp45  1970 2100    60
-    ## 3     B10K-H16_CMIP5_CESM_rcp85 Survey replicated         H16 CMIP5 CESM FALSE           rcp85  1970 2100    60
-    ## 4 B10K-H16_CMIP5_GFDL_BIO_rcp85 Survey replicated         H16 CMIP5 GFDL  TRUE           rcp85  1970 2100    60
-    ## 5     B10K-H16_CMIP5_GFDL_rcp45 Survey replicated         H16 CMIP5 GFDL FALSE           rcp45  1970 2100    60
-    ## 6     B10K-H16_CMIP5_GFDL_rcp85 Survey replicated         H16 CMIP5 GFDL FALSE           rcp85  1970 2100    60
+    ##                            name              Type B10KVersion  CMIP  GCM   BIO
+    ## 1 B10K-H16_CMIP5_CESM_BIO_rcp85 Survey replicated         H16 CMIP5 CESM  TRUE
+    ## 2     B10K-H16_CMIP5_CESM_rcp45 Survey replicated         H16 CMIP5 CESM FALSE
+    ## 3     B10K-H16_CMIP5_CESM_rcp85 Survey replicated         H16 CMIP5 CESM FALSE
+    ## 4 B10K-H16_CMIP5_GFDL_BIO_rcp85 Survey replicated         H16 CMIP5 GFDL  TRUE
+    ## 5     B10K-H16_CMIP5_GFDL_rcp45 Survey replicated         H16 CMIP5 GFDL FALSE
+    ## 6     B10K-H16_CMIP5_GFDL_rcp85 Survey replicated         H16 CMIP5 GFDL FALSE
+    ##   Carbon_scenario Start  End nvars
+    ## 1           rcp85  1970 2100    60
+    ## 2           rcp45  1970 2100    60
+    ## 3           rcp85  1970 2100    60
+    ## 4           rcp85  1970 2100    60
+    ## 5           rcp45  1970 2100    60
+    ## 6           rcp85  1970 2100    60
 
 # Indices & bias correction
 
@@ -569,11 +633,16 @@ the indices. You can also view this online at
 
 The target indices for NRS include cold pool, bottom temperature, wind,
 SEBS and NEBS, during the growing season (May-August)  
-\* Cold pool (1.5degC)coverage in the northern nursery area during the
-larval drift period (April-June) \* Winds in the northern nursery area
-during the larval draft period (April1-June30) Cooper et al. 2019. \* pH
-in the spawning grounds during Dec – March. \* Summer (May-August) SST
-in the SEBS
+\* Cold pool (1.5degC)coverage in the northern nursery area based on
+summer bottom trawl survey data. Northern nursery area is approx strata
+10& 20, however these are likely correlated with overall coldpool so we
+used the annual cp index \* Winds in the northern nursery area during
+the larval draft period (April1-June30) Cooper et al. 2019. \* pH in the
+spawning grounds during Dec – March. \* Summer (May-August) SST in the
+SEBS
+
+Hindcast values from 1970-2020 were sitched to projections from
+2021-2100 to generate the indices.
 
 ``` r
   # Nursery area is approx strata 10& 20
@@ -595,70 +664,73 @@ in the SEBS
     varall  <- unique(ACLIM_annual_hind$var)
     varall
     load(paste0("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_annual_fut_mn.Rdata"))
+    load(paste0("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_surveyrep_fut_mn.Rdata"))
     
     
     scens   <- c("ssp126", "ssp585")
     GCMs    <- c("miroc", "gfdl", "cesm" )
     
-    # get the variable you want:
-    df <- get_var( typeIN    = "annual", 
-                   plotvar   = "temp_bottom5m",
-                   bcIN      = c("raw","bias corrected"),
-                   CMIPIN    = "K20P19_CMIP6", 
-                   plothist  = T,  # ignore the hist runs
-                   removeyr1 = T)  # "Remove first year of projection ( burn in)")
-    
-    df$plot+coord_cartesian(ylim = c(0, 7))
-```
-
-<img src="ACLIM2_quickStart_files/figure-markdown_github/nrs-1.png" style="display: block; margin: auto;" />
-
-``` r
-    head(df$dat)
-    
-    
     # Now compile the NRS indices:
     #--------------------------------------
-    stitchDate <- "2020-12-30"
+    stitchDate <- "2019-12-30"
     grpby <- c("long_name","type","lognorm","var","basin",
                "year","sim","gcmcmip","GCM","scen","sim_type",
                "units","bc","GCM_scen","GCM_scen_sim", "CMIP" )
     
     sumat <- c("jday","mnDate","mn_val")
     
-    # get the variable you want:
-    df <- get_var( typeIN    = "monthly", 
-                   monthIN   = 4:6,
-                   plotbasin  = c("SEBS"),
-                   plotvar   = "vNorth_surface5m",
-                   bcIN      = "bias corrected",
-                   CMIPIN    = "K20P19_CMIP6", 
-                   plothist  = T,  # ignore the hist runs
-                   removeyr1 = T)  # "Remove first year of projection ( burn in)")
-     vN <- df$dat%>%
-                      group_by(across(all_of(grpby)))%>%
-                      summarize_at(all_of(sumat), mean, na.rm=T)
-     vN <- stitchTS(dat = vN, stitchDate)
-     vN<-vN%>%mutate(type = "NRS indices")
-     #plotTS(vN)
-     
-     rm(df)
-     df <- get_var( typeIN    = "monthly", 
-                   monthIN   = 4:6,
-                   plotbasin  = c("SEBS"),
-                   plotvar   = "uEast_surface5m",
-                   bcIN      = "bias corrected",
-                   CMIPIN    = "K20P19_CMIP6", 
-                   plothist  = T,  # ignore the hist runs
-                   removeyr1 = T)  # "Remove first year of projection ( burn in)")
-     uE <- df$dat%>%group_by(across(all_of(grpby)))%>%
-                      summarize_at(all_of(sumat), mean, na.rm=T)
-     uE <- stitchTS(dat = uE, stitchDate)
-      uE<-uE%>%mutate(type = "NRS indices")
-      NRS_vars <- rbind(vN,uE)
-      rm(df)
-      
-    varlist <- c("temp_bottom5m", "fracbelow2","pH_depthavg")
+    varlist <- c("vNorth_surface5m","uEast_surface5m")
+    
+    # First April 1- June 30 indices
+    i <- 0
+    for(v in varlist){
+        i<- i + 1
+        # get the variable you want:
+        df <- get_var( typeIN    = "monthly", 
+                       monthIN   = 4:6,
+                       plotbasin  = c("SEBS"),
+                       plotvar   = v,
+                       bcIN      = "bias corrected",
+                       CMIPIN    = "K20P19_CMIP6", 
+                       plothist  = T,  # ignore the hist runs
+                       removeyr1 = T)  # "Remove first year of proj ( burn in)")
+         tmpd <- df$dat%>%
+                          group_by(across(all_of(grpby)))%>%
+                          summarize_at(all_of(sumat), mean, na.rm=T)
+         tmpd <- stitchTS(dat = tmpd, stitchDate)
+         tmpd <- tmpd%>%mutate(type = "NRS indices")
+       
+         if(i==1){
+           NRS_vars <- tmpd
+         }else{
+           NRS_vars <- rbind(NRS_vars,tmpd)
+         }
+         rm(df)
+         rm(tmpd)
+      }
+    
+    # Ph In Jan- Mar (Winter)
+    varlist <- "pH_depthavg"
+    for(v in varlist){
+      # get the variable you want:
+      df <- get_var( typeIN    = "seasonal", 
+                     SeasonIN =  "Winter",
+                     plotbasin  = c("SEBS"),
+                     plotvar   = v,
+                     bcIN      = "bias corrected",
+                     CMIPIN    = "K20P19_CMIP6", 
+                     plothist  = T,  # ignore the hist runs
+                     removeyr1 = T)  # "Remove first year of proj ( burn in)")
+       tmpd <- df$dat%>%group_by(across(all_of(grpby)))%>%
+                        summarize_at(all_of(sumat), mean, na.rm=T)
+       tmpd <- stitchTS(dat = tmpd, stitchDate)
+       tmpd <- tmpd%>%mutate(type = "NRS indices")
+       NRS_vars <- rbind(NRS_vars,tmpd)
+       rm(df)
+       rm(tmpd)
+    }
+    # summer values  
+    varlist <- c("fracbelow1","fracbelow2","temp_surface5m", "temp_bottom5m")
     for(v in varlist){
       # get the variable you want:
       df <- get_var( typeIN    = "seasonal", 
@@ -669,21 +741,28 @@ in the SEBS
                      CMIPIN    = "K20P19_CMIP6", 
                      plothist  = T,  # ignore the hist runs
                      removeyr1 = T)  # "Remove first year of projection ( burn in)")
-       tmp <- df$dat%>%group_by(across(all_of(grpby)))%>%
+       tmpd <- df$dat%>%group_by(across(all_of(grpby)))%>%
                         summarize_at(all_of(sumat), mean, na.rm=T)
-       tmp <- stitchTS(dat = tmp, stitchDate)
-       tmp<-tmp%>%mutate(type = "NRS indices")
-         NRS_vars <- rbind(NRS_vars,tmp)
+       tmpd <- stitchTS(dat = tmpd, stitchDate)
+       tmpd<-tmpd%>%mutate(type = "NRS indices")
+         NRS_vars <- rbind(NRS_vars,tmpd)
          rm(df)
+         rm(tmpd)
       }
       NRS_vars<-NRS_vars%>%ungroup()
-     plotTS(NRS_vars )
-```
-
-<img src="ACLIM2_quickStart_files/figure-markdown_github/nrs-2.png" style="display: block; margin: auto;" />
-
-``` r
-     save(NRS_vars, file="Data/out/NRS_vars.Rdata")
+  
+     # save indices
+     if(!dir.exists("Data/out/NRS_indices"))
+       dir.create("Data/out/NRS_indices")
+     
+     sclr<-1.2
+     jpeg(filename = file.path("Data/out/NRS_indices/NRS_vars.jpg"),
+          width=6*sclr, height=9*sclr, units="in", res = 350)
+     print(plotTS(NRS_vars ))
+     dev.off()
+     
+     save(NRS_vars, file="Data/out/NRS_indices/NRS_vars.Rdata")
+     write.csv(NRS_vars, file="Data/out/NRS_indices/NRS_vars.csv")
      
      # recast with vars for each column:
      NRS_vars_wide<- NRS_vars%>%
@@ -692,32 +771,34 @@ in the SEBS
       summarize_at(all_of(c("mn_val")), mean, na.rm=T)%>%
       tidyr::pivot_wider(names_from = "var", values_from = "mn_val")
     
-     #ggplot()+geom_line(data=NRS_vars_wide,aes(x=year,y=fracbelow2,color=GCM_scen))
      save(NRS_vars_wide, file="Data/out/NRS_vars_wide.Rdata")
-    
+     
+     save(NRS_vars_wide, file="Data/out/NRS_indices/NRS_vars_wide.Rdata")
+     write.csv(NRS_vars_wide, file="Data/out/NRS_indices/NRS_vars_wide.csv")
+     
      plotTS(NRS_vars )
 ```
 
-<img src="ACLIM2_quickStart_files/figure-markdown_github/nrs-3.png" style="display: block; margin: auto;" />
+<img src="ACLIM2_quickStart_files/figure-markdown_github/nrs-1.png" style="display: block; margin: auto;" />
 
 ## Continuous timeseries of hind + fut
 
 ``` r
-    # get the variable you want:
-    df <- get_var( typeIN    = "annual", 
-                   plotvar   = "pH_depthavg",
-                   bcIN      = "bias corrected",
-                   CMIPIN    = "K20P19_CMIP6", 
-                   plothist  = F,  # ignore the hist runs
-                   removeyr1 = T)  # "Remove first year of ptoj ( burn in)")
-    
-    df$plot
+  # get the variable you want:
+      df <- get_var( typeIN    = "annual", 
+                     plotvar   = "temp_bottom5m",
+                     bcIN      = c("raw","bias corrected"),
+                     CMIPIN    = "K20P19_CMIP6", 
+                     plothist  = T,  # ignore the hist runs
+                     removeyr1 = T)  # "Remove first year of projection ( burn in)")
+      
+      df$plot+coord_cartesian(ylim = c(0, 7))
 ```
 
 <img src="ACLIM2_quickStart_files/figure-markdown_github/ts-1.png" style="display: block; margin: auto;" />
 
 ``` r
-    head(df$dat)
+      head(df$dat)
     
   # concat the hind and fut runs by removing years from projection
      stitchDate <- "2020-12-30"
