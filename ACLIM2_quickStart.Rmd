@@ -350,7 +350,8 @@ The target indices for NRS include cold pool, bottom temperature, wind, SEBS and
 * pH in the spawning grounds during Dec – March.
 * Summer (May-August) SST in the SEBS
 
- 
+
+Hindcast values from 1970-2020 were sitched to projections from 2021-2100 to generate the indices. 
 
 
 
@@ -383,7 +384,7 @@ The target indices for NRS include cold pool, bottom temperature, wind, SEBS and
     
     # Now compile the NRS indices:
     #--------------------------------------
-    stitchDate <- "2020-12-30"
+    stitchDate <- "2019-12-30"
     grpby <- c("long_name","type","lognorm","var","basin",
                "year","sim","gcmcmip","GCM","scen","sim_type",
                "units","bc","GCM_scen","GCM_scen_sim", "CMIP" )
@@ -393,7 +394,9 @@ The target indices for NRS include cold pool, bottom temperature, wind, SEBS and
     varlist <- c("vNorth_surface5m","uEast_surface5m")
     
     # First April 1- June 30 indices
-      for(v in varlist){
+    i <- 0
+    for(v in varlist){
+        i<- i + 1
         # get the variable you want:
         df <- get_var( typeIN    = "monthly", 
                        monthIN   = 4:6,
@@ -412,7 +415,7 @@ The target indices for NRS include cold pool, bottom temperature, wind, SEBS and
          if(i==1){
            NRS_vars <- tmpd
          }else{
-           NRS_vars <- rbind(NRS_vars,tmp)
+           NRS_vars <- rbind(NRS_vars,tmpd)
          }
          rm(df)
          rm(tmpd)
@@ -438,7 +441,7 @@ The target indices for NRS include cold pool, bottom temperature, wind, SEBS and
        rm(df)
        rm(tmpd)
     }
-      
+    # summer values  
     varlist <- c("fracbelow1","fracbelow2","temp_surface5m", "temp_bottom5m")
     for(v in varlist){
       # get the variable you want:
@@ -459,9 +462,19 @@ The target indices for NRS include cold pool, bottom temperature, wind, SEBS and
          rm(tmpd)
       }
       NRS_vars<-NRS_vars%>%ungroup()
-     plotTS(NRS_vars )
+  
+     # save indices
+     if(!dir.exists("Data/out/NRS_indices"))
+       dir.create("Data/out/NRS_indices")
      
-     save(NRS_vars, file="Data/out/NRS_vars.Rdata")
+     sclr<-1.2
+     jpeg(filename = file.path("Data/out/NRS_indices/NRS_vars.jpg"),
+          width=6*sclr, height=9*sclr, units="in", res = 350)
+     print(plotTS(NRS_vars ))
+     dev.off()
+     
+     save(NRS_vars, file="Data/out/NRS_indices/NRS_vars.Rdata")
+     write.csv(NRS_vars, file="Data/out/NRS_indices/NRS_vars.csv")
      
      # recast with vars for each column:
      NRS_vars_wide<- NRS_vars%>%
@@ -470,9 +483,11 @@ The target indices for NRS include cold pool, bottom temperature, wind, SEBS and
       summarize_at(all_of(c("mn_val")), mean, na.rm=T)%>%
       tidyr::pivot_wider(names_from = "var", values_from = "mn_val")
     
-     #ggplot()+geom_line(data=NRS_vars_wide,aes(x=year,y=fracbelow2,color=GCM_scen))
      save(NRS_vars_wide, file="Data/out/NRS_vars_wide.Rdata")
-    
+     
+     save(NRS_vars_wide, file="Data/out/NRS_indices/NRS_vars_wide.Rdata")
+     write.csv(NRS_vars_wide, file="Data/out/NRS_indices/NRS_vars_wide.csv")
+     
      plotTS(NRS_vars )
     
 ```    
