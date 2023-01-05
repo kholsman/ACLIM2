@@ -638,8 +638,8 @@ summer bottom trawl survey data. Northern nursery area is approx strata
 10& 20, however these are likely correlated with overall coldpool so we
 used the annual cp index \* Winds in the northern nursery area during
 the larval draft period (April1-June30) Cooper et al. 2019. \* pH in the
-spawning grounds during Dec – March. \* Summer (May-August) SST in the
-SEBS
+spawning grounds during Jan – March. \* Summer (May-August) SST and BT
+in the SEBS
 
 Hindcast values from 1970-2020 were sitched to projections from
 2021-2100 to generate the indices.
@@ -729,8 +729,8 @@ Hindcast values from 1970-2020 were sitched to projections from
        rm(df)
        rm(tmpd)
     }
-    # summer values  
-    varlist <- c("fracbelow1","fracbelow2","temp_surface5m", "temp_bottom5m")
+    # summer values  (Jul-Aug)
+    varlist <- c("fracbelow1","fracbelow2")
     for(v in varlist){
       # get the variable you want:
       df <- get_var( typeIN    = "seasonal", 
@@ -748,7 +748,28 @@ Hindcast values from 1970-2020 were sitched to projections from
          NRS_vars <- rbind(NRS_vars,tmpd)
          rm(df)
          rm(tmpd)
+    }
+     # spring values  (Mar-Aug)
+    varlist <- c("temp_surface5m", "temp_bottom5m")
+    for(v in varlist){
+      # get the variable you want:
+      df <- get_var( typeIN    = "monthly", 
+                       monthIN   = 3:9,
+                     plotbasin  = c("SEBS"),
+                     plotvar   = v,
+                     bcIN      = "bias corrected",
+                     CMIPIN    = "K20P19_CMIP6", 
+                     plothist  = T,  # ignore the hist runs
+                     removeyr1 = T)  # "Remove first year of projection ( burn in)")
+       tmpd <- df$dat%>%group_by(across(all_of(grpby)))%>%
+                        summarize_at(all_of(sumat), mean, na.rm=T)
+       tmpd <- stitchTS(dat = tmpd, stitchDate)
+       tmpd<-tmpd%>%mutate(type = "NRS indices")
+         NRS_vars <- rbind(NRS_vars,tmpd)
+         rm(df)
+         rm(tmpd)
       }
+      NRS_vars<-NRS_vars%>%ungroup()
       NRS_vars<-NRS_vars%>%ungroup()
   
      # save indices
