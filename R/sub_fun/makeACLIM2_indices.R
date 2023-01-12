@@ -68,9 +68,22 @@ makeACLIM2_Indices <- function(
                                                    seasonsIN   = seasons,
                                                    refyrs      = deltayrs, # not used
                                                    type        = "weekly means")
+    # area weighted weekly means for the NEBS and SEBS separately
+    cat("    -- get reg_indices_weekly_hind ... \n")
+    strata_indices_monthly_hind <- make_indices_region(simIN = hnd,
+                                                   timeblockIN = c("strata","strata_area_km2",
+                                                                   "yr","season","mo"),
+                                                   seasonsIN   = seasons,
+                                                   refyrs      = deltayrs, # not used
+                                                   type        = "strata monthly means")
 
     reg_indices_weekly_hind <- reg_indices_weekly_hind%>%
       dplyr::mutate(type = "weekly means",
+                    jday = mnDate,
+                    mnDate = as.Date(paste0(year,"-01-01"))+mnDate)
+    
+    strata_indices_monthly_hind <- strata_indices_monthly_hind%>%
+      dplyr::mutate(type = "strata monthly means",
                     jday = mnDate,
                     mnDate = as.Date(paste0(year,"-01-01"))+mnDate)
     
@@ -119,9 +132,21 @@ makeACLIM2_Indices <- function(
                                                            refyrs      = deltayrs,
                                                            type        = "weekly means")
             
-           
+            # area weighted weekly means for the NEBS and SEBS separately
+            cat("    -- get reg_indices_weekly_hind ... \n")
+            strata_indices_monthly_hist <- make_indices_region(simIN = hist,
+                                                               timeblockIN = c("strata","strata_area_km2",
+                                                                               "yr","season","mo"),
+                                                               seasonsIN   = seasons,
+                                                               refyrs      = deltayrs, # not used
+                                                               type        = "strata monthly means")
+            
               reg_indices_weekly_hist <- reg_indices_weekly_hist%>%
                 dplyr::mutate(type = "weekly means",
+                              jday = mnDate,
+                              mnDate = as.Date(paste0(year,"-01-01"))+mnDate)
+              strata_indices_monthly_hist <- strata_indices_monthly_hist%>%
+                dplyr::mutate(type = "strata monthly means",
                               jday = mnDate,
                               mnDate = as.Date(paste0(year,"-01-01"))+mnDate)
               
@@ -179,11 +204,24 @@ makeACLIM2_Indices <- function(
                                                              type        = "weekly means")
               
               
-             
+              # area weighted weekly means for the NEBS and SEBS separately
+              cat("    -- get reg_indices_weekly_hind ... \n")
+              strata_indices_monthly_hist <- make_indices_region(simIN = hist,
+                                                                 timeblockIN = c("strata","strata_area_km2",
+                                                                                 "yr","season","mo"),
+                                                                 seasonsIN   = seasons,
+                                                                 refyrs      = deltayrs, # not used
+                                                                 type        = "strata monthly means")
+              
                 reg_indices_weekly_hist <- reg_indices_weekly_hist%>%
                   dplyr::mutate(type = "weekly means",
                                 jday = mnDate,
                                 mnDate = as.Date(paste0(year,"-01-01"))+mnDate)
+                strata_indices_monthly_hist <- strata_indices_monthly_hist%>%
+                  dplyr::mutate(type = "strata monthly means",
+                                jday = mnDate,
+                                mnDate = as.Date(paste0(year,"-01-01"))+mnDate)
+                
                 
                 srvy_indices_hist <- srvy_indices_hist%>%
                   dplyr::mutate(jday = mnDate,
@@ -216,9 +254,21 @@ makeACLIM2_Indices <- function(
                                                          seasonsIN   = seasons,
                                                          refyrs      = deltayrs,
                                                          type        = "weekly means"))
+          # area weighted weekly means for the NEBS and SEBS separately
+          cat("    -- get reg_indices_weekly_hind ... \n")
+          strata_indices_monthly_proj <- make_indices_region(simIN = proj_wk,
+                                                             timeblockIN = c("strata","strata_area_km2",
+                                                                             "yr","season","mo"),
+                                                             seasonsIN   = seasons,
+                                                             refyrs      = deltayrs, # not used
+                                                             type        = "strata monthly means")
 
           reg_indices_weekly_proj <- reg_indices_weekly_proj%>%
             dplyr::mutate(type = "weekly means",
+                          jday = mnDate,
+                          mnDate = as.Date(paste0(year,"-01-01"))+mnDate)
+          strata_indices_monthly_proj <- strata_indices_monthly_proj%>%
+            dplyr::mutate(type = "strata monthly means",
                           jday = mnDate,
                           mnDate = as.Date(paste0(year,"-01-01"))+mnDate)
           
@@ -259,6 +309,19 @@ makeACLIM2_Indices <- function(
             outlist    = outlistUSE[-grep("mo",outlistUSE)],
             log_adj    = 1e-4))
           
+          cat("    -- bias correct weekly_adj ... \n")
+          weekly_adj <- suppressMessages(bias_correct_new( 
+            target     = BC_target,
+            smoothIT = TRUE,
+            hindIN = reg_indices_weekly_hind,
+            histIN = reg_indices_weekly_hist,     # this can result in weird values bc of /sd~0
+            futIN  = reg_indices_weekly_proj,
+            normlistIN = normlist_IN,
+            group_byIN = c("var","basin","season","mo","wk"),
+            outlist    = outlistUSE, 
+            ref_yrs    = ref_years,   # currently set to 1980-2013 change to 1985?
+            log_adj    = 1e-4))
+          
           cat("    -- bias correct weekly_adj_old ... \n")
           weekly_adj_old <- suppressMessages(bias_correct_new( 
             target     = BC_target,
@@ -272,18 +335,19 @@ makeACLIM2_Indices <- function(
             outlist    = outlistUSE, 
             log_adj    = 1e-4))
           
-          cat("    -- bias correct weekly_adj ... \n")
-          weekly_adj <- suppressMessages(bias_correct_new( 
+          cat("    -- bias correct strata_montly_adj ... \n")
+          strata_monthly_adj <- suppressMessages(bias_correct_new( 
             target     = BC_target,
             smoothIT = TRUE,
-            hindIN = reg_indices_weekly_hind,
-            histIN = reg_indices_weekly_hist,     # this can result in weird values bc of /sd~0
-            futIN  = reg_indices_weekly_proj,
+            hindIN = strata_indices_monthly_hind ,
+            histIN = strata_indices_monthly_hist,     # this can result in weird values bc of /sd~0
+            futIN  = strata_indices_monthly_proj,
             normlistIN = normlist_IN,
-            group_byIN = c("var","basin","season","mo","wk"),
+            group_byIN = c("var","basin","strata","strata_area_km2","season","mo","wk"),
             outlist    = outlistUSE, 
             ref_yrs    = ref_years,   # currently set to 1980-2013 change to 1985?
             log_adj    = 1e-4))
+          
           
           # save.image(file="tmp_bc.Rdata")
           # load("tmp_bc.Rdata")
@@ -461,6 +525,8 @@ makeACLIM2_Indices <- function(
             ACLIM_weekly_hindold<- weekly_adj_old$hind%>%dplyr::mutate(i = i,gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=mod)
             ACLIM_weekly_hind   <- weekly_adj$hind%>%dplyr::mutate(i = i,gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=mod)
             ACLIM_surveyrep_hind<- surveyrep_adj$hind%>%dplyr::mutate(i = i,gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=mod)
+            ACLIM_strata_monthly_hind<- strata_monthly_adj$hind%>%dplyr::mutate(i = i,gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=mod)
+
             
             ACLIM_annual_hist   <- annual_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
             ACLIM_seasonal_hist <- seasonal_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
@@ -468,6 +534,7 @@ makeACLIM2_Indices <- function(
             ACLIM_weekly_histold<- weekly_adj_old$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
             ACLIM_weekly_hist   <- weekly_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
             ACLIM_surveyrep_hist<- surveyrep_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
+            ACLIM_strata_monthly_hist<- strata_monthly_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
             
             ACLIM_annual_fut    <- annual_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
             ACLIM_seasonal_fut  <- seasonal_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
@@ -475,7 +542,7 @@ makeACLIM2_Indices <- function(
             ACLIM_weekly_futold <- weekly_adj_old$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
             ACLIM_weekly_fut    <- weekly_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
             ACLIM_surveyrep_fut <- surveyrep_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-            
+            ACLIM_strata_monthly_fut<- strata_monthly_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
           }
           
           if(i!=1){
@@ -492,13 +559,15 @@ makeACLIM2_Indices <- function(
             ACLIM_weekly_histold<- rbind(ACLIM_weekly_histold,weekly_adj_old$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
             ACLIM_weekly_hist   <- rbind(ACLIM_weekly_hist,weekly_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
             ACLIM_surveyrep_hist<- rbind(ACLIM_surveyrep_hist,surveyrep_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
-
+            ACLIM_strata_monthly_hist<- rbind(ACLIM_strata_monthly_hist,strata_monthly_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
+            
             ACLIM_annual_fut    <- rbind(ACLIM_annual_fut,annual_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
             ACLIM_seasonal_fut  <- rbind(ACLIM_seasonal_fut,seasonal_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
             ACLIM_monthly_fut   <- rbind(ACLIM_monthly_fut,monthly_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
             ACLIM_weekly_futold <- rbind(ACLIM_weekly_futold,weekly_adj_old$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
             ACLIM_weekly_fut    <- rbind(ACLIM_weekly_fut,weekly_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
-            ACLIM_surveyrep_fut <- rbind(ACLIM_surveyrep_fut,surveyrep_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
+            ACLIM_surveyrep_fut     <- rbind(ACLIM_surveyrep_fut,surveyrep_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
+            ACLIM_strata_monthly_fut<- rbind(ACLIM_strata_monthly_fut,strata_monthly_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
             
           }
           rm(list= c( 
@@ -510,6 +579,7 @@ makeACLIM2_Indices <- function(
             "surveyrep_adj",
             "annual_adj",
             "monthly_adj",
+            "strata_monthly_adj",
             "weekly_adj",
             "weekly_adj_old",
             "seasonal_adj",
@@ -536,6 +606,9 @@ makeACLIM2_Indices <- function(
                                                                     long_name,sim, type, sim_type, .keep_all= TRUE)
       ACLIM_surveyrep_hind <- ACLIM_surveyrep_hind %>% dplyr::distinct(var, basin,season, year, units,
                                                                 long_name,sim, type, sim_type, .keep_all= TRUE)
+      ACLIM_strata_monthly_hind <- ACLIM_strata_monthly_hind %>% dplyr::distinct(var, basin,season, year, units,
+                                                                       long_name,sim, type, sim_type, .keep_all= TRUE)
+      
       
       ACLIM_annual_hist    <- ACLIM_annual_hist %>% dplyr::distinct(var, basin, year, units,
                                                              long_name,sim, type, sim_type, .keep_all= TRUE)
@@ -549,6 +622,8 @@ makeACLIM2_Indices <- function(
                                                                     long_name,sim, type, sim_type, .keep_all= TRUE)
       ACLIM_surveyrep_hist <- ACLIM_surveyrep_hist %>% dplyr::distinct(var, basin,season, year, units,
                                                                 long_name,sim, type, sim_type, .keep_all= TRUE)
+      ACLIM_strata_monthly_hist <- ACLIM_strata_monthly_hist %>% dplyr::distinct(var, basin,season, year, units,
+                                                                       long_name,sim, type, sim_type, .keep_all= TRUE)
       
       
       mi <- 6
@@ -558,6 +633,7 @@ makeACLIM2_Indices <- function(
       ACLIM_weekly_hindold$i <- factor(ACLIM_weekly_hindold$i, levels = 1:mi )
       ACLIM_weekly_hind$i    <- factor(ACLIM_weekly_hind$i, levels = 1:mi )
       ACLIM_surveyrep_hind$i <- factor(ACLIM_surveyrep_hind$i, levels = 1:mi )
+      ACLIM_strata_monthly_hind$i <- factor(ACLIM_strata_monthly_hind$i, levels = 1:mi )
       
       ACLIM_annual_hist$i    <- factor(ACLIM_annual_hist$i, levels = 1:mi )
       ACLIM_seasonal_hist$i  <- factor(ACLIM_seasonal_hist$i, levels = 1:mi )
@@ -565,6 +641,7 @@ makeACLIM2_Indices <- function(
       ACLIM_weekly_histold$i <- factor(ACLIM_weekly_histold$i, levels = 1:mi )
       ACLIM_weekly_hist$i    <- factor(ACLIM_weekly_hist$i, levels = 1:mi )
       ACLIM_surveyrep_hist$i <- factor(ACLIM_surveyrep_hist$i, levels = 1:mi )
+      ACLIM_strata_monthly_hist$i <- factor(ACLIM_strata_monthly_hist$i, levels = 1:mi )
       
 
   # ------------------------------------
@@ -576,6 +653,7 @@ makeACLIM2_Indices <- function(
                      ACLIM_weekly_hindold = ACLIM_weekly_hindold,
                      ACLIM_weekly_hind    = ACLIM_weekly_hind,
                      ACLIM_surveyrep_hind = ACLIM_surveyrep_hind,
+                     ACLIM_strata_monthly_hind = ACLIM_strata_monthly_hind,
                      
                      ACLIM_annual_hist    = ACLIM_annual_hist,
                      ACLIM_seasonal_hist  = ACLIM_seasonal_hist,
@@ -583,13 +661,15 @@ makeACLIM2_Indices <- function(
                      ACLIM_weekly_histold = ACLIM_weekly_histold,
                      ACLIM_weekly_hist    = ACLIM_weekly_hist,
                      ACLIM_surveyrep_hist = ACLIM_surveyrep_hist,
+                     ACLIM_strata_monthly_hist = ACLIM_strata_monthly_hist,
                      
                      ACLIM_annual_fut    = ACLIM_annual_fut,
                      ACLIM_seasonal_fut  = ACLIM_seasonal_fut,
                      ACLIM_monthly_fut   = ACLIM_monthly_fut,
                      ACLIM_weekly_futold = ACLIM_weekly_futold,
                      ACLIM_weekly_fut    = ACLIM_weekly_fut,
-                     ACLIM_surveyrep_fut = ACLIM_surveyrep_fut))
+                     ACLIM_surveyrep_fut = ACLIM_surveyrep_fut,
+                     ACLIM_strata_monthly_fut = ACLIM_strata_monthly_fut))
 }
     
 
