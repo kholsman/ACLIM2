@@ -18,41 +18,27 @@ getAVGnSUM <- function(
   tot      = F){
   
   if(bysim){
-    eval(parse(text = paste0("tmp <- dataIN%>%
-      filter(strata%in%strataIN)%>%
-      group_by(sim,var,",paste0(tblock,collapse=", "),",units,long_name)%>%
-      mutate(valArea = val*strata_area_km2)%>%
-      summarize(
-        tot_val = sum(valArea), 
-        sumArea = sum(strata_area_km2),
-        mnDate  = mean(date))%>%
-      mutate(mn_val=tot_val/sumArea)") ))
-    
-    if(mn & tot)
-      eval(parse(text = paste0("tmp <- tmp%>%dplyr::select(sim,var,mn_val,tot_val,",paste0(tblock,collapse=", "),",units,long_name)") ))
-    if(mn & tot == F)
-      eval(parse(text = paste0("tmp <- tmp%>%dplyr::select(sim,var,mn_val,",paste0(tblock,collapse=", "),",units,long_name)") ))
-    if(mn == F & tot)
-      eval(parse(text = paste0("tmp <- tmp%>%dplyr::select(sim,var,tot_val,",paste0(tblock,collapse=", "),",units,long_name)") ))
-    
+    grpBy <- cc("sim","var","units","long_name",tblock)
   }else{
-    eval(parse(text = paste0("tmp <- dataIN%>%
+    grpBy <- c("var","units","long_name",tblock)
+  }
+
+    tmp <- dataIN%>%
       filter(strata%in%strataIN)%>%
-      group_by(var,",paste0(tblock,collapse=", "),",units,long_name)%>%
+      group_by(across(all_of(grpBy)))%>%
       mutate(valArea = val*strata_area_km2)%>%
       summarize(
-        tot_val = sum(valArea), 
-        sumArea = sum(strata_area_km2),
-        mnDate  = mean(date))%>%
-      mutate(mn_val=tot_val/sumArea)") ))
+        tot_val = sum(valArea,na.rm=T), 
+        sumArea = sum(strata_area_km2,na.rm=T),
+        mnDate  = mean(date,na.rm=T))%>%
+      mutate(mn_val=tot_val/sumArea)
     
     if(mn & tot)
-      eval(parse(text = paste0("tmp <- tmp%>%dplyr::select(var,mn_val,tot_val,mnDate,",paste0(tblock,collapse=", "),",units,long_name)") ))
+      tmp <- tmp%>%dplyr::select(all_of(c("mn_val","tot_val",grpBy)))
     if(mn & tot == F)
-      eval(parse(text = paste0("tmp <- tmp%>%dplyr::select(var,mn_val,mnDate,",paste0(tblock,collapse=", "),",units,long_name)") ))
+      tmp <- tmp%>%dplyr::select(all_of(c("mn_val",grpBy)))
     if(mn == F & tot)
-      eval(parse(text = paste0("tmp <- tmp%>%dplyr::select(var,tot_val,mnDate,",paste0(tblock,collapse=", "),",units,long_name)") ))
-    
-  }
+      tmp <- tmp%>%dplyr::select(all_of(c("tot_val",grpBy)))
+
    return(tmp)
 }

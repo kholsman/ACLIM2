@@ -147,6 +147,8 @@ Open R() and used ‘setwd()’ to navigate to the root ACLIM2 folder (.e.g,
     ## B10K-K20P19_CMIP6_miroc_ssp126 
     ## B10K-K20P19_CMIP6_miroc_ssp585
 
+<img src="ACLIM2_quickStart_files/figure-markdown_github/start-1.png" style="display: block; margin: auto;" />
+
 ------------------------------------------------------------------------
 
 # Read this before you start
@@ -387,20 +389,20 @@ in R:
     head(all_info1)
 ```
 
-    ##                            name                    Type B10KVersion  CMIP  GCM
-    ## 1 B10K-H16_CMIP5_CESM_BIO_rcp85 Weekly regional indices         H16 CMIP5 CESM
-    ## 2     B10K-H16_CMIP5_CESM_rcp45 Weekly regional indices         H16 CMIP5 CESM
-    ## 3     B10K-H16_CMIP5_CESM_rcp85 Weekly regional indices         H16 CMIP5 CESM
-    ## 4 B10K-H16_CMIP5_GFDL_BIO_rcp85 Weekly regional indices         H16 CMIP5 GFDL
-    ## 5     B10K-H16_CMIP5_GFDL_rcp45 Weekly regional indices         H16 CMIP5 GFDL
-    ## 6     B10K-H16_CMIP5_GFDL_rcp85 Weekly regional indices         H16 CMIP5 GFDL
-    ##     BIO Carbon_scenario               Start                 End nvars
-    ## 1  TRUE           rcp85 2006-01-22 12:00:00 2099-12-27 12:00:00    59
-    ## 2 FALSE           rcp45 2006-01-22 12:00:00 2081-02-16 12:00:00    59
-    ## 3 FALSE           rcp85 2006-01-22 12:00:00 2099-12-27 12:00:00    59
-    ## 4  TRUE           rcp85 2006-01-22 12:00:00 2099-12-27 12:00:00    59
-    ## 5 FALSE           rcp45 2006-01-22 12:00:00 2099-12-27 12:00:00    59
-    ## 6 FALSE           rcp85 2006-01-22 12:00:00 2099-12-27 12:00:00    59
+    ##                            name                    Type B10KVersion  CMIP  GCM   BIO
+    ## 1 B10K-H16_CMIP5_CESM_BIO_rcp85 Weekly regional indices         H16 CMIP5 CESM  TRUE
+    ## 2     B10K-H16_CMIP5_CESM_rcp45 Weekly regional indices         H16 CMIP5 CESM FALSE
+    ## 3     B10K-H16_CMIP5_CESM_rcp85 Weekly regional indices         H16 CMIP5 CESM FALSE
+    ## 4 B10K-H16_CMIP5_GFDL_BIO_rcp85 Weekly regional indices         H16 CMIP5 GFDL  TRUE
+    ## 5     B10K-H16_CMIP5_GFDL_rcp45 Weekly regional indices         H16 CMIP5 GFDL FALSE
+    ## 6     B10K-H16_CMIP5_GFDL_rcp85 Weekly regional indices         H16 CMIP5 GFDL FALSE
+    ##   Carbon_scenario               Start                 End nvars
+    ## 1           rcp85 2006-01-22 12:00:00 2099-12-27 12:00:00    59
+    ## 2           rcp45 2006-01-22 12:00:00 2081-02-16 12:00:00    59
+    ## 3           rcp85 2006-01-22 12:00:00 2099-12-27 12:00:00    59
+    ## 4           rcp85 2006-01-22 12:00:00 2099-12-27 12:00:00    59
+    ## 5           rcp45 2006-01-22 12:00:00 2099-12-27 12:00:00    59
+    ## 6           rcp85 2006-01-22 12:00:00 2099-12-27 12:00:00    59
 
 ``` r
     # Metadata for Weekly ("ACLIMsurveyrep_...") indices
@@ -462,7 +464,7 @@ For normally distributed variables (*Y*):
 $${Y}^{fut'}\_{t,k} =\\bar{Y}^{hind}\_{k,\\bar{T}} +\\left( \\frac{\\sigma^{hind}\_{k,\\bar{T}}}{\\sigma^{hist}\_{k,\\bar{T}}}\*({Y}^{fut}\_{t,k}-\\bar{Y}^{hist}\_{k,\\bar{T}})  \\right )$$
 
 where *Ȳ*<sub>*y*, *k*</sub><sup>*f**u**t*′</sup> is the bias corrected
-varable *k* value for time-step *t* (e.g., year, month, or season),
+variable *k* value for time-step *t* (e.g., year, month, or season),
 *Ȳ*<sub>*k*, *T̄*</sub><sup>*h**i**n**d*</sup> is the mean value of the
 variable *k* during the reference period *T̄* = \[1980,2013\] from the
 hindcast model, *σ*<sub>*k*, *T̄*</sub><sup>*h**i**n**d*</sup> is the
@@ -488,7 +490,7 @@ Uses the strata x weekly data (‘ACLIMregion’) to generate
 strata-specific averages in order to generate the strata area-weighted
 averages for each week *w* each year *y*.
 
-$$\\bar{Y}\_{w,y,k}= \\frac{\\sum^{n_s}\_{l}(\\frac{1}{n_i}\\sum^{n_t}\_{t}Y\_{k,w,y,s,t})\*A_s} {\\sum^{n_s}\_{s}{A_s}}$$
+$$\\bar{Y}\_{k,y,w}= \\frac{\\sum^{n_s}\_{l}(\\frac{1}{n_i}\\sum^{n_t}\_{t}Y\_{k,y,s,w,t})\*A_s} {\\sum^{n_s}\_{s}{A_s}}$$
 , where *Y*<sub>*k*, *w*, *y*, *s*, *t*</sub> is the value of the
 variable *k* in strata *s* at time *t* in year *y*, *A*<sub>*s*</sub> is
 the area of strata *s*, *n*<sub>*i*</sub> is the number of stations in
@@ -496,71 +498,109 @@ strata *s*, and *n*<sub>*s*</sub> is the number of strata *s* in each
 basin (NEBS or SEBS).
 
 *Ȳ*<sub>*w*, *y*, *k*</sub> was calculated for the hindcast, historical
-run, and projection time-series. For projections
-*Ȳ*<sub>*w*, *y*, *k*</sub> was bias corrected using the corresponding
-historical and hindcast values such that:
+run, and projection time-series. We further used acyclic cubic
+regression spline (using ‘mgcv::gam(…bs=“cc”)’) across all reference
+years to remove artifacts (e.g. divide by 0) in the average
+(*Ȳ*<sub>*w*, *k*</sub><sup>*h**i**n**d*</sup> and
+*Ȳ*<sub>*w*, *k*</sub><sup>*h**i**s**t*</sup>) and variance
+(*σ*<sub>*w*, *k*</sub><sup>*h**i**s**t*</sup> and
+*σ*<sub>*w*, *k*</sub><sup>*h**i**n**d*</sup>) terms were predicted from
+the gam (without error; example for
+*Ȳ*<sub>*w*, *k*</sub><sup>*h**i**n**d*</sup>):
 
-$$\\bar{Y}^{fut'}\_{w,y,k} =\\bar{Y}^{hind}\_{w,k} +\\left( \\frac{\\sigma^{hind}\_{w,k}}{\\sigma^{hist}\_{w,k}}\*(\\bar{Y}^{fut}\_{w,y,k}-\\bar{Y}^{hist}\_{w,k})  \\right )$$
+*Ȳ*<sub>*w*, *k*</sub><sup>*h**i**n**d*</sup> = *μ* + *s*(*w*,*k*=.8*n*) + *ϵ*  *a**n**d*  *ϵ* ∼ *N*(0,*σ*)
+Projections *Ȳ*<sub>*k*, *y*, *w*</sub> were then bias corrected using
+the corresponding historical and hindcast values such that:
+
+$$\\bar{Y}^{fut'}\_{k,y,w} =\\bar{Y}^{hind}\_{w,k} +\\left( \\frac{\\sigma^{hind}\_{w,k}}{\\sigma^{hist}\_{w,k}}\*(\\bar{Y}^{fut}\_{k,y,w}-\\bar{Y}^{hist}\_{w,k})  \\right )$$
 , where *Ȳ*<sub>*w*, *k*</sub><sup>*h**i**s**t*</sup> and
 *Ȳ*<sub>*w*, *k*</sub><sup>*h**i**n**d*</sup> are the average historical
 weekly values across years in the period (1980 to 2012 ; adjustable in
 `R/setup.R`).
 
+The same approach was applied to the weekly strata data such that weekly
+strata values were calculated as:
+
+$$\\bar{Y}\_{k,y,s,w}= \\sum^{n_s}\_{l}(\\frac{1}{n_i}\\sum^{n_t}\_{t}Y\_{k,y,s,w,t})$$
+
+$$\\bar{Y}^{fut'}\_{k,s,y,w} =\\bar{Y}^{hind}\_{k,s,w} +\\left( \\frac{\\sigma^{hind}\_{k,s,w}}{\\sigma^{hist}\_{k,s,w}}\*(\\bar{Y}^{fut}\_{k,s,y,w}-\\bar{Y}^{hist}\_{k,s,w})  \\right )$$
+, where *Ȳ*<sub>*k*, *s*, *w*</sub><sup>*h**i**s**t*</sup> and
+*Ȳ*<sub>*k*, *s*, *w*</sub><sup>*h**i**n**d*</sup> are the average
+historical weekly values across years in the period (1980 to 2012 ;
+adjustable in `R/setup.R`).Where the mean and variance terms were
+smoothed at the weekly and strata level (i.e., {Y}^{hind}\_{w,k} was
+predicted from the following gam() without error)
+
+*Ȳ*<sub>*k*, *s*, *w*</sub><sup>*h**i**n**d*</sup> = *μ* + *s*(*w*,*k*=.8*n*) + *ϵ*  *a**n**d*  *ϵ* ∼ *N*(0,*σ*)
+
 ## Monthly indices
 
-Uses the strata x weekly data (‘ACLIMregion’) to generate
-strata-specific averages in order to generate the strata area-weighted
-averages for each month *m* each year *y*.
+Using the bias corrected weekly or strata x weekly indices, we then
+generated monthly indices for each month *m* each year *y*.
 
-$$\\bar{Y}\_{m,y,k}= \\frac{1}{n_w}\\sum^{n_w}\_{w}\\bar{Y}\_{w,y,k}$$
+$$\\bar{Y}\_{k,y,m}= \\frac{1}{n_w}\\sum^{n_w}\_{w}\\bar{Y}\_{k,y,w}$$
 , where *Ȳ*<sub>*w*, *y*, *k*</sub> are the weekly average indices for
 variable *k* in year *y* from the previous step ,*n*<sub>*w*</sub> is
-the number of weeks in each month *m*.
+the number of weeks in each month *m* as:
 
-*Ȳ*<sub>*m*, *y*, *k*</sub> was calculated for the hindcast, historical
-run, and projection time-series. For projections
-*Ȳ*<sub>*m*, *y*, *k*</sub> was bias corrected using the corresponding
-historical and hindcast values such that:
+$$\\bar{Y}^{fut'}\_{k,y,m} = \\frac{1}{n_w}\\sum^{n_w}\_{w}\\bar{Y}^{fut'}\_{k,y,w}$$
+  
+for area weighted SEBS and NEBS bias corrected values. Similarly we used
+the following for monthly strata values:  
+$$\\bar{Y}^{fut'}\_{k,s,y,m} = \\frac{1}{n_w}\\sum^{n_w}\_{w}\\bar{Y}^{fut'}\_{k,s,y,w}$$
 
-<!-- $$\bar{Y}^{fut'}_{m,y,k} =\bar{Y}^{hind}_{m,k} +\left( \frac{\sigma^{hind}_{m,k}}{\sigma^{hist}_{m,k}}*(\bar{Y}^{fut}_{m,y,k}-\bar{Y}^{hist}_{m,k})  \right )$$,  -->
+similarly NEBS and SEBS monthly averages and strata monthly averages for
+the hindcast were calculated as:
 
-$$\\bar{Y}^{fut'}\_{m,y,k} = \\frac{1}{n_w}\\sum^{n_w}\_{w}\\bar{Y}^{fut'}\_{w,y,k}$$
+$$\\bar{Y}^{hind}\_{k,y,m} = \\frac{1}{n_w}\\sum^{n_w}\_{w}\\bar{Y}^{hind}\_{k,y,w}$$
+
+$$\\bar{Y}^{hind}\_{k,s,y,m} = \\frac{1}{n_w}\\sum^{n_w}\_{w}\\bar{Y}^{hind}\_{k,s,y,w}$$
 
 ## Seasonal indices
 
-Uses the strata x weekly data (‘ACLIMregion’) to generate
-strata-specific averages in order to generate the strata area-weighted
-averages for each season *l* each year *y*.
+Using the bias corrected weekly or strata x weekly indices, we then
+generated seasonal indices for each season *l* each year *y*.
 
-$$\\bar{Y}\_{l,y,k}= \\frac{1}{n_w}\\sum^{n_w}\_{w}\\bar{Y}\_{w,y,k}$$
+$$\\bar{Y}\_{k,y,l}= \\frac{1}{n_w}\\sum^{n_w}\_{w}\\bar{Y}\_{k,y,w}$$
 , where *Ȳ*<sub>*w*, *y*, *k*</sub> are the weekly average indices for
 variable *k* in year *y* from the previous step ,*n*<sub>*w*</sub> is
-the number of weeks in each season *l*.
+the number of weeks in each seasonal *l* as:
 
-*Ȳ*<sub>*l*, *y*, *k*</sub> was calculated for the hindcast, historical
-run, and projection time-series. For projections
-*Ȳ*<sub>*l*, *y*, *k*</sub> was bias corrected using the corresponding
-historical and hindcast values such that:
+$$\\bar{Y}^{fut'}\_{k,y,l} = \\frac{1}{n_w}\\sum^{n_w}\_{w}\\bar{Y}^{fut'}\_{k,y,w}$$
+  
+for area weighted SEBS and NEBS bias corrected values. Similarly we used
+the following for seasonal strata values:  
+$$\\bar{Y}^{fut'}\_{k,s,y,l} = \\frac{1}{n_w}\\sum^{n_w}\_{w}\\bar{Y}^{fut'}\_{k,s,y,w}$$
 
-$$\\bar{Y}^{fut'}\_{l,y,k} = \\frac{1}{n_w}\\sum^{n_w}\_{w}\\bar{Y}^{fut'}\_{w,y,k}$$
+similarly NEBS and SEBS seasonal averages and strata seasonal averages
+for the hindcast were calculated as:
+
+$$\\bar{Y}^{hind}\_{k,y,l} = \\frac{1}{n_w}\\sum^{n_w}\_{w}\\bar{Y}^{hind}\_{k,y,w}$$
+
+$$\\bar{Y}^{hind}\_{k,s,y,l} = \\frac{1}{n_w}\\sum^{n_w}\_{w}\\bar{Y}^{hind}\_{k,s,y,w}$$
 
 ## Annual indices
 
-Uses the strata x weekly data (‘ACLIMregion’) to generate
-strata-specific averages in order to generate the strata area-weighted
-averages for each season *l* each year *y*.
+Using the bias corrected weekly or strata x weekly indices, we then
+generated seasonal indices for each year *y*.
 
-$$\\bar{Y}\_{y,k}= \\frac{1}{n_w}\\sum^{n_w}\_{w}\\bar{Y}\_{w,y,k}$$
+$$\\bar{Y}\_{k,y}= \\frac{1}{n_w}\\sum^{n_w}\_{w}\\bar{Y}\_{k,y,w}$$
 , where *Ȳ*<sub>*w*, *y*, *k*</sub> are the weekly average indices for
 variable *k* in year *y* from the previous step ,*n*<sub>*w*</sub> is
-the number of weeks in each year *y*.
+the number of weeks in each year *y* as:
 
-*Ȳ*<sub>*y*, *k*</sub> was calculated for the hindcast, historical run,
-and projection time-series. For projections *Ȳ*<sub>*y*, *k*</sub> was
-bias corrected using the corresponding historical and hindcast values
-such that:
+$$\\bar{Y}^{fut'}\_{k,y} = \\frac{1}{n_w}\\sum^{n_w}\_{w}\\bar{Y}^{fut'}\_{k,y,w}$$
+  
+for area weighted SEBS and NEBS bias corrected values. Similarly we used
+the following for annual strata values:  
+$$\\bar{Y}^{fut'}\_{k,s,y} = \\frac{1}{n_w}\\sum^{n_w}\_{w}\\bar{Y}^{fut'}\_{k,s,y,w}$$
 
-$$\\bar{Y}^{fut'}\_{y,k} = \\frac{1}{n_w}\\sum^{n_w}\_{w}\\bar{Y}^{fut'}\_{w,y,k}$$
+similarly NEBS and SEBS annual averages and strata annual averages for
+the hindcast were calculated as:
+
+$$\\bar{Y}^{hind}\_{k,y} = \\frac{1}{n_w}\\sum^{n_w}\_{w}\\bar{Y}^{hind}\_{k,y,w}$$
+
+$$\\bar{Y}^{hind}\_{k,s,y} = \\frac{1}{n_w}\\sum^{n_w}\_{w}\\bar{Y}^{hind}\_{k,s,y,w}$$
 
 ## Annual survey rep. indices
 
@@ -629,6 +669,57 @@ the indices. You can also view this online at
 <!-- ```` -->
 <!-- # Special cases {.tabset} -->
 
+## Continuous timeseries of hind + fut
+
+``` r
+    suppressMessages(source("R/make.R"))  
+```
+
+<img src="ACLIM2_quickStart_files/figure-markdown_github/ts-1.png" style="display: block; margin: auto;" />
+
+``` r
+    scens   <- c("ssp126", "ssp585")
+    GCMs    <- c("miroc", "gfdl", "cesm" )
+# get the variable you want:
+      df <- get_var( typeIN    = "annual", 
+                     plotvar   = "temp_bottom5m",
+                     bcIN      = c("raw","bias corrected"),
+                     CMIPIN    = "K20P19_CMIP6", 
+                     plothist  = T,  # ignore the hist runs
+                     removeyr1 = T)  # "Remove first year of projection ( burn in)")
+      
+      df$plot+coord_cartesian(ylim = c(0, 7))
+```
+
+<img src="ACLIM2_quickStart_files/figure-markdown_github/ts-2.png" style="display: block; margin: auto;" />
+
+``` r
+      head(df$dat)
+    
+  # concat the hind and fut runs by removing years from projection
+     stitchDate <- "2020-12-30"
+
+  newdat <- stitchTS(dat = df$dat,
+                   maxD  = stitchDate)
+  
+  # newdat has the full set of data
+  # select miroc_ssp126
+  head(newdat%>%dplyr::filter(GCM_scen==paste0(GCMs[1],"_",scens[1])))
+  tail(newdat%>%dplyr::filter(GCM_scen==paste0(GCMs[1],"_",scens[1])))
+  
+  pp <- plotTS(newdat )
+  pp
+```
+
+<img src="ACLIM2_quickStart_files/figure-markdown_github/ts-3.png" style="display: block; margin: auto;" />
+
+``` r
+  # plot it interactively
+  plotly::ggplotly(pp)
+```
+
+<img src="ACLIM2_quickStart_files/figure-markdown_github/unnamed-chunk-5-1.png" style="display: block; margin: auto;" />
+
 ## NRS indices (André)
 
 The target indices for NRS include cold pool, bottom temperature, wind,
@@ -652,6 +743,11 @@ Hindcast values from 1970-2020 were sitched to projections from
   # coldpool cat --> <16% vs >16% CP area.
        
     suppressMessages(source("R/make.R"))
+```
+
+<img src="ACLIM2_quickStart_files/figure-markdown_github/nrs-1.png" style="display: block; margin: auto;" />
+
+``` r
     # preview possible variables
     
     #load(file = "Data/out/weekly_vars_C.Rdata")
@@ -783,6 +879,11 @@ Hindcast values from 1970-2020 were sitched to projections from
      dev.off()
      
      save(NRS_vars, file="Data/out/NRS_indices/NRS_vars.Rdata")
+```
+
+<img src="ACLIM2_quickStart_files/figure-markdown_github/nrs-2.png" style="display: block; margin: auto;" />
+
+``` r
      write.csv(NRS_vars, file="Data/out/NRS_indices/NRS_vars.csv")
      
      # recast with vars for each column:
@@ -800,56 +901,17 @@ Hindcast values from 1970-2020 were sitched to projections from
      plotTS(NRS_vars )
 ```
 
-<img src="ACLIM2_quickStart_files/figure-markdown_github/nrs-1.png" style="display: block; margin: auto;" />
-
-## Continuous timeseries of hind + fut
-
-``` r
-  # get the variable you want:
-      df <- get_var( typeIN    = "annual", 
-                     plotvar   = "temp_bottom5m",
-                     bcIN      = c("raw","bias corrected"),
-                     CMIPIN    = "K20P19_CMIP6", 
-                     plothist  = T,  # ignore the hist runs
-                     removeyr1 = T)  # "Remove first year of projection ( burn in)")
-      
-      df$plot+coord_cartesian(ylim = c(0, 7))
-```
-
-<img src="ACLIM2_quickStart_files/figure-markdown_github/ts-1.png" style="display: block; margin: auto;" />
-
-``` r
-      head(df$dat)
-    
-  # concat the hind and fut runs by removing years from projection
-     stitchDate <- "2020-12-30"
-
-  newdat <- stitchTS(dat = df$dat,
-                   maxD  = stitchDate)
-  
-  # newdat has the full set of data
-  # select miroc_ssp126
-  head(newdat%>%dplyr::filter(GCM_scen==paste0(GCMs[1],"_",scens[1])))
-  tail(newdat%>%dplyr::filter(GCM_scen==paste0(GCMs[1],"_",scens[1])))
-  
-  pp <- plotTS(newdat )
-  pp
-```
-
-<img src="ACLIM2_quickStart_files/figure-markdown_github/ts-2.png" style="display: block; margin: auto;" />
-
-``` r
-  # plot it interactively
-  plotly::ggplotly(pp)
-```
-
-<img src="ACLIM2_quickStart_files/figure-markdown_github/unnamed-chunk-5-1.png" style="display: block; margin: auto;" />
+<img src="ACLIM2_quickStart_files/figure-markdown_github/nrs-3.png" style="display: block; margin: auto;" />
 
 ## monthly indices (Andy)
 
 ``` r
   suppressMessages(source("R/make.R"))
-  
+```
+
+<img src="ACLIM2_quickStart_files/figure-markdown_github/ewe-1.png" style="display: block; margin: auto;" />
+
+``` r
   # preview possible variables
   load(paste0("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_monthly_hind_mn.Rdata"))
   varall  <- unique(ACLIM_monthly_hind$var)
@@ -880,7 +942,7 @@ Hindcast values from 1970-2020 were sitched to projections from
   df$plot
 ```
 
-<img src="ACLIM2_quickStart_files/figure-markdown_github/ewe-1.png" style="display: block; margin: auto;" />
+<img src="ACLIM2_quickStart_files/figure-markdown_github/ewe-2.png" style="display: block; margin: auto;" />
 
 ``` r
   # concat the hind and fut runs by removing years from projection
@@ -913,7 +975,7 @@ Hindcast values from 1970-2020 were sitched to projections from
   pp
 ```
 
-<img src="ACLIM2_quickStart_files/figure-markdown_github/ewe-2.png" style="display: block; margin: auto;" />
+<img src="ACLIM2_quickStart_files/figure-markdown_github/ewe-3.png" style="display: block; margin: auto;" />
 
 ``` r
   # plot it interactively
@@ -926,7 +988,11 @@ Hindcast values from 1970-2020 were sitched to projections from
 
 ``` r
   suppressMessages(source("R/make.R"))
-  
+```
+
+<img src="ACLIM2_quickStart_files/figure-markdown_github/sizespec-1.png" style="display: block; margin: auto;" />
+
+``` r
   # preview possible variables
   load(paste0("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_weekly_hind_mn.Rdata"))
   varall  <- unique(ACLIM_weekly_hind$var)
@@ -947,7 +1013,7 @@ Hindcast values from 1970-2020 were sitched to projections from
   df$plot
 ```
 
-<img src="ACLIM2_quickStart_files/figure-markdown_github/sizespec-1.png" style="display: block; margin: auto;" />
+<img src="ACLIM2_quickStart_files/figure-markdown_github/sizespec-2.png" style="display: block; margin: auto;" />
 
 ``` r
   head(df$dat)
@@ -955,7 +1021,7 @@ Hindcast values from 1970-2020 were sitched to projections from
   ggplot(df$dat%>%filter(basin=="SEBS"))+ geom_line(aes(x=jday, y= mn_val, color=factor(year)))+facet_wrap(GCM_scen_sim~.)
 ```
 
-<img src="ACLIM2_quickStart_files/figure-markdown_github/sizespec-2.png" style="display: block; margin: auto;" />
+<img src="ACLIM2_quickStart_files/figure-markdown_github/sizespec-3.png" style="display: block; margin: auto;" />
 
 ``` r
   # concat the hind and fut runs by removing years from projection
@@ -987,7 +1053,7 @@ Hindcast values from 1970-2020 were sitched to projections from
   pp
 ```
 
-<img src="ACLIM2_quickStart_files/figure-markdown_github/sizespec-3.png" style="display: block; margin: auto;" />
+<img src="ACLIM2_quickStart_files/figure-markdown_github/sizespec-4.png" style="display: block; margin: auto;" />
 
 ``` r
   # plot it interactively
@@ -996,7 +1062,61 @@ Hindcast values from 1970-2020 were sitched to projections from
 
 <img src="ACLIM2_quickStart_files/figure-markdown_github/unnamed-chunk-7-1.png" style="display: block; margin: auto;" />
 
-<!-- ## Salmon index (Ellen) -->
+## Salmon index (Ellen)
+
+1.  temperature_surface5m for months 9:10 and strata 70 & 71  
+2.  NW direction for months 5:6 and strata 71  
+3.  temperature_surface5m for months 7:10 and strata 90,61,62
+
+``` r
+ # loads packages, data, setup, etc.
+  suppressMessages( suppressWarnings(source("R/make.R")))
+```
+
+<img src="ACLIM2_quickStart_files/figure-markdown_github/salmon-1.png" style="display: block; margin: auto;" />
+
+``` r
+# get the variable you want:
+      df <- get_var( typeIN    = "monthly", 
+                     monthIN   = 9:10,
+                     plotvar   = "temp_bottom5m",
+                     bcIN      = c("raw","bias corrected"),
+                     CMIPIN    = "K20P19_CMIP6", 
+                     plothist  = T,  # ignore the hist runs
+                     removeyr1 = T)  # "Remove first year of projection ( burn in)")
+      
+      df$plot+coord_cartesian(ylim = c(0, 7))
+```
+
+<img src="ACLIM2_quickStart_files/figure-markdown_github/salmon-2.png" style="display: block; margin: auto;" />
+
+``` r
+      head(df$dat)
+    
+  # concat the hind and fut runs by removing years from projection
+     stitchDate <- "2020-12-30"
+
+  newdat <- stitchTS(dat = df$dat,
+                   maxD  = stitchDate)
+  
+  # newdat has the full set of data
+  # select miroc_ssp126
+  head(newdat%>%dplyr::filter(GCM_scen==paste0(GCMs[1],"_",scens[1])))
+  tail(newdat%>%dplyr::filter(GCM_scen==paste0(GCMs[1],"_",scens[1])))
+  
+  pp <- plotTS(newdat )
+  pp
+```
+
+<img src="ACLIM2_quickStart_files/figure-markdown_github/salmon-3.png" style="display: block; margin: auto;" />
+
+``` r
+  # plot it interactively
+  plotly::ggplotly(pp)
+```
+
+<img src="ACLIM2_quickStart_files/figure-markdown_github/unnamed-chunk-8-1.png" style="display: block; margin: auto;" />
+
 <!-- ## NFS index (Jeremy ) -->
 
 ------------------------------------------------------------------------
@@ -1812,7 +1932,8 @@ want to). To explore the indices skep to the next section.
 ``` r
     # --------------------------------------
     # SETUP WORKSPACE
-    # rm(list=ls()); setwd("D:/GitHub_cloud/ACLIM2")
+    # rm(list=ls())
+    # setwd("D:/GitHub_cloud/ACLIM2")
     # loads packages, data, setup, etc.
     tmstp       <- "2022_10_17"
     suppressMessages(source("R/make.R"))

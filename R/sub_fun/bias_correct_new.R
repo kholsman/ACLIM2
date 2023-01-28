@@ -22,7 +22,7 @@ bias_correct_new <- function(
   ref_yrs    = 1980:2013,
   group_byIN = c("var","basin","season","mo","wk"),
   normlistIN =  normlist,
-  smoothIT     = FALSE,
+  smoothIT     = TRUE,
   log_adj    = 1e-4,
   group_byout =NULL,
   outlist    = c("year","units",
@@ -60,6 +60,8 @@ bias_correct_new <- function(
   hindIN$LNval <- suppressWarnings(log(hindIN$bcIT + log_adj))
   histIN$LNval <- suppressWarnings(log(histIN$bcIT + log_adj))
   futIN$LNval  <- suppressWarnings(log(futIN$bcIT  + log_adj))
+  
+  
   hindIN$sim_type <- "hind"
   histIN$sim_type <- "hist"
   futIN$sim_type  <- "proj"
@@ -128,8 +130,9 @@ bias_correct_new <- function(
 
   getgam <- function ( y =  sub$mnVal_hist, x = sub$wk,kin =.8){
     df <- na.omit(data.frame(x,y))
+    nobs <- length(unique(df$x))
     if(dim(df)[1]>2){
-      Gam   <- mgcv::gam( y ~ 1 + s(x, k=round(dim(df)[1]*kin),bs= "cc"),data=df)
+      Gam   <- mgcv::gam( y ~ 1 + s(x, k=round(nobs*kin),bs= "cc"),data=df)
       out <- as.numeric(predict(Gam, newdata=data.frame(x=x), se.fit=FALSE ))
     }else{
       out<- y
@@ -212,11 +215,11 @@ bias_correct_new <- function(
   fut_clim <- futIN%>%dplyr::filter(year%in%ref_yrs)%>%
     dplyr::group_by(across(all_of(group_byIN)))%>%
     dplyr::summarize(mnVal_fut = mean(bcIT,na.rm=T),
-                  sdVal_fut = sd(bcIT, na.rm = T),
-                  nVal_fut  = length(!is.na(bcIT)),
-                  mnLNVal_fut = mean(LNval,na.rm=T),
-                  sdLNVal_fut = sd(LNval, na.rm = T),
-                  nLNVal_fut  = length(!is.na(LNval)))
+                  sdVal_fut    = sd(bcIT, na.rm = T),
+                  nVal_fut     = length(!is.na(bcIT)),
+                  mnLNVal_fut  = mean(LNval,na.rm=T),
+                  sdLNVal_fut  = sd(LNval, na.rm = T),
+                  nLNVal_fut   = length(!is.na(LNval)))
    sub_yr <- futIN%>%dplyr::filter(year%in%ref_yrs)%>%
         dplyr::group_by(var,basin)%>%
         dplyr::summarize(sdVal_fut_yr = sd(bcIT, na.rm = T),

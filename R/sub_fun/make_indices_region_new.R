@@ -5,9 +5,10 @@
 #'
 #' converts the polygon weekly values into
 #' annual indices by season
-#' 
+#' Kirstin.holsman@noaa.gov
+#' 2023
 
-make_indices_region<-function(
+make_indices_region <- function(
   timeblockIN = c("yr","season"),
   simIN     = ACLIMregion,
   seasonsIN = seasons,
@@ -35,7 +36,11 @@ make_indices_region<-function(
                   longname ="Total On-shelf 
              large zooplankton concentration, 
              integrated over depth (NCa, Eup)")
-  
+  sub<-tmp_var_zoop%>%filter(var=="largeZoop_integrated")%>%
+    select(var,units,longname)%>%
+    rename(name=var)%>%
+    distinct()
+  var_defUSE <-rbind(srvy_var_def,sub)
   tmp_var    <- simIN%>%
     dplyr::select(time,
              strata,
@@ -45,8 +50,8 @@ make_indices_region<-function(
              sim, val, var)
   
   #tmp_var$long_name <- srvy_var_def$longname[match(tmp_var$var,srvy_var_def$name)]
-  tmp_var <- tmp_var%>%left_join(srvy_var_def, by=c("units"="units","var"="name"))
-  tmp_var<-rbind(tmp_var,
+  tmp_var <- tmp_var%>%left_join(var_defUSE, by=c("units"="units","var"="name"))
+  tmp_var <- rbind(tmp_var,
                  data.frame(tmp_var_zoop)[,match(names(tmp_var),names(tmp_var_zoop))])
   tmp_var <- tmp_var%>%rename(long_name=longname)
   
@@ -87,7 +92,7 @@ make_indices_region<-function(
     tblock   = timeblockIN)
   mn_SEBS_season$basin = "SEBS"
   
-  out_data      <- rbind(mn_NEBS_season,mn_SEBS_season)
+  out_data               <- rbind(mn_NEBS_season,mn_SEBS_season)
   out_data               <- out_data%>%dplyr::rename(mn_val=mn_val,year=yr)
   out_data$sim           <- simIN$sim[1]
   out_data$qry_date      <- format(Sys.time(), "%Y_%m_%d")

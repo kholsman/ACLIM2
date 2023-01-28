@@ -37,7 +37,11 @@ make_indices_srvyrep<-function(
                   longname ="Total On-shelf 
              large zooplankton concentration, 
              integrated over depth (NCa, Eup)")
-  
+  sub<-tmp_var_zoop%>%filter(var=="largeZoop_integrated")%>%
+    select(var,units,longname)%>%
+    rename(name=var)%>%
+    distinct()
+  var_defUSE <-rbind(srvy_var_def,sub)
   tmp_var    <- simIN%>%
     dplyr::select(srvy_station_num,
              station_id,
@@ -47,7 +51,7 @@ make_indices_srvyrep<-function(
              doy,subregion,units,
              year,sim,val,
              var)
-  tmp_var <- tmp_var%>%left_join(srvy_var_def, by=c("units"="units","var"="name"))
+  tmp_var <- tmp_var%>%left_join(var_defUSE, by=c("units"="units","var"="name"))
   #tmp_var$long_name <- NA # srvy_var_def$longname[match(tmp_var$var,srvy_var_def$name)]
   tmp_var           <- rbind(tmp_var,
                              data.frame(tmp_var_zoop)[,match(names(tmp_var),names(tmp_var_zoop))])

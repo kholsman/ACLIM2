@@ -28,6 +28,12 @@ if(length(grep("days", unit_txt)>0))     out <- data.frame(mlt = 24*60*60,ntxt =
 return(out)
 }
 
+logit<-function(p){
+  log(p/(1-p))
+}
+inv.logit<-function(x){
+  exp(x)/(1+exp(x))
+}
 
 get_mn_forecast<-function(valIN   = "TempC",
                           strataOut   = F,
