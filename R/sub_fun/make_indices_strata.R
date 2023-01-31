@@ -47,12 +47,14 @@ make_indices_strata <- function(
     
     return(out)
   }
+ 
+  var_defUSE <- (weekly_var_def)
 
-  if(svIN == "largeZoop_integrated"){
+  if("largeZoop_integrated"%in%svIN){
     # get large zooplankton as the sum of euph and NCaS
     cat("adding large Zoop \n")
     tmp_var_zoop    <- simIN%>%
-      dplyr::filter(var%in%vl[c("NCaS_integrated","EupS_integrated")])%>%
+      dplyr::filter(var%in%c("NCaS_integrated","EupS_integrated"))%>%
       dplyr::group_by(time,
                       strata,
                       strata_area_km2,
@@ -61,15 +63,17 @@ make_indices_strata <- function(
                       sim)%>%
       dplyr::summarise(val =sum(val))%>%
       dplyr::mutate(var = "largeZoop_integrated",
-                    longname ="Large zooplankton concentration,integrated over depth (NCa, Eup)")%>%ungroup()
-    sub <- tmp_var_zoop%>%filter(var=="largeZoop_integrated")%>%
+                    longname ="Total On-shelf large Zoop integrated over depth (NCa, Eup)")%>%ungroup()
+    sub <- tmp_var_zoop%>%filter(var=="largeZoop_integrated")%>%ungroup()%>%
       select(var,units,longname)%>%
       rename(name=var)%>%
       distinct()
     
-    var_defUSE <- rbind(srvy_var_def,sub)
+    var_defUSE <- rbind(weekly_var_def,sub)
+    rm(sub)
     
     datIN    <- simIN%>%
+      dplyr::filter(var%in%svIN)%>%
       dplyr::select(time,
                     strata,
                     strata_area_km2,
@@ -92,11 +96,14 @@ make_indices_strata <- function(
                     sim, val, var)
     
     datIN <- datIN%>%
-      dplyr::left_join(srvy_var_def%>%select(name,units), by=c("units"="units","var"="name"))
+      dplyr::left_join(var_defUSE%>%select(name,units), by=c("units"="units","var"="name"))
   }
   
   datIN<-datIN%>%
     dplyr::left_join(normlistIN)
+  
+  # log or logit transform data for bias correcting
+  # -------------------------------------
   
   datIN$tmpval <- datIN$val
   if(!any(datIN$lognorm%in%c("none","log","logit")))
@@ -107,17 +114,24 @@ make_indices_strata <- function(
     rm(rr)
   }
   if(any(datIN$lognorm=="logit")){
+    myfun <- function(x){
+     x <- logit(x)
+     if(any(x==-Inf&!is.na(x))) x[x==-Inf&!is.na(x)] <- logit(log_adj)
+     if(any(x==Inf&!is.na(x))) x[x==Inf&!is.na(x)] <- logit(1-log_adj)
+     return(x)
+    }
     rr <- which(datIN$lognorm=="logit")
-    datIN[rr,]$tmpval <- logit(datIN[rr,]$val + log_adj)
+    datIN[rr,]$tmpval <- suppressWarnings(myfun(datIN[rr,]$val))
     rm(rr)
   }
   if(any(datIN$lognorm=="log")){
     rr <- which(datIN$lognorm=="log")
-    datIN[rr,]$tmpval <- log(datIN[rr,]$val + log_adj)
+    datIN[rr,]$tmpval <- suppressWarnings(log(datIN[rr,]$val + log_adj))
     rm(rr)
   }
   
-    #dplyr::rename(long_name=longname)%>%
+  # get weekly by year mean values
+  # -------------------------------------
   datIN <- datIN%>%
     dplyr::mutate(tmptt =strptime(as.Date(time),format="%Y-%m-%d"))%>%
     dplyr::mutate(
@@ -128,83 +142,98 @@ make_indices_strata <- function(
       wk     = date_fun(tmptt,type="wk"))%>%
     dplyr::ungroup()%>%
     dplyr::group_by(across(all_of(c("units","sim","yr",group_byIN))))%>%
-    # dplyr::group_by(basin,strata,strata_area_km2,
-    #                 yr,season, mo, wk,var,units,sim)%>%
     dplyr::summarise(
-      val_raw = mean(val, na.rm=T),
+      val_raw    = mean(val, na.rm=T),
       mn_val     = mean(tmpval, na.rm=T),
-      mnjday     = mean(jday, na.rm=T))%>%
+      jday     = mean(jday, na.rm=T))%>%
     rename(year = yr)%>%
     dplyr::mutate(
-      #LNval    = suppressWarnings(log(mn_val + log_adj)),
                   sim      = simIN$sim[1],
-                  mnDate   = as.Date(paste0(year,"-01-01"))+mnjday,
+                  mnDate   = as.Date(paste0(year,"-01-01"))+jday,
                   qry_date = format(Sys.time(), "%Y_%m_%d"),
                   type     = type)%>%ungroup()
-  #datIN$val_raw = datIN$mn_val
   
-  tmp_var <- datIN%>%
+  # get weekly mean values (across years)
+  # -------------------------------------
+  tmp_var <- datIN
+  if(!is.null(ref_yrs)){
+    tmp_var <- datIN%>%filter(year%in%ref_yrs)%>%
+      dplyr::ungroup()
+  }
+  tmp_var <- tmp_var%>%
     dplyr::group_by(across(all_of(group_byIN)))%>%
     dplyr::summarize(mnVal_x   = mean(mn_val,na.rm=T),
                      sdVal_x   = sd(mn_val, na.rm = T),
                      nVal_x    = length(!is.na(mn_val)))%>%ungroup()
-  # tmp_var <- datIN%>%
-  #   dplyr::group_by(across(all_of(group_byIN)))%>%
-  #   dplyr::summarize(mnVal_x   = mean(mn_val,na.rm=T),
-  #                    sdVal_x   = sd(mn_val, na.rm = T),
-  #                    nVal_x    = length(!is.na(mn_val)),
-  #                    mnLNVal_x = mean(LNval,na.rm=T),
-  #                    sdLNVal_x = sd(LNval, na.rm = T),
-  #                    nLNVal_x  = length(!is.na(LNval)))%>%ungroup()
   
-  if(any(group_byIN=="mo"))
-    sub_mo <- datIN%>%
-    dplyr::group_by(var,basin,strata,mo)%>%
-    #dplyr::mutate(LNval = suppressWarnings(log(mn_val + log_adj)))%>%
-    dplyr::summarize(sdVal_x_mo   = sd(mn_val, na.rm = T))%>%
-                     # sdLNVal_x_mo = sd(LNval, na.rm = T))%>%
-    ungroup()%>%
-    select(var,basin,strata,mo,sdVal_x_mo)
-    # select(var,basin,strata,mo,sdVal_x_mo,sdLNVal_x_mo)
+  # get sd for monthly scaling factor
+  # -------------------------------------  
+  if(any(group_byIN=="mo")){
+    sub_mo <- datIN
+    if(!is.null(ref_yrs)){
+      sub_mo <- datIN%>%filter(year%in%ref_yrs)%>%
+        dplyr::ungroup()
+    }
+    
+    sub_mo <- sub_mo%>%
+      dplyr::group_by(var,basin,strata,mo)%>%
+      dplyr::summarize(sdVal_x_mo   = sd(mn_val, na.rm = T))%>%
+      ungroup()%>%
+      select(var,basin,strata,mo,sdVal_x_mo)
+  }
   
-  sub_yr <- datIN%>%
+  # get sd for annual scaling factor
+  # -------------------------------------   
+  sub_yr <- datIN
+  if(!is.null(ref_yrs)){
+    sub_yr <- datIN%>%filter(year%in%ref_yrs)%>%
+      dplyr::ungroup()
+  }
+  sub_yr<- sub_yr%>%
     dplyr::group_by(var,basin,strata)%>%
-   # dplyr::mutate(LNval    = suppressWarnings(log(mn_val + log_adj)))%>%
     dplyr::summarize(sdVal_x_yr   = sd(mn_val, na.rm = T))%>%
-                     #sdLNVal_x_yr = sd(LNval, na.rm = T))%>%
     ungroup()%>%
     select(var,basin,strata,sdVal_x_yr)
-    # select(var,basin,strata,sdVal_x_yr,sdLNVal_x_yr)
   
+  # combine into one data.frame
+  # -------------------------------------    
   tmp_var$seVal_x <- tmp_var$sdVal_x/sqrt(tmp_var$nVal_x)
+  
   if(any(group_byIN=="mo"))
-    tmp_var <- tmp_var%>%
-    left_join(sub_mo,by=c("var"="var","basin"="basin","strata"="strata","mo"="mo"))
-  tmp_var <- tmp_var%>%
-    left_join(sub_yr,by=c("var"="var","basin"="basin","strata"="strata"))
+    tmp_var <- tmp_var%>%left_join(sub_mo)%>%ungroup()
+  tmp_var <- tmp_var%>%left_join(sub_yr)%>%ungroup()
   rm(sub_yr)
   if(any(group_byIN=="mo")) rm(sub_mo)
   
-
-
-  
-  
+  # smooth with gam to remove artifacts
+  # -------------------------------------    
   if(smoothIT){
     
     tmpvar    <- unique(tmp_var$var)
     nvar      <- length(tmpvar)
     tmpstrata <- unique(tmp_var$strata)
-    jj <- 0
-    cat("running gam smoother \n")
-    for(b in 1:length(tmpstrata)){
-      for(v in 1:nvar){
-        jj<- jj +1
+    nstrata   <- length(tmpstrata)
+    cat("       -- running gam smoother\n")
+    for(b in 1:nstrata){
+      for(bb in 1:nvar){
         
-        sub <- tmp_var%>%filter(strata==tmpstrata[b],var==tmpvar[v])
+        sub <- tmp_var%>%filter(strata==tmpstrata[b],var==tmpvar[bb])
         sub$mnVal_x   <- getgam(x =sub$wk, y = sub$mnVal_x)
-        sub$sdVal_x   <- exp(getgam(x =sub$wk, y = log(sub$sdVal_x+0.001)))-0.001
-        sub$seVal_x   <- exp(getgam(x =sub$wk, y = log(sub$seVal_x+0.001)))-0.001
-        if(jj == 1){
+        sub$sdVal_x   <- getgam(x =sub$wk, y = sub$sdVal_x)
+        sub$seVal_x   <- getgam(x =sub$wk, y = sub$seVal_x)
+        
+        if(1==10){
+          sub <- tmp_var%>%filter(strata==tmpstrata[b],var==tmpvar[bb])
+          sub$sdVal0_x  <- getgam(x =sub$wk, y = (sub$sdVal_x))
+          sub$sdVal2_x  <- exp(getgam(x =sub$wk, y = log(sub$sdVal_x+0.001)))-0.001
+          ggplot(sub)+
+            ylab("aice")+ xlab("week")+
+            geom_line(aes(x=wk,y=inv.logit(sdVal_x),color="original sd "),size=1.1)+
+            geom_line(aes(x=wk,y=inv.logit(sdVal0_x),color="gam smoothed sd"))+
+            geom_line(aes(x=wk,y=inv.logit(sdVal2_x),color="gam smoothed log(sd)"))+theme_minimal()
+        }
+        
+        if(bb==1&b==1){
           subout <- sub
         }else{
           subout <- rbind(subout,sub)
@@ -215,14 +244,14 @@ make_indices_strata <- function(
     #subout$seVal_hist <- subout$sdVal_hist/sqrt(subout$nVal_hist)
     tmp_var <- subout
     rm(subout)
-    cat(" gam smoother complete \n")
+    cat("       -- gam smoother complete \n")
   }
   
   
   datIN <- datIN%>%
-    left_join(tmp_var)
-  datIN$sim_type <- typeIN
+    left_join(tmp_var)%>%ungroup()
+  datIN$sim_type   <- typeIN
   tmp_var$sim_type <- typeIN
 
-  return(list(datIN=datIN,datout = data.frame(tmp_var)))
+  return(list(fullDat = datIN, mnDat = data.frame(tmp_var)))
 }

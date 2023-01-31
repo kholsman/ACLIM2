@@ -1624,15 +1624,15 @@ The following code shows how the ACLIM2 indices and bias correction was done. Yo
     # distributed (i.e., can have negative values)
      normvl <- c( vl[grep("pH",vl)],
                   vl[grep("temp",vl)],
+                   vl[grep("Ben",vl)],
+                   vl[grep("Hsbl",vl)],
+                   vl[grep("shflux",vl)],
+                   vl[grep("ssflux",vl)],
                   vl[grep("vNorth",vl)],
                   vl[grep("uEast",vl)])
 
     normlist <- data.frame(var = vl, lognorm = "log")
-    normlist$lognorm[normlist$var%in%
-                       c( vl[grep("pH",vl)],
-                          vl[grep("temp",vl)],
-                          vl[grep("vNorth",vl)],
-                          vl[grep("uEast",vl)])]   <- "none"
+    normlist$lognorm[normlist$var%in%normvl]   <- "none"
      normlist$lognorm[normlist$var%in%
                        c( vl[grep("aice",vl)],
                           vl[grep("fracbelow0",vl)],
@@ -1653,11 +1653,41 @@ The following code shows how the ACLIM2 indices and bias correction was done. Yo
     gcmcmipL <- c("B10K-K20P19_CMIP6_miroc",
                   "B10K-K20P19_CMIP6_gfdl",
                   "B10K-K20P19_CMIP6_cesm") 
- 
-    # make bc indices for survey rep and NEBS and SEBS (weekly, monthly, seasonal, annual)
-    tmp2<- suppressMessages(makeACLIM2_BC_Indices(
+
+    
+    # make bc indices for strata specific values:
+      tmp <- suppressMessages(makeACLIM2_BC_Indices_new(
+        bystrata  = TRUE,
+        BC_target = "mn_val",
+        sv = NULL,
+        #sv = c("aice","Ben","Hsbl"),
+        smoothIT  = TRUE,
+        CMIP_fdlr ="K20P19_CMIP6",
+        scenIN    = c("ssp126","ssp585"),
+        hind_sim  =  "B10K-K20P19_CORECFS",
+        histLIST  = paste0(gcmcmipL,"_historical"),
+        gcmcmipLIST  = gcmcmipL,
+        usehist      = TRUE,
+        Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
+        regnm        = "ACLIMregion",
+        srvynm       = "ACLIMsurveyrep",
+        normlist_IN  = normlist,
+        sim_listIN   = sim_list[-grep("historical",sim_list)],
+        gcinfoIN     = FALSE))
+      
+      
+      rplc_bcplot <-TRUE
+      source("R/sub_scripts/plot_BC_stratawk.R")
+      
+      
+       # make bc indices for survey rep stations
+      tmp2<- suppressMessages(makeACLIM2_BC_Indices_new(
         bystrata  = FALSE,
         BC_target = "mn_val",
+        # sv = NULL,
+        #sv = c("aice","Ben","Hsbl"),
+        sv ="largeZoop_integrated",
+        smoothIT  = TRUE,
         CMIP_fdlr ="K20P19_CMIP6",
         scenIN    = c("ssp126","ssp585"),
         hind_sim  =  "B10K-K20P19_CORECFS",
@@ -1671,25 +1701,10 @@ The following code shows how the ACLIM2 indices and bias correction was done. Yo
         sim_listIN = sim_list[-grep("historical",sim_list)],
         gcinfoIN = FALSE))
   
-    # make bc indices for station specific values:
-      tmp <- suppressMessages(makeACLIM2_BC_Indices(
-        bystrata  = TRUE,
-        BC_target = "mn_val",
-        #sv = v,
-        sv = NULL,
-        CMIP_fdlr ="K20P19_CMIP6",
-        scenIN    = c("ssp126","ssp585"),
-        hind_sim  =  "B10K-K20P19_CORECFS",
-        histLIST  = paste0(gcmcmipL,"_historical"),
-        gcmcmipLIST = gcmcmipL,
-        usehist   = TRUE,
-        Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
-        regnm     = "ACLIMregion",
-        srvynm    = "ACLIMsurveyrep",
-        normlist_IN = normlist,
-        sim_listIN = sim_list[-grep("historical",sim_list)],
-        gcinfoIN = FALSE))
+      #make ACLIM level 4 indices (annual, monthly, seasonal, weekly)
       
+      
+    
         
         CMIP6_K20P19_Indices <- suppressMessages(
                         makeACLIM2_Indices(

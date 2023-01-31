@@ -12,29 +12,35 @@
 #'
 #'
 
-# 1  -- Create indices from Hindcast
-# 2  -- loop across GCMs and create historical run indicies
+# 1  -- Create indices from Hindcast and save
+# 2  -- loop across GCMs and create historical run indices & save
 # 3  -- create projection indices
 # 4  -- bias correct the projections
 # 5  -- save results
 
 makeACLIM2_BC_Indices <- function(
+
+  # switches
   bystrata  = TRUE, #if false do survey rep, if true do strata estimates
-  sv = NULL,
-  smoothIT = TRUE,
-  BC_target = "mn_val",
-  CMIP_fdlr ="K20P19_CMIP6",
-  scenIN    = c("ssp126","ssp585"),
-  hind_sim  =  "B10K-K20_CORECFS",
-  histLIST,
+  sv        = NULL,
+  smoothIT  = TRUE,
   usehist   = TRUE,
+  gcinfoIN  = FALSE,
+  
+  # setup 
+  BC_target = "mn_val",
+  CMIP_fdlr = "K20P19_CMIP6",
+  scenIN    =  c("ssp126","ssp585"),
+  hind_sim  = "B10K-K20_CORECFS",
   regnm     = "ACLIMregion",
   srvynm    = "ACLIMsurveyrep",
+  
+  # data
+  histLIST,
   Rdata_pathIN = Rdata_path,
   normlist_IN = normlist,
   gcmcmipLIST = c("B10K-K20P19_CMIP6_miroc","B10K-K20P19_CMIP6_gfdl","B10K-K20P19_CMIP6_cesm"),
-  sim_listIN,
-  gcinfoIN = FALSE){
+  sim_listIN){
   
   
   reg_txtIN  = paste0("Level3/",regnm,"_")
@@ -46,18 +52,13 @@ makeACLIM2_BC_Indices <- function(
   
   # load the Hindcast:
   # -------------------------
-  cat("-- making hindcast indices....\n")
+  cat("    -- making hindcast indices....\n")
   sim  <- hind_sim
   
-  
-  
-  
-  if(is.null(sv)){
-    sv <- unique(hnd_srvy$var)
-    svout <- "allvar"
-  }else{
-    svout <- sv
-  }
+ 
+  # Load data
+  cat("-------------------------\n Get hindcast indices \n------------------------\n")
+  cat("Load data \n")
   
   if(bystrata) {
     load(file.path(Rdata_pathIN,file.path(sim,paste0(reg_txtIN,sim,".Rdata"))))
@@ -67,67 +68,75 @@ makeACLIM2_BC_Indices <- function(
   }else{
     load(file.path(Rdata_pathIN,file.path(sim,paste0(srvy_txtIN,sim,".Rdata"))))
     eval(parse(text=paste0("hnd_srvy  <- ",srvynm,"; rm(",srvynm,")")))
+    if(is.null(sv))
+      sv <- unique(hnd_srvy$var)
   }
+  
+  
   # Get Indices: 
   # -------------------------
- 
-   
+  cat("Get indices \n")
+  
   if(!bystrata){  # get survey replicated
     cat("    -- get srvy_indices_hind ... \n")
     srvy_station_indices_hind  <-  make_indices_srvyrep_station(simIN = hnd_srvy,
-                                                seasonsIN   = seasons, 
-                                                type        = "station replicated")
+                                                                seasonsIN   = seasons, 
+                                                                type        = "station replicated")
     rm(list=c("hnd_srvy"))
   }else{
     # area weekly means for each strata
     cat("    -- get strata_indices_weekly_hind ...\n")
     # strata_indices_weekly_hind 
-    hindA <-make_indices_strata(
-        simIN = hnd,
-        svIN = sv,
-        timeblockIN = c("strata","strata_area_km2",
-                        "yr","season","mo","wk"),
-        seasonsIN   = seasons,
-        type        = "strata weekly means", 
-        typeIN     =  "hind", #"hist" "proj"
-        ref_yrs    = 1980:2013,
-        normlistIN = normlist_IN,
-        group_byIN = c("var","lognorm","basin","strata","strata_area_km2","season","mo","wk"),
-        smoothIT     = smoothIT,
-        log_adj    = 1e-4)
+    hindA <- suppressMessages(make_indices_strata(
+      simIN = hnd,
+      svIN = sv,
+      timeblockIN = c("strata","strata_area_km2",
+                      "yr","season","mo","wk"),
+      seasonsIN   = seasons,
+      type        = "strata weekly means", 
+      typeIN     =  "hind", #"hist" "proj"
+      ref_yrs    = 1980:2013,
+      normlistIN = normlist_IN,
+      group_byIN = c("var","lognorm","basin","strata","strata_area_km2","season","mo","wk"),
+      smoothIT     = smoothIT,
+      log_adj    = 1e-4))
     
-    mn_hind <- hindA$datout%>%rename(
-      mnVal_hind = mnVal_x,
-      sdVal_hind    = sdVal_x,
-      nVal_hind = nVal_x,
+    mn_hind <- hindA$mnDat%>%rename(
+      mnVal_hind  = mnVal_x,
+      sdVal_hind  = sdVal_x,
+      nVal_hind   = nVal_x,
       seVal_hind  = seVal_x,
       sdVal_hind_mo = sdVal_x_mo,
-      sdVal_hind_yr = sdVal_x_yr)
-      # mnLNVal_hind = mnLNVal_x,
-      # sdLNVal_hind = sdLNVal_x,
-      # nLNVal_hind = nLNVal_x,
-      # sdLNVal_hind_mo = sdLNVal_x_mo,
-      # sdLNVal_hind_yr = sdLNVal_x_yr)
+      sdVal_hind_yr = sdVal_x_yr)%>%
+      ungroup()
     
-    hindIN    <- hindA$datIN%>%rename(
-      mnVal_hind = mnVal_x,
-      sdVal_hind = sdVal_x,
-      nVal_hind = nVal_x,
-      seVal_hind    = seVal_x,
-      sdVal_hind_mo = sdVal_x_mo,
-      sdVal_hind_yr = sdVal_x_yr)
-      # nLNVal_hind    = nLNVal_x,
-      # mnLNVal_hind = mnLNVal_x,
-      # sdLNVal_hind = sdLNVal_x, 
-      # sdLNVal_hind_mo = sdLNVal_x_mo,
-      # sdLNVal_hind_yr = sdLNVal_x_yr)
+    hindIN    <- hindA$fullDat%>%rename(
+        mnVal_hind  = mnVal_x,
+        sdVal_hind  = sdVal_x,
+        nVal_hind   = nVal_x,
+        seVal_hind  = seVal_x,
+        sdVal_hind_mo = sdVal_x_mo,
+        sdVal_hind_yr = sdVal_x_yr)%>%
+      ungroup()
     
-    #save in temporary file:
-    if(dir.exists("data/out/tmp"))
-      dir.remove("data/out/tmp")
-    dir.create("data/out/tmp")
-    save(hindIN,file="data/out/tmp/hindIN.Rdata")
-    rm(list=c("hnd","hindA","hindIN"))
+    # convert logit or log trans data back
+    hind  <-  unlink_val(indat=hindIN,
+                           listIN = c("mn_val","mnVal_hind","mnVal_hist"),
+                           rmlistIN = c("sdVal_hind", "seVal_hind", "sdVal_hind_mo", "sdVal_hind_yr",
+                                        "sdVal_hist", "seVal_hist", "sdVal_hist_mo", "sdVal_hist_yr",
+                                        "nVal_hist","nVal_hind"))
+    
+    load(file.path(Rdata_pathIN,file.path(sim,paste0(reg_txtIN,sim,".Rdata"))))
+    
+    # save hindcast indices:
+    # keep hind_clim in the loop
+    
+    # if(dir.exists("data/out/tmp"))
+    #   dir.remove("data/out/tmp")
+    #  dir.create("data/out/tmp")
+    #save(hindIN,file="data/out/tmp/hindIN.Rdata")
+    #rm(list=c("hnd","hindA","hindIN"))
+    rm(list=c("hnd","hindA"))
   }
  
  
@@ -142,9 +151,12 @@ makeACLIM2_BC_Indices <- function(
     
     gcmcmip <- gcmcmipLIST[ii]
     simL    <- sim_listIN[sim_listIN%in%paste0(gcmcmip,"_",rep(scenIN,1,each=length(gcmcmip)))]
-  
+    
     if(usehist){
+      cat("-------------------------\n Get historical indices \n------------------------\n")
       sim     <- histLIST[ii]
+      
+      cat("Load data \n")
       
       if(bystrata) {
         load(file.path(Rdata_pathIN,file.path(sim,paste0(reg_txtIN,sim,".Rdata"))))
@@ -156,13 +168,8 @@ makeACLIM2_BC_Indices <- function(
         eval(parse(text=paste0("hist_srvy  <- ",srvynm,"; rm(",srvynm,")")))
       }
       
-      
-      # Get Historical Indices: 
-      # -------------------------
-      cat("-- making historical indices ...\n" )
-      # cat("-- ",sim,"...\n-----------------------------------\n")
-      # cat("[",paste0(c(rep("=",bar*0),">",rep(" ",60-(bar*0))),collapse=""),"]\n")
-      # 
+      cat("Get indices \n")
+       
       if(!bystrata){  # survey replicated
         # station specific survey indices (annual)
         cat("    -- get srvy_indices_hist ... \n")
@@ -173,54 +180,44 @@ makeACLIM2_BC_Indices <- function(
       }else{
         # area weekly means for each strata
         cat("    -- get strata_indices_weekly_hist ... \n")
-        # strata_indices_weekly_hist <- make_indices_strata(simIN = hist,
-        #                                                   timeblockIN = c("strata","strata_area_km2",
-        #                                                                   "yr","season","mo","wk"),
-        #                                                   seasonsIN   = seasons,
-        #                                                   type        = "strata weekly means")
-        histA <-make_indices_strata(
-          simIN = hist,
-          svIN = sv,
+        
+        histA <- suppressMessages(make_indices_strata(
+          simIN       = hist,
+          svIN        = sv,
           timeblockIN = c("strata","strata_area_km2",
                           "yr","season","mo","wk"),
           seasonsIN   = seasons,
           type        = "strata weekly means", 
-          typeIN     =  "hist", #"hist" "proj"
-          ref_yrs    = 1980:2013,
-          normlistIN = normlist_IN,
+          typeIN      =  "hist", #"hist" "proj"
+          ref_yrs     = 1980:2013,
+          normlistIN  = normlist_IN,
            group_byIN = c("var","lognorm","basin","strata","strata_area_km2","season","mo","wk"),
-          smoothIT     = smoothIT,
-          log_adj    = 1e-4)
+          smoothIT    = smoothIT,
+          log_adj     = 1e-4))
         
-        mn_hist <- histA$datout%>%rename(
+        mn_hist <- histA$mnDat%>%rename(
           mnVal_hist = mnVal_x,
           sdVal_hist    = sdVal_x,
           nVal_hist = nVal_x,
-          # mnLNVal_hist = mnLNVal_x,
-          # sdLNVal_hist = sdLNVal_x,
-          # nLNVal_hist = nLNVal_x,
           seVal_hist  = seVal_x,
           sdVal_hist_mo = sdVal_x_mo,
-          # sdLNVal_hist_mo = sdLNVal_x_mo,
-          sdVal_hist_yr = sdVal_x_yr)
-          # sdLNVal_hist_yr = sdLNVal_x_yr)
-        histIN    <- histA$datIN%>%rename(
+          sdVal_hist_yr = sdVal_x_yr)%>%
+          ungroup()
+        
+        histIN    <- histA$fullDat%>%rename(
           mnVal_hist = mnVal_x,
           sdVal_hist = sdVal_x,
           nVal_hist = nVal_x,
-          # mnLNVal_hist = mnLNVal_x,
-          # sdLNVal_hist = sdLNVal_x,
-          # nLNVal_hist = nLNVal_x,
           seVal_hist    = seVal_x,
           sdVal_hist_mo = sdVal_x_mo,
-          # sdLNVal_hist_mo = sdLNVal_x_mo,
-          sdVal_hist_yr = sdVal_x_yr)
-          # sdLNVal_hist_yr = sdLNVal_x_yr)
-        #save in temporary file:
-        if(file.exists("data/out/tmp/histIN.Rdata"))
-          file.remove("data/out/tmp/histIN.Rdata")
-        save(histIN,file="data/out/tmp/histIN.Rdata")
-        rm(list=c("hist","histA","histIN"))
+          sdVal_hist_yr = sdVal_x_yr)%>%
+          ungroup()
+        # #save in temporary file:
+        # if(file.exists("data/out/tmp/histIN.Rdata"))
+        #   file.remove("data/out/tmp/histIN.Rdata")
+        # save(histIN,file="data/out/tmp/histIN.Rdata")
+        # rm(list=c("hist","histA","histIN"))
+        rm(list=c("hist","histA"))
       }
     }
     
@@ -228,14 +225,17 @@ makeACLIM2_BC_Indices <- function(
     # 3  -- create projection indices
     
     # Now for each projection get the index and bias correct it 
-    cat("-- making projection indices....\n")
+    cat("    -- making projection indices....\n")
     sim <- simL[1]
   #  cat("[",paste0(c(rep("=",bar*i),">",rep(" ",60-(bar*i))),collapse=""),"]\n")
+    # Get Projection Indices: 
+    # -------------------------
+    cat("-------------------------\n Get historical & projection indices \n------------------------\n")
     for (sim in simL){
       i <- i + 1
       cat("    -- ",sim,"...\n-----------------------------------\n")
-      #gcmcmipLIST = c("B10K-K20P19_CMIP6_miroc","B10K-K20P19_CMIP6_gfdl","B10K-K20P19_CMIP6_cesm")
-      sim_listIN
+      
+      # sim_listIN
       RCP   <- rev(strsplit(sim,"_")[[1]])[1]
       mod   <- (strsplit(sim,"_")[[1]])[1]
       CMIP  <- strsplit(sim,"_")[[1]][2]
@@ -256,7 +256,7 @@ makeACLIM2_BC_Indices <- function(
         }
         # Get Historical Indices: 
         # -------------------------
-        cat("-- making historical indices....\n")
+        cat("    -- making historical indices....\n")
         # station specific survey indices (annual)
         
        
@@ -272,13 +272,7 @@ makeACLIM2_BC_Indices <- function(
         }else{
           # area weekly means for each strata
           cat("    -- get strata_indices_weekly_hist ... \n")
-          # strata_indices_weekly_hist <- make_indices_strata(simIN = hist,
-          #                                                   timeblockIN = c("strata","strata_area_km2",
-          #                                                                   "yr","season","mo","wk"),
-          #                                                   seasonsIN   = seasons,
-          #                                                   type        = "strata weekly means")
-          # 
-          histA <-make_indices_strata(
+          histA <- suppressMessages(make_indices_strata(
             simIN = hist,
             svIN = sv,
             timeblockIN = c("strata","strata_area_km2",
@@ -290,42 +284,32 @@ makeACLIM2_BC_Indices <- function(
             normlistIN = normlist_IN,
              group_byIN = c("var","lognorm","basin","strata","strata_area_km2","season","mo","wk"),
             smoothIT     = smoothIT,
-            log_adj    = 1e-4)
+            log_adj    = 1e-4))
           
-          mn_hist <- histA$datout%>%rename(
+          mn_hist <- histA$mnDat%>%rename(
             mnVal_hist = mnVal_x,
             sdVal_hist    = sdVal_x,
             nVal_hist = nVal_x,
-            # mnLNVal_hist = mnLNVal_x,
-            # sdLNVal_hist = sdLNVal_x,
-            # nLNVal_hist = nLNVal_x,
             seVal_hist  = seVal_x,
             sdVal_hist_mo = sdVal_x_mo,
-            # sdLNVal_hist_mo = sdLNVal_x_mo,
             sdVal_hist_yr = sdVal_x_yr)
-            # sdLNVal_hist_yr = sdLNVal_x_yr)
-          histIN    <- histA$datIN%>%rename(
+          
+          histIN    <- histA$fullDat%>%rename(
             mnVal_hist = mnVal_x,
             sdVal_hist = sdVal_x,
             nVal_hist = nVal_x,
-            # mnLNVal_hist = mnLNVal_x,
-            # sdLNVal_hist = sdLNVal_x,
-            # nLNVal_hist = nLNVal_x,
             seVal_hist    = seVal_x,
             sdVal_hist_mo = sdVal_x_mo,
-            # sdLNVal_hist_mo = sdLNVal_x_mo,
             sdVal_hist_yr = sdVal_x_yr)
-            # sdLNVal_hist_yr = sdLNVal_x_yr)
-          #save in temporary file:
-          if(file.exists("data/out/tmp/histIN.Rdata"))
-            file.remove("data/out/tmp/histIN.Rdata")
-          save(histIN,file="data/out/tmp/histIN.Rdata")
-          rm(list=c("hist","histA","histIN"))
+          
+          # #save in temporary file:
+          # if(file.exists("data/out/tmp/histIN.Rdata"))
+          #   file.remove("data/out/tmp/histIN.Rdata")
+          # save(histIN,file="data/out/tmp/histIN.Rdata")
+          # rm(list=c("hist","histA","histIN"))
+          rm(list=c("hist","histA"))
         }
       }
-      
-      # Get Projection Indices: 
-      # -------------------------
       
       if(bystrata) {
         load(file.path(Rdata_pathIN,file.path(sim,paste0(reg_txtIN,sim,".Rdata"))))
@@ -337,20 +321,15 @@ makeACLIM2_BC_Indices <- function(
        
       if(!bystrata){  # station specific survey indices (annual)
           # station specific survey indices (annual)
-          cat("    -- get srvy_indices_fut ... \n")
+          cat("        -- get srvy_indices_fut ... \n")
           srvy_station_indices_fut  <-  make_indices_srvyrep_station(simIN = proj_srvy,
                                                                      seasonsIN   = seasons, 
                                                                      type        = "station replicated")
           rm(list=c("proj_srvy"))
       }else{
           # area weekly means for each strata
-        cat("    -- get strata_indices_weekly_fut ... \n")
-          # strata_indices_weekly_fut <- make_indices_strata(simIN = proj_wk,
-          #                                                  timeblockIN = c("strata","strata_area_km2",
-          #                                                                  "yr","season","mo","wk"),
-          #                                                  seasonsIN   = seasons,
-          #                                                  type        = "strata weekly means")
-        projA <-make_indices_strata(
+        cat("        -- get strata_indices_weekly_fut ... \n")
+        projA <- suppressMessages(make_indices_strata(
           simIN = proj_wk,
           svIN = sv,
           timeblockIN = c("strata","strata_area_km2",
@@ -362,45 +341,32 @@ makeACLIM2_BC_Indices <- function(
           normlistIN = normlist_IN,
            group_byIN = c("var","lognorm","basin","strata","strata_area_km2","season","mo","wk"),
           smoothIT     = smoothIT,
-          log_adj    = 1e-4)
+          log_adj    = 1e-4))
         
-        mn_fut <- projA$datout%>%rename(
+        mn_fut <- projA$mnDat%>%rename(
           mnVal_fut = mnVal_x,
           sdVal_fut    = sdVal_x,
           nVal_fut = nVal_x,
-          # mnLNVal_fut = mnLNVal_x,
-          # sdLNVal_fut = sdLNVal_x,
-          # nLNVal_fut = nLNVal_x,
           seVal_fut  = seVal_x,
           sdVal_fut_mo = sdVal_x_mo,
-          # sdLNVal_fut_mo = sdLNVal_x_mo,
-          sdVal_fut_yr = sdVal_x_yr)
+          sdVal_fut_yr = sdVal_x_yr)%>%
+          ungroup()
         
-          # sdLNVal_fut_yr = sdLNVal_x_yr)
-        futIN<- projA$datIN%>%rename(
+        futIN<- projA$fullDat%>%rename(
           mnVal_fut = mnVal_x,
           sdVal_fut = sdVal_x,
           nVal_fut = nVal_x,
-          # mnLNVal_fut = mnLNVal_x,
-          # nLNVal_fut    = nLNVal_x,
-          # sdLNVal_fut = sdLNVal_x,
           seVal_fut    = seVal_x,
           sdVal_fut_mo = sdVal_x_mo,
-          # sdLNVal_fut_mo = sdLNVal_x_mo,
           sdVal_fut_yr = sdVal_x_yr)%>%
-          # sdLNVal_fut_yr = sdLNVal_x_yr)%>%
-          ungroup()%>%
-          select("basin","strata","strata_area_km2", 
-                 "year","season","mo","wk",
-                 "var","lognorm","units","sim","mn_val","mnjday",
-                 #"LNval",
-                 "mnDate","qry_date","type","val_raw","sim_type")
-        #save in temporary file:
-        if(file.exists("data/out/tmp/futIN.Rdata"))
-          file.remove("data/out/tmp/futIN.Rdata")
-        save(futIN,file="data/out/tmp/futIN.Rdata")
+          ungroup()
         
-        rm(list=c("proj_wk","projA","futIN"))
+        # #save in temporary file:
+        # if(file.exists("data/out/tmp/futIN.Rdata"))
+        #   file.remove("data/out/tmp/futIN.Rdata")
+        # save(futIN,file="data/out/tmp/futIN.Rdata")
+        # rm(list=c("proj_wk","projA","mn_fut"))
+        rm(list=c("proj_wk","projA"))
       }
         
       #New Nov 2022 Bias correct weekly then bin up:
@@ -415,20 +381,17 @@ makeACLIM2_BC_Indices <- function(
                       "sf",
                       "val_biascorrectedwk", "val_delta","val_biascorrectedmo", 
                       "val_biascorrectedyr",
-                      "scaling_factorwk",
-                      "scaling_factormo",
-                      "scaling_factoryr", 
+                      "sf_wk",
+                      "sf_mo",
+                      "sf_yr", 
                       "mnjday","mnDate","type","lognorm",
                       "mnVal_hind","sdVal_hind",
                       "sdVal_hind_mo",
                       "sdVal_hind_yr",
-                      # "mnLNVal_hind","sdLNVal_hind",
-                      # "sdLNVal_hind_mo","sdLNVal_hind_yr",
                       "mnVal_hist","sdVal_hist","sdVal_hist_mo","sdVal_hist_yr")
-                      # "mnLNVal_hist","sdLNVal_hist","sdLNVal_hist_mo","sdLNVal_hist_yr")
       
       if(!bystrata){
-        cat("    -- bias correct station surveyrep_adj ... \n")
+        cat("         -- bias correct station surveyrep_adj ... \n")
         surveyrep_station_adj <- suppressMessages(
           bias_correct_new( 
           target     = BC_target,
@@ -437,76 +400,72 @@ makeACLIM2_BC_Indices <- function(
           futIN  = srvy_station_indices_fut,
           ref_yrs     = ref_years,
           smoothIT    = smoothIT,
-           group_byIN = c("var","lognorm","basin","station_id","latitude","longitude","strata"),
+          group_byIN = c("var","lognorm","basin","station_id","latitude","longitude","strata"),
           normlistIN  = normlist_IN,
           outlist     = outlistUSE[-grep("mo",outlistUSE)],
           log_adj     = 1e-4))
         
-        cat("saving surveyrep_station_adj...\n")
+        cat("        -- saving surveyrep_station_adj...\n")
         save_indices(
           flIN      = surveyrep_station_adj, 
           subfl     = "BC_srvy_station",
           post_txt  = paste0("ACLIMsurveyrep_",sim,"bc"),
           CMIP_fdlr = CMIP_fdlr,
           outlist   = c("fut","hind","hist"))
-        # remove sim/gcm
+        
         rm(list=c("surveyrep_station_adj",
                   "srvy_station_indices_fut"))
         if(!usehist)
           rm(list=c("srvy_station_indices_hist"))
       }else{
-        load(file="data/out/tmp/futIN.Rdata")
-        futIN <- futIN%>%
-          select("basin","strata","strata_area_km2", 
-                 "year","season","mo","wk",
-                 "var","lognorm","units","sim","mn_val","mnjday",
-                 #"LNval",
-                 "mnDate","qry_date","type","val_raw","sim_type")
-        load(file="data/out/tmp/hindIN.Rdata")
-        load(file="data/out/tmp/histIN.Rdata")
+        selct <- c("basin","strata","strata_area_km2", 
+        "year","season","mo","wk",
+        "var","lognorm","units","sim","mn_val","mnjday",
+        "mnDate","qry_date","type","val_raw","sim_type")
+       
         
         ll <- 0
         #for(v in normlist_IN$var){
+        # load(file="data/out/tmp/futIN.Rdata")
+        # load(file="data/out/tmp/hindIN.Rdata")
+        # load(file="data/out/tmp/histIN.Rdata")
+        hindIN<-hindIN%>%
+          select(all_of(selct))
+        histIN<-histIN%>%
+          select(all_of(selct))
+        futIN <- futIN%>%
+          select(all_of(selct))
+        
         for(v in sv){
-          sfIN <- "bcmo"
-          # if(v%in%c("aice"))
-          #   sfIN <- "bcyr"
-          # 
+          sfIN <- "bcwk"
           ll <- ll + 1
           cat("    -- bias correct ",round(100*ll/length(normlist_IN$var)),"% ",v," ...\n")
-          strata_weekly_adj <- suppressMessages(bias_correct_new_strata( 
+          strata_weekly_adj <- suppressMessages(
+            bias_correct_new_strata( 
             smoothIT = smoothIT,
             sf = sfIN,
             hind_clim  = mn_hind%>%filter(var==v),
             hist_clim  = mn_hist%>%filter(var==v),
-            fut_clim   = futIN%>%filter(var==v), 
+            futIN      = futIN%>%filter(var==v),
+            hindIN     = hindIN,
+            histIN     = histIN,
             normlistIN = normlist_IN,
-             group_byIN = c("var","lognorm","basin","strata","strata_area_km2","season","mo","wk"),
+            group_byIN = c("var","lognorm","basin","strata","strata_area_km2","season","mo","wk"),
             outlist    = outlistUSE, 
             ref_yrs    = ref_years,   # currently set to 1980-2013 change to 1985?
             log_adj    = 1e-4))
-          if(1==10){
-            
           
-            ggplot(data=strata_weekly_adj[[1]]%>%filter(strata==70))+
-              #geom_line(aes(x=mnjday,y=val_biascorrectedwk,color="bcwk"))+
-              geom_line(aes(x=mnjday,y=val_biascorrectedmo,color="bcmo"))+
-              geom_line(aes(x=mnjday,y=val_biascorrectedyr,color="bcyr"))+
-              geom_line(aes(x=mnjday,y=val_raw,color="raw"))+
-              geom_line(aes(x=mnjday,y=mnVal_hind,color="mnVal_hind"),size=1.2)+
-              geom_line(aes(x=mnjday,y=mnVal_hist,color="mnVal_hist"),size=1.2)
-          }
           if(ll==1){ 
-            strata_weekly_adjALL    <- strata_weekly_adj
+            strata_weekly_adjALL   <- strata_weekly_adj
           }else{
+            strata_weekly_adjALL$fut  <- rbind(strata_weekly_adjALL$hind,strata_weekly_adj$hind)
+            strata_weekly_adjALL$fut  <- rbind(strata_weekly_adjALL$hist,strata_weekly_adj$hist)
             strata_weekly_adjALL$fut  <- rbind(strata_weekly_adjALL$fut,strata_weekly_adj$fut)
-            strata_weekly_adjALL$hind <- rbind(strata_weekly_adjALL$hind,strata_weekly_adj$hind)
-            strata_weekly_adjALL$hist <- rbind(strata_weekly_adjALL$hist,strata_weekly_adj$hist)
           }
           rm(list=c("strata_weekly_adj"))
         } #end var
         
-        cat("saving strata_weekly_adj...\n")
+        cat("        -- saving strata_weekly_adj...\n")
         save_indices(
           flIN      = strata_weekly_adjALL, 
           subfl     = "BC_strata_weekly",
@@ -514,19 +473,19 @@ makeACLIM2_BC_Indices <- function(
           CMIP_fdlr = CMIP_fdlr,
           outlist   = c("fut","hind","hist"))
         # remove sim/gcm
-        rm(list=c("mn_fut","strata_weekly_adjALL"))
-        if(!usehist) rm(list=c("mn_hist"))
-      }
+        rm(list=c("mn_fut","futIN", "strata_weekly_adjALL"))
+      } # end var
+        if(!usehist) rm(list=c("mn_hist","histIN"))
     } #end sim
     
     if(bystrata)
-      rm(list=c("mn_hist"))
+      rm(list=c("mn_hist","histIN"))
     if(!bystrata)
       rm(list=c("srvy_station_indices_hist"))
     
   } # end gcmscen
   
-  dir.remove("data/out/tmp")
+  #dir.remove("data/out/tmp")
   return("complete")
 }
 

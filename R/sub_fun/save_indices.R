@@ -33,7 +33,7 @@ save_indices <- function(
              "ACLIM_surveyrep_fut",
              "ACLIM_strata_monthly_fut")  ){
   
-    cat("-- Files will be saved in",paste0("Data/out/",CMIP_fdlr,"/",subfl)," ....\n")
+    cat("        -- Files will be saved in",paste0("Data/out/",CMIP_fdlr,"/",subfl)," ....\n")
     # make root folders"
     if(!dir.exists("Data/out")) dir.create("Data/out")
     if(!dir.exists( paste0("Data/out") )) dir.create(paste0("Data/out"))
@@ -59,7 +59,7 @@ save_indices <- function(
         if(file.exists(tmpfl)) file.remove(tmpfl)    
         eval(parse(text = paste0("save(",outfl,", file='",tmpfl,"')")))
         if(file.exists(tmpfl))
-          cat("-- Indices saved \n")
+          cat("        -- Indices saved \n")
         else
           stop(paste(tmpfl," not saved"))
         rm(tmpfl)
