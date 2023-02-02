@@ -155,7 +155,7 @@ make_indices_srvyrep_station<-function(
       mn_val     = mean(tmpval, na.rm=T),
       jday       = mean(jday, na.rm=T))%>%
     dplyr::mutate(sim      = simIN$sim[1],
-                  season   <- "srvy_rep",
+                  season   = "srvy_rep",
                   mnDate   = as.Date(paste0(year,"-01-01"))+jday,
                   qry_date = format(Sys.time(), "%Y_%m_%d"),
                   type     = type)%>%ungroup()

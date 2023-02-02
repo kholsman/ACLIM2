@@ -1581,8 +1581,9 @@ The following code shows how the ACLIM2 indices and bias correction was done. Yo
     # rm(list=ls())
     # setwd("D:/GitHub_cloud/ACLIM2")
     # loads packages, data, setup, etc.
-
+ 
     tmstp       <- "2022_10_17"
+    update_biascorrection <- FALSE
     suppressMessages(source("R/make.R"))
     tmstp       <- "2022_10_17"
     Rdata_path  <- paste0("../../romsnpz/",tmstp,"_Rdata")
@@ -1637,7 +1638,7 @@ The following code shows how the ACLIM2 indices and bias correction was done. Yo
                        c( vl[grep("aice",vl)],
                           vl[grep("fracbelow0",vl)],
                           vl[grep("fracbelow1",vl)],
-                          vl[grep("fracbelow2",vl)])]  <- "logit"
+                         vl[grep("fracbelow2",vl)])]  <- "logit"
     
     
     save(normlist,file      = file.path(Rdata_path,"normlist.Rdata"))
@@ -1649,226 +1650,172 @@ The following code shows how the ACLIM2 indices and bias correction was done. Yo
     
     # generate indices and bias corrected projections 
     # this takes about 30 mins each
+    # -------------------------------------------
+    # CMIP6 K20P19
+    # -------------------------------------------
     
-    gcmcmipL <- c("B10K-K20P19_CMIP6_miroc",
-                  "B10K-K20P19_CMIP6_gfdl",
-                  "B10K-K20P19_CMIP6_cesm") 
-
-    
-    # make bc indices for strata specific values:
-      tmp <- suppressMessages(makeACLIM2_BC_Indices_new(
-        bystrata  = TRUE,
-        BC_target = "mn_val",
-        sv = NULL,
-        #sv = c("aice","Ben","Hsbl"),
-        smoothIT  = TRUE,
-        CMIP_fdlr ="K20P19_CMIP6",
-        scenIN    = c("ssp126","ssp585"),
-        hind_sim  =  "B10K-K20P19_CORECFS",
-        histLIST  = paste0(gcmcmipL,"_historical"),
-        gcmcmipLIST  = gcmcmipL,
-        usehist      = TRUE,
-        Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
-        regnm        = "ACLIMregion",
-        srvynm       = "ACLIMsurveyrep",
-        normlist_IN  = normlist,
-        sim_listIN   = sim_list[-grep("historical",sim_list)],
-        gcinfoIN     = FALSE))
-      
-      
-      rplc_bcplot <-TRUE
-      source("R/sub_scripts/plot_BC_stratawk.R")
-      
-      
-       # make bc indices for survey rep stations
-      tmp2<- suppressMessages(makeACLIM2_BC_Indices_new(
-        bystrata  = FALSE,
-        BC_target = "mn_val",
-        # sv = NULL,
-        #sv = c("aice","Ben","Hsbl"),
-        sv ="largeZoop_integrated",
-        smoothIT  = TRUE,
-        CMIP_fdlr ="K20P19_CMIP6",
-        scenIN    = c("ssp126","ssp585"),
-        hind_sim  =  "B10K-K20P19_CORECFS",
-        histLIST  = paste0(gcmcmipL,"_historical"),
-        gcmcmipLIST = gcmcmipL,
-        usehist   = TRUE,
-        Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
-        regnm     = "ACLIMregion",
-        srvynm    = "ACLIMsurveyrep",
-        normlist_IN = normlist,
-        sim_listIN = sim_list[-grep("historical",sim_list)],
-        gcinfoIN = FALSE))
+      gcmcmipL <- c("B10K-K20P19_CMIP6_miroc",
+                    "B10K-K20P19_CMIP6_gfdl",
+                    "B10K-K20P19_CMIP6_cesm") 
   
-      #make ACLIM level 4 indices (annual, monthly, seasonal, weekly)
-      
-      
-    
+      if(update_biascorrection){
+      # make bc indices for strata specific values:
+        tmp <- suppressMessages(makeACLIM2_BC_Indices_new(
+          bystrata  = TRUE,
+          BC_target = "mn_val",
+          sv = NULL,
+          #sv = c("aice","Ben","Hsbl"),
+          smoothIT  = TRUE,
+          CMIP_fdlr ="K20P19_CMIP6",
+          scenIN    = c("ssp126","ssp585"),
+          hind_sim  =  "B10K-K20P19_CORECFS",
+          histLIST  = paste0(gcmcmipL,"_historical"),
+          gcmcmipLIST  = gcmcmipL,
+          usehist      = TRUE,
+          Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
+          regnm        = "ACLIMregion",
+          srvynm       = "ACLIMsurveyrep",
+          normlist_IN  = normlist,
+          sim_listIN   = sim_list[-grep("historical",sim_list)],
+          gcinfoIN     = FALSE))
         
-        CMIP6_K20P19_Indices <- suppressMessages(
-                        makeACLIM2_Indices(
-                        BC_target = "mn_val",
-                        bystrata    = FALSE,
-                        hind_sim  =  "B10K-K20P19_CORECFS",
-                        histLIST  = paste0(gcmcmipL,"_historical"),
-                        gcmcmipLIST = gcmcmipL,  
-                        scenIN    = c("ssp126","ssp585"),
-                        Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
-                        regnm    = "ACLIMregion",
-                        srvynm    = "ACLIMsurveyrep",
-                        normlist_IN = normlist,
-                        usehist    = TRUE,
-                        sim_listIN = sim_list[-grep("historical",sim_list)]))
-    
-    
-     if("CMIP6_K20P19_Indices"%in%ls()){                 
-      saved <- FALSE
-      saved <- save_indices(flIN = CMIP6_K20P19_Indices, 
-                   subfl = "allEBS_means",
-                   post_txt = "_mn",
-                   CMIP_fdlr ="K20P19_CMIP6",
-                   c("ACLIM_annual_hind",
-             "ACLIM_seasonal_hind",
-             "ACLIM_monthly_hind",
-             "ACLIM_weekly_hind",
-            # "ACLIM_weekly_hind2",
-             "ACLIM_surveyrep_hind",
-             "ACLIM_strata_monthly_hind",
-             
-             "ACLIM_annual_hist",
-             "ACLIM_seasonal_hist",
-             "ACLIM_monthly_hist",
-             "ACLIM_weekly_hist",
-             #"ACLIM_weekly_hist2",
-             "ACLIM_surveyrep_hist",
-             "ACLIM_strata_monthly_hist",
-             
-             "ACLIM_annual_fut",
-             "ACLIM_seasonal_fut",
-             "ACLIM_monthly_fut",
-             "ACLIM_weekly_fut",
-            # "ACLIM_weekly_fut2",
-             "ACLIM_surveyrep_fut",
-             "ACLIM_strata_monthly_fut"))
-      fl <- "Data/out/CMIP6_K20P19_Indices_list.Rdata"
-      
-      if(file.exists(fl)) file.remove(fl)
-      save(CMIP6_K20P19_Indices, file = fl)
-       if(saved){
-        rm(CMIP6_K20P19_Indices)}else{
-          stop("Indices not saved!")
-        }
-      gc()
-     }
-        # now for strata means
-      for(gcmcmipL in c("B10K-K20P19_CMIP6_miroc",
-                  "B10K-K20P19_CMIP6_gfdl",
-                  "B10K-K20P19_CMIP6_cesm") ){
-        CMIP6_K20P19_Indices <- suppressMessages(
-                        makeACLIM2_Indices(
-                        BC_target    = "mn_val",
-                        bystrata     = TRUE,
-                        hind_sim     =  "B10K-K20P19_CORECFS",
-                        histLIST     = paste0(gcmcmipL,"_historical"),
-                        gcmcmipLIST  = gcmcmipL,  
-                        scenIN       = c("ssp126","ssp585"),
-                        Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
-                        regnm        = "ACLIMregion",
-                        srvynm       = "ACLIMsurveyrep",
-                        normlist_IN  = normlist,
-                        usehist      = TRUE,
-                        sim_listIN   = sim_list[-grep("historical",sim_list)]))
-        if(!dir.exists("data/out/K20P19_CMIP6/strata_means"))
-          dir.create("data/out/K20P19_CMIP6/strata_means")
-         if("CMIP6_K20P19_Indices"%in%ls()){                 
-              saved <- FALSE
-              saved <- save_indices(flIN = CMIP6_K20P19_Indices, 
-                           subfl = "strata_means/gcmcmipL",
-                           post_txt = "_mn",
-                           CMIP_fdlr ="K20P19_CMIP6")
-              fl <- "Data/out/CMIP6_K20P19_Indices_list.Rdata"
-              
-              if(file.exists(fl)) file.remove(fl)
-              save(CMIP6_K20P19_Indices, file = fl)
-               if(saved){
-                rm(CMIP6_K20P19_Indices)}else{
-                  stop("Indices not saved!")
-                }
-              gc()
-             }
-    }
-     
-    if(10==1){
-      # Depreciated - now using K20P19 hindcast instead
-     CMIP6_K20_Indices <- suppressMessages(
-                        makeACLIM2_Indices(
-                        BC_target = "mn_val",
-                        hind_sim  =  "B10K-K20_CORECFS",
-                        scenIN    = c("ssp126","ssp585"),
-                        histLIST  = paste0(gcmcmipL,"_historical"),
-                        gcmcmipLIST = gcmcmipL,
-                        Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
-                        normlist_IN = normlist,
-                        sim_listIN = sim_list[-grep("historical",sim_list)]))
-    
-     if("CMIP6_K20_Indices"%in%ls()){  
-      saved <- FALSE
-      saved <- save_indices(flIN = CMIP6_K20_Indices, 
-                   subfl = "allEBS_means",
-                   post_txt = "_mn",
-                   CMIP_fdlr ="K20P19_CMIP6")
-      fl <- "Data/out/CMIP6_K20_Indices_list.Rdata"
-      
-      if(file.exists(fl)) file.remove(fl)
-      save(CMIP6_K20_Indices, file = fl)
-      if(saved){
-        rm(CMIP6_K20_Indices)}else{
-          stop("Indices not saved!")
-        }
-      gc()
-     }
-    }
-     
-    # CMIP5 K20P19
-    gcmcmipL2 <- c("B10K-K20P19_CMIP5_MIROC",
-                   "B10K-K20P19_CMIP5_GFDL",
-                   "B10K-K20P19_CMIP5_CESM")
-    
-    CMIP5_K20P19_Indices <- suppressMessages(
-                        makeACLIM2_Indices(
-                        BC_target = "mn_val",
-                        hind_sim  =  "B10K-K20P19_CORECFS",
-                        #histLIST  = rep("B10K-K20P19_CORECFS",3),
-                        histLIST  = gcmcmipL2,
-                        usehist   = FALSE,
-                        gcmcmipLIST = gcmcmipL2,
-                        normlist_IN = normlist,
-                        scenIN    = c("rcp45","rcp85"),
-                        Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
-                        regnm    = "ACLIMregion",
-                        srvynm    = "ACLIMsurveyrep",
-                        sim_listIN = sim_list[-grep("historical",sim_list)]))
-
-    if("CMIP5_K20P19_Indices"%in%ls()){
-      saved <- FALSE
-      saved <- save_indices(flIN = CMIP5_K20P19_Indices, 
-                     subfl = "allEBS_means",
-                     post_txt = "_mn",
-                     CMIP_fdlr ="K20P19_CMIP5")
         
-        fl <- "Data/out/CMIP5_K20P19_Indices_list.Rdata"
-        if(file.exists(fl)) file.remove(fl)
-        save(CMIP5_K20P19_Indices, file = fl)
+        rplc_bcplot <-TRUE
+        source("R/sub_scripts/plot_BC_stratawk.R")
         
-        if(saved){
-        rm(CMIP5_K20P19_Indices)}else{
-          stop("Indices not saved!")
-        }
+        
+         # make bc indices for survey rep stations
+        tmp2<- suppressMessages(makeACLIM2_BC_Indices_new(
+          bystrata  = FALSE,
+          BC_target = "mn_val",
+          sv = NULL, 
+          smoothIT  = TRUE,
+          CMIP_fdlr ="K20P19_CMIP6",
+          scenIN    = c("ssp126","ssp585"),
+          hind_sim  =  "B10K-K20P19_CORECFS",
+          histLIST  = paste0(gcmcmipL,"_historical"),
+          gcmcmipLIST = gcmcmipL,
+          usehist     = TRUE,
+          Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
+          regnm       = "ACLIMregion",
+          srvynm      = "ACLIMsurveyrep",
+          normlist_IN = normlist,
+          sim_listIN  = sim_list[-grep("historical",sim_list)],
+          gcinfoIN    = FALSE))
+      }
+    
+        #make ACLIM level 4 indices (annual, monthly, seasonal, weekly)
+        
+        suppressMessages(makeACLIM2_L4_Indices_strata(
+          CMIP_fdlr   = "Data/out/K20P19_CMIP6",
+          CMIP        = "CMIP6",
+          scenIN      = c("ssp126","ssp585"),
+          hind_sim    = "B10K-K20P19_CORECFS",
+          gcmcmipLIST = gcmcmipL,
+          subfldr     = "BC_ACLIMregion",
+          sim_listIN  = sim_list, 
+          varlistIN   = normlist$var,
+          #varlistIN   = c("aice","largeZoop_integrated"),
+          prefix      = "ACLIMregion"))
         gc()
-    }
-
+        
+         suppressMessages(makeACLIM2_L4_Indices_survey(
+          CMIP_fdlr   = "Data/out/K20P19_CMIP6",
+          CMIP        = "CMIP6",
+          scenIN      = c("ssp126","ssp585"),
+          hind_sim    = "B10K-K20P19_CORECFS",
+          gcmcmipLIST = gcmcmipL,
+          subfldr     = "BC_ACLIMsurveyrep",
+          sim_listIN  = sim_list, 
+          varlistIN   = normlist$var,
+          prefix      = "ACLIMsurveyrep"))
+      
+    # -------------------------------------------
+    # CMIP5 K20P19
+    # -------------------------------------------
+    
+      gcmcmipL2 <- c("B10K-K20P19_CMIP5_MIROC",
+                     "B10K-K20P19_CMIP5_GFDL",
+                     "B10K-K20P19_CMIP5_CESM")
+      
+    #  if(update_biascorrection){
+      # make bc indices for strata specific values:
+        tmp <- suppressMessages(makeACLIM2_BC_Indices_new(
+          bystrata  = TRUE,
+          BC_target = "mn_val",
+          sv        = NULL,
+          #sv = c("aice","Ben","Hsbl"),
+          smoothIT  = TRUE,
+          CMIP_fdlr ="K20P19_CMIP5",
+          scenIN    = c("rcp45","rcp85"),
+          hind_sim  =  "B10K-K20P19_CORECFS",
+          histLIST  = gcmcmipL2,
+          gcmcmipLIST  = gcmcmipL2,
+          usehist      = FALSE,
+          Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
+          regnm        = "ACLIMregion",
+          srvynm       = "ACLIMsurveyrep",
+          normlist_IN  = normlist,
+          sim_listIN   = sim_list[-grep("historical",sim_list)],
+          gcinfoIN     = FALSE))
+        
+        
+        # rplc_bcplot <-TRUE
+        # source("R/sub_scripts/plot_BC_stratawk.R")
+        # 
+        
+         # make bc indices for survey rep stations
+        tmp2<- suppressMessages(makeACLIM2_BC_Indices_new(
+          bystrata  = FALSE,
+          BC_target = "mn_val",
+          sv = NULL, 
+          smoothIT  = TRUE,
+          CMIP_fdlr ="K20P19_CMIP5",
+          scenIN    = c("rcp45","rcp85"),
+          hind_sim  =  "B10K-K20P19_CORECFS",
+          histLIST  = paste0(gcmcmipL,"_historical")gcmcmipL2,
+          gcmcmipLIST = gcmcmipL2,
+          usehist     = FALSE,
+          Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
+          regnm       = "ACLIMregion",
+          srvynm      = "ACLIMsurveyrep",
+          normlist_IN = normlist,
+          sim_listIN  = sim_list[-grep("historical",sim_list)],
+          gcinfoIN    = FALSE))
+    #  }
+    
+        #make ACLIM level 4 indices (annual, monthly, seasonal, weekly)
+        
+        suppressMessages(makeACLIM2_L4_Indices_strata(
+          CMIP_fdlr   = "Data/out/K20P19_CMIP5",
+          CMIP        = "CMIP5",
+          scenIN    = c("rcp45","rcp85"),
+          hind_sim    = "B10K-K20P19_CORECFS",
+          gcmcmipLIST = gcmcmipL,
+          subfldr     = "BC_ACLIMregion",
+          sim_listIN  = sim_list, 
+          varlistIN   = normlist$var,
+          #varlistIN   = c("aice","largeZoop_integrated"),
+          prefix      = "ACLIMregion"))
+        gc()
+        
+         suppressMessages(makeACLIM2_L4_Indices_survey(
+          CMIP_fdlr   = "Data/out/K20P19_CMIP5",
+          CMIP        = "CMIP5",
+          scenIN    = c("rcp45","rcp85"),
+          hind_sim    = "B10K-K20P19_CORECFS",
+          gcmcmipLIST = gcmcmipL,
+          subfldr     = "BC_ACLIMsurveyrep",
+          sim_listIN  = sim_list, 
+          varlistIN   = normlist$var,
+          #varlistIN   = c("aice","largeZoop_integrated"),
+          prefix      = "ACLIMsurveyrep"))
+         
+         
+         
+    # -------------------------------------------  
     # CMIP5 H16
+    # -------------------------------------------
     gcmcmipL2 <- c("B10K-H16_CMIP5_MIROC",
                    "B10K-H16_CMIP5_GFDL",
                    "B10K-H16_CMIP5_CESM") 
