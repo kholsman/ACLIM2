@@ -1,5 +1,35 @@
 #' misc functions for ACLIM2
 #' 
+date_fun <-function(x,type="yr",seasonsIN = seasons){
+  if(type=="yr")
+    return(x$year+1900)
+  if(type=="mo")
+    return(x$mon+1)
+  if(type=="jday")
+    return(x$yday+1)
+  if(type=="wk")
+    return(as.numeric(format(x, "%W"))+1)
+  if(type=="season")
+    return(seasonsIN[x$mon+1,2])
+}
+
+getgam <- function ( x =sub$wk, y = sub$mnVal_x, kin = .8,pos=FALSE){
+  df <- na.omit(data.frame(x,y))
+  nobs <- length(unique(df$x))
+  if(dim(df)[1]>2){
+    if(pos){
+      Gam   <- mgcv::gam( log(y+1e-4) ~ 1 + s(x, k=round(nobs*kin),bs= "cc"),data=df)
+      out   <- exp(as.numeric(predict(Gam, newdata=data.frame(x=x), se.fit=FALSE ))-1e-4)
+    }else{
+      Gam   <- mgcv::gam( y ~ 1 + s(x, k=round(nobs*kin),bs= "cc"),data=df)
+      out <- as.numeric(predict(Gam, newdata=data.frame(x=x), se.fit=FALSE ))
+    }
+  }else{
+    out<- y
+  }
+
+  return(out)
+}
 
 LNmean <-function(x,log_adj=1e-4,na.rm=F){
   df <- data.frame(y =x, x = 0)

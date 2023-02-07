@@ -1,132 +1,472 @@
-load("/Users/kholsman/Documents/GitHub/AK_climate_engergtics/Data/in/aggPrey.all.Rdata")
+names(cube)
+now
+colnames(cube)
+unique(cube[,2])
+now[2]
+unique(cube[,2])==now[2]
+now[2]
+now[2]+1
+unique(cube[,2])+1
+unique(cube[,2])%in%now[2]
+unique(cube[,2])[1]
+unique(cube[,2])[1]-now[2]
+which(cube[,1]==now[1]&cube[,2]==now[2]&cube[,3]==now[3]&cube[,4]==now[4]&cube[,5]=now[5])round(now[1],1)
+round(now[1],1)
+which(#
+round(cube[,1],1)==round(now[1],1)&#
+round(cube[,2],1)==round(now[2],1)&#
+round(cube[,3],1)==round(now[3],1)&#
+round(cube[,4],1)==round(now[4],1)&#
+round(cube[,5],1)=round(now[5],1))
+which(round(cube[,1],1)==round(now[1],1))
+which(#
+round(cube[,1],1)==round(now[1],1)&#
+round(cube[,2],1)==round(now[2],1)&#
+round(cube[,3],1)==round(now[3],1)&#
+round(cube[,4],1)==round(now[4],1)&#
+round(cube[,5],1)==round(now[5],1))
+which(#
+round(cube[,1],1)==round(now[1],1)&#
+round(cube[,2],1)==round(now[2],1)&#
+round(cube[,3],1)==round(now[3],1)&#
+round(cube[,4],1)==round(now[4],1))
+which(#
+round(cube[,1],0)==round(now[1],0)&#
+round(cube[,2],0)==round(now[2],0)&#
+round(cube[,3],0)==round(now[3],0)&#
+round(cube[,4],0)==round(now[4],0)&#
+round(cube[,5],0)==round(now[5],0))
+require(TMB)#
+dyn.load(dynlib("simple"))
+## Test data#
+set.seed(123)#
+y <- rep(1900:2010,each=2)#
+year <- factor(y)#
+quarter <- factor(rep(1:4,length.out=length(year)))#
+period <- factor((y > mean(y))+1)#
+## Random year+quarter effect, fixed period effect:#
+B <- model.matrix(~year+quarter-1)#
+A <- model.matrix(~period-1)#
+B <- as(B,"dgTMatrix")#
+A <- as(A,"dgTMatrix")#
+u <- rnorm(ncol(B)) ## logsdu=0#
+beta <- rnorm(ncol(A))*100#
+eps <- rnorm(nrow(B),sd=1) ## logsd0=0#
+x <- as.numeric( A %*% beta + B %*% u + eps )#
+#
+## Fit model#
+obj <- MakeADFun(data=list(x=x, B=B, A=A),#
+                 parameters=list(u=u*0, beta=beta*0, logsdu=1, logsd0=1),#
+                 random="u",#
+                 DLL="simple",#
+                 silent=TRUE#
+                 )#
+opt <- nlminb(obj$par, obj$fn, obj$gr)
+devtools::install_github("james-thorson/FishStatsUtils", ref="development")
+devtools::install_github("james-thorson/VAST", ref="development")
+library(testthat)
+library(VAST)
+devtools::install_github("james-thorson/VAST", ref="development")
+library(VAST)
+devtools::install_github("james-thorson/VAST", ref="development")
+devtools::install_github("james-thorson/VAST")
+install.packages('TMB', type = 'source')
+library(TMB)
+devtools::install_github("james-thorson/VAST")
+library(VAST)
+install_github("james-thorson/VAST", INSTALL_opts="--no-staged-install")
+install.packages("devtools")#
+library("devtools")
+install_github("james-thorson/VAST", INSTALL_opts="--no-staged-install")#
+# Load package#
+library(VAST)
+# Install and load devtools package#
+install.packages("devtools")#
+library("devtools")
+library("devtools")
+install.packages("digest")
+devtools::install_github("hadley/devtools")
+library(digest)
+devtools::install_github("hadley/devtools")
+library(processx)
+install.package(processx)
+install.packages("processx")
+uninstall.R()
+library(devtools)
+library(NRG)
+# Install package#
+install_github("james-thorson/VAST", INSTALL_opts="--no-staged-install")#
+# Load package#
+library(VAST)
+library(VAST)
+install.package("VAST")
+library(INLA)
+library(TMB)
+install.packages('TMB', type = 'source')
+install.packages("TMB")
+library(TMB)#
+## Optionally:#
+## precompile()#
+runExample(all=TRUE)
+library(shiny)#
+library(dygraphs)#
+library(httr)#
+library(RCurl)#
+library(ggplot2)#
+library(dplyr)#
+library(dygraphs)#
+library(xts) # To make the convertion data-frame / xts format
+input<-list()#
+  input$county<-"Washington : King"#
+  input$state<-"Idaho"#
+  input$dateoffsetIN=12#
+  input$lwr = 0.96#
+  input$upr = 1.6#
+  input$ylimmIN=c(.96,1.6)#
+  input$reflines1=4#
+  input$reflines2=7#
+  input$reflines3=14#
+  input$showrid =FALSE
+convert_to_daily_ts <- function(x,y,n){#
+  A <- as.numeric(format(x[1],"%Y"))#
+  a <- as.numeric(format(x[1],"%j"))#
+  B <- as.numeric(format(x[n],"%Y"))#
+  b <- as.numeric(format(x[n],"%j"))#
+  AA <- as.numeric(x[1])#
+  BB <- as.numeric(x[n])#
+  #ts(y, start = c(A,a), end = c(B,b), frequency = 365)#
+  y_ts<- ts(y, start = AA, end = BB, frequency = 1)#
+  return(y_ts)#
+}#
+#
+getReff<-function(datIN=sub,days=7,unit="deaths"){#
+  #dat  <-  ts(data.frame(date=datIN$date,datIN[unit]))#
+  dat  <-  (data.frame(date=datIN$date,datIN[unit]))#
+  n    <-  dim(dat)[1]#
+  days:n#
+  lnslope  <- slope  <- rep(NA,n)#
+  for(d in days:n){#
+    tt          <-  ((d-days)+1):d#
+    tmp         <-  dat[tt,]#
+    if(any(tmp[,2]==0))#
+      tmp[,2][tmp[,2]==0]<-NA#
+    if(!any(is.na(tmp[,2]))){#
+      lmm         <-  lm(log(tmp[,2])~tt)#
+      lnslope[d]  <-  (as.numeric(coef(lmm)[2]))#
+      slope[d]    <-  exp(lnslope[d])#
+    }else{#
+      lnslope[d]  <-  slope[d]    <-  NA#
+    }#
+  }#
+  return(slope)#
+}#
+#
+# pre-code:#
+  url          <- "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"#
+  csv          <- read.csv(text=getURL(url), skip=0, header=T)#
+  csv$label    <- paste(csv$state,":",csv$county)#
+  lab_counties <- as_tibble(csv)%>%#
+    group_by(state,county,label)%>%#
+    summarise(count=length(county))#
+#
+start_lab <- lab_counties[which(lab_counties$county=="King"&lab_counties$state=="Washington"),]
+start_lab
+start_lab <- data.frame(lab_counties[which(lab_counties$county=="King"&lab_counties$state=="Washington"),])
+start_lab
+countyIN <-lab_counties[lab_counties$label==input$county,]$county#
+    stateIN  <- input$state#
+    sub          <- csv[csv$label==input$county,]#
+    sub$date     <- as.Date(sub$date)#
+    sub_state      <- csv[csv$state==input$state,]#
+    sub_state$date <- as.Date(sub_state$date)
+head(sub)
+head(state)
+head(sub_state)
+state<-as_tibble(sub_state)%>%#
+      group_by(date,state)%>%#
+      summarize(cases=sum(cases),deaths=sum(deaths))
+head(state)
+sub            <- csv[csv$label==input$county,]#
+    sub$date       <- as.Date(sub$date)#
+    sub_state      <- csv[csv$state==input$state,]#
+    sub_state$date <- as.Date(sub_state$date)#
+    state          <- as_tibble(sub_state)%>%#
+      group_by(date,state)%>%#
+      summarize(cases=sum(cases),deaths=sum(deaths))#
+    sub$Reff_deaths    <-  getReff(unit="deaths",datIN=sub,days=input$dateoffsetIN)#
+    sub$Reff_cases     <-  getReff(unit="cases",datIN=sub,days=input$dateoffsetIN)#
+    state$Reff_deaths  <-  getReff(unit="deaths",datIN=state,days=input$dateoffsetIN)#
+    state$Reff_cases   <-  getReff(unit="cases",datIN=state,days=input$dateoffsetIN)#
+    # eval(parse(text=paste0("sub$'doubling every ",input$reflines1," days'<- exp((log(100)-log(50))/(",input$reflines1,"))")))#
+    # eval(parse(text=paste0("sub$'... ",input$reflines2," days'<- exp((log(100)-log(50))/(",input$reflines2,"))")))#
+    # eval(parse(text=paste0("sub$'... ",input$reflines3," days'<- exp((log(100)-log(50))/(",input$reflines3,"))")))#
+    lab<-c(paste0("doubling every ",input$reflines1," days"),#
+           paste0("... ",input$reflines2," days"),#
+           paste0("... ",input$reflines3," days"))#
+    exp((log(100)-log(50))/(input$reflines1))#
+    sub$lab1<-paste("R_e: deaths; doubling every",round((log(100)-log(50))/log(sub$Reff_deaths)),"days")#
+    sub$lab2<-paste("R_e: deaths; doubling every",round((log(100)-log(50))/log(sub$Reff_cases) ),"days")#
+    ref<- c(exp((log(100)-log(50))/(input$reflines1)),#
+          exp((log(100)-log(50))/(input$reflines2)),#
+          exp((log(100)-log(50))/(input$reflines3)))#
+    # Then you can create the xts format, and thus use dygraph#
+    plotdat1 <- xts(x =   sub[,c("Reff_deaths","Reff_cases")], order.by = sub$date)#
+    plotdat2 <- xts(x = state[,c("Reff_deaths","Reff_cases")], order.by = state$date)
+head(plotdat1)
+head(plotdat2)
+head(state)
+head(sub)
+input$state = "Washington"
+sub            <- csv[csv$label==input$county,]#
+    sub$date       <- as.Date(sub$date)#
+    sub_state      <- csv[csv$state==input$state,]#
+    sub_state$date <- as.Date(sub_state$date)#
+    state          <- as_tibble(sub_state)%>%#
+      group_by(date,state)%>%#
+      summarize(cases=sum(cases),deaths=sum(deaths))#
+    sub$Reff_deaths    <-  getReff(unit="deaths",datIN=sub,days=input$dateoffsetIN)#
+    sub$Reff_cases     <-  getReff(unit="cases",datIN=sub,days=input$dateoffsetIN)#
+    state$Reff_deaths  <-  getReff(unit="deaths",datIN=state,days=input$dateoffsetIN)#
+    state$Reff_cases   <-  getReff(unit="cases",datIN=state,days=input$dateoffsetIN)#
+    # eval(parse(text=paste0("sub$'doubling every ",input$reflines1," days'<- exp((log(100)-log(50))/(",input$reflines1,"))")))#
+    # eval(parse(text=paste0("sub$'... ",input$reflines2," days'<- exp((log(100)-log(50))/(",input$reflines2,"))")))#
+    # eval(parse(text=paste0("sub$'... ",input$reflines3," days'<- exp((log(100)-log(50))/(",input$reflines3,"))")))#
+    lab<-c(paste0("doubling every ",input$reflines1," days"),#
+           paste0("... ",input$reflines2," days"),#
+           paste0("... ",input$reflines3," days"))#
+    exp((log(100)-log(50))/(input$reflines1))#
+    sub$lab1<-paste("R_e: deaths; doubling every",round((log(100)-log(50))/log(sub$Reff_deaths)),"days")#
+    sub$lab2<-paste("R_e: deaths; doubling every",round((log(100)-log(50))/log(sub$Reff_cases) ),"days")#
+    ref<- c(exp((log(100)-log(50))/(input$reflines1)),#
+          exp((log(100)-log(50))/(input$reflines2)),#
+          exp((log(100)-log(50))/(input$reflines3)))#
+    # Then you can create the xts format, and thus use dygraph#
+    plotdat1 <- xts(x =   sub[,c("Reff_deaths","Reff_cases")], order.by = sub$date)#
+    plotdat2 <- xts(x = state[,c("Reff_deaths","Reff_cases")], order.by = state$date)
+head(state)
+head(sub)
+head(csv)
+which(csv$county=="King")
+csv[cc,]
+cc<-which(csv$county=="King")
+csv[cc,]
+sub
+url          <- "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"#
+csv          <- read.csv(text=getURL(url), skip=0, header=T)
+cc<-which(csv$county=="King")
+csv[cc,]
+sub            <- csv[csv$label==input$county,]#
+    sub$date       <- as.Date(sub$date)#
+    sub_state      <- csv[csv$state==input$state,]#
+    sub_state$date <- as.Date(sub_state$date)#
+    state          <- as_tibble(sub_state)%>%#
+      group_by(date,state)%>%#
+      summarize(cases=sum(cases),deaths=sum(deaths))#
+    sub$Reff_deaths    <-  getReff(unit="deaths",datIN=sub,days=input$dateoffsetIN)#
+    sub$Reff_cases     <-  getReff(unit="cases",datIN=sub,days=input$dateoffsetIN)#
+    state$Reff_deaths  <-  getReff(unit="deaths",datIN=state,days=input$dateoffsetIN)#
+    state$Reff_cases   <-  getReff(unit="cases",datIN=state,days=input$dateoffsetIN)
+url          <- "https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv"#
+csv          <- read.csv(text=getURL(url), skip=0, header=T)#
+csv$label    <- paste(csv$state,":",csv$county)#
+lab_counties <- as_tibble(csv)%>%#
+  group_by(state,county,label)%>%#
+  summarise(count=length(county))#
+start_lab <- lab_counties[which(lab_counties$county=="King"&lab_counties$state=="Washington"),]
+sub            <- csv[csv$label==input$county,]#
+    sub$date       <- as.Date(sub$date)#
+    sub_state      <- csv[csv$state==input$state,]#
+    sub_state$date <- as.Date(sub_state$date)#
+    state          <- as_tibble(sub_state)%>%#
+      group_by(date,state)%>%#
+      summarize(cases=sum(cases),deaths=sum(deaths))#
+    sub$Reff_deaths    <-  getReff(unit="deaths",datIN=sub,days=input$dateoffsetIN)#
+    sub$Reff_cases     <-  getReff(unit="cases",datIN=sub,days=input$dateoffsetIN)#
+    state$Reff_deaths  <-  getReff(unit="deaths",datIN=state,days=input$dateoffsetIN)#
+    state$Reff_cases   <-  getReff(unit="cases",datIN=state,days=input$dateoffsetIN)
+plot(sub$Reff_deaths)
+days<-1
+datIN=sub
+unit=
+"deaths"
+dat  <-  (data.frame(date=datIN$date,datIN[unit]))#
+  n    <-  dim(dat)[1]#
+  lnslope  <- slope  <- rep(NA,n)
+days
+n
+for(d in days:n){#
+    tt          <-  ((d-days)+1):d#
+    tmp         <-  dat[tt,]#
+    if(any(tmp[,2]==0))#
+      tmp[,2][tmp[,2]==0]<-NA#
+    if(!any(is.na(tmp[,2]))){#
+      lmm         <-  lm(log(tmp[,2])~tt)#
+      lnslope[d]  <-  (as.numeric(coef(lmm)[2]))#
+      slope[d]    <-  exp(lnslope[d])#
+    }else{#
+      lnslope[d]  <-  slope[d]    <-  NA#
+    }#
+  }
+lnslope
+slope
+d<-1
+tt          <-  ((d-days)+1):d#
+    tmp         <-  dat[tt,]
+tt
+tmp
+((d-days)+1):d
+order(unique(csv$state))
+sort(unique(csv$state))
+load("/Users/kholsman/Documents/D_AFSC_Files/AFSC_data/01_SRVY_AFSC_data_all/Newest/Out_SMRY_QRYS/Biom_weighted/ebs/plk/ebs_plk_c_ED_BYstation_bin.Rdata")
 ls()
-head(agg.prey)
-rm(list=ls)
-rm(list=ls()()
-)
+rm(liast=ls())
+"/Users/kholsman/Documents/D_AFSC_Files/AFSC_data/01_SRVY_AFSC_data_all/Newest/Out_SMRY_QRYS/Biom_weighted/ebs/plk/ebs_plk_c_ED_NEBS_BYstation_bin.Rdata"
+ls()
+load("/Users/kholsman/Documents/D_AFSC_Files/AFSC_data/01_SRVY_AFSC_data_all/Newest/Out_SMRY_QRYS/Biom_weighted/annual_mn/BS_c_ED_annual_mn.Rdata")
+ls()
+load("/Users/kholsman/Documents/D_AFSC_Files/AFSC_data/01_SRVY_AFSC_data_all/Newest/Out_SMRY_QRYS/Biom_weighted/c_USE/BS_c_ED.Rdata")
+ls()
+names(BS_c_USE)
+BS_c_USE[BS_c_USE$R_ggd==Inf,]
+BS_c_USE[BS_c_USE$R_ggd==Inf,1:10]
+head(BS_c_USE[BS_c_USE$R_ggd==Inf,1:10])
+heaD(BS_c_USE)
+head(BS_c_USE)
+which(R_ggd==Inf)
+which(BS_c_USE$R_ggd==Inf)
+BS_c_USE[which(BS_c_USE$R_ggd==Inf),]
+ddd<-BS_c_USE[which(BS_c_USE$R_ggd==Inf),]
+i<-1
+load("/Users/kholsman/Documents/D_AFSC_Files/AFSC_data/01_SRVY_AFSC_data_all/Newest/Out_SMRY_QRYS/Biom_weighted/c_USE/BS_c_ED.Rdata")dd
+dd$Obs
+ddd$Obs
+ddd$totK
+ddd$totJ
+ddd$tot_C_J_gpred
+BS_c_USE[which(BS_c_USE$W_use==0),]
+load("/Users/kholsman/GitHub_new/EBM_Holsman_NatComm/data/out/EBM_ceattlenew.Rdata")
+ls()
+C_thresh_13_1
+load("/Users/kholsman/GitHub_new/EBM_Holsman_NatComm/data/out/multispp_simulations.Rdata")
+dat_2_5_12
+load("/Users/kholsman/GitHub_new/EBM_Holsman_NatComm/data/out/risk.Rdata")
+ls()
+risk12
+load("/Users/kholsman/GitHub_new/EBM_Holsman_NatComm/data/in/raw/covariates.Rdata")
+ls()
 rm(list=ls())
-# Load CPUE data:#
-load("/Volumes/LaCie/01_SRVY_AFSC_data_all/Newest/cpue_data/plk.cpue.ebs.Rdata")#
-#
-# Load agg.prey ED data:#
-load("/Volumes/LaCie/01_SRVY_AFSC_data_all/Newest/Out_SMRY_QRYS/Agg_files/WALLEYE POLLOCK_BS_byPred_agg.preyED.Rdata")
+load("/Users/kholsman/GitHub_new/EBM_Holsman_NatComm/data/in/raw/covariates.Rdata")
+head(covariates)
+write.csv(covariates,file="/Users/kholsman/GitHub_new/EBM_Holsman_NatComm/data/in/raw/covariates.csv",sep=",")
+devtools::install_github("ropensci/rfigshare")
+require(rfigshare)
+fs_author_search("Boettiger")
+"/Users/kholsman/GitHub_new/EBM_Holsman_NatComm"
+fs_author_search("Boettiger")
+600/400
+(600-400)/400
+15000/5000
+log(.2,base=10)
+10^( log(.2,base=10))
+10^(-.080)
+(10^(-.080))/9
+((10^(-.080))/9)*100
+10^0
+1-(10^-0.08)
+(1-(10^-0.08))/9
+((1-(10^-0.08))/9)*100
+10^-.2
+(10^-.2)/9
+(10^-.2)*100/9
+10^-.08
+10^-.2
+10^-.1
+10^0
+79/.95
+69800*.95
+66310-54000
+890-660
+.8*(890-660)
+4100/11500
+library("mgcv")require("nlme")dum <- rep(1,18)b1 <- gam(travel ~ s(Rail, bs="re", by=dum), data=Rail, method="REML")b2 <- gam(travel ~ s(Rail, bs="re"), data=Rail, method="REML")head(predict(b1, newdata = cbind(Rail, dum = dum))) # ranefs onhead(predict(b1, newdata = cbind(Rail, dum = 0))) # ranefs offhead(predict(b2, newdata = Rail, exclude = "s(Rail)")) # ranefs off, no dummy
+library("mgcv")
+require("nlme")
+dum <- rep(1,18)b1 <- gam(travel ~ s(Rail, bs="re", by=dum), data=Rail, method="REML")b2 <- gam(travel ~ s(Rail, bs="re"), data=Rail, method="REML")
+dum <- rep(1,18)
+b1 <- gam(travel ~ s(Rail, bs="re", by=dum), data=Rail, method="REML")
+b2 <- gam(travel ~ s(Rail, bs="re"), data=Rail, method="REML")
+head(predict(b1, newdata = cbind(Rail, dum = dum))) # ranefs on
+head(predict(b1, newdata = cbind(Rail, dum = 0))) # ranefs off
+head(predict(b2, newdata = Rail, exclude = "s(Rail)"))
+Rail$dum
+head(Rail)
+dum
+.9*124
+111+15
+967.54-480
+817-557
+713-557
+156+487
+42*9.5
+14.5*42
+7.5*42
+480+557
+967.54+713.74
+967.54+315
+1282-1037
+620+967.54
+1587-1037
+load("/Users/kholsman/GitHub_new/ACLIM2/Data/in/Newest/Rdata/grid_list.Rdata")
 ls()
-? suppressMessages
-2521.70/2
-.05*.4
-alpha <- .2
-Sratio = 1
-(1-alpha)/(1-alpha)
-bratio = 1
-(bratio-alpha)/(1-alpha)
-bratio <-0.05
-alpha <- .05
-(bratio-alpha)/(1-alpha)
-bratio <-1
-(bratio-alpha)/(1-alpha)
-w<-2;x<-5;y<-8;z<-3; x^2+2*y/2*w+3*z
-~/Downloads/catchfunction-1.6.0/R/sysdata.rda
-load("/Users/kholsman/Downloads/catchfunction-1.6.0/R/sysdata.rda")
+head(* grid_list)
+head(grid_list)
+names(grid_list)
+grid_list$stations
+head(grid_list$stations)
+names(grid_list)
+head(grid_list$strata_list)
+head(grid_list$survey)
+unique(grid_list$survey)
+unique(unlist(grid_list$survey))
+names(grid_list)
+head(grid_list$stations)
+unique(grid_list$stations$Stratum)
+head(grid_list$tmpgrid)
+head(grid_list$sub_ROMS2)
+head(grid_list$grid)
+names(grid_list$grid)
+head(grid_list$grid$survey)
+names(grid_list$grid)
+unique(grid_list$grid$survey)
+unique(unlist(grid_list$grid$survey))
+unique(as.vector(grid_list$grid$survey))
+head(grid_list$stations)
 ls()
-CATCH.AVG.BS
-mean.BS.AI.ABCs
-tac_BOTHBIND_FLATSUR_sur
+load("/Users/kholsman/GitHub_new/ACLIM2/Data/in/Newest/Rdata/B10K-K20_CORECFS/Level3/ACLIMsurveyrep_B10K-K20_CORECFS.Rdata")
 ls()
-install.packages('rsconnect')
-library(rsconnect)
-rsconnect::setAccountInfo(name='kkh2022',#
-			  token='682C7F32198278E1B49C46C21450CD80',#
-			  secret='<SECRET>')
-? rsconnect
-rsconnect::deployments()
-rsconnect::accountInfo()
-rsconnect::accountInfo("kkh2022")
-rsconnect::accountInfo("KKH2022")
-rsconnect::accountInfo(name="kkh2022")
-rsconnect::accountInfo(name="kholsman")
-library(rsconnect)#
-rsconnect::deployApp('/Users/kholsman/Documents/GitHub/Covid_shiny')
-rsconnect::setAccountInfo(name='kkh2022', token='682C7F32198278E1B49C46C21450CD80', secret='Kxg2WZh8Vmwbd+p0x9trDUHpU3b8sYb71JvLmRx8')
-library(rsconnect)#
-rsconnect::deployApp('/Users/kholsman/Documents/GitHub/Covid_shiny')
-load("/Users/kholsman/Documents/GitHub/futR/data/in/NPZcov.Rdata")
-ls()
-head(NPZcov)
-load("/Users/kholsman/Documents/GitHub/futR/data/in/rec_dat.Rdata")
-ls()
-head(rec_dat)
-write.csv(rec_dat[[1]],"/Users/kholsman/Documents/GitHub/futR/data/in/rec_dat.csv")
-write.csv(NPZcov,"/Users/kholsman/Documents/GitHub/futR/data/in/NPZcov.csv")
-setwd("Documents/GitHub/ACLIM2")#
-    tmstp  <- format(Sys.time(), "%Y_%m_%d")#
-    main   <- getwd()  #"~/GitHub_new/ACLIM2"#
-    # loads packages, data, setup, etc.#
-    suppressMessages(source("R/make.R"))#
-    tmstamp1  <- format(Sys.time(), "%Y%m%d")#
-    # tmstamp1  <- "20220428"#
-    update_hind  <- TRUE   # set to true to update hind and hindS; needed annually#
-    update_proj  <- TRUE   # set to true to update fut; not needed#
-    update_hist  <- TRUE   # set to true to update fut; not needed#
-    # the reference years for bias correcting in R/setup.R#
-    ref_years #
-    # the year to z-score scale / delta in R/setup.R#
-    deltayrs #
-    # remove these variables:#
-    vl <- srvy_vars[!srvy_vars%in%c("station_id","latitude",#
-                                    "longitude","stratum","doy",#
-                                  "Iron_bottom5m","Iron_integrated",#
-                                  "Iron_surface5m","prod_Eup_integrated",#
-                                  "prod_NCa_integrated")]#
-#
-    # Identify which variables would be normally #
-    # distributed (i.e., can have negative values)#
-     normvl <- c("shflux","ssflux","temp_bottom5m",#
-      "temp_integrated","temp_surface5m",#
-      "uEast_bottom5m","uEast_surface5m",#
-      "vNorth_bottom5m","vNorth_surface5m")#
-#
-    normlist <- data.frame(var = vl, lognorm = TRUE)#
-    normlist$lognorm[normlist$var%in%normvl] <- FALSE#
-    # generate indices and bias corrected projections #
-    # This takes approx 30 mins to run completely#
-    gcmcmipL <- c("B10K-K20P19_CMIP6_miroc",#
-                  "B10K-K20P19_CMIP6_gfdl",#
-                  "B10K-K20P19_CMIP6_cesm")
-CMIP6_Indices <- suppressMessages(#
-                        makeACLIM2_Indices(#
-                        BC_target = "mn_val",#
-                        hind_sim  =  "B10K-K20_CORECFS",#
-                        histLIST  = paste0(gcmcmipL,"_historical"),#
-                        gcmcmipLIST = gcmcmipL,#
-                        sim_listIN = sim_list[-grep("historical",sim_list)]))#
-    save_indices(flIN = CMIP6_Indices, #
-                 subfl = "allEBS_means",#
-                 post_txt = "_mn",#
-                 CMIP_fdlr ="K20P19_CMIP6")#
-#
-    # CMIP5 K20P19#
-    gcmcmipL2 <- c("B10K-K20P19_CMIP5_MIROC","B10K-K20P19_CMIP5_GFDL","B10K-K20P19_CMIP5_CESM") #
-    CMIP5_K20_Indices <- suppressMessages(#
-                        makeACLIM2_Indices(#
-                        BC_target = "mn_val",#
-                        hind_sim  =  "B10K-K20_CORECFS",#
-                        histLIST  = paste0(gcmcmipL,"_historical"),#
-                        gcmcmipLIST = gcmcmipL2,#
-                        sim_listIN = sim_list[-grep("historical",sim_list)]))#
-    save_indices(flIN = CMIP5_K20_Indices, #
-                 subfl = "allEBS_means",#
-                 post_txt = "_mn",#
-                 CMIP_fdlr ="K20P19_CMIP5")#
-    # CMIP5 H16#
-    gcmcmipL2 <- c("B10K-H16_CMIP5_MIROC","B10K-H16_CMIP5_GFDL","B10K-H16_CMIP5_CESM") #
-    CMIP5_H16_Indices <- suppressMessages(#
-                        makeACLIM2_Indices(#
-                        BC_target = "mn_val",#
-                        hind_sim  =  "B10K-H16_CORECFS",#
-                        histLIST  = rep("B10K-H16_CORECFS",3),#
-                        gcmcmipLIST = gcmcmipL2,#
-                        sim_listIN = sim_list[-grep("historical",sim_list)]))#
-    save_indices(flIN = CMIP5_H16_Indices, #
-                 subfl = "allEBS_means",#
-                 post_txt = "_mn",#
-                 CMIP_fdlr ="H16_CMIP5")
+devtools::install_github("r-spatial/sf", configure.args="--with-proj-lib=/usr/local/lib/")
+devtools::install_github("r-spatial/stars", configure.args="--with-proj-lib=/usr/local/lib/")
+library(stars)
+setwd("/Volumes/LaCie/GitHub_cloud/ACLIM2")    # loads packages, data, setup, etc.#
+    tmstp       <- "2022_10_17"    update_biascorrection <- FALSE    suppressMessages(source("R/make.R"))    tmstp       <- "2022_10_17"    Rdata_path  <- paste0("../../romsnpz/",tmstp,"_Rdata")    main        <- getwd()  #"~/GitHub_new/ACLIM2"    tmstamp1    <- format(Sys.time(), "%Y%m%d")    # tmstamp1  <- "20220428"#
+    update_hind  <- TRUE   # set to true to update hind and hindS; needed annually    update_proj  <- TRUE   # set to true to update fut; not needed    update_hist  <- TRUE   # set to true to update fut; not needed#
+    # the reference years for bias correcting in R/setup.R    ref_years     # the year to z-score scale / delta in R/setup.R    deltayrs     data_path#
+    #load(file.path(Rdata_path,"../weekly_vars_C.Rdata"))    load(file.path(Rdata_path,"weekly_vars.Rdata"))    #load(file.path(Rdata_path,"../srvy_vars_C.Rdata"))    load(file.path(Rdata_path,"srvy_vars.Rdata"))#
+    load(file.path(Rdata_path,"l3srvy_varlist.Rdata"))    load(file.path(Rdata_path,"l3wk_varlist.Rdata"))    load(file.path(Rdata_path,"l3srvy_varlist_H16.Rdata"))    load(file.path(Rdata_path,"l3wk_varlist_H16.Rdata"))#
+    load(file.path(Rdata_path,"l2_vars.Rdata"))#
+    vl1   <- l3srvy_varlist #srvy_vars[!srvy_vars%in%rm_var_list]    vl2   <- l3wk_varlist# weekly_vars[!weekly_vars%in%rm_wk_list]#
+    # add in largeZoop (gets generated in make_indices_region_new.R)    vl <- c(unique(c(vl1,vl2)),"largeZoop_integrated")#
+    # Identify which variables would be normally     # distributed (i.e., can have negative values)     normvl <- c( vl[grep("pH",vl)],                  vl[grep("temp",vl)],                   vl[grep("Ben",vl)],                   vl[grep("Hsbl",vl)],                   vl[grep("shflux",vl)],                   vl[grep("ssflux",vl)],                  vl[grep("vNorth",vl)],                  vl[grep("uEast",vl)])    normlist <- data.frame(var = vl, lognorm = "log")    normlist$lognorm[normlist$var%in%normvl]   <- "none"     normlist$lognorm[normlist$var%in%                       c( vl[grep("aice",vl)],                          vl[grep("fracbelow0",vl)],                          vl[grep("fracbelow1",vl)],                         vl[grep("fracbelow2",vl)])]  <- "logit"
+normlist
+# distributed (i.e., can have negative values)     normvl <- c( vl[grep("pH",vl)],                  vl[grep("temp",vl)],                   vl[grep("Ben",vl)],                   vl[grep("Hsbl",vl)],                   vl[grep("shflux",vl)],                   vl[grep("ssflux",vl)],                  vl[grep("vNorth",vl)],                  vl[grep("uEast",vl)])    normlist <- data.frame(var = vl, lognorm = "log")
+normlist
+normlist <- data.frame(var = vl, lognorm = "log",stringsAsFactors = F)    normlist$lognorm[normlist$var%in%normvl]   <- "none"     normlist$lognorm[normlist$var%in%                       c( vl[grep("aice",vl)],                          vl[grep("fracbelow0",vl)],                          vl[grep("fracbelow1",vl)],                         vl[grep("fracbelow2",vl)])]  <- "logit"
+normlist
+weekly_vars <- c(weekly_vars,"largeZoop_integrated")    srvy_vars <- c(srvy_vars,"largeZoop_integrated")    save(normlist,file      = file.path(Rdata_path,"normlist.Rdata"))    write.csv(normlist,file = file.path(Rdata_path,"normlist.csv"))    save(weekly_vars,file   = "Data/out/weekly_vars.Rdata")    save(srvy_vars,file     = "Data/out/srvy_vars.Rdata")    write.csv(normlist,file = file.path("Data/out/","normlist.csv"))#
+    # generate indices and bias corrected projections     # this takes about 30 mins each    # -------------------------------------------    # CMIP6 K20P19    # -------------------------------------------
+gcmcmipL2 <- c("B10K-K20P19_CMIP5_MIROC",                     "B10K-K20P19_CMIP5_GFDL",                     "B10K-K20P19_CMIP5_CESM")
+suppressMessages(makeACLIM2_L4_Indices_strata(          CMIP_fdlr   = "Data/out/K20P19_CMIP5",          CMIP        = "CMIP5",          scenIN    = c("rcp45","rcp85"),          hind_sim    = "B10K-K20P19_CORECFS",          gcmcmipLIST = gcmcmipL2,          subfldr     = "BC_ACLIMregion",          sim_listIN  = sim_list,           varlistIN   = normlist$var,          #varlistIN   = c("aice","largeZoop_integrated"),          prefix      = "ACLIMregion"))        gc()
+library(dplyr)
+test%>%across()
+install.library(dplyr)
+install.libraries(dplyr)

@@ -79,7 +79,7 @@ makeACLIM2_L4_Indices_strata <- function(
   for( ii in 1:length(gcmcmipLIST)){
     gcmcmip <- gcmcmipLIST[ii]
     simL    <- sim_listIN[sim_listIN%in%paste0(gcmcmip,"_",rep(scenIN,1,each=length(gcmcmip)))]
-    
+    sim     <- simL[2]
     for (sim in simL){
       i <- i +1
       cat("  -- summarizing ",sim, "all EBS means\n")
@@ -111,7 +111,24 @@ makeACLIM2_L4_Indices_strata <- function(
         get_indices_fut(datIN = fut%>%filter(var%in%varlistIN),
                         qry_dateIN = qry_date,
                         group_byIN =c("var", "units","sim","basin","type","sim_type","lognorm","qry_date","sf") )
-    
+
+# fut%>%filter(year %in%2024,basin=="SEBS",mo==12,
+#               var=="largeZoop_integrated",sim=="ACLIMregion_B10K-K20P19_CMIP6_cesm_ssp585")%>%
+#   select(year,val_raw,val_delta,val_biascorrected,
+#          sf_wk,mnVal_hist,mnVal_hind,val_biascorrectedyr,val_biascorrectedmo)
+
+      # ACLIM_fut$seasonal%>%filter(year%in%2024,
+      #                       var=="largeZoop_integrated",sim=="ACLIMregion_B10K-K20P19_CMIP6_cesm_ssp585")%>%
+      #   select(basin,year,mn_val,sd_val,total_area_km2,val_biascorrected,
+      #    sf_wk,mnVal_hist,mnVal_hind,val_biascorrectedyr,val_biascorrectedmo)
+      # ACLIM_fut$monthly%>%filter(year%in%2024,basin=="SEBS",
+      #                             var=="largeZoop_integrated",sim=="ACLIMregion_B10K-K20P19_CMIP6_cesm_ssp585")%>%
+      #   select(basin,year,mn_val,sd_val,total_area_km2,val_biascorrected,
+      #          sf_wk,mnVal_hist,mnVal_hind,val_biascorrectedyr,val_biascorrectedmo)
+      # ACLIM_fut$weekly%>%filter(year%in%2024,basin=="SEBS",mo==12,
+      #                            var=="largeZoop_integrated",sim=="ACLIMregion_B10K-K20P19_CMIP6_cesm_ssp585")%>%
+      #   select(basin,year,mn_val,total_area_km2,val_biascorrected,
+      #          sf_wk,mnVal_hist,mnVal_hind,val_biascorrectedyr,val_biascorrectedmo)
        if(i==1){
         ACLIM_annual_hist   <- ACLIM_hist$annual%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
         ACLIM_seasonal_hist <- ACLIM_hist$seasonal%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
@@ -181,7 +198,8 @@ makeACLIM2_L4_Indices_survey <- function(
     get_indices_hind_srvy(datIN = hind%>%filter(var%in%varlistIN),
                      group_byIN =c("var", "units","long_name","sim","basin","type","sim_type","lognorm","qry_date"))
   cat(" -- hind complete \n")
-  ACLIM_surveyrep_hind   <- ACLIM_hind$annual%>%dplyr::mutate(i = i,  gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=hind_sim)
+  
+  ACLIM_surveyrep_hind   <- ACLIM_hind$annual%>%dplyr::mutate(i = 0,  gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=hind_sim)
 
   fldr<-file.path(CMIP_fdlr,"allEBS_means")
   if(!dir.exists(fldr))

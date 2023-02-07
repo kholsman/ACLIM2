@@ -20,32 +20,7 @@ make_indices_srvyrep_station<-function(
                     "strata","strata_area_km2","basin","units","sim","long_name","var"),
   log_adj    = 1e-4
 ){
-  
-  date_fun <-function(x,type="yr"){
-    if(type=="yr")
-      return(x$year+1900)
-    if(type=="mo")
-      return(x$mon+1)
-    if(type=="jday")
-      return(x$yday+1)
-    if(type=="wk")
-      return(as.numeric(format(x, "%W"))+1)
-    if(type=="season")
-      return(seasonsIN[x$mon+1,2])
-  }
-  
-  getgam <- function ( x =sub$wk, y = sub$mnVal_x, kin = .8){
-    df <- na.omit(data.frame(x,y))
-    nobs <- length(unique(df$x))
-    if(dim(df)[1]>2){
-      Gam   <- mgcv::gam( y ~ 1 + s(x, k=round(nobs*kin),bs= "cc"),data=df)
-      out <- as.numeric(predict(Gam, newdata=data.frame(x=x), se.fit=FALSE ))
-    }else{
-      out<- y
-    }
-    
-    return(out)
-  }
+
   var_defUSE <-srvy_var_def
   
   
@@ -122,9 +97,13 @@ make_indices_srvyrep_station<-function(
   }
   if(any(datIN$lognorm=="logit")){
     myfun <- function(x){
-      x <- logit(x)
-      if(any(x==-Inf&!is.na(x))) x[x==-Inf&!is.na(x)] <- logit(log_adj)
-      if(any(x==Inf&!is.na(x))) x[x==Inf&!is.na(x)] <- logit(1-log_adj)
+      # x <- logit(x)
+      # if(any(x==-Inf&!is.na(x))) x[x==-Inf&!is.na(x)] <- logit(log_adj)
+      # if(any(x==Inf&!is.na(x))) x[x==Inf&!is.na(x)] <- logit(1-log_adj)
+      # return(x)
+      if(any(x>.5&!is.na(x)))  x[x>.5&!is.na(x)]    <- logit(x[x>.5&!is.na(x)]-log_adj)
+      if(any(x<.5&!is.na(x))) x[x<.5&!is.na(x)]     <- logit(x[x<.5&!is.na(x)]+log_adj)
+      if(any(x==0.5&!is.na(x))) x[x==0.5&!is.na(x)] <- logit(x[x==0.5&!is.na(x)])
       return(x)
     }
     rr <- which(datIN$lognorm=="logit")
@@ -141,6 +120,7 @@ make_indices_srvyrep_station<-function(
   # -------------------------------------
   slevels <- unique(c(levels(datIN$stratum), unique(STRATA_AREA$STRATUM)))
   STRATA_AREAIN <-STRATA_AREAIN%>%mutate(STRATUM = factor(STRATUM, levels = slevels))
+  
   datIN <- datIN%>%
     mutate(stratum = factor(stratum, levels = slevels))%>%
     dplyr::left_join(STRATA_AREAIN%>%dplyr::select(stratum=STRATUM,strata_area_km2=AREA))%>%

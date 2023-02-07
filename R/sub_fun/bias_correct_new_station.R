@@ -70,80 +70,118 @@ bias_correct_new_station <- function(
     futIN2$val_bcstation  <-
     futIN2$val_bcstrata  <-
     futIN2$val_bcyr  <-  NA
-  subA <- subB <- subC <- NULL
+  sdfun<-function(x){
+    x[x==0]   <- 1
+    x[x==Inf] <- 1
+    x  
+  }
   
   if(!any(futIN2$lognorm%in%c("none","log","logit"))){
-    stop("bias_correct_new_station: problem with lognorm, must be 'none', 'log' or 'logit' for each var")
+    stop("bias_correct_new_strata: problem with lognorm, must be 'none', 'log' or 'logit' for each var")
   }else{
-    sdfun<-function(x){
-      x[x==0]   <- 1
-      x[x==Inf] <- 1
-      
-      x  
-    }
     
-    subA <- futIN2%>%filter(lognorm=="none")%>%mutate(
-      mnval_adj     = mn_val,
-      sf_station    = abs(  sdVal_hind/sdVal_hist),
-      sf_strata     = abs(  sdVal_hind_strata/  sdVal_hist_strata),
-      sf_yr         = abs(  sdVal_hind_yr/  sdVal_hist_yr))%>%
-      mutate_at(c("sf_station","sf_strata","sf_yr"),sdfun)%>%
-      mutate(
-      val_delta     = mnVal_hind + (( mn_val-  mnVal_hist)),
-      val_bcstation = mnVal_hind + ( sf_station*( mn_val- mnVal_hist)),
-      val_bcstrata  = mnVal_hind + ( sf_strata*( mn_val- mnVal_hist)),
-      val_bcyr      = mnVal_hind + ( sf_yr*( mn_val- mnVal_hist)))
+    subA <- futIN2%>%mutate(
+          mnval_adj     = mn_val,
+          sf_station    = abs(  sdVal_hind/sdVal_hist),
+          sf_strata     = abs(  sdVal_hind_strata/  sdVal_hist_strata),
+          sf_yr         = abs(  sdVal_hind_yr/  sdVal_hist_yr))%>%
+          mutate_at(c("sf_station","sf_strata","sf_yr"),sdfun)%>%
+          mutate(
+          val_delta     = mnVal_hind + (( mn_val-  mnVal_hist)),
+          val_bcstation = mnVal_hind + ( sf_station*( mn_val- mnVal_hist)),
+          val_bcstrata  = mnVal_hind + ( sf_strata*( mn_val- mnVal_hist)),
+          val_bcyr      = mnVal_hind + ( sf_yr*( mn_val- mnVal_hist)))
     
-    subB<- futIN2%>%filter(lognorm=="logit")%>%mutate(
-      mnval_adj     = inv.logit(mn_val)-log_adj,
-      sf_station    = abs(  sdVal_hind/  sdVal_hist),
-      sf_strata     = abs(  sdVal_hind_strata/  sdVal_hist_strata),
-      sf_yr         = abs(  sdVal_hind_yr/  sdVal_hist_yr))%>%
-      mutate_at(c("sf_station","sf_strata","sf_yr"),sdfun)%>%
-      mutate(
-      val_delta     = round(inv.logit(mnVal_hind + (( mn_val-  mnVal_hist)))-log_adj,roundn),
-      val_bcstation = round(inv.logit(mnVal_hind + ( sf_station*( mn_val- mnVal_hist)))-log_adj,roundn),
-      val_bcstrata  = round(inv.logit(mnVal_hind + ( sf_strata*( mn_val- mnVal_hist)))-log_adj,roundn),
-      val_bcyr      = round(inv.logit(mnVal_hind + ( sf_yr*( mn_val- mnVal_hist)))-log_adj,roundn))%>%
-      mutate_at(c("val_delta","val_bcstation","val_bcstrata","val_bcyr"),function(x){x[x<0]<-0;  x  })
-    
-    
-    subC<- futIN2%>%filter(lognorm=="log")%>%mutate(
-      mnval_adj     = log(mn_val)-log_adj,
-      sf_station    = abs(  sdVal_hind/  sdVal_hist),
-      sf_strata     = abs(  sdVal_hind_strata/  sdVal_hist_strata),
-      sf_yr         = abs(  sdVal_hind_yr/  sdVal_hist_yr))%>%
-      mutate_at(c("sf_station","sf_strata","sf_yr"),sdfun)%>%
-      mutate(
-      val_delta     = round(exp(mnVal_hind + (( mn_val-  mnVal_hist)))-log_adj,roundn),
-      val_bcstation = round(exp(mnVal_hind + ( sf_station*( mn_val- mnVal_hist)))-log_adj,roundn),
-      val_bcstrata  = round(exp(mnVal_hind + ( sf_strata*( mn_val- mnVal_hist)))-log_adj,roundn),
-      val_bcyr      = round(exp(mnVal_hind + ( sf_yr*( mn_val- mnVal_hist)))-log_adj,roundn))%>%
-      mutate_at(c("val_delta","val_bcstation","val_bcstrata","val_bcyr"),function(x){x[x<0]<-0;  x  })
-    
+    futout  <-  unlink_val(indat    = subA,
+                           log_adj  = log_adj,
+                           roundn   = roundn,
+                           listIN   = c("mn_val",
+                                        "mnVal_hind",
+                                        "mnVal_hist",
+                                        "val_delta",
+                                        "val_bcstation",
+                                        "val_bcstrata",
+                                        "val_bcyr"),
+                           rmlistIN = c("sdVal_hind", "seVal_hind", "sdVal_hind_strata", "sdVal_hind_yr",
+                                        "sdVal_hist", "seVal_hist", "sdVal_hist_strata", "sdVal_hist_yr",
+                                        "nVal_hist","nVal_hind"))
+    futout<-futout%>% rename(
+          val_biascorrectedstation = val_bcstation,
+          val_biascorrectedstrata = val_bcstrata,
+          val_biascorrectedyr = val_bcyr)
   }
-  futout <- rbind(subA, subB, subC)%>%
-    rename(
-      val_biascorrectedstation = val_bcstation,
-      val_biascorrectedstrata = val_bcstrata,
-      val_biascorrectedyr = val_bcyr)%>%
-    mutate(mn_val=round(mnval_adj,roundn))%>%select(-mnval_adj)
-  rm(list=c("subA","subB","subC"))
-  
-  
-  
-  
-  # hindIN2 <-  unlink_val(indat=hindIN)
-  # histIN2 <-  unlink_val(indat=histIN)
-  futout  <-  unlink_val(indat=futout,
-                         log_adj  = log_adj,
-                         roundn   = roundn,
-                         listIN = c("mnVal_hind","mnVal_hist"),
-                         rmlistIN = c("sdVal_hind", "seVal_hind", "sdVal_hind_strata", "sdVal_hind_yr",
-                                      "sdVal_hist", "seVal_hist", "sdVal_hist_strata", "sdVal_hist_yr",
-                                      "nVal_hist","nVal_hind"))
-  
-  
+  # subA <- subB <- subC <- NULL
+  # 
+  # if(!any(futIN2$lognorm%in%c("none","log","logit"))){
+  #   stop("bias_correct_new_station: problem with lognorm, must be 'none', 'log' or 'logit' for each var")
+  # }else{
+  #   sdfun<-function(x){
+  #     x[x==0]   <- 1
+  #     x[x==Inf] <- 1
+  #     
+  #     x  
+  #   }
+  #   
+  #   subA <- futIN2%>%filter(lognorm=="none")%>%mutate(
+  #     mnval_adj     = mn_val,
+  #     sf_station    = abs(  sdVal_hind/sdVal_hist),
+  #     sf_strata     = abs(  sdVal_hind_strata/  sdVal_hist_strata),
+  #     sf_yr         = abs(  sdVal_hind_yr/  sdVal_hist_yr))%>%
+  #     mutate_at(c("sf_station","sf_strata","sf_yr"),sdfun)%>%
+  #     mutate(
+  #     val_delta     = mnVal_hind + (( mn_val-  mnVal_hist)),
+  #     val_bcstation = mnVal_hind + ( sf_station*( mn_val- mnVal_hist)),
+  #     val_bcstrata  = mnVal_hind + ( sf_strata*( mn_val- mnVal_hist)),
+  #     val_bcyr      = mnVal_hind + ( sf_yr*( mn_val- mnVal_hist)))
+  #   
+  #   subB<- futIN2%>%filter(lognorm=="logit")%>%mutate(
+  #     mnval_adj     = inv.logit(mn_val)-log_adj,
+  #     sf_station    = abs(  sdVal_hind/  sdVal_hist),
+  #     sf_strata     = abs(  sdVal_hind_strata/  sdVal_hist_strata),
+  #     sf_yr         = abs(  sdVal_hind_yr/  sdVal_hist_yr))%>%
+  #     mutate_at(c("sf_station","sf_strata","sf_yr"),sdfun)%>%
+  #     mutate(
+  #     val_delta     = round(inv.logit(mnVal_hind + (( mn_val-  mnVal_hist)))-log_adj,roundn),
+  #     val_bcstation = round(inv.logit(mnVal_hind + ( sf_station*( mn_val- mnVal_hist)))-log_adj,roundn),
+  #     val_bcstrata  = round(inv.logit(mnVal_hind + ( sf_strata*( mn_val- mnVal_hist)))-log_adj,roundn),
+  #     val_bcyr      = round(inv.logit(mnVal_hind + ( sf_yr*( mn_val- mnVal_hist)))-log_adj,roundn))%>%
+  #     mutate_at(c("val_delta","val_bcstation","val_bcstrata","val_bcyr"),function(x){x[x<0]<-0;  x  })
+  #   
+  #   
+  #   subC<- futIN2%>%filter(lognorm=="log")%>%mutate(
+  #     mnval_adj     = exp(mn_val)-log_adj,
+  #     sf_station    = abs(  sdVal_hind/  sdVal_hist),
+  #     sf_strata     = abs(  sdVal_hind_strata/  sdVal_hist_strata),
+  #     sf_yr         = abs(  sdVal_hind_yr/  sdVal_hist_yr))%>%
+  #     mutate_at(c("sf_station","sf_strata","sf_yr"),sdfun)%>%
+  #     mutate(
+  #     val_delta     = round(exp(mnVal_hind + (( mn_val-  mnVal_hist)))-log_adj,roundn),
+  #     val_bcstation = round(exp(mnVal_hind + ( sf_station*( mn_val- mnVal_hist)))-log_adj,roundn),
+  #     val_bcstrata  = round(exp(mnVal_hind + ( sf_strata*( mn_val- mnVal_hist)))-log_adj,roundn),
+  #     val_bcyr      = round(exp(mnVal_hind + ( sf_yr*( mn_val- mnVal_hist)))-log_adj,roundn))%>%
+  #     mutate_at(c("val_delta","val_bcstation","val_bcstrata","val_bcyr"),function(x){x[x<0]<-0;  x  })
+  #   
+  # }
+  # futout <- rbind(subA, subB, subC)%>%
+  #   rename(
+  #     val_biascorrectedstation = val_bcstation,
+  #     val_biascorrectedstrata = val_bcstrata,
+  #     val_biascorrectedyr = val_bcyr)%>%
+  #   mutate(mn_val=round(mnval_adj,roundn))%>%select(-mnval_adj)
+  # rm(list=c("subA","subB","subC"))
+  # 
+  # 
+  # # hindIN2 <-  unlink_val(indat=hindIN)
+  # # histIN2 <-  unlink_val(indat=histIN)
+  # futout  <-  unlink_val(indat=futout,
+  #                        log_adj  = log_adj,
+  #                        roundn   = roundn,
+  #                        listIN = c("mnVal_hind","mnVal_hist"),
+  #                        rmlistIN = c("sdVal_hind", "seVal_hind", "sdVal_hind_strata", "sdVal_hind_yr",
+  #                                     "sdVal_hist", "seVal_hist", "sdVal_hist_strata", "sdVal_hist_yr",
+  #                                     "nVal_hist","nVal_hind"))
+  # 
+  # 
   if(1==10){
     ggplot(data=futout%>%filter(strata==70,year%in%c(2030:2032)))+
       geom_point(aes(x=mnjday,y=mn_val,color="mn_val"),size=1.8)+

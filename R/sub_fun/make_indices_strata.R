@@ -22,32 +22,7 @@ make_indices_strata <- function(
   log_adj    = 1e-4
 ){
   
-  date_fun <-function(x,type="yr"){
-    if(type=="yr")
-      return(x$year+1900)
-    if(type=="mo")
-      return(x$mon+1)
-    if(type=="jday")
-      return(x$yday+1)
-    if(type=="wk")
-      return(as.numeric(format(x, "%W"))+1)
-    if(type=="season")
-      return(seasonsIN[x$mon+1,2])
-  }
-  
-  getgam <- function ( x =sub$wk, y = sub$mnVal_x, kin = .8){
-    df <- na.omit(data.frame(x,y))
-    nobs <- length(unique(df$x))
-    if(dim(df)[1]>2){
-      Gam   <- mgcv::gam( y ~ 1 + s(x, k=round(nobs*kin),bs= "cc"),data=df)
-      out <- as.numeric(predict(Gam, newdata=data.frame(x=x), se.fit=FALSE ))
-    }else{
-      out<- y
-    }
-    
-    return(out)
-  }
- 
+
   var_defUSE <- (weekly_var_def)
 
   if("largeZoop_integrated"%in%svIN){
@@ -115,10 +90,16 @@ make_indices_strata <- function(
   }
   if(any(datIN$lognorm=="logit")){
     myfun <- function(x){
-     x <- logit(x)
-     if(any(x==-Inf&!is.na(x))) x[x==-Inf&!is.na(x)] <- logit(log_adj)
-     if(any(x==Inf&!is.na(x))) x[x==Inf&!is.na(x)] <- logit(1-log_adj)
+     # x <- logit(x)
+     # if(any(x==-Inf&!is.na(x))) x[x==-Inf&!is.na(x)] <- logit(log_adj)
+     # if(any(x==Inf&!is.na(x))) x[x==Inf&!is.na(x)]   <- logit(1-log_adj)
+     # return(x)
+     
+     if(any(x>.5&!is.na(x)))  x[x>.5&!is.na(x)]   <- logit(x[x>.5&!is.na(x)]-log_adj)
+     if(any(x<.5&!is.na(x))) x[x<.5&!is.na(x)]    <- logit(x[x<.5&!is.na(x)]+log_adj)
+     if(any(x==0.5&!is.na(x))) x[x==0.5&!is.na(x)]    <- logit(x[x==0.5&!is.na(x)])
      return(x)
+     
     }
     rr <- which(datIN$lognorm=="logit")
     datIN[rr,]$tmpval <- suppressWarnings(myfun(datIN[rr,]$val))
@@ -145,7 +126,7 @@ make_indices_strata <- function(
     dplyr::summarise(
       val_raw    = mean(val, na.rm=T),
       mn_val     = mean(tmpval, na.rm=T),
-      jday     = mean(jday, na.rm=T))%>%
+      jday       = mean(jday, na.rm=T))%>%
     rename(year = yr)%>%
     dplyr::mutate(
                   sim      = simIN$sim[1],
@@ -218,9 +199,9 @@ make_indices_strata <- function(
       for(bb in 1:nvar){
         
         sub <- tmp_var%>%filter(strata==tmpstrata[b],var==tmpvar[bb])
-        sub$mnVal_x   <- getgam(x =sub$wk, y = sub$mnVal_x)
-        sub$sdVal_x   <- getgam(x =sub$wk, y = sub$sdVal_x)
-        sub$seVal_x   <- getgam(x =sub$wk, y = sub$seVal_x)
+        sub$mnVal_x   <- getgam(x =sub$wk, y = sub$mnVal_x,pos=FALSE)
+        sub$sdVal_x   <- getgam(x =sub$wk, y = sub$sdVal_x,pos=TRUE)
+        sub$seVal_x   <- getgam(x =sub$wk, y = sub$seVal_x,pos=TRUE)
         
         if(1==10){
           sub <- tmp_var%>%filter(strata==tmpstrata[b],var==tmpvar[bb])

@@ -21,17 +21,24 @@ unlink_val <- function(indat,
     subA <- indat%>%filter(lognorm=="none")
    if(any(indat$lognorm=="logit")){
      
-       myfun <- function(x){
+       myfun2 <- function(x){
          
-         x <- round(inv.logit(x),6)
-         if(any(na.omit(x)==log_adj)) x[x==log_adj&!is.na(x)]<- 0
-         if(any(na.omit(x)==(1-log_adj))) x[x==(1-log_adj)&!is.na(x)]<- 1
-         x
-       }
-      
-       
+         # x <- round(inv.logit(x),6)-log_adj
+         # # if(any(na.omit(x)==log_adj)) x[x==log_adj&!is.na(x)]<- 0
+         # # if(any(na.omit(x)==(1-log_adj))) x[x==(1-log_adj)&!is.na(x)]<- 1
+         # x
+         
+           # x <- logit(x)
+           # if(any(x==-Inf&!is.na(x))) x[x==-Inf&!is.na(x)] <- logit(log_adj)
+           # if(any(x==Inf&!is.na(x))) x[x==Inf&!is.na(x)] <- logit(1-log_adj)
+           # return(x)
+           if(any(x>0&!is.na(x)))  x[x>0&!is.na(x)]   <- inv.logit(x[x>0&!is.na(x)])+log_adj
+           if(any(x<0&!is.na(x)))  x[x<0&!is.na(x)]    <- inv.logit(x[x<0&!is.na(x)])-log_adj
+           if(any(x==0&!is.na(x))) x[x==0&!is.na(x)]  <- inv.logit(x[x==0&!is.na(x)])
+           return(x)
+         }
      subB <- indat%>%filter(lognorm=="logit")%>%
-       mutate_at(all_of(listIN),function(x) myfun(x) )
+       mutate_at(all_of(listIN),function(x) myfun2(x) )
      
    }
     
@@ -46,3 +53,26 @@ unlink_val <- function(indat,
   
   return(out)
 }
+
+
+unlinkfun <- function(x,type=logit,log_adj = 1e-4,roundn=5){
+  if(type=="none")
+    x <- x
+  if(type=="logit"){
+    
+    myfun2 <- function(x){
+      
+      if(any(x>0&!is.na(x)))  x[x>0&!is.na(x)]   <- inv.logit(x[x>0&!is.na(x)])+log_adj
+      if(any(x<0&!is.na(x))) x[x<0&!is.na(x)]    <- inv.logit(x[x<0&!is.na(x)])-log_adj
+      if(any(x==0&!is.na(x))) x[x==0&!is.na(x)]  <- inv.logit(x[x==0&!is.na(x)])
+      return(x)
+    }
+    x <- myfun2(x)
+  }
+  
+  if(type=="log")
+    x<- exp(x)-log_adj 
+  return(round(x,roundn))
+}
+
+

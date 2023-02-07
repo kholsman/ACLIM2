@@ -16,4 +16,4 @@ getNE <- function(vNorth,uEast){
 
 vN<- uE<--10:10
 
-plot(uE, getNE(vNorth=vN,uEast=uE))
+#plot(uE, getNE(vNorth=vN,uEast=uE))

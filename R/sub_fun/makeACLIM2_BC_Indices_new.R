@@ -113,9 +113,9 @@ makeACLIM2_BC_Indices_new <- function(
     
     # convert logit or log trans data back
     hind  <-  unlink_val(indat=hind,
-                         log_adj =1e-4,
-                         roundn     = 5,
-                         listIN = c("mn_val","mnVal_hind"),
+                         log_adj  = 1e-4,
+                         roundn   = 5,
+                         listIN   = c("mn_val","mnVal_hind"),
                          rmlistIN = c("sdVal_hind", "seVal_hind", "sdVal_hind_strata", "sdVal_hind_yr",
                                       "nVal_hind"))
     
@@ -128,6 +128,14 @@ makeACLIM2_BC_Indices_new <- function(
     fl <- file.path("Data/out",CMIP_fdlr,paste0("BC_",subtxt))
     nm <- paste(subtxt,hind_sim,"BC_hind.Rdata",sep="_")
     save(hind,file=file.path(fl,nm))
+    nm <- paste(subtxt,hind_sim,"BC_mn_hind.Rdata",sep="_")
+    save(mn_hind,file=file.path(fl,nm))
+    
+    # if(!dir.exists(file.path("Data/out",CMIP_fdlr,"bc_mnVals")))
+    #   dir.create(file.path("Data/out",CMIP_fdlr,"bc_mnVals"))
+    # fl <- file.path("Data/out",CMIP_fdlr,"bc_mnVals")
+    # nm <- paste(subtxt,hind_sim,"BC_mnVal_hind.Rdata",sep="_")
+    # save(mn_hind,file=file.path(fl,nm))
     
     rm(list=c("hnd_srvy","hindA","hind"))
   }else{
@@ -183,6 +191,8 @@ makeACLIM2_BC_Indices_new <- function(
     fl <- file.path("Data/out",CMIP_fdlr,paste0("BC_",subtxt))
     nm <- paste(subtxt,hind_sim,"BC_hind.Rdata",sep="_")
     save(hind,file=file.path(fl,nm))
+    nm <- paste(subtxt,hind_sim,"BC_mn_hind.Rdata",sep="_")
+    save(mn_hind,file=file.path(fl,nm))
     
     rm(list=c("hnd","hindA","hind"))
     
@@ -261,6 +271,8 @@ makeACLIM2_BC_Indices_new <- function(
         fl <- file.path("Data/out",CMIP_fdlr,paste0("BC_",subtxt))
         nm <- paste(subtxt,gcmcmip,"BC_hist.Rdata",sep="_")
         save(hist,file=file.path(fl,nm))
+        nm <- paste(subtxt,gcmcmip,"BC_mn_hist.Rdata",sep="_")
+        save(mn_hist,file=file.path(fl,nm))
         
         rm(list=c("hist","histA","hist_srvy"))
         
@@ -311,6 +323,8 @@ makeACLIM2_BC_Indices_new <- function(
         fl <- file.path("Data/out",CMIP_fdlr,paste0("BC_",subtxt))
         nm <- paste(subtxt,gcmcmip,"BC_hist.Rdata",sep="_")
         save(hist,file=file.path(fl,nm))
+        nm <- paste(subtxt,gcmcmip,"BC_mn_hist.Rdata",sep="_")
+        save(mn_hist,file=file.path(fl,nm))
         
         rm(list=c("hist","histA"))
         
@@ -328,7 +342,7 @@ makeACLIM2_BC_Indices_new <- function(
     
     # Now for each projection get the index and bias correct it 
     cat("    -- making projection indices....\n")
-    sim <- simL[1]
+    sim <- simL[2]
     
     # Get Projection Indices: 
     # -------------------------
@@ -405,6 +419,8 @@ makeACLIM2_BC_Indices_new <- function(
           fl <- file.path("Data/out",CMIP_fdlr,paste0("BC_",subtxt))
           nm <- paste(subtxt,gcmcmip,"BC_hist.Rdata",sep="_")
           save(hist,file=file.path(fl,nm))
+          nm <- paste(subtxt,gcmcmip,"BC_mn_hist.Rdata",sep="_")
+          save(mn_hist,file=file.path(fl,nm))
           
           rm(list=c("hist","histA","hist_srvy"))
           
@@ -455,6 +471,8 @@ makeACLIM2_BC_Indices_new <- function(
           fl <- file.path("Data/out",CMIP_fdlr,paste0("BC_",subtxt))
           nm <- paste(subtxt,gcmcmip,"BC_hist.Rdata",sep="_")
           save(hist,file=file.path(fl,nm))
+          nm <- paste(subtxt,gcmcmip,"BC_mn_hist.Rdata",sep="_")
+          save(mn_hist,file=file.path(fl,nm))
           
           rm(list=c("hist","histA"))
           
@@ -516,6 +534,7 @@ makeACLIM2_BC_Indices_new <- function(
         projA <- suppressMessages(make_indices_strata(
           simIN = proj_wk,
           svIN = sv,
+         # svIN ="largeZoop_integrated",
           timeblockIN = c("strata","strata_area_km2",
                           "yr","season","mo","wk"),
           seasonsIN   = seasons,
@@ -529,7 +548,7 @@ makeACLIM2_BC_Indices_new <- function(
         
         mn_fut <- projA$mnDat%>%rename(
           mnVal_fut = mnVal_x,
-          sdVal_fut    = sdVal_x,
+          sdVal_fut = sdVal_x,
           nVal_fut = nVal_x,
           seVal_fut  = seVal_x,
           sdVal_fut_mo = sdVal_x_mo,
@@ -652,6 +671,8 @@ makeACLIM2_BC_Indices_new <- function(
             hist_clim  = mn_hist%>%filter(var==v),
             futIN2    = futraw%>%select(all_of(selct))%>%filter(var==v),
             normlistIN = normlist_IN,
+            group_byout = NULL,
+            roundn = 5,
             group_byIN = c("var","lognorm","basin","strata","strata_area_km2","season","mo","wk"),
             outlist    = outlistUSE, 
             ref_yrs    = ref_years,   # currently set to 1980-2013 change to 1985?

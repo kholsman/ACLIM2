@@ -14,9 +14,11 @@
     deltayrs  <- 1970:2012
     
     # Designate strata:
-    NEBS_strata <- c(70,81,82,90) #c(70,81) 
+    NEBS_strata <- c(70, 71,81,82,90) #c(70,71, 81) 
     SEBS_strata <- c(10,20,31,32,50,
                      20,41,42,43,61,62)
+    NEBS_strata <- c(70,71, 81) 
+    SEBS_strata <- c(10,20,31,32,41,42,43,50, 61,62,82,90)
     
     # set this to TRUE to "update" the indices from the original files on mox
     redownload_level3_mox  <- FALSE
