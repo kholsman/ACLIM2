@@ -192,7 +192,7 @@ if(1==10){
   i <-61
   w<-9; h<-6; dpi <-350
   w2<-6; h2<-4 
-  sclr <- 1.3
+  sclr <- 1
    for(i in 1:length(vardef$name)){
    
     lgn <- vardef[i,]$longname
