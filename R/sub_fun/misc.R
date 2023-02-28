@@ -1,5 +1,8 @@
 #' misc functions for ACLIM2
 #' 
+#' 
+length.na <- function(x){length(which(is.na(x)==FALSE))}
+
 date_fun <-function(x,type="yr",seasonsIN = seasons){
   if(type=="yr")
     return(x$year+1900)

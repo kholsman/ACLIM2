@@ -22,6 +22,7 @@
 
 makeACLIM2_L4_Indices_strata <- function(
   CMIP_fdlr = "Data/out/K20P19_CMIP6",
+  ophind = FALSE,
   CMIP      = "CMIP6",
   scenIN    = c("ssp126","ssp585"),
   hind_sim  =  "B10K-K20P19_CORECFS",
@@ -59,109 +60,121 @@ makeACLIM2_L4_Indices_strata <- function(
   gc()
   
   i <- 0
-  ACLIM_annual_hind   <- ACLIM_hind$annual%>%dplyr::mutate(i = i,  gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=hind_sim)
-  ACLIM_seasonal_hind <- ACLIM_hind$seasonal%>%dplyr::mutate(i = i,gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=hind_sim)
-  ACLIM_monthly_hind  <- ACLIM_hind$monthly%>%dplyr::mutate(i = i, gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=hind_sim)
-  ACLIM_weekly_hind   <- ACLIM_hind$weekly%>%dplyr::mutate(i = i,  gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=hind_sim)
+  ACLIM_annual_hind   <- ACLIM_hind$annual%>%dplyr::mutate(i = i,  gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=hind_sim)%>%ungroup()
+  ACLIM_seasonal_hind <- ACLIM_hind$seasonal%>%dplyr::mutate(i = i,gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=hind_sim)%>%ungroup()
+  ACLIM_monthly_hind  <- ACLIM_hind$monthly%>%dplyr::mutate(i = i, gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=hind_sim)%>%ungroup()
+  ACLIM_weekly_hind   <- ACLIM_hind$weekly%>%dplyr::mutate(i = i,  gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=hind_sim)%>%ungroup()
   #ACLIM_surveyrep_hind<- surveyrep_adj$hind%>%dplyr::mutate(i = i,gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=mod)
+  
   
   fldr<-file.path(CMIP_fdlr,"allEBS_means")
   if(!dir.exists(fldr))
     dir.create(fldr)
-  for(ss in c("annual","monthly","seasonal","weekly"))
-    eval(parse(text=paste0("save(ACLIM_",ss,"_hind, file=file.path(fldr,'ACLIM_",ss,"_hind_mn.Rdata'))")))
-  
-  for(ss in c("annual","monthly","seasonal","weekly"))
-    eval(parse(text=paste0("rm(ACLIM_",ss,"_hind)")))
+  if(!ophind){
+    for(ss in c("annual","monthly","seasonal","weekly"))
+      eval(parse(text=paste0("save(ACLIM_",ss,"_hind, file=file.path(fldr,'ACLIM_",ss,"_hind_mn.Rdata'))")))
+    
+    for(ss in c("annual","monthly","seasonal","weekly"))
+      eval(parse(text=paste0("rm(ACLIM_",ss,"_hind)")))
+  }else{
+    #operational hindcast
+    for(ss in c("annual","monthly","seasonal","weekly"))
+      eval(parse(text=paste0("save(ACLIM_",ss,"_hind, file=file.path(fldr,'ACLIM_",ss,"_operational_hind_mn.Rdata'))")))
+    
+    for(ss in c("annual","monthly","seasonal","weekly"))
+      eval(parse(text=paste0("rm(ACLIM_",ss,"_hind)")))
+  }
   
   
   i<-0
-  for( ii in 1:length(gcmcmipLIST)){
-    gcmcmip <- gcmcmipLIST[ii]
-    simL    <- sim_listIN[sim_listIN%in%paste0(gcmcmip,"_",rep(scenIN,1,each=length(gcmcmip)))]
-    sim     <- simL[2]
-    for (sim in simL){
-      i <- i +1
-      cat("  -- summarizing ",sim, "all EBS means\n")
-      
-      #sim   <- paste0("B10K-K20P19_",gcmcmip,"_historical")
-      RCP   <- rev(strsplit(sim,"_")[[1]])[1]
-      mod   <- (strsplit(sim,"_")[[1]])[1]
-      CMIP  <- strsplit(sim,"_")[[1]][2]
-      GCM   <- strsplit(sim,"_")[[1]][3]
-      
-      #historical:
-      fn   <- paste0(prefix,"_",gcmcmip,"_BC_hist.Rdata")
-      load(file.path(CMIP_fdlr,subfldr,fn))
-      
-      ACLIM_hist<-
-        get_indices_hist(datIN = hist%>%filter(var%in%varlistIN),
-                         group_byIN =c("var", "units","sim","basin","type","sim_type","lognorm","qry_date") )
-      
-      rm(hist)
-      cat("    -- hist complete\n")
-      
-      
-      #projection:
-      fn   <- paste0(prefix,"_",sim,"_BC_fut.Rdata")
-      load(file.path(CMIP_fdlr,subfldr,fn))
-      
-      
-      ACLIM_fut<-
-        get_indices_fut(datIN = fut%>%filter(var%in%varlistIN),
-                        qry_dateIN = qry_date,
-                        group_byIN =c("var", "units","sim","basin","type","sim_type","lognorm","qry_date","sf") )
-
-# fut%>%filter(year %in%2024,basin=="SEBS",mo==12,
-#               var=="largeZoop_integrated",sim=="ACLIMregion_B10K-K20P19_CMIP6_cesm_ssp585")%>%
-#   select(year,val_raw,val_delta,val_biascorrected,
-#          sf_wk,mnVal_hist,mnVal_hind,val_biascorrectedyr,val_biascorrectedmo)
-
-      # ACLIM_fut$seasonal%>%filter(year%in%2024,
-      #                       var=="largeZoop_integrated",sim=="ACLIMregion_B10K-K20P19_CMIP6_cesm_ssp585")%>%
-      #   select(basin,year,mn_val,sd_val,total_area_km2,val_biascorrected,
-      #    sf_wk,mnVal_hist,mnVal_hind,val_biascorrectedyr,val_biascorrectedmo)
-      # ACLIM_fut$monthly%>%filter(year%in%2024,basin=="SEBS",
-      #                             var=="largeZoop_integrated",sim=="ACLIMregion_B10K-K20P19_CMIP6_cesm_ssp585")%>%
-      #   select(basin,year,mn_val,sd_val,total_area_km2,val_biascorrected,
-      #          sf_wk,mnVal_hist,mnVal_hind,val_biascorrectedyr,val_biascorrectedmo)
-      # ACLIM_fut$weekly%>%filter(year%in%2024,basin=="SEBS",mo==12,
-      #                            var=="largeZoop_integrated",sim=="ACLIMregion_B10K-K20P19_CMIP6_cesm_ssp585")%>%
-      #   select(basin,year,mn_val,total_area_km2,val_biascorrected,
-      #          sf_wk,mnVal_hist,mnVal_hind,val_biascorrectedyr,val_biascorrectedmo)
-       if(i==1){
-        ACLIM_annual_hist   <- ACLIM_hist$annual%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-        ACLIM_seasonal_hist <- ACLIM_hist$seasonal%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-        ACLIM_monthly_hist  <- ACLIM_hist$monthly%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-        ACLIM_weekly_hist   <- ACLIM_hist$weekly%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-        #ACLIM_surveyrep_hist<- surveyrep_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-
-        ACLIM_annual_fut   <- ACLIM_fut$annual%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-        ACLIM_seasonal_fut <- ACLIM_fut$seasonal%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-        ACLIM_monthly_fut  <- ACLIM_fut$monthly%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-        ACLIM_weekly_fut   <- ACLIM_fut$weekly%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-        #ACLIM_surveyrep_hist<- surveyrep_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
+  if(!ophind){
+    for( ii in 1:length(gcmcmipLIST)){
+      gcmcmip <- gcmcmipLIST[ii]
+      simL    <- sim_listIN[sim_listIN%in%paste0(gcmcmip,"_",rep(scenIN,1,each=length(gcmcmip)))]
+      sim     <- simL[2]
+      for (sim in simL){
+        i <- i +1
+        cat("  -- summarizing ",sim, "all EBS means\n")
+        
+        #sim   <- paste0("B10K-K20P19_",gcmcmip,"_historical")
+        RCP   <- rev(strsplit(sim,"_")[[1]])[1]
+        mod   <- (strsplit(sim,"_")[[1]])[1]
+        CMIP  <- strsplit(sim,"_")[[1]][2]
+        GCM   <- strsplit(sim,"_")[[1]][3]
+        
+        #historical:
+        fn   <- paste0(prefix,"_",gcmcmip,"_BC_hist.Rdata")
+        load(file.path(CMIP_fdlr,subfldr,fn))
+        
+        ACLIM_hist<-
+          get_indices_hist(datIN = hist%>%filter(var%in%varlistIN),
+                           group_byIN =c("var", "units","sim","basin","type","sim_type","lognorm","qry_date") )
+        
+        rm(hist)
+        cat("    -- hist complete\n")
         
         
-      }else{
-        
-        ACLIM_annual_hist   <- rbind(ACLIM_annual_hist, ACLIM_hist$annual%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
-        ACLIM_seasonal_hist <- rbind(ACLIM_seasonal_hist,ACLIM_hist$seasonal%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
-        ACLIM_monthly_hist  <- rbind(ACLIM_monthly_hist, ACLIM_hist$monthly%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
-        ACLIM_weekly_hist   <- rbind(ACLIM_weekly_hist,ACLIM_hist$weekly%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
-        #ACLIM_surveyrep_hist<- surveyrep_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-        
-        ACLIM_annual_fut   <- rbind(ACLIM_annual_fut,ACLIM_fut$annual%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
-        ACLIM_seasonal_fut <- rbind(ACLIM_seasonal_fut,ACLIM_fut$seasonal%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
-        ACLIM_monthly_fut  <- rbind(ACLIM_monthly_fut,ACLIM_fut$monthly%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
-        ACLIM_weekly_fut   <- rbind(ACLIM_weekly_fut,ACLIM_fut$weekly%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
+        #projection:
+        fn   <- paste0(prefix,"_",sim,"_BC_fut.Rdata")
+        load(file.path(CMIP_fdlr,subfldr,fn))
         
         
-        
+        ACLIM_fut<-
+          get_indices_fut(datIN = fut%>%filter(var%in%varlistIN),
+                          qry_dateIN = qry_date,
+                          group_byIN =c("var", "units","sim","basin","type","sim_type","lognorm","qry_date","sf") )
+  
+  # fut%>%filter(year %in%2024,basin=="SEBS",mo==12,
+  #               var=="largeZoop_integrated",sim=="ACLIMregion_B10K-K20P19_CMIP6_cesm_ssp585")%>%
+  #   select(year,val_raw,val_delta,val_biascorrected,
+  #          sf_wk,mnVal_hist,mnVal_hind,val_biascorrectedyr,val_biascorrectedmo)
+  
+        # ACLIM_fut$seasonal%>%filter(year%in%2024,
+        #                       var=="largeZoop_integrated",sim=="ACLIMregion_B10K-K20P19_CMIP6_cesm_ssp585")%>%
+        #   select(basin,year,mn_val,sd_val,total_area_km2,val_biascorrected,
+        #    sf_wk,mnVal_hist,mnVal_hind,val_biascorrectedyr,val_biascorrectedmo)
+        # ACLIM_fut$monthly%>%filter(year%in%2024,basin=="SEBS",
+        #                             var=="largeZoop_integrated",sim=="ACLIMregion_B10K-K20P19_CMIP6_cesm_ssp585")%>%
+        #   select(basin,year,mn_val,sd_val,total_area_km2,val_biascorrected,
+        #          sf_wk,mnVal_hist,mnVal_hind,val_biascorrectedyr,val_biascorrectedmo)
+        # ACLIM_fut$weekly%>%filter(year%in%2024,basin=="SEBS",mo==12,
+        #                            var=="largeZoop_integrated",sim=="ACLIMregion_B10K-K20P19_CMIP6_cesm_ssp585")%>%
+        #   select(basin,year,mn_val,total_area_km2,val_biascorrected,
+        #          sf_wk,mnVal_hist,mnVal_hind,val_biascorrectedyr,val_biascorrectedmo)
+         if(i==1){
+          ACLIM_annual_hist   <- ACLIM_hist$annual%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup()
+          ACLIM_seasonal_hist <- ACLIM_hist$seasonal%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup()
+          ACLIM_monthly_hist  <- ACLIM_hist$monthly%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup()
+          ACLIM_weekly_hist   <- ACLIM_hist$weekly%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup()
+          #ACLIM_surveyrep_hist<- surveyrep_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
+  
+          ACLIM_annual_fut   <- ACLIM_fut$annual%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup()
+          ACLIM_seasonal_fut <- ACLIM_fut$seasonal%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup()
+          ACLIM_monthly_fut  <- ACLIM_fut$monthly%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup()
+          ACLIM_weekly_fut   <- ACLIM_fut$weekly%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup()
+          #ACLIM_surveyrep_hist<- surveyrep_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
+          
+          
+        }else{
+          
+          ACLIM_annual_hist   <- rbind(ACLIM_annual_hist, ACLIM_hist$annual%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup())
+          ACLIM_seasonal_hist <- rbind(ACLIM_seasonal_hist,ACLIM_hist$seasonal%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup())
+          ACLIM_monthly_hist  <- rbind(ACLIM_monthly_hist, ACLIM_hist$monthly%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup())
+          ACLIM_weekly_hist   <- rbind(ACLIM_weekly_hist,ACLIM_hist$weekly%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup())
+          #ACLIM_surveyrep_hist<- surveyrep_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
+          
+          ACLIM_annual_fut   <- rbind(ACLIM_annual_fut,ACLIM_fut$annual%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup())
+          ACLIM_seasonal_fut <- rbind(ACLIM_seasonal_fut,ACLIM_fut$seasonal%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup())
+          ACLIM_monthly_fut  <- rbind(ACLIM_monthly_fut,ACLIM_fut$monthly%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup())
+          ACLIM_weekly_fut   <- rbind(ACLIM_weekly_fut,ACLIM_fut$weekly%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup())
+          
+          
+          
+        }
+        rm(list=c("ACLIM_fut","ACLIM_hist","fut"))
       }
-      rm(list=c("ACLIM_fut","ACLIM_hist","fut"))
     }
-  }
+
    fldr<-file.path(CMIP_fdlr,"allEBS_means")
    if(!dir.exists(fldr))
     dir.create(fldr)
@@ -170,11 +183,12 @@ makeACLIM2_L4_Indices_strata <- function(
         
    for(ss in c("annual","monthly","seasonal","weekly"))
     eval(parse(text=paste0("save(ACLIM_",ss,"_fut, file=file.path(fldr,'ACLIM_",ss,"_fut_mn.Rdata'))")))
-     
+  }
 }
 
 makeACLIM2_L4_Indices_survey <- function(
   CMIP_fdlr = "Data/out/K20P19_CMIP6",
+  ophind = FALSE,
   CMIP      = "CMIP6",
   scenIN    = c("ssp126","ssp585"),
   hind_sim  =  "B10K-K20P19_CORECFS",
@@ -199,110 +213,115 @@ makeACLIM2_L4_Indices_survey <- function(
                      group_byIN =c("var", "units","long_name","sim","basin","type","sim_type","lognorm","qry_date"))
   cat(" -- hind complete \n")
   
-  ACLIM_surveyrep_hind   <- ACLIM_hind$annual%>%dplyr::mutate(i = 0,  gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=hind_sim)
+  ACLIM_surveyrep_hind   <- ACLIM_hind$annual%>%dplyr::mutate(i = 0,  gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=hind_sim)%>%ungroup()
 
   fldr<-file.path(CMIP_fdlr,"allEBS_means")
   if(!dir.exists(fldr))
     dir.create(fldr)
-  save(ACLIM_surveyrep_hind, file = file.path(fldr, "ACLIM_surveyrep_hind_mn.Rdata"))
-  
+  if(!ophind){
+    save(ACLIM_surveyrep_hind, file = file.path(fldr, "ACLIM_surveyrep_hind_mn.Rdata"))
+  }else{
+    save(ACLIM_surveyrep_hind, file = file.path(fldr, "ACLIM_surveyrep_operational_hind_mn.Rdata"))
+  }
   rm(hind)
   
   i<-0
   ii<-1
-  for( ii in 1:length(gcmcmipLIST)){
-      gcmcmip <- gcmcmipLIST[ii]
-      simL    <- sim_listIN[sim_listIN%in%paste0(gcmcmip,"_",rep(scenIN,1,each=length(gcmcmip)))]
-     
-    for (sim in simL){
-      i <- i +1
-      cat("  -- summarizing ",sim, "all EBS means\n")
-      
-      #sim   <- paste0("B10K-K20P19_",gcmcmip,"_historical")
-    
-      RCP   <- rev(strsplit(sim,"_")[[1]])[1]
-      mod   <- (strsplit(sim,"_")[[1]])[1]
-      CMIP  <- strsplit(sim,"_")[[1]][2]
-      GCM   <- strsplit(sim,"_")[[1]][3]
-      
-      #historical:
-      cat(" -- running hist")
-      fn   <- paste0(prefix,"_",gcmcmip,"_BC_hist.Rdata")
-      load(file.path(CMIP_fdlr,subfldr,fn))
-      
-      ACLIM_hist<-
-        get_indices_hist_srvy(datIN = hist%>%filter(var%in%varlistIN),
-                         group_byIN =c("var", "units","long_name","sim","basin","type","sim_type","lognorm","qry_date"))
-      
-      rm(hist)
-      
-      #projection:
-      fn   <- paste0(prefix,"_",sim,"_BC_fut.Rdata")
-      load(file.path(CMIP_fdlr,subfldr,fn))
-      cat(" --  runing projection for sim: ", sim)
-      ACLIM_fut<-
-        get_indices_fut_srvy(datIN = fut%>%filter(var%in%varlistIN),
-                        qry_dateIN = qry_date,
-                        group_byIN =c("var", "units","sim","basin","type","sim_type","lognorm","qry_date","sf"))
-                        
-      rm(fut)
-      if(i==1){
-        ACLIM_surveyrep_hist   <- ACLIM_hist$annual%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-        
-        ACLIM_surveyrep_fut   <- ACLIM_fut$annual%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
+  if(!ophind){
+    for( ii in 1:length(gcmcmipLIST)){
+        gcmcmip <- gcmcmipLIST[ii]
+        simL    <- sim_listIN[sim_listIN%in%paste0(gcmcmip,"_",rep(scenIN,1,each=length(gcmcmip)))]
        
+      for (sim in simL){
+        i <- i +1
+        cat("  -- summarizing ",sim, "all EBS means\n")
         
-      }else{
+        #sim   <- paste0("B10K-K20P19_",gcmcmip,"_historical")
+      
+        RCP   <- rev(strsplit(sim,"_")[[1]])[1]
+        mod   <- (strsplit(sim,"_")[[1]])[1]
+        CMIP  <- strsplit(sim,"_")[[1]][2]
+        GCM   <- strsplit(sim,"_")[[1]][3]
         
-        ACLIM_surveyrep_hist   <- rbind(ACLIM_surveyrep_hist, ACLIM_hist$annual%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
-      
-        ACLIM_surveyrep_fut   <- rbind(ACLIM_surveyrep_fut,ACLIM_fut$annual%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod))
-      
+        #historical:
+        cat(" -- running hist")
+        fn   <- paste0(prefix,"_",gcmcmip,"_BC_hist.Rdata")
+        load(file.path(CMIP_fdlr,subfldr,fn))
+        
+        ACLIM_hist<-
+          get_indices_hist_srvy(datIN = hist%>%filter(var%in%varlistIN),
+                           group_byIN =c("var", "units","long_name","sim","basin","type","sim_type","lognorm","qry_date"))
+        
+        rm(hist)
+        
+        #projection:
+        fn   <- paste0(prefix,"_",sim,"_BC_fut.Rdata")
+        load(file.path(CMIP_fdlr,subfldr,fn))
+        cat(" --  runing projection for sim: ", sim)
+        ACLIM_fut<-
+          get_indices_fut_srvy(datIN = fut%>%filter(var%in%varlistIN),
+                          qry_dateIN = qry_date,
+                          group_byIN =c("var", "units","sim","basin","type","sim_type","lognorm","qry_date","sf"))
+                          
+        rm(fut)
+        if(i==1){
+          ACLIM_surveyrep_hist   <- ACLIM_hist$annual%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup()
+          
+          ACLIM_surveyrep_fut   <- ACLIM_fut$annual%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup()
+         
+          
+        }else{
+          
+          ACLIM_surveyrep_hist   <- rbind(ACLIM_surveyrep_hist, ACLIM_hist$annual%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup())
+        
+          ACLIM_surveyrep_fut   <- rbind(ACLIM_surveyrep_fut,ACLIM_fut$annual%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup())
+        
+        }
+        rm(list=c("ACLIM_fut","ACLIM_hist"))
       }
-      rm(list=c("ACLIM_fut","ACLIM_hist"))
     }
+    fldr<-file.path(CMIP_fdlr,"allEBS_means")
+    if(!dir.exists(fldr))
+      dir.create(fldr)
+    save(ACLIM_surveyrep_hist, file = file.path(fldr, "ACLIM_surveyrep_hist_mn.Rdata"))
+    save(ACLIM_surveyrep_fut, file = file.path(fldr, "ACLIM_surveyrep_fut_mn.Rdata"))
   }
-  fldr<-file.path(CMIP_fdlr,"allEBS_means")
-  if(!dir.exists(fldr))
-    dir.create(fldr)
-  save(ACLIM_surveyrep_hist, file = file.path(fldr, "ACLIM_surveyrep_hist_mn.Rdata"))
-  save(ACLIM_surveyrep_fut, file = file.path(fldr, "ACLIM_surveyrep_fut_mn.Rdata"))
   
   
 }
 if(1==10){
   if(!bystrata){
-    ACLIM_annual_hind   <- annual_adj$hind%>%dplyr::mutate(i = i,gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=mod)
-    ACLIM_seasonal_hind <- seasonal_adj$hind%>%dplyr::mutate(i = i,gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=mod)
-    ACLIM_monthly_hind  <- monthly_adj$hind%>%dplyr::mutate(i = i,gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=mod)
-    ACLIM_weekly_hindold<- weekly_adj_old$hind%>%dplyr::mutate(i = i,gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=mod)
-    ACLIM_weekly_hind   <- weekly_adj$hind%>%dplyr::mutate(i = i,gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=mod)
-    ACLIM_surveyrep_hind<- surveyrep_adj$hind%>%dplyr::mutate(i = i,gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=mod)
+    ACLIM_annual_hind   <- annual_adj$hind%>%dplyr::mutate(i = i,gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=mod)%>%ungroup()
+    ACLIM_seasonal_hind <- seasonal_adj$hind%>%dplyr::mutate(i = i,gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=mod)%>%ungroup()
+    ACLIM_monthly_hind  <- monthly_adj$hind%>%dplyr::mutate(i = i,gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=mod)%>%ungroup()
+    ACLIM_weekly_hindold<- weekly_adj_old$hind%>%dplyr::mutate(i = i,gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=mod)%>%ungroup()
+    ACLIM_weekly_hind   <- weekly_adj$hind%>%dplyr::mutate(i = i,gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=mod)%>%ungroup()
+    ACLIM_surveyrep_hind<- surveyrep_adj$hind%>%dplyr::mutate(i = i,gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=mod)%>%ungroup()
     
-    ACLIM_annual_hist   <- annual_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-    ACLIM_seasonal_hist <- seasonal_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-    ACLIM_monthly_hist  <- monthly_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-    ACLIM_weekly_histold<- weekly_adj_old$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-    ACLIM_weekly_hist   <- weekly_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-    ACLIM_surveyrep_hist<- surveyrep_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
+    ACLIM_annual_hist   <- annual_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup()
+    ACLIM_seasonal_hist <- seasonal_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup()
+    ACLIM_monthly_hist  <- monthly_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup()
+    ACLIM_weekly_histold<- weekly_adj_old$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup()
+    ACLIM_weekly_hist   <- weekly_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup()
+    ACLIM_surveyrep_hist<- surveyrep_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup()
     
-    ACLIM_annual_fut    <- annual_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-    ACLIM_seasonal_fut  <- seasonal_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-    ACLIM_monthly_fut   <- monthly_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-    ACLIM_weekly_futold <- weekly_adj_old$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-    ACLIM_weekly_fut    <- weekly_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-    ACLIM_surveyrep_fut <- surveyrep_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
+    ACLIM_annual_fut    <- annual_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup()
+    ACLIM_seasonal_fut  <- seasonal_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup()
+    ACLIM_monthly_fut   <- monthly_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup()
+    ACLIM_weekly_futold <- weekly_adj_old$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup()
+    ACLIM_weekly_fut    <- weekly_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup()
+    ACLIM_surveyrep_fut <- surveyrep_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup()
   }else{
     
-    ACLIM_strata_weekly_hind   <- strata_weekly_adj$hind%>%dplyr::mutate(i = i,gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=mod)
-    ACLIM_strata_monthly_hind  <- strata_monthly_adj$hind%>%dplyr::mutate(i = i,gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=mod)
-    ACLIM_strata_seasonal_hind <- strata_seasonal_adj$hind%>%dplyr::mutate(i = i,gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=mod)
-    ACLIM_strata_weekly_hist   <- strata_weekly_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-    ACLIM_strata_monthly_hist  <- strata_monthly_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-    ACLIM_strata_seasonal_hist <- strata_seasonal_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-    ACLIM_strata_weekly_fut    <- strata_weekly_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-    ACLIM_strata_monthly_fut   <- strata_monthly_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
-    ACLIM_strata_seasonal_fut  <- strata_seasonal_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)
+    ACLIM_strata_weekly_hind   <- strata_weekly_adj$hind%>%dplyr::mutate(i = i,gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=mod)%>%ungroup()
+    ACLIM_strata_monthly_hind  <- strata_monthly_adj$hind%>%dplyr::mutate(i = i,gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=mod)%>%ungroup()
+    ACLIM_strata_seasonal_hind <- strata_seasonal_adj$hind%>%dplyr::mutate(i = i,gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=mod)%>%ungroup()
+    ACLIM_strata_weekly_hist   <- strata_weekly_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup()
+    ACLIM_strata_monthly_hist  <- strata_monthly_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup()
+    ACLIM_strata_seasonal_hist <- strata_seasonal_adj$hist%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup()
+    ACLIM_strata_weekly_fut    <- strata_weekly_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup()
+    ACLIM_strata_monthly_fut   <- strata_monthly_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup()
+    ACLIM_strata_seasonal_fut  <- strata_seasonal_adj$fut%>%dplyr::mutate(i = i,gcmcmip=gcmcmip,CMIP=CMIP,GCM =GCM, scen = RCP, mod=mod)%>%ungroup()
     
   }
   

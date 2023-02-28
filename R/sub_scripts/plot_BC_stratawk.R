@@ -42,6 +42,18 @@ for (sim in simL){
     print(p)
     dev.off()
     rm(p)
+    p <- ggplot(data=fut%>%filter(var==varIN,strata==70,year%in%c(2024,2050,2090)))+
+      geom_line(aes(x=jday,y=val_raw,linetype="raw",color=factor(year)),size=.8)+
+      geom_line(aes(x=jday,y=val_delta,
+                    linetype="val_delta",color=factor(year)),size=.8)+
+      geom_line(aes(x=jday,y=mnVal_hind,color="mnVal_hind"),size=1.2)+
+      geom_line(aes(x=jday,y=mnVal_hist,color="mnVal_hist"),size=1.2)+
+      theme_minimal()+ylab(varIN)
+    p
+    jpeg(filename =paste0("Data/out/K20P19_CMIP6/BC_ACLIMregion/plots/",sim,"/",varIN,"delta.jpg") , width=8,height =4,units = "in",res = 350)
+    print(p)
+    dev.off()
+    rm(p)
   }
   rm(list=c("fut"))
 }

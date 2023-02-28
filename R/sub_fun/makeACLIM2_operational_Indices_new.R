@@ -74,6 +74,7 @@ makeACLIM2_operational_Indices_new <- function(
   
   if(!bystrata){  # get survey replicated
     cat("    -- get srvy_indices_hind ... \n")
+    cat("    -- get srvy_indices_hind ... \n")
     hindA  <-  suppressMessages(make_indices_srvyrep_station(
       simIN      = hnd_srvy,
       svIN       = sv,
@@ -96,26 +97,38 @@ makeACLIM2_operational_Indices_new <- function(
       sdVal_hind_yr = sdVal_x_yr)%>%
       ungroup()
     
+    rmlistIN <- c("sdVal_hind", "seVal_hind", 
+                  "sdVal_hind_strata", "sdVal_hind_yr",
+                  "nVal_hind")
+    
     hind    <- hindA$fullDat%>%rename(
       mnVal_hind  = mnVal_x,
       sdVal_hind  = sdVal_x,
       nVal_hind   = nVal_x,
       seVal_hind  = seVal_x,
       sdVal_hind_strata = sdVal_x_strata,
-      sdVal_hind_yr = sdVal_x_yr)%>%
+      sdVal_hind_yr = sdVal_x_yr)%>%select(-all_of(rmlistIN))%>%
       ungroup()
     
-    # convert logit or log trans data back
-    hind  <-  unlink_val(indat=hind,
-                         log_adj =1e-4,
-                         roundn     = 5,
-                         listIN = c("mn_val","mnVal_hind"),
-                         rmlistIN = c("sdVal_hind", "seVal_hind", "sdVal_hind_strata", "sdVal_hind_yr",
-                                      "nVal_hind"))
-    
+    # # convert logit or log trans data back
+    # hind  <-  unlink_val(indat=hind,
+    #                      log_adj  = 1e-4,
+    #                      roundn   = 5,
+    #                      listIN   = c("mn_val","mnVal_hind"),
+    #                      rmlistIN = c("sdVal_hind", "seVal_hind", "sdVal_hind_strata", "sdVal_hind_yr",
+    #                                   "nVal_hind"))
+    # # convert logit or log trans data back
+    # hind  <-  unlink_val(indat=hind,
+    #                      log_adj =1e-4,
+    #                      roundn     = 5,
+    #                      listIN = c("mn_val","mnVal_hind"),
+    #                      rmlistIN = c("sdVal_hind", "seVal_hind", "sdVal_hind_strata", "sdVal_hind_yr",
+    #                                   "nVal_hind"))
+    # 
     if(!dir.exists(file.path("Data/out",CMIP_fdlr)))
       dir.create(file.path("Data/out",CMIP_fdlr))
-    dir.create(file.path("Data/out",CMIP_fdlr,paste0("BC_",subtxt)))
+    if(!dir.exists(file.path("Data/out",CMIP_fdlr,paste0("BC_",subtxt))))
+      dir.create(file.path("Data/out",CMIP_fdlr,paste0("BC_",subtxt)))
     fl <- file.path("Data/out",CMIP_fdlr,paste0("BC_",subtxt))
     nm <- paste(subtxt,hind_sim,"BC_hind.Rdata",sep="_")
     save(hind,file=file.path(fl,nm))
@@ -147,7 +160,8 @@ makeACLIM2_operational_Indices_new <- function(
       sdVal_hind_mo = sdVal_x_mo,
       sdVal_hind_yr = sdVal_x_yr)%>%
       ungroup()
-    
+    rmlistIN <- c("sdVal_hind", "seVal_hind", "sdVal_hind_mo", "sdVal_hind_yr",
+                  "nVal_hind")
     hind    <- hindA$fullDat%>%rename(
       mnVal_hind  = mnVal_x,
       sdVal_hind  = sdVal_x,
@@ -155,22 +169,23 @@ makeACLIM2_operational_Indices_new <- function(
       seVal_hind  = seVal_x,
       sdVal_hind_mo = sdVal_x_mo,
       sdVal_hind_yr = sdVal_x_yr)%>%
+      select(-all_of(rmlistIN))%>%
       ungroup()
-    
-    # convert logit or log trans data back
-    hind  <-  unlink_val(indat=hind,
-                         log_adj =1e-4,
-                         roundn     = 5,
-                         listIN = c("mn_val","mnVal_hind"),
-                         rmlistIN = c("sdVal_hind", "seVal_hind", "sdVal_hind_mo", "sdVal_hind_yr",
-                                      "nVal_hind"))
+    # 
+    # # convert logit or log trans data back
+    # hind  <-  unlink_val(indat=hind,
+    #                      log_adj =1e-4,
+    #                      roundn     = 5,
+    #                      listIN = c("mn_val","mnVal_hind"),
+    #                      rmlistIN = c("sdVal_hind", "seVal_hind", "sdVal_hind_mo", "sdVal_hind_yr",
+    #                                   "nVal_hind"))
     
     if(!dir.exists(file.path("Data/out",CMIP_fdlr)))
       dir.create(file.path("Data/out",CMIP_fdlr))
-    
-    dir.create(file.path("Data/out",CMIP_fdlr,paste0("BC_",subtxt)))
+    if(!dir.exists(file.path("Data/out",CMIP_fdlr,paste0("BC_",subtxt))))
+      dir.create(file.path("Data/out",CMIP_fdlr,paste0("BC_",subtxt)))
     fl <- file.path("Data/out",CMIP_fdlr,paste0("BC_",subtxt))
-    nm <- paste(subtxt,hind_sim,"BC_operat_hind.Rdata",sep="_")
+    nm <- paste(subtxt,hind_sim,"BC_hind.Rdata",sep="_")
     save(hind,file=file.path(fl,nm))
     
     rm(list=c("hnd","hindA","hind"))

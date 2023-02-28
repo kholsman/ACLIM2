@@ -6,12 +6,14 @@
 makeDat_hind <- function(datIN   = hind, 
                          makeADMB_chunk = T,
                          NAVal     = "mean", 
-                         value2use = "mn_val_scaled",
+                         value2use = "val_use",
+                         value2use_scaled = "val_use_scaled",
                          outfile = fndat_hind,
-                         nonScaled_covlist = c("temp_bottom5m","temp_surface5m"  ),
+                         nonScaled_covlist = c("temp_bottom5m","temp_surface5m"),
                          Scaled_covlist    = covars,
                          nsppIN    = NULL,
                          overlapIN = NULL){
+  
   
    if(is.null(NAVal)){
     myfun <- function(x){
@@ -37,8 +39,8 @@ makeDat_hind <- function(datIN   = hind,
       return(x)
     }}
     
-   
-  eval(parse(text = paste0("datIN<- datIN%>%dplyr::rename(covuse = ",value2use,")")))
+  eval(parse(text =paste0("datIN <- datIN%>%dplyr::rename(VAL = ",value2use,")") ))
+  eval(parse(text = paste0("datIN<- datIN%>%dplyr::rename(covuse = ",value2use_scaled,")")))
   ncovs      <- length(Scaled_covlist)
   ncovs_nonS <- length(nonScaled_covlist)
   
@@ -69,7 +71,7 @@ makeDat_hind <- function(datIN   = hind,
   cat("#COVAR_START ##############################################DO NOT REMOVE THIS LINE OR REC FIT WONT RUN!",file=outfile,append=TRUE,sep="\n")
   for(c in 1:ncovs){
     #eval(parse(text=paste("tmp<-dd$",parmlist[p],sep="")))
-    cat(paste("# ",Scaled_covlist[c],":",(datIN%>%
+    cat(paste("#",Scaled_covlist[c],":",(datIN%>%
                                             dplyr::filter(var==Scaled_covlist[c])%>%
                                             select(long_name))[[1]][1]),file=outfile,append=TRUE,sep="\n")
     dd <- (datIN%>%
@@ -84,15 +86,15 @@ makeDat_hind <- function(datIN   = hind,
   for(c in 1:ncovs_nonS){
    
     #eval(parse(text=paste("tmp<-dd$",parmlist[p],sep="")))
-    cat(paste("# ",nonScaled_covlist[c],":",(datIN%>%
+    cat(paste("#",nonScaled_covlist[c],":",(datIN%>%
                                                dplyr::filter(var==nonScaled_covlist[c])%>%
                                                select(long_name))[[1]][1]),
         
         file=outfile,append=TRUE,sep="\n")
     dd <- (datIN%>%
              dplyr::filter(var==nonScaled_covlist[c])%>%
-             dplyr::mutate(mn_val = myfun(mn_val))%>%
-             dplyr::select(mn_val))[[1]]
+             dplyr::mutate(VAL = myfun(VAL))%>%
+             dplyr::select(VAL))[[1]]
     cat(dd,
         file=outfile,append=TRUE,sep=" ");cat("",file=outfile,append=TRUE,sep="\n")
     rm(dd)
@@ -104,10 +106,10 @@ makeDat_hind <- function(datIN   = hind,
     for(predd in 1:nsppIN){
       for(preyy in 1:nsppIN){
         if(preyy==1){
-          cat(paste("# predator ",predd,"; prey ",preyy),file=outfile,append=TRUE,sep="\n")
+          cat(paste("# predator",predd,"; prey ",preyy),file=outfile,append=TRUE,sep="\n")
           cat(overlapIN[predd,],file=outfile,append=TRUE,sep=" ");cat("",file=outfile,append=TRUE,sep="\n")
         }else{
-          cat(paste("# predator ",predd,"; prey ",preyy),file=outfile,append=TRUE,sep="\n")
+          cat(paste("# predator",predd,"; prey ",preyy),file=outfile,append=TRUE,sep="\n")
           cat(1+0*overlapIN[predd,],file=outfile,append=TRUE,sep=" ");cat("",file=outfile,append=TRUE,sep="\n")
         }
       }
