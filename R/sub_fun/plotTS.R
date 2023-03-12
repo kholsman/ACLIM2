@@ -20,7 +20,7 @@ plotTS<-function(newdat){
                 show.legend = T) +
     theme_minimal() + 
     labs(x = "Date",
-         y = paste(newdat$var[1],"(",newdat$units[1],")"),
+         y = newdat$var[1],
          subtitle = "",
          legend   = "",
          title    = paste(newdat$var[1],"(",newdat$basin[1],",",newdat$type[1],")"))+

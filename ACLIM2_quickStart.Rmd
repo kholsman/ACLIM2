@@ -104,21 +104,30 @@ If you have git installed and can work with it, this is the preferred method as 
 
 ## Get the data
 
-**Step 1)[ can skip if not using .nc files directly] **
-* Go to the google drive and download the zipped file with the R data `2022_03_07_Rdata.zip`:
+<!-- **Step 1)[ can skip if not using .nc files directly] ** -->
+<!-- * Go to the google drive and download the zipped file with the R data `2022_03_07_Rdata.zip`: -->
 
-* [00_ACLIM_shared > 02_Data > Newest_Data(use this) > unzip_and_putin_Data_in_folder.zip](https://drive.google.com/drive/folders/11BQEfNEl9vvrN-V0LgS67XS4aLE9pNzz)
+<!-- * [00_ACLIM_shared > 02_Data > Newest_Data(use this) > unzip_and_putin_Data_in_folder.zip](https://drive.google.com/drive/folders/11BQEfNEl9vvrN-V0LgS67XS4aLE9pNzz) -->
 
-* Unzip the folder and move the contents of the zipped folder to your local folder `ACLIM2/Data/in`.
+<!-- * Unzip the folder and move the contents of the zipped folder to your local folder `ACLIM2/Data/in`. -->
 
-<!-- ![](Figs/DATA_dir.png){ width=50%} -->
+<!-- <!-- ![](Figs/DATA_dir.png){ width=50%} --> -->
 
-**Step 2)**
+<!-- **Step 2)** -->
 * Go to the google drive and download the zipped file with the R ACLIM2 indices `ACLIM2_indices.zip`:
 
-* [00_ACLIM_shared > 02_Data > Newest_Data(use this) > unzip_and_putin_Data_out_folder.zip](https://drive.google.com/drive/folders/11BQEfNEl9vvrN-V0LgS67XS4aLE9pNzz)
+* [00_ACLIM_shared > 02_Data > Newest_Data(use this) > unzip_and_put_in_dat_out_folder_CMIP6](https://drive.google.com/drive/u/1/folders/1clPtrPCQMPcwqr8UE78_Sd2IGwyBuDcD)
+[00_ACLIM_shared > 02_Data > Newest_Data(use this) > unzip_and_put_in_dat_out_folder_CMIP5](https://drive.google.com/drive/u/1/folders/1t_JqDBQU-Fyy5nvIYRAmVcqzWi4mq7mk)
 
-* Unzip the folder and move the contents of the zipped folder to your local folder `ACLIM2/Data/out`.
+* Unzip `K29P19_CMIP5.zip` or `K29P19_CMIP6.zip` files move the `K29P19_CMIP5` or `K29P19_CMIP6` folders to your local folder `ACLIM2/Data/out`. The result should be the following folder structure on your local computer:  
+* `ACLIM2/Data/out/K29P19_CMIP6/allEBSmeans`: main folder with annual, monthly, seasonal, and survey replicated level 4 ACLIM indices
+* `ACLIM2/Data/out/K29P19_CMIP6/BC_ACLIMregion`: Weekly x Strata based indices, including delta and bias corrected values (these are "rolled up" to become strata AREA weighted mean vals in the allEBSmeans folder).
+* `ACLIM2/Data/out/K29P19_CMIP6/BC_ACLIMsurveyrep`: Survey replicated indices at each station, including delta and bias corrected values (these are "rolled up" to become average across station mean vals in the allEBSmeans folder).
+
+* `ACLIM2/Data/out/K29P19_CMIP6/allEBSmeans`: as above but for CMIP5
+* `ACLIM2/Data/out/K29P19_CMIP6/allEBSmeans`: as above but for CMIP5
+* `ACLIM2/Data/out/K29P19_CMIP6/allEBSmeans`: as above but for CMIP5
+
 
 <!-- ![](Figs/DATA_dir2.png){ width=50%} -->
 
@@ -414,11 +423,11 @@ The following code will open an interactive shiny() app for exploring the indice
       df <- get_var( typeIN    = "annual", 
                      plotvar   = "temp_bottom5m",
                      bcIN      = c("raw","bias corrected"),
-                     CMIPIN    = "K20P19_CMIP6", 
+                     CMIPIN    = c("K20P19_CMIP5","K20P19_CMIP6"), 
                      plothist  = T,  # ignore the hist runs
                      removeyr1 = T)  # "Remove first year of projection ( burn in)")
       
-      df$plot+coord_cartesian(ylim = c(0, 7))
+      df$plot+coord_cartesian(ylim = c(0, 10))
       head(df$dat)
     
   # concat the hind and fut runs by removing years from projection
@@ -432,7 +441,7 @@ The following code will open an interactive shiny() app for exploring the indice
   head(newdat%>%dplyr::filter(GCM_scen==paste0(GCMs[1],"_",scens[1])))
   tail(newdat%>%dplyr::filter(GCM_scen==paste0(GCMs[1],"_",scens[1])))
   
-  pp <- plotTS(newdat )
+  pp <- plotTS(newdat%>%mutate(mn_val=val_use) )
   pp
         
 ```
@@ -456,7 +465,7 @@ The target indices for NRS include cold pool, bottom temperature, wind, SEBS and
 Hindcast values from 1970-2019 were stitched the operational hindcast (2019-2022) and ACLIM projections from 2022-2100 to generate the indices for CMIP5 and CMIP6.
 
 
-```{r nrs, eval=T, include=T,echo=T, results='hide',message=FALSE}
+```{r nrs, eval=F, include=T,echo=T, results='hide',message=FALSE}
 
   # Nursery area is approx strata 10& 20
   # NW direction in strata 20, and strata 10 >57N, while NE in strata 10< 57N  
@@ -465,6 +474,8 @@ Hindcast values from 1970-2019 were stitched the operational hindcast (2019-2022
   # coldpool cat --> <16% vs >16% CP area.
        
     suppressMessages(source("R/make.R"))
+
+    CMIPset <- c("K20P19_CMIP6","K20P19_CMIP5")
 
     # preview possible variables
     load(file = "Data/out/weekly_vars.Rdata")
@@ -487,7 +498,7 @@ Hindcast values from 1970-2019 were stitched the operational hindcast (2019-2022
     
     grpby <- c("type","var","basin",
                "year","sim","gcmcmip","GCM","scen","sim_type",
-               "units","bc","GCM_scen","GCM_scen_sim", "CMIP" )
+               "bc","GCM_scen","GCM_scen_sim", "CMIP" )
     
     sumat  <- c("jday","mnDate","val_use","mnVal_hind",
                 "val_delta","val_biascorrected","val_raw")
@@ -499,13 +510,14 @@ Hindcast values from 1970-2019 were stitched the operational hindcast (2019-2022
     i <- 0
     for(v in varlist){
         i<- i + 1
+        cat("compiling indices : ",v,"\n")
         # get the variable you want:
         df <- get_var( typeIN    = "monthly", 
                        monthIN   = 4:6,
                        plotbasin  = c("SEBS"),
                        plotvar   = v,
                        bcIN      = "bias corrected",
-                       CMIPIN    = "K20P19_CMIP6", 
+                       CMIPIN    = CMIPset, 
                        plothist  = T,  # ignore the hist runs
                        removeyr1 = T)  # "Remove first year of proj ( burn in)")
          tmpd <- df$dat%>%
@@ -522,16 +534,15 @@ Hindcast values from 1970-2019 were stitched the operational hindcast (2019-2022
                        plotbasin  = c("SEBS"),
                        plotvar   = v,
                        bcIN      = "bias corrected",
-                       CMIPIN    = "K20P19_CMIP6", 
-                       GCMIN     = c("miroc" ,"gfdl" , "cesm" ),
-                       scenIN    = c("ssp126", "ssp585"),
+                       CMIPIN    = c("K20P19_CMIP5","K20P19_CMIP6"), 
                        jday_rangeIN = c(0,365),
                        plothist  = T,  # ignore the hist runs
                        removeyr1 = T)  # "Remove first year of proj ( burn in)")
         
          tmpdop <- dfop$dat%>%
-                          group_by(across(all_of(c(grpby,"GCM2","GCM2_scen_sim"))))%>%
-                          summarize_at(all_of(sumat), mean, na.rm=T)%>%            mutate(mn_val=val_use)
+           group_by(across(all_of(c(grpby,"GCM2","GCM2_scen_sim"))))%>%
+                          summarize_at(all_of(sumat), mean, na.rm=T)%>%
+           mutate(mn_val=val_use)
          tmpdop <- stitchTS(dat = tmpdop, stitchDate_op)
          tmpdop <- tmpdop%>%mutate(type = "NRS indices")
            
@@ -540,7 +551,7 @@ Hindcast values from 1970-2019 were stitched the operational hindcast (2019-2022
            NRS_vars_op <- tmpdop
          }else{
            NRS_vars <- rbind(NRS_vars,tmpd)
-            NRS_vars_op <- rbind(NRS_vars_op,tmpdop)
+          NRS_vars_op <- rbind(NRS_vars_op,tmpdop)
          }
          rm(df)
           rm(dfop)
@@ -551,18 +562,20 @@ Hindcast values from 1970-2019 were stitched the operational hindcast (2019-2022
     # Ph In Jan- Mar (Winter)
     varlist <- "pH_depthavg"
     for(v in varlist){
+         cat("compiling indices : ",v,"\n")
       # get the variable you want:
       df <- get_var( typeIN    = "seasonal", 
                      SeasonIN =  "Winter",
                      plotbasin  = c("SEBS"),
                      plotvar    = v,
                      bcIN       = "bias corrected",
-                     CMIPIN     = "K20P19_CMIP6", 
+                     CMIPIN     = CMIPset, 
                      plothist   = T,  # ignore the hist runs
                      removeyr1  = T)  # "Remove first year of proj ( burn in)")
       
        tmpd <- df$dat%>%group_by(across(all_of(grpby)))%>%
-                        summarize_at(all_of(sumat), mean, na.rm=T)%>%            mutate(mn_val=val_use)
+                        summarize_at(all_of(sumat), mean, na.rm=T)%>%
+         mutate(mn_val=val_use)
        tmpd <- stitchTS(dat = tmpd, stitchDate)
        tmpd <- tmpd%>%mutate(type = "NRS indices")
        NRS_vars <- rbind(NRS_vars,tmpd)
@@ -592,13 +605,14 @@ Hindcast values from 1970-2019 were stitched the operational hindcast (2019-2022
     # summer values  (Jul-Aug)
     varlist <- c("fracbelow1","fracbelow2")
     for(v in varlist){
+         cat("compiling indices : ",v,"\n")
       # get the variable you want:
       df <- get_var( typeIN    = "seasonal", 
                      SeasonIN =  "Summer",
                      plotbasin  = c("SEBS"),
                      plotvar   = v,
                      bcIN      = "bias corrected",
-                     CMIPIN    = "K20P19_CMIP6", 
+                     CMIPIN    = CMIPset, 
                      plothist  = T,  # ignore the hist runs
                      removeyr1 = T)  # "Remove first year of projection ( burn in)")
         
@@ -643,13 +657,14 @@ Hindcast values from 1970-2019 were stitched the operational hindcast (2019-2022
      # spring values  (Mar-Aug)
     varlist <- c("temp_surface5m", "temp_bottom5m")
     for(v in varlist){
+         cat("compiling indices : ",v,"\n")
       # get the variable you want:
       df <- get_var( typeIN    = "monthly", 
                      monthIN   = 3:9,
                      plotbasin  = c("SEBS"),
                      plotvar   = v,
                      bcIN      = "bias corrected",
-                     CMIPIN    = "K20P19_CMIP6", 
+                     CMIPIN    = CMIPset, 
                      plothist  = T,  # ignore the hist runs
                      removeyr1 = T)  # "Remove first year of projection ( burn in)")
        tmpd <- df$dat%>%group_by(across(all_of(grpby)))%>%
@@ -691,12 +706,13 @@ Hindcast values from 1970-2019 were stitched the operational hindcast (2019-2022
 
        
   for(v in varlist){
+       cat("compiling indices : ",v,"\n")
     # get the variable you want:
       df <- get_var( typeIN    = "annual", 
                      plotbasin  = c("SEBS"),
                      plotvar   = v,
                      bcIN      = "bias corrected",
-                     CMIPIN    = "K20P19_CMIP6", 
+                     CMIPIN    = CMIPset, 
                      plothist  = T,  # ignore the hist runs
                      removeyr1 = T)  # "Remove first year of projection ( burn in)")
        tmpd <- df$dat%>%mutate(season="annual")%>%
@@ -743,12 +759,13 @@ Hindcast values from 1970-2019 were stitched the operational hindcast (2019-2022
       rm(dfop)
       rm(tmpdop)    
   }   
+  
   # now for operational hindcasts:
-  dN <-          get_var(typeIN    = "annual", 
+   dN <-           get_var(typeIN    = "annual",
                        plotbasin  = c("SEBS"),
                        plotvar   = "vNorth_surface5m",
                        bcIN      = "bias corrected",
-                       CMIPIN    = "K20P19_CMIP6", 
+                       CMIPIN    = CMIPset,
                        plothist  = T,  # ignore the hist runs
                        removeyr1 = T)  # "Remove first year of proj ( burn in)")
   # now for operational hindcasts:
@@ -756,7 +773,7 @@ Hindcast values from 1970-2019 were stitched the operational hindcast (2019-2022
                        plotbasin  = c("SEBS"),
                        plotvar   = "uEast_surface5m",
                        bcIN      = "bias corrected",
-                       CMIPIN    = "K20P19_CMIP6", 
+                       CMIPIN    = CMIPset,
                        plothist  = T,  # ignore the hist runs
                        removeyr1 = T)  # "Remove first year of proj ( burn in)")
   
@@ -800,8 +817,10 @@ Hindcast values from 1970-2019 were stitched the operational hindcast (2019-2022
                        plothist  = T,  # ignore the hist runs
                        removeyr1 = T)  # "Remove first year of proj ( burn in)")
   
-  dfopE <-dE$dat%>%rename(uE = val_use,uE_raw = val_raw)%>%mutate(var="NE_winds",units="meter second-1")%>%select(-sd_val)
-  dfopN <-dN$dat%>%rename(vN = val_use,vN_raw = val_raw)%>%mutate(var="NE_winds",units="meter second-1")%>%select(-sd_val)
+  dfopE <-dE$dat%>%rename(uE = val_use,uE_raw = val_raw)%>%
+    mutate(var="NE_winds",units="meter second-1")%>%select(-sd_val)
+  dfopN <-dN$dat%>%rename(vN = val_use,vN_raw = val_raw)%>%
+    mutate(var="NE_winds",units="meter second-1")%>%select(-sd_val)
   dfop<-dfopN%>%left_join(dfopE%>%select(all_of(c(grpby,"uE","uE_raw"))))
   
   dfop$val_use <-getNE_winds(vNorth=dfop$vN,uEast=dfop$uE)
@@ -816,8 +835,8 @@ Hindcast values from 1970-2019 were stitched the operational hindcast (2019-2022
   tmpdop <- tmpdop%>%mutate(type = "ceattle indices")
   NRS_vars_op <- rbind(NRS_vars_op,tmpdop)
   rm(dfop)
-  rm(tmpdop)    
- sub<- NRS_vars_op%>%filter(var%in%c("fracbelow1","fracbelow2"))
+  rm(tmpdop)
+  sub<- NRS_vars_op%>%filter(var%in%c("fracbelow1","fracbelow2"))
   
      # save indices
      if(!dir.exists("Data/out/NRS_indices"))
@@ -855,23 +874,23 @@ Hindcast values from 1970-2019 were stitched the operational hindcast (2019-2022
       summarize_at(all_of(c("val_use")), mean, na.rm=T)%>%
       tidyr::pivot_wider(names_from = "var", values_from = "val_use")
      
-     NRS_vars_wide_op$NE_winds <- getNE_winds(vNorth=NRS_vars_wide_op$vNorth_surface5m,
-                                           uEast=NRS_vars_wide_op$uEast_surface5m)
+     NRS_vars_wide_op$NE_winds <- 
+       getNE_winds(vNorth=NRS_vars_wide_op$vNorth_surface5m,
+                  uEast=NRS_vars_wide_op$uEast_surface5m)
      
      # reorder to put annual indices at the end
      cc <- colnames(NRS_vars_wide_op)
      cc <- cc[-grep("annual",cc)]
-     NRS_vars_wide_op<- NRS_vars_wide_op%>%relocate(all_of(cc))
+     NRS_vars_wide_op<- NRS_vars_wide_op%>%
+       relocate(all_of(cc))
      
      
      NRS_vars2_op<- NRS_vars_wide_op%>%
       tidyr::pivot_longer(cols = c(unique(NRS_vars$var),"NE_winds"),
                           names_to = "var",
-                          values_to = "val_use")%>%mutate(mn_val=val_use)
+                          values_to = "val_use")%>%
+       mutate(mn_val=val_use)
      
-     
-    
-    
      save(NRS_vars_wide, file="Data/out/NRS_indices/NRS_vars_wide.Rdata")
      write.csv(NRS_vars_wide, file="Data/out/NRS_indices/NRS_vars_wide.csv")
      save(NRS_vars_wide, file="Data/out/NRS_indices/NRS_vars_wide_op.Rdata")
@@ -978,7 +997,7 @@ Hindcast values from 1970-2019 were stitched the operational hindcast (2019-2022
 
 ## monthly indices (Andy)
 
-```{r ewe, eval=T, include=T,echo=T, results='hide',message=FALSE}
+```{r ewe, eval=F, include=T,echo=T, results='hide',message=FALSE}
 
   suppressMessages(source("R/make.R"))
   
@@ -996,6 +1015,8 @@ Hindcast values from 1970-2019 were stitched the operational hindcast (2019-2022
                   CMIPIN    = "K20P19_CMIP6",
                   plotvar   = "uEast_surface5m",
                   bcIN      = "bias corrected",
+                  plotbasin    = c("SEBS"),
+                  GCMIN     = c("miroc" ,"gfdl" , "cesm" ),
                   plothist  = F,  # ignore the hist runs
                   removeyr1 = T)  #"Remove first year of projection ( burn in)")
 
@@ -1023,7 +1044,8 @@ Hindcast values from 1970-2019 were stitched the operational hindcast (2019-2022
   head(newdat%>%dplyr::filter(GCM_scen==paste0(GCMs[1],"_",scens[1])))
   tail(newdat%>%dplyr::filter(GCM_scen==paste0(GCMs[1],"_",scens[1])))
 
-
+  newdat$mn_val <- newdat$val_delta
+  newdat$units <- ""
   pp  <- ggplot(newdat)+
             geom_line(aes(x=mnDate,y=mn_val,color= GCM_scen, linetype = basin),
                       alpha = 0.6,show.legend = FALSE)+
@@ -1051,7 +1073,7 @@ Hindcast values from 1970-2019 were stitched the operational hindcast (2019-2022
 
 ## weekly indices (Jon)
 
-```{r sizespec, eval=T, include=T,echo=T, results='hide',message=FALSE}
+```{r sizespec, eval=F, include=T,echo=T, results='hide',message=FALSE}
 
   suppressMessages(source("R/make.R"))
   
@@ -1120,7 +1142,7 @@ Hindcast values from 1970-2019 were stitched the operational hindcast (2019-2022
 2. NW direction for months 5:6 and strata 71  
 3. temperature_surface5m for months 7:10 and strata 90,61,62  
 
-```{r salmon, eval=T, include=T,echo=T, results='hide',message=FALSE}
+```{r salmon, eval=F, include=T,echo=T, results='hide',message=FALSE}
  # loads packages, data, setup, etc.
   suppressMessages( suppressWarnings(source("R/make.R")))
 
@@ -1153,7 +1175,7 @@ Hindcast values from 1970-2019 were stitched the operational hindcast (2019-2022
 ```
 
 ## make CEATTLE indices (Kir)
-```{r highres1, eval=T, include=T,echo=T, results='hide',message=FALSE}
+```{r ceattle, eval=F, include=T,echo=T, results='hide',message=FALSE}
 source("R/sub_scripts/get_ceattle_indices.R")
 # now jump down to make .dat file
 
@@ -1161,7 +1183,7 @@ source("R/sub_scripts/get_ceattle_indices.R")
 
 ## quick(er) bias correction for cell by cell data (Liz)
 
-```{r highres1, eval=T, include=T,echo=T, results='hide',message=FALSE}
+```{r highres1, eval=F, include=T,echo=T, results='hide',message=FALSE}
  #  setwd("D:/GitHub_cloud/ACLIM2")
  # loads packages, data, setup, etc.
   suppressMessages( suppressWarnings(source("R/make.R")))
@@ -1267,7 +1289,7 @@ for(scen in c("rcp45","rcp85")){
 
 Now with the lookup tables generated, combine with the cell by cell data and bias correct:
 
-``````{r highres2, eval=T, include=T,echo=T, results='hide',message=FALSE}
+```{r highres2, eval=F, include=T,echo=T, results='hide',message=FALSE}
   #  setwd("D:/GitHub_cloud/ACLIM2")
   # loads packages, data, setup, etc.
   suppressMessages( suppressWarnings(source("R/make.R")))
@@ -1616,404 +1638,16 @@ makeDat_fut( datIN       = fut%>%mutate(long_name=var),
 
 The following code shows how the ACLIM2 indices and bias correction was done. You do not need to re-run this (it is included so you can if you want to). To explore the indices skip to the next section.
 
-```{r annual_aclim_indicesA, eval=F, include=T,echo=T}
-    # --------------------------------------
-    # SETUP WORKSPACE
-    # rm(list=ls())
-    # setwd("D:/GitHub_cloud/ACLIM2")
-    # setwd("/Volumes/LaCie/GitHub_cloud/ACLIM2")
-    # loads packages, data, setup, etc.
- 
-    tmstp       <- "2022_10_17"
-    update_biascorrection <- FALSE
-    suppressMessages(source("R/make.R"))
-    tmstp       <- "2022_10_17"
-    Rdata_path  <- paste0("../../romsnpz/",tmstp,"_Rdata")
-    main        <- getwd()  #"~/GitHub_new/ACLIM2"
-    tmstamp1    <- format(Sys.time(), "%Y%m%d")
-    
-    update_hind  <- TRUE   # set to true to update hind and hindS; needed annually
-    update_proj  <- TRUE   # set to true to update fut; not needed
-    update_hist  <- TRUE   # set to true to update fut; not needed
-     
-    # the reference years for bias correcting in R/setup.R
-    ref_years 
-    # the year to z-score scale / delta in R/setup.R
-    deltayrs 
-    data_path
-    
-    #load(file.path(Rdata_path,"../weekly_vars_C.Rdata"))
-    load(file.path(Rdata_path,"weekly_vars.Rdata"))
-    #load(file.path(Rdata_path,"../srvy_vars_C.Rdata"))
-    load(file.path(Rdata_path,"srvy_vars.Rdata"))
-    load(file.path(Rdata_path,"l3srvy_varlist.Rdata"))
-    load(file.path(Rdata_path,"l3wk_varlist.Rdata"))
-    load(file.path(Rdata_path,"l3srvy_varlist_H16.Rdata"))
-    load(file.path(Rdata_path,"l3wk_varlist_H16.Rdata"))
-    
-    load(file.path(Rdata_path,"l2_vars.Rdata"))
-   
-    
-    vl1   <- l3srvy_varlist #srvy_vars[!srvy_vars%in%rm_var_list]
-    vl2   <- l3wk_varlist# weekly_vars[!weekly_vars%in%rm_wk_list]
-    
-    # add in largeZoop (gets generated in make_indices_region_new.R)
-    vl <- c(unique(c(vl1,vl2)),"largeZoop_integrated")
-   
-    # Identify which variables would be normally 
-    # distributed (i.e., can have negative values)
-     normvl <- c( vl[grep("pH",vl)],
-                  vl[grep("temp",vl)],
-                   vl[grep("Ben",vl)],
-                   vl[grep("Hsbl",vl)],
-                   vl[grep("shflux",vl)],
-                   vl[grep("ssflux",vl)],
-                  vl[grep("vNorth",vl)],
-                  vl[grep("uEast",vl)])
+```{r APPENDIXA, eval=F, include=T,echo=T}
 
-    normlist <- data.frame(var = vl, lognorm = "none",stringsAsFactors = F)
-    normlist$lognorm[!normlist$var%in%normvl]   <- "log"
-    normlist$lognorm[normlist$var%in%
-                       c( vl[grep("aice",vl)],
-                          vl[grep("fracbelow0",vl)],
-                          vl[grep("fracbelow1",vl)],
-                          vl[grep("fracbelow2",vl)])]  <- "logit"
+  # --------------------------------------
+  # SETUP WORKSPACE
+  # rm(list=ls())
+  # setwd("D:/GitHub_cloud/ACLIM2")
+  # setwd("/Volumes/LaCie/GitHub_cloud/ACLIM2")
+  # loads packages, data, setup, etc.
+  source("R/sub_scripts/APPENDIX_A.R")
 
-    
-    sv_bc    <- c("largeZoop_integrated","fracbelow2",
-                   "temp_bottom5m","temp_surface5m","pH_depthavg")
-    sv_bc <- NULL  # bias correct all indices
-      
-    weekly_vars <- c(weekly_vars,"largeZoop_integrated")
-    srvy_vars <- c(srvy_vars,"largeZoop_integrated")
-    save(normlist,file      = file.path(Rdata_path,"normlist.Rdata"))
-    write.csv(normlist,file = file.path(Rdata_path,"normlist.csv"))
-    save(weekly_vars,file   = "Data/out/weekly_vars.Rdata")
-    save(srvy_vars,file     = "Data/out/srvy_vars.Rdata")
-    write.csv(normlist,file = file.path("Data/out/","normlist.csv"))
-    
-    
-    # generate indices and bias corrected projections 
-    # this takes about 30 mins each
-    # -------------------------------------------
-    # CMIP6 K20P19
-    # -------------------------------------------
-     
-      
-      gcmcmipL <- c("B10K-K20P19_CMIP6_miroc",
-                    "B10K-K20P19_CMIP6_gfdl",
-                    "B10K-K20P19_CMIP6_cesm") 
-  
-      # make bc indices for strata specific values:
-        tmp <- suppressMessages(makeACLIM2_BC_Indices_new(
-          bystrata  = TRUE,
-          BC_target = "mn_val",
-          ref_yrsIN = 1980:2013,
-          sv = sv_bc,
-          smoothIT  = TRUE,
-          CMIP_fdlr ="K20P19_CMIP6",
-          scenIN    = c("ssp126","ssp585"),
-          hind_sim  =  "B10K-K20P19_CORECFS",
-          histLIST  = paste0(gcmcmipL,"_historical"),
-          gcmcmipLIST  = gcmcmipL,
-          usehist      = TRUE,
-          Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
-          regnm        = "ACLIMregion",
-          srvynm       = "ACLIMsurveyrep",
-          normlist_IN  = normlist,
-          sim_listIN   = sim_list[-grep("historical",sim_list)],
-          gcinfoIN     = FALSE))
-        
-      # fn <-"ACLIMregion_B10K-K20P19_CMIP6_cesm_ssp585_BC_fut.Rdata"
-      # load(file.path("Data/out","K20P19_CMIP6","BC_ACLIMregion",fn))
-  
-        rplc_bcplot <-TRUE
-        source("R/sub_scripts/plot_BC_stratawk.R")
-        
-        
-         # make bc indices for survey rep stations
-        tmp2<- suppressMessages(makeACLIM2_BC_Indices_new(
-          bystrata  = FALSE,
-          BC_target = "mn_val",
-           sv = sv_bc,
-          smoothIT  = TRUE,
-          CMIP_fdlr ="K20P19_CMIP6",
-          scenIN    = c("ssp126","ssp585"),
-          hind_sim  =  "B10K-K20P19_CORECFS",
-          histLIST  = paste0(gcmcmipL,"_historical"),
-          gcmcmipLIST = gcmcmipL,
-          usehist     = TRUE,
-          Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
-          regnm       = "ACLIMregion",
-          srvynm      = "ACLIMsurveyrep",
-          normlist_IN = normlist,
-          sim_listIN  = sim_list[-grep("historical",sim_list)],
-          gcinfoIN    = FALSE))
-      
-        #make ACLIM level 4 indices (annual, mont    
-        
-        suppressMessages(makeACLIM2_L4_Indices_strata(
-          CMIP_fdlr   = "Data/out/K20P19_CMIP6",
-          CMIP        = "CMIP6",
-          scenIN      = c("ssp126","ssp585"),
-          hind_sim    = "B10K-K20P19_CORECFS",
-          gcmcmipLIST = gcmcmipL,
-          subfldr     = "BC_ACLIMregion",
-          sim_listIN  = sim_list, 
-          varlistIN   = normlist$var,
-          prefix      = "ACLIMregion"))
-        gc()
-        
-         suppressMessages(makeACLIM2_L4_Indices_survey(
-          CMIP_fdlr   = "Data/out/K20P19_CMIP6",
-          CMIP        = "CMIP6",
-          scenIN      = c("ssp126","ssp585"),
-          hind_sim    = "B10K-K20P19_CORECFS",
-          gcmcmipLIST = gcmcmipL,
-          subfldr     = "BC_ACLIMsurveyrep",
-          sim_listIN  = sim_list, 
-          varlistIN   = normlist$var,
-          prefix      = "ACLIMsurveyrep"))
-      
-         source("R/sub_scripts/plot_NEBSnSEBS.R")
-    # -------------------------------------------
-    # CMIP5 K20P19
-    # -------------------------------------------
-    
-      gcmcmipL2 <- c("B10K-K20P19_CMIP5_MIROC",
-                     "B10K-K20P19_CMIP5_GFDL",
-                     "B10K-K20P19_CMIP5_CESM")
-      # make bc indices for strata specific values:
-        tmp <- suppressMessages(makeACLIM2_BC_Indices_new(
-          bystrata  = TRUE,
-          BC_target = "mn_val",
-          ref_yrsIN = 1980:2020,
-          sv        = sv_bc,
-          smoothIT  = TRUE,
-          CMIP_fdlr ="K20P19_CMIP5",
-          scenIN    = c("rcp45","rcp85"),
-          hind_sim  =  "B10K-K20P19_CORECFS",
-          histLIST  = gcmcmipL2,
-          gcmcmipLIST  = gcmcmipL2,
-          usehist      = FALSE,
-          Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
-          regnm        = "ACLIMregion",
-          srvynm       = "ACLIMsurveyrep",
-          normlist_IN  = normlist,
-          sim_listIN   = sim_list[-grep("historical",sim_list)],
-          gcinfoIN     = FALSE))
-        
-        
-        # rplc_bcplot <-TRUE
-        # source("R/sub_scripts/plot_BC_stratawk.R")
-        # 
-        
-         # make bc indices for survey rep stations
-        tmp2<- suppressMessages(makeACLIM2_BC_Indices_new(
-          bystrata  = FALSE,
-          BC_target = "mn_val",
-           sv = sv_bc, 
-          smoothIT  = TRUE,
-          CMIP_fdlr ="K20P19_CMIP5",
-          scenIN    = c("rcp45","rcp85"),
-          hind_sim  =  "B10K-K20P19_CORECFS",
-          histLIST  = gcmcmipL2,
-          gcmcmipLIST  = gcmcmipL2,
-          usehist     = FALSE,
-          Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
-          regnm       = "ACLIMregion",
-          srvynm      = "ACLIMsurveyrep",
-          normlist_IN = normlist,
-          sim_listIN  = sim_list[-grep("historical",sim_list)],
-          gcinfoIN    = FALSE))
-        
-        suppressMessages(makeACLIM2_L4_Indices_strata(
-          CMIP_fdlr   = "Data/out/K20P19_CMIP5",
-          CMIP        = "CMIP5",
-          scenIN    = c("rcp45","rcp85"),
-          hind_sim    = "B10K-K20P19_CORECFS",
-          gcmcmipLIST = gcmcmipL2,
-          subfldr     = "BC_ACLIMregion",
-          sim_listIN  = sim_list, 
-          varlistIN   = normlist$var,
-          prefix      = "ACLIMregion"))
-        gc()
-        
-         suppressMessages(makeACLIM2_L4_Indices_survey(
-          CMIP_fdlr   = "Data/out/K20P19_CMIP5",
-          CMIP        = "CMIP5",
-          scenIN    = c("rcp45","rcp85"),
-          hind_sim    = "B10K-K20P19_CORECFS",
-          gcmcmipLIST = gcmcmipL2,
-          subfldr     = "BC_ACLIMsurveyrep",
-          sim_listIN  = sim_list, 
-          varlistIN   = normlist$var,
-          prefix      = "ACLIMsurveyrep"))
-
-# APPENDIX B: Create & bias correct ACLIM2 indices to IEA the operational hindcast
-
-
-    # --------------------------------------
-    # SETUP WORKSPACE
-    # rm(list=ls())
-    # setwd("D:/GitHub_cloud/ACLIM2")
-    # loads packages, data, setup, etc.
-    # generate indices and bias corrected projections 
-    # this takes about 30 mins each
-    # -------------------------------------------
-    # CMIP6 K20P19
-    # -------------------------------------------
-    sv_bc <- NULL
-      gcmcmipL <- c("B10K-K20P19_CMIP6_miroc",
-                    "B10K-K20P19_CMIP6_gfdl",
-                    "B10K-K20P19_CMIP6_cesm") 
-      # make bc indices for strata specific values:
-        tmp <- suppressMessages(makeACLIM2_operational_Indices_new(
-          bystrata  = TRUE,
-          BC_target = "mn_val",
-          sv        = sv_bc,
-          ref_yrsIN = 1980:2013,
-          smoothIT  = TRUE,
-          CMIP_fdlr ="K20P19_CMIP6",
-          scenIN    = c("ssp126","ssp585"),
-          hind_sim  = "OperationalHindcast",
-          histLIST  = paste0(gcmcmipL,"_historical"),
-          gcmcmipLIST  = gcmcmipL,
-          usehist      = TRUE,
-          Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
-          regnm        = "ACLIMregion",
-          srvynm       = "ACLIMsurveyrep",
-          normlist_IN  = normlist,
-          sim_listIN   = sim_list[-grep("historical",sim_list)],
-          gcinfoIN     = FALSE))
-        
-        
-         # make bc indices for survey rep stations
-        tmp2<- suppressMessages(makeACLIM2_operational_Indices_new(
-          bystrata  = FALSE,
-          BC_target = "mn_val",
-          sv = sv_bc, 
-          smoothIT  = TRUE,
-          CMIP_fdlr ="K20P19_CMIP6",
-          scenIN    = c("ssp126","ssp585"),
-          hind_sim  =  "OperationalHindcast",
-          histLIST  = paste0(gcmcmipL,"_historical"),
-          gcmcmipLIST = gcmcmipL,
-          usehist     = TRUE,
-          Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
-          regnm       = "ACLIMregion",
-          srvynm      = "ACLIMsurveyrep",
-          normlist_IN = normlist,
-          sim_listIN  = sim_list[-grep("historical",sim_list)],
-          gcinfoIN    = FALSE))
-
-    
-        #make ACLIM level 4 indices (annual, monthly, seasonal, weekly)
-        
-        suppressMessages(makeACLIM2_L4_Indices_strata(
-          CMIP_fdlr   = "Data/out/K20P19_CMIP6",
-          ophind      = TRUE,
-          CMIP        = "CMIP6",
-          scenIN      = c("ssp126","ssp585"),
-          hind_sim    = "OperationalHindcast",
-          gcmcmipLIST = gcmcmipL,
-          subfldr     = "BC_ACLIMregion",
-          sim_listIN  = sim_list, 
-          varlistIN   = normlist$var,
-          #varlistIN   = c("aice","largeZoop_integrated"),
-          prefix      = "ACLIMregion"))
-        gc()
-        
-         suppressMessages(makeACLIM2_L4_Indices_survey(
-          CMIP_fdlr   = "Data/out/K20P19_CMIP6",
-          ophind      = TRUE,
-          CMIP        = "CMIP6",
-          scenIN      = c("ssp126","ssp585"),
-          hind_sim    = "OperationalHindcast",
-          gcmcmipLIST = gcmcmipL,
-          subfldr     = "BC_ACLIMsurveyrep",
-          sim_listIN  = sim_list, 
-          varlistIN   = normlist$var,
-          prefix      = "ACLIMsurveyrep"))
-           
-    if(1==10){
-      
-    #Skip this for now
-      
-    # -------------------------------------------  
-    # CMIP5 H16
-    # -------------------------------------------
-    gcmcmipL2 <- c("B10K-H16_CMIP5_MIROC",
-                   "B10K-H16_CMIP5_GFDL",
-                   "B10K-H16_CMIP5_CESM") 
- 
-     tmp <- suppressMessages(makeACLIM2_BC_Indices_new(
-          bystrata  = TRUE,
-          BC_target = "mn_val",
-          sv        = NULL,
-          ref_yrsIN = 1980:2020,
-          smoothIT  = TRUE,
-          CMIP_fdlr ="B10K_H16",
-          scenIN    = c("rcp45","rcp85"),
-          hind_sim  =  "B10K-H16_CORECFS",
-          histLIST  = gcmcmipL2,
-          gcmcmipLIST  = gcmcmipL2,
-          usehist      = FALSE,
-          Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
-          regnm        = "ACLIMregion",
-          srvynm       = "ACLIMsurveyrep",
-          normlist_IN  = normlist,
-          sim_listIN   = sim_list[-grep("historical",sim_list)],
-          gcinfoIN     = FALSE))
-        
-         # make bc indices for survey rep stations
-        tmp2<- suppressMessages(makeACLIM2_BC_Indices_new(
-          bystrata  = FALSE,
-          BC_target = "mn_val",
-           sv = sv_bc, 
-          smoothIT  = TRUE,
-          CMIP_fdlr ="B10K_H16",
-          scenIN    = c("rcp45","rcp85"),
-          hind_sim  =  "B10K-H16_CORECFS",
-         histLIST  = gcmcmipL2,
-          gcmcmipLIST  = gcmcmipL2,
-          usehist     = FALSE,
-          Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
-          regnm       = "ACLIMregion",
-          srvynm      = "ACLIMsurveyrep",
-          normlist_IN = normlist,
-          sim_listIN  = sim_list[-grep("historical",sim_list)],
-          gcinfoIN    = FALSE))
-        #make ACLIM level 4 indices (annual, monthly, seasonal, weekly)
-        
-        suppressMessages(makeACLIM2_L4_Indices_strata(
-          CMIP_fdlr   = "Data/out/K20P19_CMIP5",
-          CMIP        = "CMIP5",
-          scenIN    = c("rcp45","rcp85"),
-          hind_sim    = "B10K-H16_CORECFS",
-          gcmcmipLIST = gcmcmipL2,
-          subfldr     = "BC_ACLIMregion",
-          sim_listIN  = sim_list, 
-          varlistIN   = normlist$var,
-          prefix      = "ACLIMregion"))
-        gc()
-        
-         suppressMessages(makeACLIM2_L4_Indices_survey(
-          CMIP_fdlr   = "Data/out/K20P19_CMIP5",
-          CMIP        = "CMIP5",
-          scenIN    = c("rcp45","rcp85"),
-          hind_sim    = "B10K-H16_CORECFS",
-          gcmcmipLIST = gcmcmipL2,
-          subfldr     = "BC_ACLIMsurveyrep",
-          sim_listIN  = sim_list, 
-          varlistIN   = normlist$var,
-          prefix      = "ACLIMsurveyrep"))
-         }
-         
-         
-         
-
-         
 ```
 
 <!-- # APPENDIX B: Create & bias correct ACLIM2 indices to operational hindcast -->
@@ -2239,8 +1873,8 @@ file.copy(from=paste0("ACLIM2_quickStart",".html"),to=paste0("index",".html"),ov
 # file.remove(paste0("README",".md"))
 
 # source("R/make.R")
-rmd2md # copy and paste this into R window (won't work within markdown)
- (rmd_fl = "ACLIM2_quickStart",md_fl = "README")
+# copy and paste this into R window (won't work within markdown)
+rmd2md(rmd_fl = "ACLIM2_quickStart",md_fl = "README")
 
 
 ```

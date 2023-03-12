@@ -7,7 +7,8 @@
 
 
 
-get_indices_hind_srvy <- function(datIN, group_byIN){
+get_indices_hind_srvy <- function(datIN, group_byIN,qry_dateIN=NA){
+  
   annual <- datIN%>%
     ungroup()%>%
     group_by(across(all_of(c(group_byIN,"year",
@@ -17,11 +18,9 @@ get_indices_hind_srvy <- function(datIN, group_byIN){
     mutate(mn_val_Area     = strata_area_km2*mn_val,
            val_raw_Area    = strata_area_km2*val_raw,
            mnVal_hind_Area = strata_area_km2*mnVal_hind,
-           
            AREA_mn_val     = strata_area_km2*(1+(mn_val*0)),
            AREA_val_raw    = strata_area_km2*(1+(val_raw*0)),
-           AREA_mnVal_hind = strata_area_km2*(1+(mnVal_hind*0))
-           )%>%
+           AREA_mnVal_hind = strata_area_km2*(1+(mnVal_hind*0)))%>%
     ungroup()%>%
     #now summarize across all of EBS Basins:
     group_by(across(all_of(c(group_byIN,"year"))))%>%
@@ -46,7 +45,7 @@ get_indices_hind_srvy <- function(datIN, group_byIN){
   
 }
 
-get_indices_hist_srvy <- function(datIN, group_byIN){
+get_indices_hist_srvy <- function(datIN, group_byIN,qry_dateIN=NA){
   annual <- datIN%>%
     ungroup()%>%
     group_by(across(all_of(c(group_byIN,"year",

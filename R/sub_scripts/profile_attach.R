@@ -47,6 +47,7 @@ rm(pb)
 abcsub <- abc_sim[seq(1,length(abc_sim),round(length(abc_sim)/5))]
 
 dat <- (simdat%>%left_join(out))
+#save(dat,file= "Data/NotShared/profile_attach2022.Rdata")
 
 ggplot(na.omit(dat)) + 
   geom_point(aes(x=PollockABC,y =Pollock, color=(PCodABC)))+
@@ -65,14 +66,14 @@ ggplot(dat%>%filter(ArrowtoothABC%in%(abcsub/10),PCodABC%in%(abcsub/10))) +
   geom_line(aes(x=ArrowtoothABC,y =Pollock, color=factor(PollockABC)),size=1)+
   facet_grid(factor(PCodABC)~scenario)+theme_minimal()
 
-
-ggplot(dat%>%filter(ArrowtoothABC%in%abcsub/10,PollockABC%in%abcsub)) + 
-  geom_line(aes(x=PCodABC,y =PCod, color=factor(PollockABC)),size=1)+
-  facet_grid(factor(ArrowtoothABC)~scenario)+theme_minimal()
-
-ggplot(dat%>%filter(PCodABC%in%abcsub/10,PollockABC%in%abcsub)) + 
-  geom_line(aes(x=ArrowtoothABC,y =Arrowtooth, color=factor(PollockABC)),size=1)+
-  facet_grid(factor(PCodABC)~scenario)+theme_minimal()
+# 
+# ggplot(dat%>%filter(ArrowtoothABC%in%abcsub/10,PollockABC%in%abcsub)) + 
+#   geom_line(aes(x=PCodABC,y =PCod, color=factor(PollockABC)),size=1)+
+#   facet_grid(factor(ArrowtoothABC)~scenario)+theme_minimal()
+# 
+# ggplot(dat%>%filter(PCodABC%in%abcsub/10,PollockABC%in%abcsub)) + 
+#   geom_line(aes(x=ArrowtoothABC,y =Arrowtooth, color=factor(PollockABC)),size=1)+
+#   facet_grid(factor(PCodABC)~scenario)+theme_minimal()
 
 
 

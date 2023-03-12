@@ -30,6 +30,7 @@ get_var_ophind <- function(
   facet_colIN  = "scen", # ,"col",selected=c("scen"),choices=c("bc","basin","scen"), multiple=F),
   removeyr1    = T  #"Remove first year of projection ( burn in)"
 ){
+  scenINuse <- scenIN
   
   for(c in 1:length(CMIPIN)){
     load(paste0("Data/out/",CMIPIN[c],"/allEBS_means/ACLIM_",typeIN,"_operational_hind_mn.Rdata"))
@@ -73,35 +74,37 @@ get_var_ophind <- function(
       dfut  <- dfut%>%dplyr::filter(year>yrin)
     }
     CMIP       <- CMIPIN[c]
+    if(is.null(scenIN))
+      scenINuse <- unique(dfut$RCP)
     
-    for(s in 1:length(scenIN)){
+    for(s in 1:length(scenINuse)){
       
       if(s ==1){
         dhinda <- dhindIN%>%
-          dplyr::mutate(scen = scenIN[s],gcmcmip="hind",GCM ="hind",GCM2="hind")%>%
+          dplyr::mutate(scen = scenINuse[s],gcmcmip="hind",GCM ="hind",GCM2="hind")%>%
           filter(mnDate<=stitchDateIN)
         dhind_op <- dhindIN_op%>%
-          dplyr::mutate(scen = scenIN[s],gcmcmip="hind",GCM ="hind",GCM2="hind_op")%>%
+          dplyr::mutate(scen = scenINuse[s],gcmcmip="hind",GCM ="hind",GCM2="hind_op")%>%
           filter(mnDate>stitchDateIN)
         dhind <- rbind(dhinda,dhind_op)
         dhist <- dhistIN%>%
-          dplyr::mutate(scen = scenIN[s],gcmcmip="hist",GCM2="hist")
+          dplyr::mutate(scen = scenINuse[s],gcmcmip="hist",GCM2="hist")
       }
       if(s>1){
-        dhinda <- dhindIN%>%dplyr::mutate(scen = scenIN[s],gcmcmip="hind",GCM ="hind",GCM2="hind")%>%
+        dhinda <- dhindIN%>%dplyr::mutate(scen = scenINuse[s],gcmcmip="hind",GCM ="hind",GCM2="hind")%>%
           filter(mnDate<=stitchDateIN)
-        dhind_op <- dhindIN_op%>%dplyr::mutate(scen = scenIN[s],gcmcmip="hind",GCM ="hind",GCM2="hind_op")%>%
+        dhind_op <- dhindIN_op%>%dplyr::mutate(scen = scenINuse[s],gcmcmip="hind",GCM ="hind",GCM2="hind_op")%>%
           filter(mnDate>stitchDateIN)
         dhindb <- rbind(dhinda,dhind_op)
         
         dhind <- rbind(dhind,dhindb)
-        dhist <- rbind(dhist,dhistIN%>%dplyr::mutate(scen = scenIN[s],gcmcmip="hist",GCM2="hist"))
+        dhist <- rbind(dhist,dhistIN%>%dplyr::mutate(scen = scenINuse[s],gcmcmip="hist",GCM2="hist"))
       }
     }
     #dhind<-dhind%>%ungroup()%>%group_by(all_of(c("var",groupbyIN)))%>%ungroup()
     dhind_op <- dhind%>%filter(GCM2 =="hind_op")
     sellist  <- c(groupbyIN,"var","basin", "jday","mnDate","val_raw","mn_val","sd_val", "sim","gcmcmip","GCM",
-                  "GCM2","scen","sim_type" ,"units")
+                  "GCM2","scen","sim_type")
     if(any(dhind_op$var%in%plotvar)){
      
       hind     <- dhind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%
@@ -111,7 +114,7 @@ get_var_ophind <- function(
         dplyr::select(all_of(sellist))%>%
         mutate(mnVal_hind=NA,val_delta = mn_val,val_biascorrected=mn_val)
       
-      fut      <- dfut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%mutate(GCM2 = GCM)%>%
+      fut      <- dfut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%mutate(GCM2 = GCM,scen=RCP)%>%
         dplyr::select(all_of(c(sellist,"mnVal_hind","val_delta","val_biascorrected")))
      
     }else{
@@ -124,7 +127,7 @@ get_var_ophind <- function(
         dplyr::select(all_of(sellist))%>%
         mutate(mnVal_hind=NA,val_delta = mn_val,val_biascorrected=mn_val)
       
-      fut      <- dfut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%mutate(GCM2 = GCM)%>%
+      fut      <- dfut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%mutate(GCM2 = GCM,scen=RCP)%>%
         dplyr::select(all_of(c(sellist,"mnVal_hind","val_delta","val_biascorrected")))
       
       lastyr <- max( hind0%>%select(year))
@@ -134,7 +137,7 @@ get_var_ophind <- function(
       fillyr <- (lastyr+1):maxyr
       
       fillmat <- dhind_op%>%
-        select(all_of(c(sellist[!sellist%in%c("mn_val","var","units","sim","GCM2")],"mnVal_hind")))%>%
+        select(all_of(c(sellist[!sellist%in%c("mn_val","var","sim","GCM2")],"mnVal_hind")))%>%
        distinct()%>%mutate(var=plotvar)
       
       mn     <- dhind%>%
@@ -168,13 +171,18 @@ get_var_ophind <- function(
     }
     
   }
+  if(is.null(scenIN))
+    scenINuse <- unique(plotdatout$scen)
+  
+  if(is.null(GCMIN))
+    GCMIN <- unique(plotdatout$GCM)
   
   gcmlist<- c("hind",GCMIN)
   
   if(plothist)
     gcmlist<- c("hind","hist",GCMIN)
   plotdatout <- plotdatout%>%dplyr::filter(
-    scen%in%scenIN,GCM%in%gcmlist,
+    scen%in%scenINuse,GCM%in%gcmlist,
     bc%in%bcIN)
   
   if(!is.null(SeasonIN))
@@ -188,7 +196,7 @@ get_var_ophind <- function(
  
   if(!plothist)
     plotdatout<- plotdatout%>%dplyr::filter(gcmcmip!="hist")
-  units      <- plotdatout$units[1]
+  #units      <- plotdatout$units[1]
   plotdatout$type <- typeIN
   
   nyrs       <- length(unique(plotdatout$year))
@@ -205,7 +213,7 @@ get_var_ophind <- function(
     geom_smooth(aes(x=mnDate,y=val_use,color= GCM_scen,fill=GCM_scen_sim,linetype = basin),alpha=0.1,method="loess",formula='y ~ x',span = .5)+
     theme_minimal() + 
     labs(x="Date",
-         y=paste(plotvar,"(",units,")"),
+         #y=plotvar,"(",units,")"),
          subtitle = "",
          legend = "",
          title = paste(plotvar,"(",plotbasin,",",typeIN,")"))+

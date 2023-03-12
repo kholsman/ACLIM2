@@ -33,10 +33,10 @@ unlink_val <- function(indat,
                            log_adj =1e-4,
                            bc_keep = NULL,
                            roundn = 5,
-                           listIN = c("mn_val","mnVal_hind","mnVal_hist"),
-                           rmlistIN = c("sdVal_hind", "seVal_hind", "sdVal_hind_mo", "sdVal_hind_yr",
-                                        "sdVal_hist", "seVal_hist", "sdVal_hist_mo", "sdVal_hist_yr",
-                                        "nVal_hist","nVal_hind")){
+                           listIN = c("mn_val","mnVal_hind","mnVal_hist"), rmlistIN =NULL){
+                           # rmlistIN = c("sdVal_hind", "seVal_hind", "sdVal_hind_mo", "sdVal_hind_yr",
+                           #              "sdVal_hist", "seVal_hist", "sdVal_hist_mo", "sdVal_hist_yr",
+                           #              "nVal_hist","nVal_hind")){
   
   if(!any(indat$lognorm%in%c("none","log","logit"))){
     stop("bias_correct_new_strata: problem with lognorm, must be 'none', 'log' or 'logit' for each var")
@@ -68,8 +68,9 @@ unlink_val <- function(indat,
     
   }
   
-  out <- rbind(subA, subB, subC)%>%
-    mutate(mn_val=round(mn_val,roundn))%>%select(-all_of(rmlistIN))
+  out <- rbind(subA, subB, subC)
+  #%>%
+  #  mutate(mn_val=round(mn_val,roundn)) #%>%select(-all_of(rmlistIN))
   
   return(out)
 }

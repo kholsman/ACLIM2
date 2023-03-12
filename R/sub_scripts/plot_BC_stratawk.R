@@ -31,9 +31,9 @@ for (sim in simL){
     
     
     p <- ggplot(data=fut%>%filter(var==varIN,strata==70,year%in%c(2024,2050,2090)))+
-      geom_line(aes(x=jday,y=val_raw,linetype="raw",color=factor(year)),size=.8)+
+      geom_line(aes(x=jday,y=val_raw,linetype="a) raw",color=factor(year)),size=.8)+
       geom_line(aes(x=jday,y=val_biascorrectedwk,
-                    linetype="bias correctedwk",color=factor(year)),size=.8)+
+                    linetype="b) bias correctedwk",color=factor(year)),size=.8)+
       geom_line(aes(x=jday,y=mnVal_hind,color="mnVal_hind"),size=1.2)+
       geom_line(aes(x=jday,y=mnVal_hist,color="mnVal_hist"),size=1.2)+
       theme_minimal()+ylab(varIN)
@@ -43,9 +43,9 @@ for (sim in simL){
     dev.off()
     rm(p)
     p <- ggplot(data=fut%>%filter(var==varIN,strata==70,year%in%c(2024,2050,2090)))+
-      geom_line(aes(x=jday,y=val_raw,linetype="raw",color=factor(year)),size=.8)+
+      geom_line(aes(x=jday,y=val_raw,linetype="a) raw",color=factor(year)),size=.8)+
       geom_line(aes(x=jday,y=val_delta,
-                    linetype="val_delta",color=factor(year)),size=.8)+
+                    linetype="b) val_delta",color=factor(year)),size=.8)+
       geom_line(aes(x=jday,y=mnVal_hind,color="mnVal_hind"),size=1.2)+
       geom_line(aes(x=jday,y=mnVal_hist,color="mnVal_hist"),size=1.2)+
       theme_minimal()+ylab(varIN)

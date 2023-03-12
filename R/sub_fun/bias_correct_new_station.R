@@ -16,16 +16,17 @@ bias_correct_new_station <- function(
   
   hind_clim  = mn_hind%>%filter(var==v),
   hist_clim  = mn_hist%>%filter(var==v),
-  futIN2      = futIN%>%filter(var==v),
+  futIN2     = futIN%>%filter(var==v),
+  usehist    = usehist,
   roundn     = 5,
-  sf = "bcwk",  #bcwk  bcmo bcyr
+  sf         = "bcwk",  #bcwk  bcmo bcyr
   byStrata   = FALSE, # bias correct across years and regions
   seasonsIN  = seasons,
   group_byIN = c("var","lognorm","basin","strata","strata_area_km2","station_id","latitude", "longitude"),
   normlistIN =  normlist,
-  smoothIT     = TRUE,
+  smoothIT   = TRUE,
   log_adj    = 1e-4,
-  group_byout =NULL,
+  group_byout= NULL,
   outlist    = c("year","units",
                  #"rm(list=c("proj_wk","projA"))long_name","sim","bcIT","val_delta",
                  "sim","sim_type",
@@ -50,17 +51,11 @@ bias_correct_new_station <- function(
   }else{
     group_byout <- c(group_byIN,group_byout)
   }
-  hist_clim <- hist_clim%>%select(-"strata_area_km2",-"lognorm",-"sim_type",-"strata")
-  
-  hind_clim <- hind_clim%>%select(-"sim_type")
-  
-  #load(file="data/out/tmp/futIN.Rdata")
-  refout  <- left_join(hind_clim,hist_clim%>%select(all_of(c("station_id","var",
-    "mnVal_hist","sdVal_hist","nVal_hist","seVal_hist","sdVal_hist_strata","sdVal_hist_yr"))
-  ))
-  futIN2  <- futIN2%>%left_join(refout%>%select(-"long_name",-"strata_area_km2",
-                                                 -"lognorm",-"latitude",-"longitude",
-                                                 -"strata",-"basin",-"sim",-"units"))
+
+
+  refout  <- left_join(hind_clim%>%select(-"strata_area_km2",-"lognorm",-"sim_type",-"strata",-"sim",-"units",-"long_name",-"latitude", -"longitude", -"basin"),
+                       hist_clim%>%select(-"gcmsim",-"strata_area_km2",-"lognorm",-"sim_type",-"strata",-"sim",-"units",-"long_name",-"latitude", -"longitude", -"basin", -"RCP2"))
+  futIN2  <- futIN2%>%left_join(refout)
  
   # Ho et al. 2012
   futIN2$sf_station  <-
@@ -127,78 +122,7 @@ bias_correct_new_station <- function(
        mutate( val_delta_adj =   round(
          exp(log(mnVal_hind+log_adj) + ((log( mn_val+log_adj)-log(  mnVal_hist+log_adj))))-log_adj
          ,roundn))
-  # 
-  # if(!any(futIN2$lognorm%in%c("none","log","logit"))){
-  #   stop("bias_correct_new_station: problem with lognorm, must be 'none', 'log' or 'logit' for each var")
-  # }else{
-  #   sdfun<-function(x){
-  #     x[x==0]   <- 1
-  #     x[x==Inf] <- 1
-  #     
-  #     x  
-  #   }
-  #   
-  #   subA <- futIN2%>%filter(lognorm=="none")%>%mutate(
-  #     mnval_adj     = mn_val,
-  #     sf_station    = abs(  sdVal_hind/sdVal_hist),
-  #     sf_strata     = abs(  sdVal_hind_strata/  sdVal_hist_strata),
-  #     sf_yr         = abs(  sdVal_hind_yr/  sdVal_hist_yr))%>%
-  #     mutate_at(c("sf_station","sf_strata","sf_yr"),sdfun)%>%
-  #     mutate(
-  #     val_delta     = mnVal_hind + (( mn_val-  mnVal_hist)),
-  #     val_bcstation = mnVal_hind + ( sf_station*( mn_val- mnVal_hist)),
-  #     val_bcstrata  = mnVal_hind + ( sf_strata*( mn_val- mnVal_hist)),
-  #     val_bcyr      = mnVal_hind + ( sf_yr*( mn_val- mnVal_hist)))
-  #   
-  #   subB<- futIN2%>%filter(lognorm=="logit")%>%mutate(
-  #     mnval_adj     = inv.logit(mn_val)-log_adj,
-  #     sf_station    = abs(  sdVal_hind/  sdVal_hist),
-  #     sf_strata     = abs(  sdVal_hind_strata/  sdVal_hist_strata),
-  #     sf_yr         = abs(  sdVal_hind_yr/  sdVal_hist_yr))%>%
-  #     mutate_at(c("sf_station","sf_strata","sf_yr"),sdfun)%>%
-  #     mutate(
-  #     val_delta     = round(inv.logit(mnVal_hind + (( mn_val-  mnVal_hist)))-log_adj,roundn),
-  #     val_bcstation = round(inv.logit(mnVal_hind + ( sf_station*( mn_val- mnVal_hist)))-log_adj,roundn),
-  #     val_bcstrata  = round(inv.logit(mnVal_hind + ( sf_strata*( mn_val- mnVal_hist)))-log_adj,roundn),
-  #     val_bcyr      = round(inv.logit(mnVal_hind + ( sf_yr*( mn_val- mnVal_hist)))-log_adj,roundn))%>%
-  #     mutate_at(c("val_delta","val_bcstation","val_bcstrata","val_bcyr"),function(x){x[x<0]<-0;  x  })
-  #   
-  #   
-  #   subC<- futIN2%>%filter(lognorm=="log")%>%mutate(
-  #     mnval_adj     = exp(mn_val)-log_adj,
-  #     sf_station    = abs(  sdVal_hind/  sdVal_hist),
-  #     sf_strata     = abs(  sdVal_hind_strata/  sdVal_hist_strata),
-  #     sf_yr         = abs(  sdVal_hind_yr/  sdVal_hist_yr))%>%
-  #     mutate_at(c("sf_station","sf_strata","sf_yr"),sdfun)%>%
-  #     mutate(
-  #     val_delta     = round(exp(mnVal_hind + (( mn_val-  mnVal_hist)))-log_adj,roundn),
-  #     val_bcstation = round(exp(mnVal_hind + ( sf_station*( mn_val- mnVal_hist)))-log_adj,roundn),
-  #     val_bcstrata  = round(exp(mnVal_hind + ( sf_strata*( mn_val- mnVal_hist)))-log_adj,roundn),
-  #     val_bcyr      = round(exp(mnVal_hind + ( sf_yr*( mn_val- mnVal_hist)))-log_adj,roundn))%>%
-  #     mutate_at(c("val_delta","val_bcstation","val_bcstrata","val_bcyr"),function(x){x[x<0]<-0;  x  })
-  #   
-  # }
-  # futout <- rbind(subA, subB, subC)%>%
-  #   rename(
-  #     val_biascorrectedstation = val_bcstation,
-  #     val_biascorrectedstrata = val_bcstrata,
-  #     val_biascorrectedyr = val_bcyr)%>%
-  #   mutate(mn_val=round(mnval_adj,roundn))%>%select(-mnval_adj)
-  # rm(list=c("subA","subB","subC"))
-  # 
-  # 
-  # # hindIN2 <-  unlink_val(indat=hindIN)
-  # # histIN2 <-  unlink_val(indat=histIN)
-  # futout  <-  unlink_val(indat=futout,
-  #                        log_adj  = log_adj,
-  #                        roundn   = roundn,
-  #                        listIN = c("mnVal_hind","mnVal_hist"),
-  #                        rmlistIN = c("sdVal_hind", "seVal_hind", "sdVal_hind_strata", "sdVal_hind_yr",
-  #                                     "sdVal_hist", "seVal_hist", "sdVal_hist_strata", "sdVal_hist_yr",
-  #                                     "nVal_hist","nVal_hind"))
-  # 
-  # 
-       
+
        futout <- rbind(subA, subB, subC)
        rm(list=c("subA","subB","subC"))
        
@@ -209,7 +133,10 @@ bias_correct_new_station <- function(
       geom_line(aes(x=mnjday,y=val_biascorrectedwk,linetype="bias corrected",color=factor(year)),size=1.1)+
       theme_minimal()+ylab("aice")
   }
-  
+   if(sf =="val_delta")
+     futout$val_biascorrected <- futout$val_delta
+   if(sf =="val_delta_adj")
+     futout$val_biascorrected <- futout$val_delta_adj
   if(sf =="bcstation")
     futout$val_biascorrected <- futout$val_biascorrectedstation
   if(sf =="bcstrata")

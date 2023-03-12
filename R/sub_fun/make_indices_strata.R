@@ -27,7 +27,7 @@ make_indices_strata <- function(
 
   if("largeZoop_integrated"%in%svIN){
     # get large zooplankton as the sum of euph and NCaS
-    cat("adding large Zoop \n")
+    cat("        -- adding large Zoop \n")
     tmp_var_zoop    <- simIN%>%
       dplyr::filter(var%in%c("NCaS_integrated","EupS_integrated"))%>%
       dplyr::group_by(time,
@@ -76,42 +76,6 @@ make_indices_strata <- function(
   
   datIN<-datIN%>%
     dplyr::left_join(normlistIN)%>%mutate(tmpval = val)
-  
-  
-  
-  # log or logit transform data for bias correcting
-  # -------------------------------------
-  
-
-  # if(!any(datIN$lognorm%in%c("none","log","logit")))
-  #   stop("problem with lognorm, must be 'none', 'log' or 'logit' for each var")
-  # if(any(datIN$lognorm=="none")){
-  #   rr <- which(datIN$lognorm=="none")
-  #   datIN[rr,]$tmpval <- (datIN[rr,]$val)
-  #   rm(rr)
-  # }
-  # if(any(datIN$lognorm=="logit")){
-  #   myfun <- function(x){
-  #    # x <- logit(x)
-  #    # if(any(x==-Inf&!is.na(x))) x[x==-Inf&!is.na(x)] <- logit(log_adj)
-  #    # if(any(x==Inf&!is.na(x))) x[x==Inf&!is.na(x)]   <- logit(1-log_adj)
-  #    # return(x)
-  #    
-  #    if(any(x>.5&!is.na(x)))  x[x>.5&!is.na(x)]   <- logit(x[x>.5&!is.na(x)]-log_adj)
-  #    if(any(x<.5&!is.na(x))) x[x<.5&!is.na(x)]    <- logit(x[x<.5&!is.na(x)]+log_adj)
-  #    if(any(x==0.5&!is.na(x))) x[x==0.5&!is.na(x)]    <- logit(x[x==0.5&!is.na(x)])
-  #    return(x)
-  #    
-  #   }
-  #   rr <- which(datIN$lognorm=="logit")
-  #   datIN[rr,]$tmpval <- suppressWarnings(myfun(datIN[rr,]$val))
-  #   rm(rr)
-  # }
-  # if(any(datIN$lognorm=="log")){
-  #   rr <- which(datIN$lognorm=="log")
-  #   datIN[rr,]$tmpval <- suppressWarnings(log(datIN[rr,]$val + log_adj))
-  #   rm(rr)
-  # }
   
   # get weekly by year mean values
   # -------------------------------------

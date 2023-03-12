@@ -1,6 +1,6 @@
 "","var","lognorm"
-"1","Ben","none"
-"2","DetBen","none"
+"1","Ben","log"
+"2","DetBen","log"
 "3","Hsbl","none"
 "4","IceNH4","log"
 "5","IceNO3","log"

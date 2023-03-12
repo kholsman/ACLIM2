@@ -5,7 +5,7 @@
 #' 
 
 
-get_indices_hind <- function(datIN, group_byIN){
+get_indices_hind <- function(datIN, group_byIN,qry_dateIN=NA){
   weekly <- datIN%>%
     ungroup()%>%
     group_by(across(all_of(c(group_byIN,"year","season","mo","wk","jday",
@@ -77,7 +77,7 @@ get_indices_hind <- function(datIN, group_byIN){
   
 }
 
-get_indices_hist <- function(datIN, group_byIN){
+get_indices_hist <- function(datIN, group_byIN,qry_dateIN=NA){
   weekly <- datIN%>%
     ungroup()%>%
     group_by(across(all_of(c(group_byIN,"year","season","mo","wk","jday",
@@ -89,7 +89,7 @@ get_indices_hist <- function(datIN, group_byIN){
            
            AREA_mn_val     = strata_area_km2*(1+(mn_val*0)),
            AREA_val_raw    = strata_area_km2*(1+(val_raw*0)),
-           AREA_mnVal_hist    = strata_area_km2*(1+(mnVal_hist*0)) )%>%  # to get na values when applicable
+           AREA_mnVal_hist = strata_area_km2*(1+(mnVal_hist*0)) )%>%  # to get na values when applicable
     ungroup()%>%
     #now summarize across all of EBS Basins:
     group_by(across(all_of(c(group_byIN,"year","season","mo","wk"
@@ -113,6 +113,8 @@ get_indices_hist <- function(datIN, group_byIN){
            -"AREA_val_raw"  ,
            -"AREA_mnVal_hist")%>%
     mutate(mnDate =  as.Date(paste0(year,"-01-01"))+jday)%>%ungroup()
+  rm(datIN)
+  gc()
   
   monthly <- weekly%>%group_by(across(all_of(c("year","season","mo",
                                                group_byIN))))%>%

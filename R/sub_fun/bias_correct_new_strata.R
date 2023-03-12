@@ -19,6 +19,7 @@ bias_correct_new_strata <- function(
   futIN2      = futIN%>%filter(var==v),
   roundn     = 5,
   sf         = "bcwk",  #bcwk  bcmo bcyr
+  usehist = usehist,
   byStrata   = FALSE, # bias correct across years and regions
   seasonsIN  = seasons,
   ref_yrs    = 1980:2013,
@@ -44,7 +45,7 @@ bias_correct_new_strata <- function(
   }else{
     group_byout <- c(group_byIN,group_byout)
   }
-  hist_clim <- hist_clim%>%select(-"season",-"strata_area_km2",-"lognorm",-"sim_type")
+  hist_clim <- hist_clim%>%select(-"season",-"strata_area_km2",-"lognorm",-"sim_type",-"RCP2")
   hind_clim <- hind_clim%>%select(-"sim_type")
   
   #load(file="data/out/tmp/futIN.Rdata")
@@ -105,71 +106,25 @@ bias_correct_new_strata <- function(
         subA <- subB <- subC <- NULL
         subA <- futout%>%filter(lognorm=="none")%>%
           mutate(val_delta_adj =   mnVal_hind + (( mn_val-  mnVal_hist)))
-          # mutate(
-          #  mnval_adj = mn_val,
-          #  sf_wk  = abs(  sdVal_hind/  sdVal_hist),
-          #  sf_mo  = abs(  sdVal_hind_mo/  sdVal_hist_mo),
-          #  sf_yr  = abs(  sdVal_hind_yr/  sdVal_hist_yr))%>%
-          # mutate_at(c("sf_wk","sf_mo","sf_yr"),sdfun)%>%
-          # mutate(
-          #  val_delta =   mnVal_hind + (( mn_val-  mnVal_hist)),
-          #  val_bcwk  =   mnVal_hind + ( sf_wk*( mn_val- mnVal_hist)),
-          #  val_bcmo  =   mnVal_hind + ( sf_mo*( mn_val- mnVal_hist)),
-          #  val_bcyr  =   mnVal_hind + ( sf_yr*( mn_val- mnVal_hist)))
 
         subB<- futout%>%filter(lognorm=="logit")%>%
           mutate( val_delta_adj =   round(
             (inv.logit(
               logit(mnVal_hind+log_adj) + 
                         (logit(mn_val+log_adj)-logit(mnVal_hist+log_adj) ))-log_adj),roundn))
-          # mutate(
-          # mnval_adj = inv.logit(mn_val)-log_adj,
-          #   sf_wk  = abs(  sdVal_hind/  sdVal_hist),
-          #   sf_mo  = abs(  sdVal_hind_mo/  sdVal_hist_mo),
-          #   sf_yr  = abs(  sdVal_hind_yr/  sdVal_hist_yr))%>%
-          # mutate_at(c("sf_wk","sf_mo","sf_yr"),sdfun)%>%
-          # mutate(
-          #   val_delta =   round(inv.logit(mnVal_hind + (( mn_val-  mnVal_hist)))-log_adj,roundn),
-          #   val_bcwk  =   round(inv.logit(mnVal_hind + ( sf_wk*( mn_val- mnVal_hist)))-log_adj,roundn),
-          #   val_bcmo  =   round(inv.logit(mnVal_hind + ( sf_mo*( mn_val- mnVal_hist)))-log_adj,roundn),
-          #   val_bcyr  =   round(inv.logit(mnVal_hind + ( sf_yr*( mn_val- mnVal_hist)))-log_adj,roundn))%>%
-          # mutate_at(c("val_delta","val_bcwk","val_bcmo","val_bcyr"),function(x){x[x<0]<-0;  x  })
-
+         
 
         subC<- futout%>%filter(lognorm=="log")%>%
-          mutate( val_delta_as =   round(
+          mutate( val_delta_adj =   round(
             exp(log(mnVal_hind+log_adj) + ((log( mn_val+log_adj)-log(  mnVal_hist+log_adj))))-log_adj
                                       ,roundn))
-          # mutate(
-          # mnval_adj = exp(mn_val)-log_adj,
-          #   sf_wk  = abs(  sdVal_hind/  sdVal_hist),
-          #   sf_mo  = abs(  sdVal_hind_mo/  sdVal_hist_mo),
-          #   sf_yr  = abs(  sdVal_hind_yr/  sdVal_hist_yr))%>%
-          # mutate_at(c("sf_wk","sf_mo","sf_yr"),sdfun)%>%
-          # mutate(
-          #   val_delta =   round(exp(mnVal_hind + (( mn_val-  mnVal_hist)))-log_adj,roundn),
-          #   val_bcwk  =   round(exp(mnVal_hind + ( sf_wk*( mn_val- mnVal_hist)))-log_adj,roundn),
-          #   val_bcmo  =   round(exp(mnVal_hind + ( sf_mo*( mn_val- mnVal_hist)))-log_adj,roundn),
-          #   val_bcyr  =   round(exp(mnVal_hind + ( sf_yr*( mn_val- mnVal_hist)))-log_adj,roundn))%>%
-          # mutate_at(c("val_delta","val_bcwk","val_bcmo","val_bcyr"),function(x){x[x<0]<-0;  x  })
-        #}
+      
       futout <- rbind(subA, subB, subC)
-    # futout <- rbind(subA, subB, subC)%>%
-    #   rename(
-    #     val_biascorrectedwk = val_bcwk,
-    #     val_biascorrectedmo = val_bcmo,
-    #     val_biascorrectedyr = val_bcyr)%>%
-    #   mutate(mn_val=round(mnval_adj,roundn))%>%select(-mnval_adj)
-    rm(list=c("subA","subB","subC"))
-
-    # futout  <-  unlink_val(indat    = futout,
-    #                        log_adj  = log_adj,
-    #                        roundn   = roundn,
-    #                        listIN   = c("mnVal_hind","mnVal_hist"),
-    #                        rmlistIN = c("sdVal_hind", "seVal_hind", "sdVal_hind_mo", "sdVal_hind_yr",
-    #                                     "sdVal_hist", "seVal_hist", "sdVal_hist_mo", "sdVal_hist_yr",
-    #                                     "nVal_hist","nVal_hind"))
-  
+      rm(list=c("subA","subB","subC"))
+  if(sf =="val_delta")
+        futout$val_biascorrected <- futout$val_delta
+  if(sf =="val_delta_adj")
+        futout$val_biascorrected <- futout$val_delta_adj
   if(sf =="bcwk")
     futout$val_biascorrected <- futout$val_biascorrectedwk
   if(sf =="bcmo")
@@ -193,7 +148,7 @@ bias_correct_new_strata <- function(
   
   
   tt      <- names(futout)[names(futout)%in%c(group_byout,outlist,"val_delta_adj")]
-  futout  <- futout%>%dplyr::select(all_of(tt))%>%dplyr::arrange(var,year)
+  futout  <- futout%>%dplyr::select(all_of(tt))%>%dplyr::arrange(var, strata,mnDate,year,mo,wk)
   
   return(futout)
 }
