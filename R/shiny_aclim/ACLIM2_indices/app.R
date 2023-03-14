@@ -18,10 +18,11 @@ data.path <- "data"
 plothist <- TRUE
 print(getwd())
 load(file.path(data.path,"K20P19_CMIP6/allEBS_means/ACLIM_annual_fut_mn.Rdata"))
+ACLIM_annual_fut<- ACLIM_annual_fut%>%rename(scen=RCP)
 plotvars   <- unique(ACLIM_annual_fut$var)
 gcms       <- unique(ACLIM_annual_fut$GCM)
 CMIPs      <- unique(ACLIM_annual_fut$CMIP)
-scens      <- unique(ACLIM_annual_fut$scen)
+scens      <- unique(ACLIM_annual_fut$secn)
 basins    <-  unique(ACLIM_annual_fut$basin)
 
 # Define UI for application that draws a histogram
@@ -71,7 +72,7 @@ input<-list()
 input$bcIN         <- c("raw","bias corrected")
 input$GCMIN        <- c("miroc","gfdl","cesm")
 input$scenIN       <- c("ssp126","ssp585")
-
+input$typeIN       <- "annual"
 input$CMIPIN       <- c("K20P19_CMIP6")
 input$plotvarIN    <- "temp_bottom5m"
 input$plotbasinIN  <- "SEBS"
@@ -83,6 +84,7 @@ input$plothist     <- FALSE
 server <- shinyServer(function(input, output, session) {
 
     load(file.path(data.path,"K20P19_CMIP6/allEBS_means/ACLIM_annual_fut_mn.Rdata"))
+  ACLIM_annual_fut<-ACLIM_annual_fut%>%rename(scen=RCP)
     plotvars <- unique(ACLIM_annual_fut$var)
     gcms     <- unique(ACLIM_annual_fut$GCM)
     CMIPs    <- unique(ACLIM_annual_fut$CMIP)
@@ -150,6 +152,8 @@ server <- shinyServer(function(input, output, session) {
                 dfut$GCM <- gsub("MIROC", "miroc",dfut$GCM)
                 dfut$GCM <- gsub("GFDL", "gfdl",dfut$GCM)
                 dfut$GCM <- gsub("CESM", "cesm",dfut$GCM)
+            
+                dfut <- dfut%>%rename(scen = RCP)
                 
             gcms       <- unique(dfut$GCM)
             CMIPs      <- unique(dfut$CMIP)
@@ -191,16 +195,16 @@ server <- shinyServer(function(input, output, session) {
                 }
             }
 
-            hind     <- dhind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, jday,mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)
-            if(plothist) hist     <- dhist%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, jday,mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)
-            fut      <- dfut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, jday,mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)
+            hind     <- dhind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, jday,mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type)
+            if(plothist) hist     <- dhist%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, jday,mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type)
+            fut      <- dfut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, jday,mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type)
            
             plotdat    <- rbind(hind,fut)%>%mutate(bc = "raw")
             if(plothist) 
               plotdat    <- rbind(hind,hist,fut)%>%mutate(bc = "raw")
            
-            hind_bc    <- dhind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, jday,mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type ,units)%>%mutate(bc="bias corrected")
-            fut_bc     <- dfut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, jday,mnDate,val_biascorrected, sim,gcmcmip,GCM,scen,sim_type ,units)
+            hind_bc    <- dhind%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, jday,mnDate,mn_val, sim,gcmcmip,GCM,scen,sim_type)%>%mutate(bc="bias corrected")
+            fut_bc     <- dfut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%select(basin,year, jday,mnDate,val_biascorrected, sim,gcmcmip,GCM,scen,sim_type)
             fut_bc     <- fut_bc%>%mutate(bc="bias corrected")%>%rename(mn_val = val_biascorrected)
             fut_bc     <- rbind(hind_bc,fut_bc)
 
@@ -227,12 +231,12 @@ server <- shinyServer(function(input, output, session) {
             dplyr::between(jday, jday_rangeIN[1], jday_rangeIN[2]))
         # if(!plothist)
         #     plotdatout<- plotdatout%>%dplyr::filter(gcmcmip!="hist")
-        units <- plotdatout$units[1]
+        # units <- plotdatout$units[1]
 
         nyrs <- length(unique(plotdatout$year))
         spanIN <- 5/nyrs
 
-        return(list(dat=plotdatout,nyrs = nyrs, units = units,spanIN=spanIN, weeks=weeks,months=months,seasons=seasons,
+        return(list(dat=plotdatout,nyrs = nyrs, units = "",spanIN=spanIN, weeks=weeks,months=months,seasons=seasons,
             plotvar = plotvar,facet_row=facet_row,facet_col=facet_col,plotbasin=plotbasin))
     })
     
