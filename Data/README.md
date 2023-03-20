@@ -37,7 +37,6 @@ The data is available in Rdata files:
 
 ### Files
 
-There are two files with [cmip6](temperatures/cmip6/csv/) data. One with one ensemble member per model and one with all ensemble members. For [cmip5](temperatures/cmip5/csv/) two additional files are provided. The reference period is 1850 to 1900, however, many cmip5 models only start after 1850 and are therefore excluded. These models are also included in the `*_no_bounds_check.yml` files.
 
 ## Data
  * Weekly strata temperature, productivity, and other data for `historical` and `projections` for each General Circulation Model (`GCM`)
