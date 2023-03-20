@@ -82,7 +82,8 @@ the full ACLIM2 directory and sub-directories:
 
 -   [00_ACLIM_shared > 02_Data > Newest_Data(use this) >
     unzip_and_put_in_dat_out_folder_CMIP6](https://drive.google.com/drive/u/1/folders/1clPtrPCQMPcwqr8UE78_Sd2IGwyBuDcD)
-    [00_ACLIM_shared > 02_Data > Newest_Data(use this) >
+
+-   [00_ACLIM_shared > 02_Data > Newest_Data(use this) >
     unzip_and_put_in_dat_out_folder_CMIP5](https://drive.google.com/drive/u/1/folders/1t_JqDBQU-Fyy5nvIYRAmVcqzWi4mq7mk)
 
 -   Unzip `K29P19_CMIP5.zip` or `K29P19_CMIP6.zip` files move the
@@ -103,11 +104,7 @@ the full ACLIM2 directory and sub-directories:
     (these are “rolled up” to become average across station mean vals in
     the allEBSmeans folder).
 
--   `ACLIM2/Data/out/K29P19_CMIP6/allEBSmeans`: as above but for CMIP5
-
--   `ACLIM2/Data/out/K29P19_CMIP6/allEBSmeans`: as above but for CMIP5
-
--   `ACLIM2/Data/out/K29P19_CMIP6/allEBSmeans`: as above but for CMIP5
+-   `ACLIM2/Data/out/K29P19_CMIP5/allEBSmeans`: as above but for CMIP5
 
 <!-- ![](Figs/DATA_dir2.png){ width=50%} -->
 
@@ -1307,8 +1304,9 @@ zscore_years <- 1980:2010  # years to recenter z score on
 plotbasin    <- "SEBS"  
 
 # Define the name for the .dat file
-file.name   <- "ACLIM2_CMIP6_short"
-fn          <- paste(file.name,"_bcs.dat",sep="")
+fn      <- "ACLIM2_CMIP6_short_delta_bc.dat"
+fn_long <- "ACLIM2_CMIP6_delta_bc.dat"
+
 archive_old <- T  # Archive the older version of the .dat file?
 normlist    <- read.csv(file=file.path(Rdata_path,"../normlist.csv"))
 
@@ -1318,6 +1316,10 @@ if(!dir.exists(outpath)) dir.create(outpath)
 # define hind and fut data files
 fndat_hind  <- file.path(outpath,paste("KKHhind_",fn,sep=""))
 fndat_fut   <- file.path(outpath,paste("KKHfut_",fn,sep=""))
+
+fndat_hind_long  <- file.path(outpath,paste("KKHhind_",fn_long,sep=""))
+fndat_fut_long   <- file.path(outpath,paste("KKHfut_",fn_long,sep=""))
+
 fndat_hind2 <- file.path(outpath,paste("hind_",fn,sep=""))
 fndat_fut2  <- file.path(outpath,paste("fut_",fn,sep=""))
 
@@ -1340,32 +1342,17 @@ if(file.exists(outfile)&archive_old){
   file.rename(outfile, archivefl)
   #file.remove(outfile)
 }
-
 file.create(outfile)
 
-# 2 -- rescale (Z-score) data and get variables
-# CMIPS <- c("K20P19_CMIP6","K20P19_CMIP5")
-# CMIPS <- c("K20P19_CMIP6_C")
 
+
+# 2 -- rescale (Z-score) data and get variables
+# ----------------------------------------------
 CMIPS <- c("K20P19_CMIP6","K20P19_CMIP5")
-CMIPS <- c("K20P19_CMIP6")
+
 # preview possible variables
-# load(paste0("Data/out/",CMIPS[1],"/allEBS_means/ACLIM_annual_hind_mn.Rdata"))
 varall  <- unique(ceattle_vars_op$var)
 varall
-
-
-#load("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_weekly_hind_mn.Rdata")
-
-# varz   <- unique(ceattle_vars_op$var_raw)
-# vardef <- rbind(weekly_var_def,
-#                 data.frame(name = "largeZoop_integrated", 
-#                            units = "(mg C m^-3)*m",
-#                            longname = "On-shelf euph. + large cop., integrated over depth" ))
-# vardef <- rbind(vardef,
-#                 data.frame(name = varz[which(!varz%in%vardef$name)],units = "",longname=""))
-# 
-# vl <- vardef%>%filter(name%in%varz)%>%rename(var=name)
 
 
 # vars
@@ -1388,39 +1375,55 @@ fut  <- ceattle_vars_op%>%
   
 
 # now identify which covars are highly correlated
-d_wide   <- ceattle_vars_wide_op%>%
-  filter(year<=lastyr_hind)%>%
-  left_join(mnhind)%>%
-  mutate(val_use_scaled = (val_use-mnhind)/sdhind)%>%ungroup()
 
-# calculate correlations and display in column format
+    # Now compile the indices:
+    #--------------------------------------
+    grpby2 <- c("type","var","basin",
+               "year","sim","sim_type",
+               "bc")
+    
+    
+  d_wide   <- ceattle_vars_op%>%
+      filter(year<=lastyr_hind)%>%
+      left_join(mnhind)%>%
+      mutate(val_use_scaled = (val_use-mnhind)/sdhind)%>%ungroup()%>%
+      group_by(across(all_of(grpby2)))%>%
+      summarize_at(all_of(c("val_use_scaled")), mean, na.rm=T)%>%
+      tidyr::pivot_wider(names_from = "var", values_from = "val_use_scaled")
 
-# define columns with meta data:
-col_meta <- 1:12
-d_wide_dat <-d_wide[,-col_meta]
-num_col  <- ncol(d_wide[,-col_meta])
-out_indx <- which(upper.tri(diag(num_col))) 
-cor_cols <- d_wide_dat%>%
-  do(melt(cor(., 
-              method="spearman", 
-              use="pairwise.complete.obs"),
-          value.name="cor")[out_indx,])
+  # calculate correlations and display in column format
 
-corr     <- cor(na.omit(d_wide_dat))
+  # define columns with meta data:
+  col_meta <- which(colnames(d_wide)%in%grpby2)
+  d_wide_dat <-d_wide[,-col_meta]
+  num_col  <- ncol(d_wide[,-col_meta])
+  out_indx <- which(upper.tri(diag(num_col))) 
+  cor_cols <- d_wide_dat%>%
+    do(melt(cor(.,
+                method="spearman", 
+                use="pairwise.complete.obs"),
+            value.name="cor")[out_indx,])
+  
+  corr     <- cor(na.omit(d_wide_dat))
+  
+  long_dat <- reshape2::melt(corr,variable.name = "variable") %>% 
+    as.data.frame() 
+  
+  # plot co variation between variables
+  corplot <- long_dat %>%arrange(value)%>%
+    ggplot(aes(x=Var1, y=Var2, fill=value)) + 
+    geom_raster() + 
+    scale_fill_viridis_c()+
+    theme_minimal()+
+    theme(axis.text.x = element_text(angle = 90))
+  
+  jpeg(filename = file.path("Data/out/CEATTLE_indices/CEATTLE_indicescorplot.jpg"),
+           width=8,height=7,units="in",res=350)
+  print(corplot)
+  dev.off()
 
-long_dat <- reshape2::melt(corr,variable.name = "variable") %>% 
-  as.data.frame() 
-
-# plot co variation between variables
-corplot <- long_dat %>%arrange(value)%>%
-  ggplot(aes(x=Var1, y=Var2, fill=value)) + 
-  geom_raster() + 
-  scale_fill_viridis_c()+
-  theme_minimal()+
-  theme(axis.text.x = element_text(angle = 90))
-
-# # remove those where cov is high (temp by season and cold pool by season)
-# subset <- long_dat$>$filter(abs(value)<0.6)
+  # # remove those where cov is high (temp by season and cold pool by season)
+  # subset <- long_dat$>$filter(abs(value)<0.6)
 
 # 3 -- write data to hind .dat file
 # ------------------------------------
@@ -1453,9 +1456,15 @@ if(includeOverlap){
 }
 
 # replace NA values with the mean 
+shortlist <- c("Summer_temp_bottom5m","Winter_temp_bottom5m",
+               "Winter_pH_depthavg","Summer_oxygen_bottom5m",
+               "Summer_temp_surface5m",
+               "Spring_Cop_integrated",
+               "Fall_largeZoop_integrated")
 
 # Kir's .dat file
-makeDat_hind(datIN   = hind%>%mutate(long_name=var), 
+makeDat_hind(datIN   = hind%>%mutate(long_name=var)%>%
+               filter(var%in%shortlist), 
              outfile = fndat_hind,
              value2use = "val_use",
              value2use_scaled = "val_use_scaled",
@@ -1465,8 +1474,10 @@ makeDat_hind(datIN   = hind%>%mutate(long_name=var),
              nonScaled_covlist = c("Summer_temp_bottom5m","Summer_temp_surface5m"),
              Scaled_covlist    = unique(hind$var))
 
-makeDat_fut( datIN             = fut%>%mutate(long_name=var), 
-             hinddatIN         = hind%>%mutate(long_name=var),
+makeDat_fut( datIN             = fut%>%mutate(long_name=var)%>%
+               filter(var%in%shortlist), 
+             hinddatIN         = hind%>%mutate(long_name=var)%>%
+               filter(var%in%shortlist),
              outfile           = fndat_fut,
              value2use         = "val_use",
              value2use_scaled  = "val_use_scaled",
@@ -1477,6 +1488,31 @@ makeDat_fut( datIN             = fut%>%mutate(long_name=var),
              overlap_hind      = overlap,
              nonScaled_covlist = c("Summer_temp_bottom5m","Summer_temp_surface5m"),
              Scaled_covlist    = unique(hind$var))
+
+# Kir's .dat file
+makeDat_hind(datIN   = hind%>%mutate(long_name=var), 
+             outfile = fndat_hind_long,
+             value2use = "val_use",
+             value2use_scaled = "val_use_scaled",
+             NAVal     = "mean",  
+             nsppIN    = 3,
+             overlapIN = overlap, 
+             nonScaled_covlist = c("Summer_temp_bottom5m","Summer_temp_surface5m"),
+             Scaled_covlist    = unique(hind$var))
+
+makeDat_fut( datIN             = fut%>%mutate(long_name=var), 
+             hinddatIN         = hind%>%mutate(long_name=var),
+             outfile           = fndat_fut_long,
+             value2use         = "val_use",
+             value2use_scaled  = "val_use_scaled",
+             NAVal             = "mean", 
+             nsppIN            = 3,
+             last_nyrs_avg     = 10, 
+             overlapIN         = overlap_fut,  #(nspp,nsim+1,nyrs_fut) 
+             overlap_hind      = overlap,
+             nonScaled_covlist = c("Summer_temp_bottom5m","Summer_temp_surface5m"),
+             Scaled_covlist    = unique(hind$var))
+
 
 ### Here's a generic version that doesn't include nspp and overla[]
 # generic .dat file
