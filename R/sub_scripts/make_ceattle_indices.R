@@ -8,6 +8,7 @@
     #--------------------------------------
     suppressMessages(source("R/make.R"))
     
+    CMIPset <- c("K20P19_CMIP6","K20P19_CMIP5")
     # preview possible variables
     load(file = "Data/out/weekly_vars.Rdata")
     load(file = "Data/out/srvy_vars.Rdata")
@@ -25,12 +26,11 @@
     scens   <- c("ssp126", "ssp585")
     GCMs    <- c("miroc", "gfdl", "cesm" )
     
-    # Now compile the NRS indices:
+    # Now compile the indices:
     #--------------------------------------
-    
     grpby <- c("type","var","basin",
                "year","sim","gcmcmip","GCM","scen","sim_type",
-               "units","bc","GCM_scen","GCM_scen_sim", "CMIP" )
+               "bc","GCM_scen","GCM_scen_sim", "CMIP" )
     
     sumat  <- c("jday","mnDate","val_use","mnVal_hind",
                 "val_delta","val_biascorrected","val_raw")
@@ -53,12 +53,22 @@
                              plotbasin = c("SEBS"),
                              plotvar   = v,
                              bcIN      = "bias corrected",
-                             CMIPIN    = "K20P19_CMIP6",
-                             plothist  = T,  # ignore the hist runs
-                             removeyr1 = T)  # "Remove first year of proj ( burn in)")
+                             CMIPIN    = CMIPset,
+                             plothist     = T,  # ignore the hist runs
+                             removeyr1    = T,
+                             adjIN        = "val_delta",
+                             ifmissingyrs = 5,
+                             weekIN       = NULL, #"Week"
+                             monthIN     = NULL, 
+                             GCMIN        = NULL, 
+                             scenIN       = NULL,
+                             facet_rowIN  = "bc", # choices=c("bc","basin","scen")
+                             facet_colIN  = "scen")  # "Remove first year of proj ( burn in)")
       tmpdop <- dfop$dat%>%
         group_by(across(all_of(c(grpby,"season","GCM2","GCM2_scen_sim"))))%>%
-        summarize_at(all_of(sumat), mean, na.rm=T)%>%mutate(mn_val=val_use, var_raw = var, var = paste0(season,"_",var))%>%select(-season)
+        summarize_at(all_of(sumat), mean, na.rm=T)%>%
+        mutate(mn_val=val_use, var_raw = var, var = paste0(season,"_",var))%>%
+        select(-season)
       tmpdop <- stitchTS(dat = tmpdop, stitchDate_op)
       tmpdop <- tmpdop%>%mutate(type = "ceattle indices")
       ceattle_vars_op <- tmpdop
