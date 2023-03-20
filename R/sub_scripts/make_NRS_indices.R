@@ -30,7 +30,7 @@ load(paste0("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_annual_fut_mn.Rdata"))
 load(paste0("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_surveyrep_fut_mn.Rdata"))
 
 stitchDate     <- "2019-12-30"  # last date of the ACLIM hindcast
-stitchDate_op  <- "2022-05-16"  #last operational hindcast date # can't be mid year for these
+#stitchDate_op  <- "2022-05-16"  #last operational hindcast date # can't be mid year for these
 stitchDate_op  <- "2021-12-30"  #last operational hindcast date
 # scens   <- c("ssp126", "ssp585")
 # GCMs    <- c("miroc", "gfdl", "cesm" )

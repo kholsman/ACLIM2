@@ -1,11 +1,11 @@
-This is XeTeX, Version 3.141592653-2.6-0.999994 (TeX Live 2022) (preloaded format=xelatex 2023.2.15)  11 MAR 2023 21:44
+This is XeTeX, Version 3.141592653-2.6-0.999994 (TeX Live 2022) (preloaded format=xelatex 2023.3.11)  20 MAR 2023 10:49
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **ACLIM2_quickStart.tex
 (./ACLIM2_quickStart.tex
 LaTeX2e <2022-11-01> patch level 1
-L3 programming layer <2023-02-07> (c:/Users/kirstin.holsman/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/article.cls
+L3 programming layer <2023-02-22> (c:/Users/kirstin.holsman/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2022/07/02 v1.4n Standard LaTeX document class
 (c:/Users/kirstin.holsman/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/size10.clo
 File: size10.clo 2022/07/02 v1.4n Standard LaTeX file (size option)
@@ -130,7 +130,7 @@ LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
 ) (c:/Users/kirstin.holsman/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/iftex/iftex.sty
 Package: iftex 2022/02/03 v1.0f TeX engine tests
 ) (c:/Users/kirstin.holsman/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/unicode-math/unicode-math.sty (c:/Users/kirstin.holsman/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/l3kernel/expl3.sty
-Package: expl3 2023-02-07 L3 programming layer (loader) 
+Package: expl3 2023-02-22 L3 programming layer (loader) 
 (c:/Users/kirstin.holsman/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-xetex.def
 File: l3backend-xetex.def 2023-01-16 L3 backend support: XeTeX
 \g__graphics_track_int=\count267
@@ -884,10 +884,10 @@ File: Figs/biascorrected_temp2.png Graphic file (type bmp)
 l.828 \bar
           \{Y\}\^{}\{hind\}\_\{w,k\} was predicted from the following gam() 
 Here is how much of TeX's memory you used:
- 18564 strings out of 478687
- 345748 string characters out of 5846701
- 1874001 words of memory out of 5000000
- 38399 multiletter control sequences out of 15000+600000
+ 18564 strings out of 478683
+ 345748 string characters out of 5846585
+ 1874012 words of memory out of 5000000
+ 38403 multiletter control sequences out of 15000+600000
  518836 words of font info for 85 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  86i,7n,121p,667b,468s stack positions out of 10000i,1000n,20000p,200000b,200000s
