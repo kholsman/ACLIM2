@@ -14,9 +14,7 @@ Go to the google drive and download the zipped file with the R ACLIM2 indices `A
 * `ACLIM2/Data/out/K29P19_CMIP6/BC_ACLIMregion`: Weekly x Strata based indices, including delta and bias corrected values (these are "rolled up" to become strata AREA weighted mean vals in the allEBSmeans folder).
 * `ACLIM2/Data/out/K29P19_CMIP6/BC_ACLIMsurveyrep`: Survey replicated indices at each station, including delta and bias corrected values (these are "rolled up" to become average across station mean vals in the allEBSmeans folder).
 
-* `ACLIM2/Data/out/K29P19_CMIP6/allEBSmeans`: as above but for CMIP5
-* `ACLIM2/Data/out/K29P19_CMIP6/allEBSmeans`: as above but for CMIP5
-* `ACLIM2/Data/out/K29P19_CMIP6/allEBSmeans`: as above but for CMIP5
+* `ACLIM2/Data/out/K29P19_CMIP5/allEBSmeans`: as above but for CMIP5
 
 ### CMIP6
 
