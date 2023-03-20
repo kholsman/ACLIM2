@@ -2,9 +2,12 @@
 
 
 ## Get the data
-* Go to the google drive and download the zipped file with the R ACLIM2 indices `ACLIM2_indices.zip`:
-* [00_ACLIM_shared > 02_Data > Newest_Data(use this) > unzip_and_put_in_dat_out_folder_CMIP6](https://drive.google.com/drive/u/1/folders/1clPtrPCQMPcwqr8UE78_Sd2IGwyBuDcD)
-[00_ACLIM_shared > 02_Data > Newest_Data(use this) > unzip_and_put_in_dat_out_folder_CMIP5](https://drive.google.com/drive/u/1/folders/1t_JqDBQU-Fyy5nvIYRAmVcqzWi4mq7mk)
+
+Go to the google drive and download the zipped file with the R ACLIM2 indices `ACLIM2_indices.zip`:
+
+* [00_ACLIM_shared > 02_Data > Newest_Data(use this) > unzip_and_put_in_dat_out_folder_CMIP6](https://drive.google.com/drive/u/1/folders/1clPtrPCQMPcwqr8UE78_Sd2IGwyBuDcD)  
+
+* [00_ACLIM_shared > 02_Data > Newest_Data(use this) > unzip_and_put_in_dat_out_folder_CMIP5](https://drive.google.com/drive/u/1/folders/1t_JqDBQU-Fyy5nvIYRAmVcqzWi4mq7mk)
 
 * Unzip `K29P19_CMIP5.zip` or `K29P19_CMIP6.zip` files move the `K29P19_CMIP5` or `K29P19_CMIP6` folders to your local folder `ACLIM2/Data/out`. The result should be the following folder structure on your local computer:  
 * `ACLIM2/Data/out/K29P19_CMIP6/allEBSmeans`: main folder with annual, monthly, seasonal, and survey replicated level 4 ACLIM indices
@@ -26,12 +29,9 @@
 Temperature anomalies for individual models can be found in separate folders for [cmip6](temperatures/cmip6/csv/) and [cmip5](temperatures/cmip5/csv/)
 
 ### Example
-The data is available in csv files:
+The data is available in Rdata files:
 ``` csv
-model, ens, exp, postprocess, table, grid, varn, period, mean
-CAMS-CSM1-0, r1i1p1f1, ssp119, global_mean, Amon, gn, tas, 2021-2040, 1.07
-CNRM-ESM2-1, r1i1p1f2, ssp119, global_mean, Amon, gr, tas, 2021-2040, 1.32
-CanESM5, r1i1p1f1, ssp119, global_mean, Amon, gn, tas, 2021-2040, 2.16
+
 ...
 ```
 
