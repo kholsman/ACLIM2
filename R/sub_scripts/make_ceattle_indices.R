@@ -89,9 +89,17 @@
                              plotbasin  = c("SEBS"),
                              plotvar   = v,
                              bcIN      = "bias corrected",
-                             CMIPIN    = "K20P19_CMIP6", 
-                             plothist  = T,  # ignore the hist runs
-                             removeyr1 = T)  # "Remove first year of proj ( burn in)")
+                             CMIPIN    = CMIPset,
+                             plothist     = T,  # ignore the hist runs
+                             removeyr1    = T,
+                             adjIN        = "val_delta",
+                             ifmissingyrs = 5,
+                             weekIN       = NULL, #"Week"
+                             monthIN     = NULL, 
+                             GCMIN        = NULL, 
+                             scenIN       = NULL,
+                             facet_rowIN  = "bc", # choices=c("bc","basin","scen")
+                             facet_colIN  = "scen") 
       tmpdop <- dfop$dat%>%
         group_by(across(all_of(c(grpby,"season","GCM2","GCM2_scen_sim"))))%>%
         summarize_at(all_of(sumat), mean, na.rm=T)%>%mutate(mn_val=val_use, var_raw = var, var = paste0(season,"_",var))%>%select(-season)
@@ -115,9 +123,17 @@
                              plotbasin  = c("SEBS"),
                              plotvar   = v,
                              bcIN      = "bias corrected",
-                             CMIPIN    = "K20P19_CMIP6", 
-                             plothist  = T,  # ignore the hist runs
-                             removeyr1 = T)  # "Remove first year of proj ( burn in)")
+                             CMIPIN    = CMIPset,
+                             plothist     = T,  # ignore the hist runs
+                             removeyr1    = T,
+                             adjIN        = "val_delta",
+                             ifmissingyrs = 5,
+                             weekIN       = NULL, #"Week"
+                             monthIN     = NULL, 
+                             GCMIN        = NULL, 
+                             scenIN       = NULL,
+                             facet_rowIN  = "bc", # choices=c("bc","basin","scen")
+                             facet_colIN  = "scen")
       tmpdop <- dfop$dat%>%
         group_by(across(all_of(c(grpby,"season","GCM2","GCM2_scen_sim"))))%>%
         summarize_at(all_of(sumat), mean, na.rm=T)%>%mutate(mn_val=val_use, var_raw = var, var = paste0(season,"_",var))%>%select(-season)
@@ -143,9 +159,17 @@
                              plotbasin  = c("SEBS"),
                              plotvar   = v,
                              bcIN      = "bias corrected",
-                             CMIPIN    = "K20P19_CMIP6", 
-                             plothist  = T,  # ignore the hist runs
-                             removeyr1 = T)  # "Remove first year of proj ( burn in)")
+                             CMIPIN    = CMIPset,
+                             plothist     = T,  # ignore the hist runs
+                             removeyr1    = T,
+                             adjIN        = "val_delta",
+                             ifmissingyrs = 5,
+                             weekIN       = NULL, #"Week"
+                             monthIN     = NULL, 
+                             GCMIN        = NULL, 
+                             scenIN       = NULL,
+                             facet_rowIN  = "bc", # choices=c("bc","basin","scen")
+                             facet_colIN  = "scen") 
       tmpdop <- dfop$dat%>%
         group_by(across(all_of(c(grpby,"season","GCM2","GCM2_scen_sim"))))%>%
         summarize_at(all_of(sumat), mean, na.rm=T)%>%mutate(mn_val=val_use, var_raw = var, var = paste0(season,"_",var))%>%select(-season)
@@ -168,9 +192,18 @@
                              plotbasin  = c("SEBS"),
                              plotvar   = v,
                              bcIN      = "bias corrected",
-                             CMIPIN    = "K20P19_CMIP6", 
-                             plothist  = T,  # ignore the hist runs
-                             removeyr1 = T)  # "Remove first year of proj ( burn in)")
+                             CMIPIN    = CMIPset,
+                             plothist     = T,  # ignore the hist runs
+                             removeyr1    = T,
+                             adjIN        = "val_delta",
+                             ifmissingyrs = 5,
+                             weekIN       = NULL, #"Week"
+                             monthIN      = NULL, 
+                             SeasonIN     = NULL, 
+                             GCMIN        = NULL, 
+                             scenIN       = NULL,
+                             facet_rowIN  = "bc", # choices=c("bc","basin","scen")
+                             facet_colIN  = "scen") 
       tmpdop <- dfop$dat%>%mutate(season="annual")%>%
         group_by(across(all_of(c(grpby,"season","GCM2","GCM2_scen_sim"))))%>%
         summarize_at(all_of(sumat), mean, na.rm=T)%>%mutate(mn_val=val_use, var_raw = var, var = paste0("annual_",var))%>%select(-season)
@@ -194,9 +227,17 @@
                              plotbasin  = c("SEBS"),
                              plotvar   = "vNorth_surface5m",
                              bcIN      = "bias corrected",
-                             CMIPIN    = "K20P19_CMIP6", 
-                             plothist  = T,  # ignore the hist runs
-                             removeyr1 = T)  # "Remove first year of proj ( burn in)")
+                             CMIPIN    = CMIPset,
+                             plothist     = T,  # ignore the hist runs
+                             removeyr1    = T,
+                             adjIN        = "val_delta",
+                             ifmissingyrs = 5,
+                             weekIN       = NULL, #"Week"
+                             monthIN     = NULL, 
+                             GCMIN        = NULL, 
+                             scenIN       = NULL,
+                             facet_rowIN  = "bc", # choices=c("bc","basin","scen")
+                             facet_colIN  = "scen") 
       # now for operational hindcasts:
       dE <- get_var_ophind(stitchDateIN = stitchDate, 
                               typeIN    = "seasonal", 
@@ -204,9 +245,17 @@
                               plotbasin  = c("SEBS"),
                               plotvar   = "uEast_surface5m",
                               bcIN      = "bias corrected",
-                              CMIPIN    = "K20P19_CMIP6", 
-                              plothist  = T,  # ignore the hist runs
-                              removeyr1 = T)  # "Remove first year of proj ( burn in)")
+                             CMIPIN    = CMIPset,
+                             plothist     = T,  # ignore the hist runs
+                             removeyr1    = T,
+                             adjIN        = "val_delta",
+                             ifmissingyrs = 5,
+                             weekIN       = NULL, #"Week"
+                             monthIN     = NULL, 
+                             GCMIN        = NULL, 
+                             scenIN       = NULL,
+                             facet_rowIN  = "bc", # choices=c("bc","basin","scen")
+                             facet_colIN  = "scen") 
       
       dfopE <-dE$dat%>%rename(uE = val_use,uE_raw = val_raw)%>%mutate(var="NE_winds",units="meter second-1")%>%select(-sd_val)
       dfopN <-dN$dat%>%rename(vN = val_use,vN_raw = val_raw)%>%mutate(var="NE_winds",units="meter second-1")%>%select(-sd_val)
@@ -233,18 +282,34 @@
                            plotbasin  = c("SEBS"),
                            plotvar   = "vNorth_surface5m",
                            bcIN      = "bias corrected",
-                           CMIPIN    = "K20P19_CMIP6", 
-                           plothist  = T,  # ignore the hist runs
-                           removeyr1 = T)  # "Remove first year of proj ( burn in)")
+                           CMIPIN    = CMIPset,
+                           plothist     = T,  # ignore the hist runs
+                           removeyr1    = T,
+                           adjIN        = "val_delta",
+                           ifmissingyrs = 5,
+                           weekIN       = NULL, #"Week"
+                           monthIN     = NULL, 
+                           GCMIN        = NULL, 
+                           scenIN       = NULL,
+                           facet_rowIN  = "bc", # choices=c("bc","basin","scen")
+                           facet_colIN  = "scen") 
       # now for operational hindcasts:
       dE <- get_var_ophind(stitchDateIN = stitchDate, 
                            typeIN    = "annual", 
                            plotbasin  = c("SEBS"),
                            plotvar   = "uEast_surface5m",
                            bcIN      = "bias corrected",
-                           CMIPIN    = "K20P19_CMIP6", 
-                           plothist  = T,  # ignore the hist runs
-                           removeyr1 = T)  # "Remove first year of proj ( burn in)")
+                           CMIPIN    = CMIPset,
+                           plothist     = T,  # ignore the hist runs
+                           removeyr1    = T,
+                           adjIN        = "val_delta",
+                           ifmissingyrs = 5,
+                           weekIN       = NULL, #"Week"
+                           monthIN     = NULL, 
+                           GCMIN        = NULL, 
+                           scenIN       = NULL,
+                           facet_rowIN  = "bc", # choices=c("bc","basin","scen")
+                           facet_colIN  = "scen") 
       
       dfopE <-dE$dat%>%rename(uE = val_use,uE_raw = val_raw)%>%mutate(var_raw = "NE_winds",var="NE_winds",units="meter second-1")%>%select(-sd_val)
       dfopN <-dN$dat%>%rename(vN = val_use,vN_raw = val_raw)%>%mutate(var_raw = "NE_winds",var="NE_winds",units="meter second-1")%>%select(-sd_val)

@@ -8,7 +8,7 @@ makeDat_fut <- function( datIN      = fut,
                          NAVal     = "mean", 
                          value2use = "val_use",
                          value2use_scaled = "val_use_scaled",
-                         last_nyrs_avg   = 10, 
+                         last_nyrs_avg   = 5, 
                          makeADMB_chunk = T,
                          outfile,
                          nonScaled_covlist = c("temp_bottom5m","temp_surface5m"  ),
@@ -25,9 +25,9 @@ makeDat_fut <- function( datIN      = fut,
   if(NAVal == "mean"){
    
     myfun <- function(x){
-      x <- rev(x[1:last_nyrs_avg])
+      x2 <- rev(x[1:last_nyrs_avg])
       if(any(is.na(x))) 
-        x[is.na(x)] <- mean(x, na.rm=T) 
+        x[is.na(x)] <- mean(x2, na.rm=T) 
       return(x)
     }}
   if(NAVal == "last"){
