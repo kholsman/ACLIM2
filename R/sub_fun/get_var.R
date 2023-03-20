@@ -14,6 +14,7 @@
 get_var<- function(
   typeIN    = "annual", #ACLIM2 Index Type"
   plotvar   = "temp_bottom5m",  #variable to plot
+  adjIN = "val_delta",
   plothist     = T,
   ifmissingyrs = 5,
   stitchDateIN = stitchDate,
@@ -101,13 +102,16 @@ get_var<- function(
       
       fut      <- dfut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%mutate(GCM2 = GCM,scen=RCP)%>%
         dplyr::select(all_of(c(sellist,"mnVal_hind","val_delta","val_biascorrected")))
-      
+    
+      # get raw values
     fut  <- fut%>%mutate(val_use=mn_val)
     hist <- hist%>%mutate(val_use=mn_val)
     hind <- hind%>%mutate(val_use=mn_val)
     plotdat    <- rbind(hind,hist,fut)%>%dplyr::mutate(bc = "raw")
+    
+    # get adjusted values
     hind_bc    <- hind%>%dplyr::mutate(val_use = mn_val, bc="bias corrected")
-    fut_bc     <- fut%>%dplyr::mutate(val_use = val_delta,bc="bias corrected")
+    eval(parse(text = paste0("fut_bc <- fut%>%dplyr::mutate(val_use  = ",adjIN,",bc='bias corrected')") ))
     fut_bc     <-rbind(hind_bc,fut_bc)
     
     plotdat          <- rbind(plotdat,fut_bc)
@@ -130,9 +134,14 @@ get_var<- function(
   if(is.null(GCMIN))
     GCMIN <- unique(plotdatout$GCM)
   
-  gcmlist<- c("hind",GCMIN)
+  gcmlist<- GCMIN
+  if(!grep("hind",GCMIN)>0)
+    gcmlist<- c("hind",GCMIN)
+  
   if(plothist)
-    gcmlist<- c("hind","hist",GCMIN)
+    gcmlist<- unique(c("hind","hist",GCMIN))
+  
+  
   plotdatout <- plotdatout%>%dplyr::filter(
     scen%in%scenINuse,
     GCM%in%gcmlist,

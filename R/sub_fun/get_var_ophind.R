@@ -15,6 +15,7 @@ get_var_ophind <- function(
   typeIN    = "annual", #ACLIM2 Index Type"
   plotvar = "temp_bottom5m",  #variable to plot
   plothist = T,
+  adjIN = "val_delta",
   ifmissingyrs = 5,
   stitchDateIN = stitchDate,
   monthIN   = NULL, #"Month
@@ -23,8 +24,8 @@ get_var_ophind <- function(
   jday_rangeIN = NULL, #c(0,365), #
   CMIPIN    = "K20P19_CMIP6", 
   bcIN      = c("raw","bias corrected"),# "bias corrected or raw",
-  GCMIN     = c("miroc" ,"gfdl" , "cesm" ), #
-  scenIN    = c("ssp126", "ssp585"),
+  GCMIN     = NULL, #
+  scenIN    = NULL,
   plotbasin  = c("SEBS"),
   facet_rowIN  = "bc", #choices=c("bc","basin","scen")
   facet_colIN  = "scen", # ,"col",selected=c("scen"),choices=c("bc","basin","scen"), multiple=F),
@@ -80,13 +81,17 @@ get_var_ophind <- function(
     for(s in 1:length(scenINuse)){
       
       if(s ==1){
+        
         dhinda <- dhindIN%>%
           dplyr::mutate(scen = scenINuse[s],gcmcmip="hind",GCM ="hind",GCM2="hind")%>%
           filter(mnDate<=stitchDateIN)
         dhind_op <- dhindIN_op%>%
           dplyr::mutate(scen = scenINuse[s],gcmcmip="hind",GCM ="hind",GCM2="hind_op")%>%
           filter(mnDate>stitchDateIN)
+        
+        # combine operational and hindcast
         dhind <- rbind(dhinda,dhind_op)
+        
         dhist <- dhistIN%>%
           dplyr::mutate(scen = scenINuse[s],gcmcmip="hist",GCM2="hist")
       }
@@ -101,6 +106,7 @@ get_var_ophind <- function(
         dhist <- rbind(dhist,dhistIN%>%dplyr::mutate(scen = scenINuse[s],gcmcmip="hist",GCM2="hist"))
       }
     }
+    dhind <- dhind%>%mutate(sim = "ACLIM + Operational Hindcast")
     #dhind<-dhind%>%ungroup()%>%group_by(all_of(c("var",groupbyIN)))%>%ungroup()
     dhind_op <- dhind%>%filter(GCM2 =="hind_op")
     sellist  <- c(groupbyIN,"var","basin", "jday","mnDate","val_raw","mn_val","sd_val", "sim","gcmcmip","GCM",
@@ -118,8 +124,7 @@ get_var_ophind <- function(
         dplyr::select(all_of(c(sellist,"mnVal_hind","val_delta","val_biascorrected")))
      
     }else{
-      # interpolate using "mean"
-      
+      # interpolate using "mean" from ACLIM hindcast (eg. pH)
       hind0     <- dhind%>%dplyr::filter(var ==plotvar,basin==plotbasin,GCM2 =="hind")%>%
         dplyr::select(all_of(c(sellist,"mnVal_hind")))%>%
         mutate(val_delta = mn_val,val_biascorrected=mn_val)
@@ -134,32 +139,43 @@ get_var_ophind <- function(
       subyr  <- (-(ifmissingyrs-1):0)+lastyr
       maxyr  <- max( dhind_op%>%select(year))
       glist <- c(sellist[!sellist%in%c("year","mnDate","jday","mn_val")])
+      # which years to fill in for:
       fillyr <- (lastyr+1):maxyr
       
+      # Empty matrix values from operational hindcast to fill in for missing years:
       fillmat <- dhind_op%>%
         select(all_of(c(sellist[!sellist%in%c("mn_val","var","sim","GCM2")],"mnVal_hind")))%>%
-       distinct()%>%mutate(var=plotvar)
+       distinct()%>%mutate(var=plotvar)%>%select(-val_raw,-sd_val,-mnVal_hind)
       
+      # get mean from subset of hindcast years (ACLIM hindcast):
       mn     <- dhind%>%
         dplyr::filter(year%in%subyr)%>%
         group_by(across(glist))%>%mutate(GCM2="mean hind")%>%
-        summarize(mn_val = mean(mn_val, na.rm = T))
-      hind<- rbind(hind0,fillmat%>%left_join(mn)%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%
+        summarize(mn_val = mean(mn_val, na.rm = T),
+                  sd_val = mean(sd_val, na.rm = T),
+                  mnVal_hind = mean (mnVal_hind,na.rm=T))
+      
+      hind  <- rbind(hind0,fillmat%>%left_join(mn)%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%
                      dplyr::select(all_of(c(sellist,"mnVal_hind")))%>%
                      mutate(val_delta = mn_val,val_biascorrected=mn_val))
      # names(dhind)
     }
-    fut  <- fut%>%mutate(val_use=mn_val)
-    hist <- hist%>%mutate(val_use=mn_val)
-    hind <- hind%>%mutate(val_use=mn_val)
-    plotdat    <- rbind(hind,hist,fut)%>%dplyr::mutate(bc = "raw")
-    hind_bc    <- hind%>%dplyr::mutate(val_use = mn_val, bc="bias corrected")
-    fut_bc     <- fut%>%dplyr::mutate(val_use = val_delta,bc="bias corrected")
-    fut_bc     <-rbind(hind_bc,fut_bc)
     
-    plotdat          <- rbind(plotdat,fut_bc)
-    plotdat$bc       <- factor(plotdat$bc, levels =c("raw","bias corrected"))
-    plotdat$GCM_scen <- paste0(plotdat$GCM,"_",plotdat$scen) 
+    # get raw values
+    fut  <- fut%>%mutate(val_use  = val_raw)
+    hist <- hist%>%mutate(val_use = mn_val)
+    hind <- hind%>%mutate(val_use = mn_val)
+    plotdat    <- rbind(hind,hist,fut)%>%dplyr::mutate(bc = "raw")
+    
+    # get adj values
+    hind_bc    <- hind%>%dplyr::mutate(val_use = mn_val,   bc="bias corrected")
+    eval(parse(text = paste0("fut_bc <- fut%>%dplyr::mutate(val_use  = ",
+                             adjIN,",bc='bias corrected')") ))
+    fut_bc     <- rbind(hind_bc,fut_bc)
+    
+    plotdat               <- rbind(plotdat,fut_bc)
+    plotdat$bc            <- factor(plotdat$bc, levels =c("raw","bias corrected"))
+    plotdat$GCM_scen      <- paste0(plotdat$GCM,"_",plotdat$scen) 
     plotdat$GCM_scen_sim  <- paste0(plotdat$GCM,"_",plotdat$scen,"_",plotdat$sim_type) 
     plotdat$GCM2_scen_sim <- paste0(plotdat$GCM2,"_",plotdat$scen,"_",plotdat$sim_type) 
     plotdat$CMIP <- CMIPIN[c]
@@ -177,10 +193,13 @@ get_var_ophind <- function(
   if(is.null(GCMIN))
     GCMIN <- unique(plotdatout$GCM)
   
-  gcmlist<- c("hind",GCMIN)
+  gcmlist<- GCMIN
+  if(!grep("hind",GCMIN)>0)
+    gcmlist<- c("hind",GCMIN)
   
   if(plothist)
-    gcmlist<- c("hind","hist",GCMIN)
+    gcmlist<- unique(c("hind","hist",GCMIN))
+  
   plotdatout <- plotdatout%>%dplyr::filter(
     scen%in%scenINuse,GCM%in%gcmlist,
     bc%in%bcIN)
