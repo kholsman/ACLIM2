@@ -264,63 +264,120 @@ For a list of the available variables from the ROMSNPZ:
     (srvy_var_def[-(1:5),])
 ```
 
-    ##                    name                            units
-    ## 6                   Ben                        mg C m^-2
-    ## 7                DetBen                        mg C m^-2
-    ## 8                  Hsbl                            meter
-    ## 9                IceNH4                      mmol N m^-3
-    ## 10               IceNO3                      mmol N m^-3
-    ## 11               IcePhL                        mg C m^-3
-    ## 12                 aice                                 
-    ## 13                 hice                            meter
-    ## 14               shflux                     watt meter-2
-    ## 15               ssflux                   meter second-1
-    ## 16       Cop_integrated                    (mg C m^-3)*m
-    ## 17        Cop_surface5m                        mg C m^-3
-    ## 18      EupO_integrated                    (mg C m^-3)*m
-    ## 19       EupO_surface5m                        mg C m^-3
-    ## 20      EupS_integrated                    (mg C m^-3)*m
-    ## 21       EupS_surface5m                        mg C m^-3
-    ## 22        Iron_bottom5m                  micromol Fe m-3
-    ## 23      Iron_integrated              (micromol Fe m-3)*m
-    ## 24       Iron_surface5m                  micromol Fe m-3
-    ## 25       Jel_integrated                    (mg C m^-3)*m
-    ## 26        Jel_surface5m                        mg C m^-3
-    ## 27       MZL_integrated                    (mg C m^-3)*m
-    ## 28        MZL_surface5m                        mg C m^-3
-    ## 29      NCaO_integrated                    (mg C m^-3)*m
-    ## 30       NCaO_surface5m                        mg C m^-3
-    ## 31      NCaS_integrated                    (mg C m^-3)*m
-    ## 32       NCaS_surface5m                        mg C m^-3
-    ## 33         NH4_bottom5m                      mmol N m^-3
-    ## 34       NH4_integrated                  (mmol N m^-3)*m
-    ## 35        NH4_surface5m                      mmol N m^-3
-    ## 36         NO3_bottom5m                      mmol N m^-3
-    ## 37       NO3_integrated                  (mmol N m^-3)*m
-    ## 38        NO3_surface5m                      mmol N m^-3
-    ## 39       PhL_integrated                    (mg C m^-3)*m
-    ## 40        PhL_surface5m                        mg C m^-3
-    ## 41       PhS_integrated                    (mg C m^-3)*m
-    ## 42        PhS_surface5m                        mg C m^-3
-    ## 43  prod_Cop_integrated                   mg C m^-2 d^-1
-    ## 44 prod_EupO_integrated                   mg C m^-2 d^-1
-    ## 45 prod_EupS_integrated                   mg C m^-2 d^-1
-    ## 46  prod_Eup_integrated (milligram carbon meter-3 d-1)*m
-    ## 47  prod_Jel_integrated                   mg C m^-2 d^-1
-    ## 48  prod_MZL_integrated                   mg C m^-2 d^-1
-    ## 49 prod_NCaO_integrated                   mg C m^-2 d^-1
-    ## 50 prod_NCaS_integrated                   mg C m^-2 d^-1
-    ## 51  prod_NCa_integrated (milligram carbon meter-3 d-1)*m
-    ## 52  prod_PhL_integrated                   mg C m^-2 d^-1
-    ## 53  prod_PhS_integrated                   mg C m^-2 d^-1
-    ## 54       salt_surface5m                                 
-    ## 55        temp_bottom5m                          Celsius
-    ## 56      temp_integrated                      (Celsius)*m
-    ## 57       temp_surface5m                          Celsius
-    ## 58       uEast_bottom5m                   meter second-1
-    ## 59      uEast_surface5m                   meter second-1
-    ## 60      vNorth_bottom5m                   meter second-1
-    ## 61     vNorth_surface5m                   meter second-1
+    ##                    name
+    ## 6                   Ben
+    ## 7                DetBen
+    ## 8                  Hsbl
+    ## 9                IceNH4
+    ## 10               IceNO3
+    ## 11               IcePhL
+    ## 12                 aice
+    ## 13                 hice
+    ## 14               shflux
+    ## 15               ssflux
+    ## 16       Cop_integrated
+    ## 17        Cop_surface5m
+    ## 18      EupO_integrated
+    ## 19       EupO_surface5m
+    ## 20      EupS_integrated
+    ## 21       EupS_surface5m
+    ## 22        Iron_bottom5m
+    ## 23      Iron_integrated
+    ## 24       Iron_surface5m
+    ## 25       Jel_integrated
+    ## 26        Jel_surface5m
+    ## 27       MZL_integrated
+    ## 28        MZL_surface5m
+    ## 29      NCaO_integrated
+    ## 30       NCaO_surface5m
+    ## 31      NCaS_integrated
+    ## 32       NCaS_surface5m
+    ## 33         NH4_bottom5m
+    ## 34       NH4_integrated
+    ## 35        NH4_surface5m
+    ## 36         NO3_bottom5m
+    ## 37       NO3_integrated
+    ## 38        NO3_surface5m
+    ## 39       PhL_integrated
+    ## 40        PhL_surface5m
+    ## 41       PhS_integrated
+    ## 42        PhS_surface5m
+    ## 43  prod_Cop_integrated
+    ## 44 prod_EupO_integrated
+    ## 45 prod_EupS_integrated
+    ## 46  prod_Eup_integrated
+    ## 47  prod_Jel_integrated
+    ## 48  prod_MZL_integrated
+    ## 49 prod_NCaO_integrated
+    ## 50 prod_NCaS_integrated
+    ## 51  prod_NCa_integrated
+    ## 52  prod_PhL_integrated
+    ## 53  prod_PhS_integrated
+    ## 54       salt_surface5m
+    ## 55        temp_bottom5m
+    ## 56      temp_integrated
+    ## 57       temp_surface5m
+    ## 58       uEast_bottom5m
+    ## 59      uEast_surface5m
+    ## 60      vNorth_bottom5m
+    ## 61     vNorth_surface5m
+    ##                               units
+    ## 6                         mg C m^-2
+    ## 7                         mg C m^-2
+    ## 8                             meter
+    ## 9                       mmol N m^-3
+    ## 10                      mmol N m^-3
+    ## 11                        mg C m^-3
+    ## 12                                 
+    ## 13                            meter
+    ## 14                     watt meter-2
+    ## 15                   meter second-1
+    ## 16                    (mg C m^-3)*m
+    ## 17                        mg C m^-3
+    ## 18                    (mg C m^-3)*m
+    ## 19                        mg C m^-3
+    ## 20                    (mg C m^-3)*m
+    ## 21                        mg C m^-3
+    ## 22                  micromol Fe m-3
+    ## 23              (micromol Fe m-3)*m
+    ## 24                  micromol Fe m-3
+    ## 25                    (mg C m^-3)*m
+    ## 26                        mg C m^-3
+    ## 27                    (mg C m^-3)*m
+    ## 28                        mg C m^-3
+    ## 29                    (mg C m^-3)*m
+    ## 30                        mg C m^-3
+    ## 31                    (mg C m^-3)*m
+    ## 32                        mg C m^-3
+    ## 33                      mmol N m^-3
+    ## 34                  (mmol N m^-3)*m
+    ## 35                      mmol N m^-3
+    ## 36                      mmol N m^-3
+    ## 37                  (mmol N m^-3)*m
+    ## 38                      mmol N m^-3
+    ## 39                    (mg C m^-3)*m
+    ## 40                        mg C m^-3
+    ## 41                    (mg C m^-3)*m
+    ## 42                        mg C m^-3
+    ## 43                   mg C m^-2 d^-1
+    ## 44                   mg C m^-2 d^-1
+    ## 45                   mg C m^-2 d^-1
+    ## 46 (milligram carbon meter-3 d-1)*m
+    ## 47                   mg C m^-2 d^-1
+    ## 48                   mg C m^-2 d^-1
+    ## 49                   mg C m^-2 d^-1
+    ## 50                   mg C m^-2 d^-1
+    ## 51 (milligram carbon meter-3 d-1)*m
+    ## 52                   mg C m^-2 d^-1
+    ## 53                   mg C m^-2 d^-1
+    ## 54                                 
+    ## 55                          Celsius
+    ## 56                      (Celsius)*m
+    ## 57                          Celsius
+    ## 58                   meter second-1
+    ## 59                   meter second-1
+    ## 60                   meter second-1
+    ## 61                   meter second-1
     ##                                                       longname
     ## 6                                Benthic infauna concentration
     ## 7                               Benthic detritus concentration
@@ -405,13 +462,27 @@ in R:
     head(all_info1)
 ```
 
-    ##                            name                    Type B10KVersion  CMIP  GCM   BIO Carbon_scenario
-    ## 1 B10K-H16_CMIP5_CESM_BIO_rcp85 Weekly regional indices         H16 CMIP5 CESM  TRUE           rcp85
-    ## 2     B10K-H16_CMIP5_CESM_rcp45 Weekly regional indices         H16 CMIP5 CESM FALSE           rcp45
-    ## 3     B10K-H16_CMIP5_CESM_rcp85 Weekly regional indices         H16 CMIP5 CESM FALSE           rcp85
-    ## 4 B10K-H16_CMIP5_GFDL_BIO_rcp85 Weekly regional indices         H16 CMIP5 GFDL  TRUE           rcp85
-    ## 5     B10K-H16_CMIP5_GFDL_rcp45 Weekly regional indices         H16 CMIP5 GFDL FALSE           rcp45
-    ## 6     B10K-H16_CMIP5_GFDL_rcp85 Weekly regional indices         H16 CMIP5 GFDL FALSE           rcp85
+    ##                            name
+    ## 1 B10K-H16_CMIP5_CESM_BIO_rcp85
+    ## 2     B10K-H16_CMIP5_CESM_rcp45
+    ## 3     B10K-H16_CMIP5_CESM_rcp85
+    ## 4 B10K-H16_CMIP5_GFDL_BIO_rcp85
+    ## 5     B10K-H16_CMIP5_GFDL_rcp45
+    ## 6     B10K-H16_CMIP5_GFDL_rcp85
+    ##                      Type B10KVersion  CMIP
+    ## 1 Weekly regional indices         H16 CMIP5
+    ## 2 Weekly regional indices         H16 CMIP5
+    ## 3 Weekly regional indices         H16 CMIP5
+    ## 4 Weekly regional indices         H16 CMIP5
+    ## 5 Weekly regional indices         H16 CMIP5
+    ## 6 Weekly regional indices         H16 CMIP5
+    ##    GCM   BIO Carbon_scenario
+    ## 1 CESM  TRUE           rcp85
+    ## 2 CESM FALSE           rcp45
+    ## 3 CESM FALSE           rcp85
+    ## 4 GFDL  TRUE           rcp85
+    ## 5 GFDL FALSE           rcp45
+    ## 6 GFDL FALSE           rcp85
     ##                 Start                 End nvars
     ## 1 2006-01-22 12:00:00 2099-12-27 12:00:00    59
     ## 2 2006-01-22 12:00:00 2081-02-16 12:00:00    59
@@ -425,22 +496,29 @@ in R:
     head(all_info2)
 ```
 
-    ##                            name              Type B10KVersion  CMIP  GCM   BIO Carbon_scenario Start  End
-    ## 1 B10K-H16_CMIP5_CESM_BIO_rcp85 Survey replicated         H16 CMIP5 CESM  TRUE           rcp85  1970 2100
-    ## 2     B10K-H16_CMIP5_CESM_rcp45 Survey replicated         H16 CMIP5 CESM FALSE           rcp45  1970 2100
-    ## 3     B10K-H16_CMIP5_CESM_rcp85 Survey replicated         H16 CMIP5 CESM FALSE           rcp85  1970 2100
-    ## 4 B10K-H16_CMIP5_GFDL_BIO_rcp85 Survey replicated         H16 CMIP5 GFDL  TRUE           rcp85  1970 2100
-    ## 5     B10K-H16_CMIP5_GFDL_rcp45 Survey replicated         H16 CMIP5 GFDL FALSE           rcp45  1970 2100
-    ## 6     B10K-H16_CMIP5_GFDL_rcp85 Survey replicated         H16 CMIP5 GFDL FALSE           rcp85  1970 2100
-    ##   nvars
-    ## 1    60
-    ## 2    60
-    ## 3    60
-    ## 4    60
-    ## 5    60
-    ## 6    60
+    ##                            name
+    ## 1 B10K-H16_CMIP5_CESM_BIO_rcp85
+    ## 2     B10K-H16_CMIP5_CESM_rcp45
+    ## 3     B10K-H16_CMIP5_CESM_rcp85
+    ## 4 B10K-H16_CMIP5_GFDL_BIO_rcp85
+    ## 5     B10K-H16_CMIP5_GFDL_rcp45
+    ## 6     B10K-H16_CMIP5_GFDL_rcp85
+    ##                Type B10KVersion  CMIP  GCM
+    ## 1 Survey replicated         H16 CMIP5 CESM
+    ## 2 Survey replicated         H16 CMIP5 CESM
+    ## 3 Survey replicated         H16 CMIP5 CESM
+    ## 4 Survey replicated         H16 CMIP5 GFDL
+    ## 5 Survey replicated         H16 CMIP5 GFDL
+    ## 6 Survey replicated         H16 CMIP5 GFDL
+    ##     BIO Carbon_scenario Start  End nvars
+    ## 1  TRUE           rcp85  1970 2100    60
+    ## 2 FALSE           rcp45  1970 2100    60
+    ## 3 FALSE           rcp85  1970 2100    60
+    ## 4  TRUE           rcp85  1970 2100    60
+    ## 5 FALSE           rcp45  1970 2100    60
+    ## 6 FALSE           rcp85  1970 2100    60
 
-#Indices & bias correction UPDATED{.tabset}
+# Indices & bias correction UPDATED
 
 *Summary*
 
@@ -1294,9 +1372,9 @@ load(file="Data/out/CEATTLE_indices/ceattle_vars_wide_op.Rdata")
 # switches 
 thisYr <- format(Sys.time(), "%Y")
 today  <- format(Sys.time(), "%b %d, %Y")
-lastyr_hind <- 2022 #as.numeric(thisYr)  #2021
-hind_yrs    <- 1979:lastyr_hind   # define the years of your estimation model
-fut_yrs     <- (lastyr_hind+1):2100   # define the years of your projections
+lastyr_hind <- 2021 #as.numeric(thisYr)  #2021
+hind_yrs    <- 1979:2022   # define the years of your estimation model
+fut_yrs     <- 2023:2099   # define the years of your projections
 stitchDate     <- "2019-12-30"  # last date of the ACLIM hindcast
 stitchDate_op  <- "2022-05-16"  #last operational hindcast date
 log_adj      <- 1e-4
@@ -1359,30 +1437,84 @@ varall
 ceattle_vars_op
 ceattle_vars_wide_op
 
+grpby2 <- c("type","var","basin",
+               "year","sim","sim_type",
+               "bc")
+    
 #define hind and fut:
-hind <- ceattle_vars_op%>%filter(year%in%hind_yrs)%>%ungroup()
+hind <- ceattle_vars_op%>%filter(year%in%hind_yrs,sim_type=="hind")%>%
+  ungroup()
+
 mnhind <- hind%>%
   group_by(season,var,basin)%>%
   summarize(mnhind = mean(val_use,na.rm=T),
          sdhind = sd(val_use, na.rm=T))%>%ungroup()
 hind <- hind%>%left_join(mnhind)%>%
-  mutate(val_use_scaled = (val_use-mnhind)/sdhind)%>%ungroup()
+  mutate(val_use_scaled = (val_use-mnhind)/sdhind)%>%
+    select(all_of(c(grpby2,"val_use","val_use_scaled")))%>%distinct()%>%
+              ungroup()
+
+
+hind <- hind%>%full_join(expand.grid(year= hind_yrs, var = unique(hind$var)))
   
+
 fut  <- ceattle_vars_op%>%
-  filter(year%in%fut_yrs)%>%
-  left_join(mnhind)%>%
-  mutate(val_use_scaled = (val_use-mnhind)/sdhind)%>%ungroup()
+  filter(year%in%fut_yrs)
+    
+#temporary fix: Add Large Zoop for CESM RCP85
+tmp_fut <-fut%>%filter(GCM_scen=="cesm_rcp85")
+grplist<-c("NCaS_integrated","EupS_integrated")
+
+if(length(grep("largeZoop_integrated",unique(tmp_fut$var_raw)) )==0){
+  tmp_futA <- tmp_fut[grep(grplist[1],tmp_fut$var),]
+  tmp_futB <- tmp_fut[grep(grplist[2],tmp_fut$var),]
+  tmp_futA$var2 <- grplist[1] 
+  tmp_futB$var2 <- grplist[2] 
+   sumat<-c("val_use","mnVal_hind","val_delta","val_biascorrected",
+            "val_raw","mn_val")
+   tmp_var_zoop    <- rbind(tmp_futA,tmp_futB)%>%
+      dplyr::filter(var2%in%c("NCaS_integrated","EupS_integrated"))%>%
+      dplyr::group_by(
+        var,
+        season,
+        type,
+        basin,
+        year,
+        sim,
+        gcmcmip,
+        GCM,
+        scen,
+        sim_type,
+        bc,
+        GCM_scen,
+        GCM_scen_sim, 
+        CMIP,
+        GCM2,
+        GCM2_scen_sim,
+        jday,mnDate,var_raw,lognorm,var2)%>%
+     summarise_at(all_of(sumat),mean,na.rm=T)%>%
+     mutate(var_raw="largeZoop_integrated",
+            var = paste0(season,"_largeZoop_integrated"))%>%select(-var2)%>%
+      summarise_at(all_of(sumat),sum,na.rm=T)%>%relocate(names(fut))%>%
+      distinct()
+   
+   fut <- rbind(fut, tmp_var_zoop)
+     
+}
+  fut  <- fut%>%left_join(mnhind)%>%
+    mutate(val_use_scaled = (val_use-mnhind)/sdhind)%>%ungroup()
+
+data.frame(fut%>%filter(var=="Winter_largeZoop_integrated",GCM_scen=="cesm_rcp85"))
+data.frame(fut%>%ungroup()%>%group_by(GCM_scen)%>%summarise(count = length(var)))
   
+fut <- fut%>%full_join(expand.grid(year= fut_yrs,
+                                   var = unique(fut$var),
+                                   GCM_scen = unique(fut$GCM_scen)))
+data.frame(fut%>%ungroup()%>%group_by(GCM_scen)%>%summarise(count = length(var)))
+  data.frame(fut%>%filter(var=="Winter_largeZoop_integrated",GCM_scen=="cesm_rcp85"))
 
 # now identify which covars are highly correlated
 
-    # Now compile the indices:
-    #--------------------------------------
-    grpby2 <- c("type","var","basin",
-               "year","sim","sim_type",
-               "bc")
-    
-    
   d_wide   <- ceattle_vars_op%>%
       filter(year<=lastyr_hind)%>%
       left_join(mnhind)%>%
@@ -1461,10 +1593,10 @@ shortlist <- c("Summer_temp_bottom5m","Winter_temp_bottom5m",
                "Summer_temp_surface5m",
                "Spring_Cop_integrated",
                "Fall_largeZoop_integrated")
-
+hind_short <- hind%>%mutate(long_name=var)%>%
+               filter(var%in%shortlist)
 # Kir's .dat file
-makeDat_hind(datIN   = hind%>%mutate(long_name=var)%>%
-               filter(var%in%shortlist), 
+makeDat_hind(datIN   = hind_short, 
              outfile = fndat_hind,
              value2use = "val_use",
              value2use_scaled = "val_use_scaled",
@@ -1472,7 +1604,7 @@ makeDat_hind(datIN   = hind%>%mutate(long_name=var)%>%
              nsppIN    = 3,
              overlapIN = overlap, 
              nonScaled_covlist = c("Summer_temp_bottom5m","Summer_temp_surface5m"),
-             Scaled_covlist    = unique(hind$var))
+             Scaled_covlist    = unique(hind_short$var))
 
 makeDat_fut( datIN             = fut%>%mutate(long_name=var)%>%
                filter(var%in%shortlist), 
@@ -1487,7 +1619,7 @@ makeDat_fut( datIN             = fut%>%mutate(long_name=var)%>%
              overlapIN         = overlap_fut,  #(nspp,nsim+1,nyrs_fut) 
              overlap_hind      = overlap,
              nonScaled_covlist = c("Summer_temp_bottom5m","Summer_temp_surface5m"),
-             Scaled_covlist    = unique(hind$var))
+             Scaled_covlist    = unique(hind_short$var))
 
 # Kir's .dat file
 makeDat_hind(datIN   = hind%>%mutate(long_name=var), 
