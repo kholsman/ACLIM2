@@ -149,7 +149,7 @@
     
     varlist <- c("temp_surface5m", "temp_bottom5m",
                  "oxygen_bottom5m","Cop_integrated","EupS_integrated",
-                 "NCaO_integrated","largeZoop_integrated")
+                 "NCaS_integrated","largeZoop_integrated")
     for(v in varlist){
       
       # now for operational hindcasts:

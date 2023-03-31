@@ -227,7 +227,7 @@ To get more information about each of these level 3 datasets enter this in R:
     
 ```
 
-#Indices & bias correction UPDATED{.tabset}
+# Indices & bias correction UPDATED{.tabset}
 
 *Summary*
 
@@ -919,9 +919,9 @@ load(file="Data/out/CEATTLE_indices/ceattle_vars_wide_op.Rdata")
 # switches 
 thisYr <- format(Sys.time(), "%Y")
 today  <- format(Sys.time(), "%b %d, %Y")
-lastyr_hind <- 2022 #as.numeric(thisYr)  #2021
-hind_yrs    <- 1979:lastyr_hind   # define the years of your estimation model
-fut_yrs     <- (lastyr_hind+1):2100   # define the years of your projections
+lastyr_hind <- 2021 #as.numeric(thisYr)  #2021
+hind_yrs    <- 1979:2022   # define the years of your estimation model
+fut_yrs     <- 2023:2099   # define the years of your projections
 stitchDate     <- "2019-12-30"  # last date of the ACLIM hindcast
 stitchDate_op  <- "2022-05-16"  #last operational hindcast date
 log_adj      <- 1e-4
@@ -984,32 +984,84 @@ varall
 ceattle_vars_op
 ceattle_vars_wide_op
 
+grpby2 <- c("type","var","basin",
+               "year","sim","sim_type",
+               "bc")
+    
 #define hind and fut:
-hind <- ceattle_vars_op%>%filter(year%in%hind_yrs)%>%ungroup()
+hind <- ceattle_vars_op%>%filter(year%in%hind_yrs,sim_type=="hind")%>%
+  ungroup()
+
 mnhind <- hind%>%
   group_by(season,var,basin)%>%
   summarize(mnhind = mean(val_use,na.rm=T),
          sdhind = sd(val_use, na.rm=T))%>%ungroup()
 hind <- hind%>%left_join(mnhind)%>%
-  mutate(val_use_scaled = (val_use-mnhind)/sdhind)%>%ungroup()
+  mutate(val_use_scaled = (val_use-mnhind)/sdhind)%>%
+    select(all_of(c(grpby2,"val_use","val_use_scaled")))%>%distinct()%>%
+              ungroup()
+
+
+hind <- hind%>%full_join(expand.grid(year= hind_yrs, var = unique(hind$var)))
   
+
 fut  <- ceattle_vars_op%>%
-  filter(year%in%fut_yrs)%>%
-  left_join(mnhind)%>%
-  mutate(val_use_scaled = (val_use-mnhind)/sdhind)%>%ungroup()
+  filter(year%in%fut_yrs)
+    
+#temporary fix: Add Large Zoop for CESM RCP85
+tmp_fut <-fut%>%filter(GCM_scen=="cesm_rcp85")
+grplist<-c("NCaS_integrated","EupS_integrated")
+
+if(length(grep("largeZoop_integrated",unique(tmp_fut$var_raw)) )==0){
+  tmp_futA <- tmp_fut[grep(grplist[1],tmp_fut$var),]
+  tmp_futB <- tmp_fut[grep(grplist[2],tmp_fut$var),]
+  tmp_futA$var2 <- grplist[1] 
+  tmp_futB$var2 <- grplist[2] 
+   sumat<-c("val_use","mnVal_hind","val_delta","val_biascorrected",
+            "val_raw","mn_val")
+   tmp_var_zoop    <- rbind(tmp_futA,tmp_futB)%>%
+      dplyr::filter(var2%in%c("NCaS_integrated","EupS_integrated"))%>%
+      dplyr::group_by(
+        var,
+        season,
+        type,
+        basin,
+        year,
+        sim,
+        gcmcmip,
+        GCM,
+        scen,
+        sim_type,
+        bc,
+        GCM_scen,
+        GCM_scen_sim, 
+        CMIP,
+        GCM2,
+        GCM2_scen_sim,
+        jday,mnDate,var_raw,lognorm,var2)%>%
+     summarise_at(all_of(sumat),mean,na.rm=T)%>%
+     mutate(var_raw="largeZoop_integrated",
+            var = paste0(season,"_largeZoop_integrated"))%>%select(-var2)%>%
+      summarise_at(all_of(sumat),sum,na.rm=T)%>%relocate(names(fut))%>%
+      distinct()
+   
+   fut <- rbind(fut, tmp_var_zoop)
+     
+}
+  fut  <- fut%>%left_join(mnhind)%>%
+    mutate(val_use_scaled = (val_use-mnhind)/sdhind)%>%ungroup()
+
+data.frame(fut%>%filter(var=="Winter_largeZoop_integrated",GCM_scen=="cesm_rcp85"))
+data.frame(fut%>%ungroup()%>%group_by(GCM_scen)%>%summarise(count = length(var)))
   
+fut <- fut%>%full_join(expand.grid(year= fut_yrs,
+                                   var = unique(fut$var),
+                                   GCM_scen = unique(fut$GCM_scen)))
+data.frame(fut%>%ungroup()%>%group_by(GCM_scen)%>%summarise(count = length(var)))
+  data.frame(fut%>%filter(var=="Winter_largeZoop_integrated",GCM_scen=="cesm_rcp85"))
 
 # now identify which covars are highly correlated
 
-
-
-    # Now compile the indices:
-    #--------------------------------------
-    grpby2 <- c("type","var","basin",
-               "year","sim","sim_type",
-               "bc")
-    
-    
   d_wide   <- ceattle_vars_op%>%
       filter(year<=lastyr_hind)%>%
       left_join(mnhind)%>%
@@ -1088,10 +1140,10 @@ shortlist <- c("Summer_temp_bottom5m","Winter_temp_bottom5m",
                "Summer_temp_surface5m",
                "Spring_Cop_integrated",
                "Fall_largeZoop_integrated")
-
+hind_short <- hind%>%mutate(long_name=var)%>%
+               filter(var%in%shortlist)
 # Kir's .dat file
-makeDat_hind(datIN   = hind%>%mutate(long_name=var)%>%
-               filter(var%in%shortlist), 
+makeDat_hind(datIN   = hind_short, 
              outfile = fndat_hind,
              value2use = "val_use",
              value2use_scaled = "val_use_scaled",
@@ -1099,7 +1151,7 @@ makeDat_hind(datIN   = hind%>%mutate(long_name=var)%>%
              nsppIN    = 3,
              overlapIN = overlap, 
              nonScaled_covlist = c("Summer_temp_bottom5m","Summer_temp_surface5m"),
-             Scaled_covlist    = unique(hind$var))
+             Scaled_covlist    = unique(hind_short$var))
 
 makeDat_fut( datIN             = fut%>%mutate(long_name=var)%>%
                filter(var%in%shortlist), 
@@ -1114,7 +1166,7 @@ makeDat_fut( datIN             = fut%>%mutate(long_name=var)%>%
              overlapIN         = overlap_fut,  #(nspp,nsim+1,nyrs_fut) 
              overlap_hind      = overlap,
              nonScaled_covlist = c("Summer_temp_bottom5m","Summer_temp_surface5m"),
-             Scaled_covlist    = unique(hind$var))
+             Scaled_covlist    = unique(hind_short$var))
 
 # Kir's .dat file
 makeDat_hind(datIN   = hind%>%mutate(long_name=var), 
