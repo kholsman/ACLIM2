@@ -10,6 +10,8 @@
 # rm(list=ls())
 # setwd("D:/GitHub_cloud/ACLIM2")
 # setwd("/Volumes/LaCie/GitHub_cloud/ACLIM2")
+# setwd("/Users/KKH/Documents/GitHub_mac/ACLIM2")
+# suppressMessages(source("R/make.R"))
 # loads packages, data, setup, etc.
 
 tmstp       <- "2022_10_17"
@@ -17,6 +19,8 @@ update_biascorrection <- FALSE
 suppressMessages(source("R/make.R"))
 tmstp       <- "2022_10_17"
 Rdata_path  <- paste0("../../romsnpz/",tmstp,"_Rdata")
+Rdata_path  <- paste0("../../Data/romsnpz/",tmstp,"_Rdata")
+
 main        <- getwd()  #"~/GitHub_new/ACLIM2"
 tmstamp1    <- format(Sys.time(), "%Y%m%d")
 
@@ -223,8 +227,10 @@ write.csv(normlist,file = file.path("Data/out/","normlist.csv"))
       sim_listIN  = sim_list[-grep("historical",sim_list)],
       gcinfoIN    = FALSE))
     
-    
-    #make ACLIM level 4 indices (annual, mont    
+    # -------------------------------------------
+    # make ACLIM level 4 indices (annual, monthly, weekly, etc)
+    # -------------------------------------------
+      
     gc()
     suppressMessages(makeACLIM2_L4_Indices_strata(
       CMIP_fdlr   = "Data/out/K20P19_CMIP6",

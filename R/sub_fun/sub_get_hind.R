@@ -76,9 +76,10 @@ cat(" -- Get indices \n")
       sdVal_hind_yr = sdVal_x_yr)%>%
       ungroup()
     
-    rmlistIN <- c("sdVal_hind", "seVal_hind", 
-                  "sdVal_hind_strata", "sdVal_hind_yr",
-                  "nVal_hind")
+    # rmlistIN <- c("sdVal_hind", "seVal_hind", 
+    #               "sdVal_hind_strata", "sdVal_hind_yr",
+    #               "nVal_hind")
+   # rmlistIN <- c("sdVal_hind_strata", "sdVal_hind_yr")
     
     hind    <- hindA$fullDat%>%rename(
       mnVal_hind  = mnVal_x,
@@ -86,7 +87,8 @@ cat(" -- Get indices \n")
       nVal_hind   = nVal_x,
       seVal_hind  = seVal_x,
       sdVal_hind_strata = sdVal_x_strata,
-      sdVal_hind_yr = sdVal_x_yr)%>%select(-all_of(rmlistIN))%>%
+      sdVal_hind_yr = sdVal_x_yr)%>%
+      #select(-all_of(rmlistIN))%>%
       ungroup()
     
     # if(!dir.exists(file.path("Data/out",CMIP_fdlr)))
@@ -124,8 +126,10 @@ cat(" -- Get indices \n")
       sdVal_hind_mo = sdVal_x_mo,
       sdVal_hind_yr = sdVal_x_yr)%>%
       ungroup()
-    rmlistIN <- c("sdVal_hind", "seVal_hind", "sdVal_hind_mo", "sdVal_hind_yr",
-                  "nVal_hind")
+    #rmlistIN <- c("sdVal_hind", "seVal_hind", "sdVal_hind_mo", "sdVal_hind_yr",
+   #               "nVal_hind")
+  
+    #rmlistIN <- c("sdVal_hind_mo", "sdVal_hind_yr")
     hind    <- hindA$fullDat%>%rename(
       mnVal_hind  = mnVal_x,
       sdVal_hind  = sdVal_x,
@@ -133,7 +137,7 @@ cat(" -- Get indices \n")
       seVal_hind  = seVal_x,
       sdVal_hind_mo = sdVal_x_mo,
       sdVal_hind_yr = sdVal_x_yr)%>%
-      select(-all_of(rmlistIN))%>%
+      #select(-all_of(rmlistIN))%>%
       ungroup()
     
     rm(list=c("hnd","hindA"))

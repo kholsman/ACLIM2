@@ -11,13 +11,15 @@
 #'
 
 
-get_var<- function(
+get_var <- function(
   typeIN    = "annual", #ACLIM2 Index Type"
   plotvar   = "temp_bottom5m",  #variable to plot
+  alphaIN   = c(0.6,.1),
   adjIN = "val_delta",
   plothist     = T,
   ifmissingyrs = 5,
   stitchDateIN = stitchDate,
+  strataIN  = NULL,
   monthIN   = NULL, #"Month
   weekIN    = NULL, #"Week"
   SeasonIN  = NULL, #,"Season",selected=seasons,choices=seasons, multiple=T),
@@ -91,7 +93,8 @@ get_var<- function(
     #dhind<-dhind%>%ungroup()%>%group_by(all_of(c("var",groupbyIN)))%>%ungroup()
     sellist  <- c(groupbyIN,"var","basin", "jday","mnDate","val_raw","mn_val","sd_val", "sim","gcmcmip","GCM",
                   "GCM2","scen","sim_type")
-   
+    
+    sellist  <- sellist[sellist%in%names(dhind)]
       
       hind     <- dhind%>%dplyr::filter(var ==plotvar,basin==plotbasin,GCM2 =="hind")%>%
         dplyr::select(all_of(c(sellist,"mnVal_hind")))%>%
@@ -153,6 +156,8 @@ get_var<- function(
     plotdatout <- plotdatout%>%dplyr::filter(mo%in% monthIN)
   if(!is.null(weekIN))
     plotdatout <- plotdatout%>%dplyr::filter(wk%in% weekIN)
+  # if(!is.null(strataIN))
+  #   plotdatout <- plotdatout%>%dplyr::filter(strata%in%strataIN)
   if(!is.null(jday_rangeIN))
     plotdatout <- plotdatout%>%dplyr::filter(dplyr::between(jday, jday_rangeIN[1], jday_rangeIN[2]))
   
@@ -166,8 +171,8 @@ get_var<- function(
   dat        <- plotdatout%>%ungroup()
 
   pp<- ggplot(dat)+
-    geom_line(aes(x=mnDate,y=val_use,color= GCM_scen,linetype = basin),alpha = 0.6,show.legend = FALSE)+
-    geom_smooth(aes(x=mnDate,y=val_use,color= GCM_scen,fill=GCM_scen_sim,linetype = basin),alpha=0.1,method="loess",formula='y ~ x',span = .5)+
+    geom_line(aes(x=mnDate,y=val_use,color= GCM_scen,linetype = basin),alpha = alphaIN[1],show.legend = FALSE)+
+    geom_smooth(aes(x=mnDate,y=val_use,color= GCM_scen,fill=GCM_scen_sim,linetype = basin),alpha=alphaIN[2],method="loess",formula='y ~ x',span = .5)+
     theme_minimal() + 
     labs(x="Date",
          subtitle = "",
@@ -176,6 +181,11 @@ get_var<- function(
     scale_color_discrete()
   eval(parse(text = paste0("pp <-pp+facet_grid(",facet_rowIN,"~",facet_colIN,")") ))
   
-  return(list(dat=plotdatout%>%select(-mn_val)%>%ungroup()%>%relocate(all_of(c(groupbyIN,"basin","var","val_use","sd_val",
-                                                                               "val_raw"))), plot=pp))
+  outlist <- c(groupbyIN,"basin","var","val_use","sd_val","val_raw")
+  for(cc in outlist[!outlist%in%names(plotdatout)]){
+    message(cat(cc," is missing from outdat, adding as NA\n"))
+    eval(parse(text = paste0("plotdatout$",cc," <- NA") ))
+  }
+  
+  return(list(dat=plotdatout%>%select(-mn_val)%>%ungroup()%>%relocate(all_of(outlist))%>%data.frame(), plot=pp))
 }

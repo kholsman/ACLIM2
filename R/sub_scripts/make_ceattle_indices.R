@@ -59,7 +59,7 @@
                              adjIN        = "val_delta",
                              ifmissingyrs = 5,
                              weekIN       = NULL, #"Week"
-                             monthIN     = NULL, 
+                             monthIN      = NULL, 
                              GCMIN        = NULL, 
                              scenIN       = NULL,
                              facet_rowIN  = "bc", # choices=c("bc","basin","scen")
@@ -392,6 +392,8 @@
     
     save(ceattle_vars_op, file="Data/out/CEATTLE_indices/ceattle_vars_op.Rdata")
     write.csv(ceattle_vars_op, file="Data/out/CEATTLE_indices/ceattle_vars_op.csv")
+    cat("Indices saved in : ACLIM2/Data/out/CEATTLE_indices/ceattle_vars_op.Rdata")
+    
     
     # recast with vars for each column:
     ceattle_vars_wide_op<- ceattle_vars_op%>%
@@ -399,17 +401,10 @@
                                      c("units","long_name","lognorm")])))%>%
       summarize_at(all_of(c("val_use")), mean, na.rm=T)%>%
       tidyr::pivot_wider(names_from = "var", values_from = "val_use")
-    
-    # ceattle_vars_wide_op$NE_winds <- getNE_winds(vNorth=ceattle_vars_wide_op$vNorth_surface5m,
-    #                                          uEast=ceattle_vars_wide_op$uEast_surface5m)
-    # 
-    # ceattle_vars2_op<- ceattle_vars_wide_op%>%
-    #   tidyr::pivot_longer(cols = c(unique(NRS_vars$var),"NE_winds"),
-    #                       names_to = "var",
-    #                       values_to = "val_use")%>%mutate(mn_val=val_use)
-    
+   
     save(ceattle_vars_wide_op, file="Data/out/CEATTLE_indices/ceattle_vars_wide_op.Rdata")
     write.csv(ceattle_vars_wide_op, file="Data/out/CEATTLE_indices/ceattle_vars_wide_op.csv")
+    cat("Indices saved in : ACLIM2/Data/out/CEATTLE_indices/ceattle_vars_wide_op.Rdata")
     
     pp<- ggplot(ceattle_vars_wide_op)+
       geom_line(aes(x=year,y=annual_NE_winds,color= GCM_scen,linetype = basin),
@@ -427,7 +422,7 @@
     
     pp
     
-    pp<- ggplot(ceattle_vars_wide_op)+
+    pp_winds<- ggplot(ceattle_vars_wide_op)+
       geom_line(aes(x=year,y=Spring_NE_winds,color= GCM_scen,linetype = basin),
                 alpha = 0.2,show.legend = FALSE)+
       geom_smooth(aes(x=year,y=Spring_NE_winds,color= GCM_scen,
@@ -441,8 +436,8 @@
            legend = "")+
       scale_color_discrete()+ facet_grid(scen~bc)
     
-    pp
+    pp_winds
     jpeg(filename = file.path("Data/out/CEATTLE_indices/CEATTLE_indices2_spring_op.jpg"),
          width=8,height=7,units="in",res=350)
-    print(pp)
+    print(pp_winds)
     dev.off()

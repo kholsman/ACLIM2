@@ -3,6 +3,7 @@
 #'
 #' makeDat_fut.R
 #' 
+
 makeDat_fut <- function( datIN      = fut, 
                          hinddatIN  = hind, 
                          NAVal     = "mean", 
@@ -20,28 +21,29 @@ makeDat_fut <- function( datIN      = fut,
   if(is.null(NAVal)){
     myfun <- function(x){
       return(x)
-    }}
+  }}
   
   if(NAVal == "mean"){
-   
     myfun <- function(x){
       x2 <- rev(x[1:last_nyrs_avg])
       if(any(is.na(x))) 
         x[is.na(x)] <- mean(x2, na.rm=T) 
       return(x)
-    }}
+  }}
+  
   if(NAVal == "last"){
     myfun <- function(x){
       if(any(is.na(x))) 
         x[is.na(x)] <- rev(x[!is.na(x)])[1]
       return(x)
-    }}
+  }}
   if(NAVal == "5Yrmean"){
     myfun <- function(x){
       if(any(is.na(x))) 
         x[is.na(x)] <- mean(rev(x[!is.na(x)])[1:5])
       return(x)
-    }}
+  }}
+  
   eval(parse(text = paste0("datIN     <- datIN%>%dplyr::rename(VAL = ",value2use,")") ))
   eval(parse(text = paste0("datIN     <- datIN%>%dplyr::rename(covuse = ",value2use_scaled,")")))
   eval(parse(text = paste0("hinddatIN <- hinddatIN%>%dplyr::rename(VAL = ",value2use,")") ))

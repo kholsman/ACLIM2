@@ -91,8 +91,10 @@ sub_get_hist<-function(
             CMIP = CMIP,
             gcmsim = gcmsim)%>%
           ungroup()
-        rmlistIN <- c("sdVal_hist", "seVal_hist", "sdVal_hist_strata", "sdVal_hist_yr",
-                      "nVal_hist")
+        # rmlistIN <- c("sdVal_hist", "seVal_hist", "sdVal_hist_strata", "sdVal_hist_yr",
+        #               "nVal_hist")
+       # rmlistIN <- c( "sdVal_hist_strata", "sdVal_hist_yr")
+        
         tmphist    <- histA$fullDat%>%rename(
           mnVal_hist  = mnVal_x,
           sdVal_hist  = sdVal_x,
@@ -100,7 +102,7 @@ sub_get_hist<-function(
           seVal_hist  = seVal_x,
           sdVal_hist_strata = sdVal_x_strata,
           sdVal_hist_yr = sdVal_x_yr)%>%
-          select(-all_of(rmlistIN))%>%
+         # select(-all_of(rmlistIN))%>%
           mutate(
             GCM = GCM,
             RCP2 = RCP,
@@ -152,8 +154,9 @@ sub_get_hist<-function(
             CMIP = CMIP,
             gcmsim = gcmsim)%>%
           ungroup()
-        rmlistIN = c("sdVal_hist", "seVal_hist", "sdVal_hist_mo", "sdVal_hist_yr",
-                     "nVal_hist")
+        # rmlistIN = c("sdVal_hist", "seVal_hist", "sdVal_hist_mo", "sdVal_hist_yr",
+        #              "nVal_hist")
+       # rmlistIN = c("sdVal_hist_mo", "sdVal_hist_yr")
         tmphist    <- histA$fullDat%>%rename(
           mnVal_hist = mnVal_x,
           sdVal_hist = sdVal_x,
@@ -161,7 +164,7 @@ sub_get_hist<-function(
           seVal_hist    = seVal_x,
           sdVal_hist_mo = sdVal_x_mo,
           sdVal_hist_yr = sdVal_x_yr)%>%
-          select(-all_of(rmlistIN))%>%
+          #select(-all_of(rmlistIN))%>%
           mutate(
             GCM = GCM,
             RCP = RCP,
@@ -247,8 +250,7 @@ sub_get_hist<-function(
               CMIP = CMIP,
               gcmsim = gcmsim)%>%
             ungroup()
-          rmlistIN = c("sdVal_hist", "seVal_hist", "sdVal_hist_strata", "sdVal_hist_yr",
-                       "nVal_hist")
+          #rmlistIN = c("sdVal_hist_strata", "sdVal_hist_yr")
           tmphist    <- histA$fullDat%>%rename(
             mnVal_hist  = mnVal_x,
             sdVal_hist  = sdVal_x,
@@ -256,7 +258,7 @@ sub_get_hist<-function(
             seVal_hist  = seVal_x,
             sdVal_hist_strata = sdVal_x_strata,
             sdVal_hist_yr = sdVal_x_yr)%>%
-            select(-all_of(rmlistIN))%>%
+           # select(-all_of(rmlistIN))%>%
             mutate(
               GCM = GCM,
               RCP = RCP,
@@ -309,8 +311,7 @@ sub_get_hist<-function(
               CMIP = CMIP,
               gcmsim = gcmsim)%>%
             ungroup()
-          rmlistIN = c("sdVal_hist", "seVal_hist", "sdVal_hist_mo", "sdVal_hist_yr",
-                       "nVal_hist")
+         # rmlistIN = c( "sdVal_hist_mo", "sdVal_hist_yr")
           tmphist    <- histA$fullDat%>%rename(
             mnVal_hist = mnVal_x,
             sdVal_hist = sdVal_x,
@@ -318,7 +319,7 @@ sub_get_hist<-function(
             seVal_hist    = seVal_x,
             sdVal_hist_mo = sdVal_x_mo,
             sdVal_hist_yr = sdVal_x_yr)%>%
-            select(-all_of(rmlistIN))%>%
+            #select(-all_of(rmlistIN))%>%
             mutate(
               GCM = GCM,
               RCP = RCP,

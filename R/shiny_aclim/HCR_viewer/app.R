@@ -9,7 +9,7 @@
 
 library(shiny)
 library(plotly)
-library(heatmaply)
+#library(heatmaply)
 library("shiny" )
 library("timevis")
 library("plotly")

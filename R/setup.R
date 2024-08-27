@@ -52,8 +52,11 @@
     # Rdata_path    <- file.path(file.path("Data/in",  subfldrR),remote_fl)
     # 
     if(.Platform$OS.type == "unix") {
-      data_path     <- file.path("/Volumes/LaCie/romsnpz",remote_fl)
-      Rdata_path    <- file.path(file.path("/Volumes/LaCie/romsnpz",  subfldrR),remote_fl)
+      # data_path     <- file.path("/Volumes/LaCie/romsnpz",remote_fl)
+      # Rdata_path    <- file.path(file.path("/Volumes/LaCie/romsnpz",  subfldrR),remote_fl)
+      data_path     <- file.path("data/in",remote_fl)
+      Rdata_path    <- file.path(file.path("data/in",  subfldrR),remote_fl)
+      if(!dir.exists(file.path(file.path("data/in",  subfldrR))))  dir.create(file.path(file.path("data/in",  subfldrR)))
       
     }
     if(.Platform$OS.type == "windows") {
@@ -132,8 +135,6 @@
      "B10K-H16_CMIP5_GFDL_rcp85"         ,
      "B10K-H16_CMIP5_MIROC_rcp45"        ,
      "B10K-H16_CMIP5_MIROC_rcp85"        ,
-     "B10K-H16_CORECFS"                  ,
-     "B10K-K20_CORECFS"                  ,
      "B10K-K20P19_CMIP6_cesm_historical" ,
      "B10K-K20P19_CMIP6_cesm_ssp126"     ,
      "B10K-K20P19_CMIP6_cesm_ssp585"     ,
@@ -171,11 +172,11 @@
     cat("------------------------------\n")
     cat("------------------------------\n")
     cat("\n")
-    cat(paste("The following datasets are public, please cite as Hermann et al. 2019 (v.H16) and Kearney et al. 2020 (v.K20) :\n"))
+    cat(paste("The following datasets use the B10K-H16_CORECFS hindcast and are public, please cite as Hermann et al. 2019 (v.H16) :\n"))
     for(k in public)
       cat(paste(k,"\n"))
     cat("\n")
-    cat(paste("The following datasets are still under embargo, please do not share outside of ACLIM:\n"))
+    cat(paste("The following datasets use the B10K-K20_CORECFS hindcast and are public, please reach out to A. Hermann, K. Kearney, W. Cheng, and D. Pilcher for more info, please cite as Kearney et al. 2020 and Pilcher et al. (2021) for v.K20 hindcast), Hermann et al. (2021), and Cheng et al. 2021 (for CMIP6 projections). \n"))
     for(k in embargoed)
       cat(paste(k,"\n"))
     

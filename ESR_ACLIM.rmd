@@ -121,8 +121,7 @@ load("ESR_EBS/midCent_N.Rdata")
         group_by(model,exp,warming_level,GCM)%>%summarize(
           mnSTyr = mean(start_year),
           mnENDyr = mean(end_year))%>%mutate(exp = gsub(" ","",exp))
-       # files/B10K-K20_CORECFS/Level3/ACLIMsurveyrep_B10K-K20_CORECFS.nc
-    
+       
     # Load the rest of the ROMSNPZ data:
     # ------------------------
     cat("Rdata_path : ", Rdata_path,"\n") 
@@ -137,49 +136,50 @@ load("ESR_EBS/midCent_N.Rdata")
                         "temp_surface5m",
                         "oxygen_bottom5m",
                         "pH_bottom5m",
-                        "pH_surface5m")
+                        "pH_surface5m",
+                        "aice","EupS_integrated","NCaS_integrated")
 
-    
-    fl <- paste0(reg_txt,dir(Rdata_path)[11],".Rdata")
-    
-    # load(file.path(Rdata_path,dir(Rdata_path)[11],fl))
-    # dat       <- ACLIMregion%>%filter(var%in%plot_vars)
-    # load("Data/out/H16_CMIP5/allEBS_means/ACLIM_weekly_fut_mn.Rdata")
-    # ACLIM_weekly_futCMIP5H16 <- ACLIM_weekly_fut
-    # ACLIM_weekly_futCMIP5H16$GCM <- gsub("MIROC","miroc_h16",ACLIM_weekly_futCMIP5H16$GCM)
-    # ACLIM_weekly_futCMIP5H16$GCM <- gsub("CESM","cesm_h16",  ACLIM_weekly_futCMIP5H16$GCM)
-    # ACLIM_weekly_futCMIP5H16$GCM <- gsub("GFDL","gfdl_h16",  ACLIM_weekly_futCMIP5H16$GCM)
-    
     # Load weekly data:
     # ----------------------------------------------
     load("Data/out/K20P19_CMIP5/allEBS_means/ACLIM_weekly_fut_mn.Rdata")
-      ACLIM_weekly_futCMIP5 <- ACLIM_weekly_fut
+      ACLIM_weekly_futCMIP5 <- ACLIM_weekly_fut%>%left_join(weekly_var_def,join_by(var== name)) 
     load("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_weekly_fut_mn.Rdata")
     load("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_weekly_hind_mn.Rdata")
-    ACLIM_weekly_futCMIP6 <- ACLIM_weekly_fut
+    load("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_weekly_hist_mn.Rdata")
+    ACLIM_weekly_hist         <- ACLIM_weekly_hist%>%left_join(weekly_var_def,join_by(var== name)) 
+    ACLIM_weekly_fut          <- ACLIM_weekly_fut%>%left_join(weekly_var_def,join_by(var== name)) 
+    ACLIM_weekly_futCMIP6     <- ACLIM_weekly_fut
     ACLIM_weekly_futCMIP5$GCM <- gsub("MIROC","miroc",ACLIM_weekly_futCMIP5$GCM)
     ACLIM_weekly_futCMIP5$GCM <- gsub("CESM","cesm",  ACLIM_weekly_futCMIP5$GCM)
     ACLIM_weekly_futCMIP5$GCM <- gsub("GFDL","gfdl",  ACLIM_weekly_futCMIP5$GCM)
-    ACLIM_weekly_fut    <- rbind(ACLIM_weekly_futCMIP6,ACLIM_weekly_futCMIP5)
+    ACLIM_weekly_fut          <- rbind(ACLIM_weekly_futCMIP6,ACLIM_weekly_futCMIP5)
     
     # Load surveyrep data:
     # ----------------------------------------------
     load("Data/out/K20P19_CMIP5/allEBS_means/ACLIM_surveyrep_fut_mn.Rdata")
-    ACLIM_surveyrep_futCMIP5     <- ACLIM_surveyrep_fut
+    ACLIM_surveyrep_futCMIP5     <- ACLIM_surveyrep_fut%>%left_join(srvy_var_def,join_by(var== name)) 
     load("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_surveyrep_fut_mn.Rdata")
     load("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_surveyrep_hind_mn.Rdata")
+    load("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_surveyrep_hist_mn.Rdata")
+    ACLIM_surveyrep_hist         <- ACLIM_surveyrep_hist%>%left_join(srvy_var_def,join_by(var== name)) 
+    ACLIM_surveyrep_hind         <- ACLIM_surveyrep_hind%>%left_join(srvy_var_def,join_by(var== name)) 
+    ACLIM_surveyrep_fut          <- ACLIM_surveyrep_fut%>%left_join(srvy_var_def,join_by(var== name)) 
     ACLIM_surveyrep_futCMIP6     <- ACLIM_surveyrep_fut
     ACLIM_surveyrep_futCMIP5$GCM <- gsub("MIROC","miroc",ACLIM_surveyrep_futCMIP5$GCM)
     ACLIM_surveyrep_futCMIP5$GCM <- gsub("CESM","cesm",  ACLIM_surveyrep_futCMIP5$GCM)
     ACLIM_surveyrep_futCMIP5$GCM <- gsub("GFDL","gfdl",  ACLIM_surveyrep_futCMIP5$GCM)
-     ACLIM_surveyrep_fut         <- rbind(ACLIM_surveyrep_futCMIP6,ACLIM_surveyrep_futCMIP5)
+    ACLIM_surveyrep_fut          <- rbind(ACLIM_surveyrep_futCMIP6,ACLIM_surveyrep_futCMIP5)
      
     # Load annual data:
     # ----------------------------------------------    
     load("Data/out/K20P19_CMIP5/allEBS_means/ACLIM_annual_fut_mn.Rdata")
-    ACLIM_annual_futCMIP5     <- ACLIM_annual_fut
+    ACLIM_annual_futCMIP5     <- ACLIM_annual_fut%>%left_join(weekly_var_def,join_by(var== name)) 
     load("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_annual_fut_mn.Rdata")
     load("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_annual_hind_mn.Rdata")
+    load("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_annual_hist_mn.Rdata")
+    ACLIM_annual_hist         <- ACLIM_annual_hist%>%left_join(weekly_var_def,join_by(var== name)) 
+    ACLIM_annual_hind         <- ACLIM_annual_hind%>%left_join(weekly_var_def,join_by(var== name)) 
+    ACLIM_annual_fut          <- ACLIM_annual_fut%>%left_join(weekly_var_def,join_by(var== name)) 
     ACLIM_annual_futCMIP6     <- ACLIM_annual_fut
     ACLIM_annual_futCMIP5$GCM <- gsub("MIROC","miroc",ACLIM_annual_futCMIP5$GCM)
     ACLIM_annual_futCMIP5$GCM <- gsub("CESM","cesm",  ACLIM_annual_futCMIP5$GCM)
@@ -189,21 +189,30 @@ load("ESR_EBS/midCent_N.Rdata")
     # Load seasonal data:
     # ----------------------------------------------    
     load("Data/out/K20P19_CMIP5/allEBS_means/ACLIM_seasonal_fut_mn.Rdata")
-    ACLIM_seasonal_futCMIP5     <- ACLIM_seasonal_fut
+    ACLIM_seasonal_futCMIP5     <- ACLIM_seasonal_fut%>%left_join(weekly_var_def,join_by(var== name)) 
     load("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_seasonal_fut_mn.Rdata")
     load("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_seasonal_hind_mn.Rdata")
+    load("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_seasonal_hist_mn.Rdata")
+    ACLIM_seasonal_hist         <- ACLIM_seasonal_hist%>%left_join(weekly_var_def,join_by(var== name)) 
+    ACLIM_seasonal_hind         <- ACLIM_seasonal_hind%>%left_join(weekly_var_def,join_by(var== name)) 
+    ACLIM_seasonal_fut          <- ACLIM_seasonal_fut%>%left_join(weekly_var_def,join_by(var== name)) 
     ACLIM_seasonal_futCMIP6     <- ACLIM_seasonal_fut
     ACLIM_seasonal_futCMIP5$GCM <- gsub("MIROC","miroc",ACLIM_seasonal_futCMIP5$GCM)
     ACLIM_seasonal_futCMIP5$GCM <- gsub("CESM","cesm",  ACLIM_seasonal_futCMIP5$GCM)
     ACLIM_seasonal_futCMIP5$GCM <- gsub("GFDL","gfdl",  ACLIM_seasonal_futCMIP5$GCM)
     ACLIM_seasonal_fut          <- rbind(ACLIM_seasonal_futCMIP6,ACLIM_seasonal_futCMIP5)
+    
     # Load monthly data:
     # ----------------------------------------------
     load("Data/out/K20P19_CMIP5/allEBS_means/ACLIM_monthly_fut_mn.Rdata")
-    ACLIM_monthly_futCMIP5 <- ACLIM_monthly_fut
+    ACLIM_monthly_futCMIP5 <- ACLIM_monthly_fut%>%left_join(weekly_var_def,join_by(var== name)) 
     load("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_monthly_fut_mn.Rdata")
     load("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_monthly_hind_mn.Rdata")
-    ACLIM_monthly_futCMIP6 <- ACLIM_monthly_fut
+    load("Data/out/K20P19_CMIP6/allEBS_means/ACLIM_monthly_hist_mn.Rdata")
+    ACLIM_monthly_hist         <- ACLIM_monthly_hist%>%left_join(weekly_var_def,join_by(var== name)) 
+      ACLIM_monthly_hind         <- ACLIM_monthly_hind%>%left_join(weekly_var_def,join_by(var== name))
+    ACLIM_monthly_fut          <- ACLIM_monthly_fut%>%left_join(weekly_var_def,join_by(var== name)) 
+    ACLIM_monthly_futCMIP6     <- ACLIM_monthly_fut
     ACLIM_monthly_futCMIP5$GCM <- gsub("MIROC","miroc",ACLIM_monthly_futCMIP5$GCM)
     ACLIM_monthly_futCMIP5$GCM <- gsub("CESM","cesm",  ACLIM_monthly_futCMIP5$GCM)
     ACLIM_monthly_futCMIP5$GCM <- gsub("GFDL","gfdl",  ACLIM_monthly_futCMIP5$GCM)
@@ -211,58 +220,217 @@ load("ESR_EBS/midCent_N.Rdata")
    
     #ACLIM_weekly_fut<-rbind(ACLIM_weekly_fut,ACLIM_weekly_futCMIP5,ACLIM_weekly_futCMIP5H16)
    
-    allyears   <- min(ACLIM_weekly_hind$year,
-                      na.rm=T):max(ACLIM_weekly_fut$year,na.rm=T)
-    hindyrs    <- min(ACLIM_weekly_hind$year,
-                      na.rm=T):max(ACLIM_weekly_hind$year,na.rm=T)
-    futyrs     <- min(ACLIM_weekly_fut$year,
-                      na.rm=T):max(ACLIM_weekly_fut$year,na.rm=T)
+    allyears   <- min(ACLIM_weekly_hind$year,na.rm=T):max(ACLIM_weekly_fut$year,na.rm=T)
+    hindyrs    <- min(ACLIM_weekly_hind$year,na.rm=T):max(ACLIM_weekly_hind$year,na.rm=T)
+    futyrs     <- min(ACLIM_weekly_fut$year,na.rm=T):max(ACLIM_weekly_fut$year,na.rm=T)
     scens      <- c("ssp126"  ,"rcp45"  ,"ssp585","rcp85")
     GCMs       <- c("miroc", "gfdl" , "cesm" )
     
+    
+  # Create climatology
+  # -------------------------------------------
+  # get just the core columns:
+  grplist <- c("var","sim",
+               "basin","type",
+               "sim_type",
+               "gcmcmip","CMIP",
+               "scen",
+               "GCM","mod")
+  
+  plot_vars      <- c("fracbelow2",
+                      "fracbelow0",
+                      "temp_bottom5m",
+                      "temp_surface5m",
+                      "oxygen_bottom5m",
+                      "pH_bottom5m",
+                      "pH_surface5m",
+                      "aice","EupS_integrated","NCaS_integrated")
+
+  hind <- ACLIM_weekly_hind%>%filter(var%in%plot_vars)%>%
+    select(all_of(c(grplist,"year","season","mn_val","mnVal_hind","mnDate","jday","wk","mo")))
+  
+  # get weekly climatology
+  wkly_clim <- hind%>%ungroup()%>%filter(year<2019)%>%
+    group_by(!!!syms(c(grplist,"wk")))%>%
+    summarise(
+      jday_clim = mean(jday, na.rm=T),
+      mn_clim = mean(mn_val,na.rm=T),
+      sd_clim = sd(mn_val,na.rm=T))%>%
+    mutate(mndate_clim = as.Date("1990-01-01")+jday_clim)
+  ggplot(wkly_clim%>%filter(var=="EupS_integrated"))+
+    geom_line(aes(x=mndate_clim,y= mn_clim,color=basin))+
+    geom_line(aes(x=mndate_clim,y= mn_clim+sd_clim,color=basin),linetype="dashed")+
+    geom_line(aes(x=mndate_clim,y= mn_clim-sd_clim,color=basin),linetype="dashed")
+  
+  
+  # get monthly climatology
+  mo_clim <- hind%>%ungroup()%>%filter(year<2019)%>%
+    group_by(!!!syms(c(grplist,"mo")))%>%
+    summarise(
+      jday_clim = mean(jday, na.rm=T),
+      mn_clim = mean(mn_val,na.rm=T),
+      sd_clim = sd(mn_val,na.rm=T))%>%
+    mutate(mndate_clim = as.Date("1990-01-01")+jday_clim)
+  ggplot(mo_clim%>%filter(var=="EupS_integrated"))+
+    geom_line(aes(x=mndate_clim,y= mn_clim,color=basin))+
+    geom_line(aes(x=mndate_clim,y= mn_clim+sd_clim,color=basin),linetype="dashed")+
+    geom_line(aes(x=mndate_clim,y= mn_clim-sd_clim,color=basin),linetype="dashed")
+  
+  
+  # get seasonal climatology
+  season_clim <- hind%>%ungroup()%>%filter(year<2019)%>%
+    group_by(!!!syms(c(grplist,"season")))%>%
+    summarise(
+      jday_clim = mean(jday, na.rm=T),
+      mn_clim = mean(mn_val,na.rm=T),
+      sd_clim = sd(mn_val,na.rm=T))%>%
+    mutate(mndate_clim = as.Date("1990-01-01")+jday_clim)
+  ggplot(season_clim%>%filter(var=="EupS_integrated"))+
+    geom_line(aes(x=mndate_clim,y= mn_clim,color=basin))+
+    geom_line(aes(x=mndate_clim,y= mn_clim+sd_clim,color=basin),linetype="dashed")+
+    geom_line(aes(x=mndate_clim,y= mn_clim-sd_clim,color=basin),linetype="dashed")
+  
+  # get annual climatatology
+  annual_clim <- hind%>%ungroup()%>%filter(year<2019)%>%
+    group_by(!!!syms(c(grplist)))%>%
+    summarise(
+      jday_clim = mean(jday, na.rm=T),
+      mn_clim = mean(mn_val,na.rm=T),
+      sd_clim = sd(mn_val,na.rm=T))%>%
+    mutate(mndate_clim = as.Date("1990-01-01")+jday_clim)
+
+    
     # Create timeblocks
     # -------------------------------------------
-    blocks     <- round(unique(round(allyears/1000,2)*1000))
-    if(any(blocks>max(futyrs))) blocks<- blocks[-which(blocks>max(futyrs))]
+    blocks      <- round(unique(round(allyears/1000,2)*1000))
+    if(any(blocks>max(futyrs))) 
+      blocks    <- blocks[-which(blocks>max(futyrs))]
     blocks_fut  <- unique(round(futyrs/1000,2)*1000)
     blocks_hind <- unique(10+round(hindyrs/1000,2)*1000)
     subyear     <- blocks
     
+    grplist <- c("var","sim",
+                 "basin","type",
+                 "sim_type","jday",
+                 "gcmcmip","CMIP",
+                 "GCM","mod")
+    
+    length.na <- function(x,na.rm=F){
+      if(na.rm){
+        x <- as.numeric(na.omit(x))
+      }
+      length(x)
+    }
+    
+    se <- function(x, na.rm=T){
+      if(na.rm){
+        x <- as.numeric(na.omit(x))
+      }
+      if(length(x)>0){
+        sd(x)/sqrt(length(x))
+      }else{
+        0
+      }
+      
+    }
     
     # Re-org the data for plots
     # ----------------------------------------------
-    dat        <- ACLIM_weekly_fut%>%
+    dat <- 
+      ACLIM_weekly_fut%>%
       filter(var%in%plot_vars)%>%
-      mutate(yrFactor = factor(as.character(year),levels= allyears),
-             year_block= 10+round(year/1000,2)*1000)%>%
+      mutate(yrFactor   = factor(as.character(year),levels= allyears),
+             year_block = 10+round(year/1000,2)*1000)%>%
       mutate(year_block = factor(as.character(year_block),levels=blocks),
-              scen = factor(scen,levels= scens))
+              scen      = factor(RCP,levels= scens))
+    
     
     dat_hind   <- ACLIM_weekly_hind%>%
       filter(var%in%plot_vars)%>%
       mutate(yrFactor = factor(as.character(year),levels= allyears),
              year_block= 10+round(year/1000,2)*1000)%>%
-      mutate(year_block = factor(as.character(year_block),levels=blocks),
-              scen = factor(scen,levels= scens))
+      mutate(year_block = factor(as.character(year_block),levels=blocks))
     
-    dat_b <- dat%>%group_by(basin ,GCM, sim,scen, var, units,
-                            jday,long_name,sdVal_hind,mnVal_hind,year_block )%>%
+    dat_hist   <- ACLIM_weekly_hist%>%
+      filter(var%in%plot_vars)%>%
+      mutate(yrFactor = factor(as.character(year),levels= allyears),
+             year_block= 10+round(year/1000,2)*1000)%>%
+      mutate(year_block = factor(as.character(year_block),levels=blocks),
+             scen      = factor(RCP,levels= scens))
+    
+    mndat<-
+      dat_hind%>%group_by(!!!syms(grplist))%>%
+      summarize(mnVal_hind2 = mean(mn_val,na.rm = T),
+                mn_hind    = mean(mnVal_hind,na.rm = T),
+                sdVal_hind = sd(mn_val,na.rm = T),
+                seVal_hind = se(mn_val,na.rm = T),
+                n = length.na(mn_val,na.rm = T))
+     histdat<-
+      dat_hist%>%group_by(!!!syms(grplist))%>%
+      summarize(mnVal_hist2 = mean(mn_val,na.rm = T),
+                mn_hist     = mean(mnVal_hist,na.rm = T),
+                sd_val_hist = sd(mn_val,na.rm = T),
+                se_val_hist = se(mn_val,na.rm = T),
+                n_hist      = length.na(mn_val,na.rm = T))
+     
+     
+    
+     dat_hind <- dat_hind%>%left_join(wkly_clim)
+      dat_hind <- dat_hind%>%left_join(mndat)%>%ungroup()%>%data.frame()
+     
+      #get mean vals by timeblock
+    dat_b <- dat%>%
+      group_by(basin ,GCM, sim,scen, 
+               var,jday,
+               longname,units,
+               mnVal_hind,year_block )%>%
       summarize(
-        mn_val = mean(mn_val,na.rm=T),
+        mn_val            = mean(mn_val,na.rm=T),
         val_biascorrected = mean(val_biascorrected,na.rm=T))%>%
-      rename(yrFactor = year_block)
+      rename(yrFactor     = year_block)
     
     dat_hind_b <- dat_hind%>%
-      group_by(basin ,GCM, sim, scen, var, units, jday,
-               long_name,sdVal_hind,mnVal_hind,year_block )%>%
+      group_by(basin ,GCM, sim,scen, 
+               var,jday,
+               sdVal_hind,
+               mnVal_hind,
+               year_block )%>%
       summarize(
         mn_val = mean(mn_val,na.rm=T))%>%
       rename(yrFactor = year_block)
     
-    dat_s      <- ACLIM_seasonal_fut%>%mutate(
-      gcmscen = paste0(GCM,"_",scen),
-      season_var = paste0(season,"_",var))
-    dat_m      <- ACLIM_monthly_fut%>%mutate(
+    
+    dat_s      <- ACLIM_seasonal_fut%>%
+      mutate(scen = RCP,
+      gcmscen     = paste0(GCM,"_",scen),
+      season_var  = paste0(season,"_",var))
+    
+    ACLIM_seasonal_hind <- ACLIM_seasonal_hind%>%
+      mutate(
+      gcmscen     = paste0(GCM,"_",scen),
+      season_var  = paste0(season,"_",var))%>%
+      group_by(basin ,GCM, sim,scen, 
+               var,season,
+               longname,units,
+               mnVal_hind)%>%
+      summarize(
+        mnVal_hind2 = mean(mn_val,na.rm=T),
+        sdVal_hind = sd(mn_val,na.rm=T))
+    
+    ACLIM_monthly_hind <- ACLIM_monthly_hind%>%
+      mutate(
+      gcmscen     = paste0(GCM,"_",scen),
+      season_var  = paste0(season,"_",var))%>%
+      group_by(basin ,GCM, sim,scen, 
+               var,mo,
+               longname,units,
+               mnVal_hind)%>%
+      summarize(
+        mnVal_hind2 = mean(mn_val,na.rm=T),
+        sdVal_hind  = sd(mn_val,na.rm=T))
+    
+    dat_m      <- ACLIM_monthly_fut%>%
+      mutate(scen=RCP,
       gcmscen = paste0(GCM,"_",scen),
       mo_var  = paste0(mo,"_",var))
    
@@ -292,9 +460,11 @@ load("ESR_EBS/midCent_N.Rdata")
         }
       }
     }
+    
     dat_mn_s_hind <- dat_mn_s_hind%>%mutate(
       gcmscen    = paste0(GCM,"_",scen),
       season_var = paste0(season,"_",var))
+    
     dat_mn_m_hind <- dat_mn_m_hind%>%mutate(
       gcmscen = paste0(GCM,"_",scen),
       mo_var  = paste0(mo,"_",var))
@@ -305,25 +475,32 @@ load("ESR_EBS/midCent_N.Rdata")
     dat_sub<- dat%>%filter(year%in%subyear, year>2010)%>%
       mutate(yrFactor = factor(as.character(year),levels =subyear))
     
-        # datIN        <- dat%>%filter(scen%in%c("ssp126"  ,"rcp45","rcp85"))
-        # dat_hindIN   <- dat_hind
-       
       scensIN      <- c("ssp126","ssp585")
       GCMsIN       <- GCMs
       thinline     <- 0.7
       alpha_annual <- 0.6
       alpha_blocks <- 1
 
-    
      pvar2         <- c("temp_bottom5m","fracbelow2","pH_bottom5m")
      pseason       <- c("Summer","Summer","Winter")
+    
      pvar          <- c("temp_bottom5m","pH_bottom5m")
      pseason       <- c("Summer","Winter")
+     
      pvar2         <- c("temp_surface5m","temp_bottom5m")
      pseason2      <- c("Summer","Summer")
+     
+     pvar3         <- c("temp_surface5m","temp_bottom5m","NCaS_integrated",
+                        "NCaS_integrated","EupS_integrated","aice","fracbelow2")
+     pseason3      <- c("Summer","Summer","Spring","Fall","Fall","Spring","Summer")
+     
      season_varIN  <- paste0(pseason,"_",pvar)
      season_varIN  <- paste0(pseason2,"_",pvar2)
-     names(season_varIN) <- c(paste(pseason2,c("SST", "BT")))
+      names(season_varIN) <- c(paste(pseason2,c("SST", "BT")))
+     season_varIN  <- paste0(pseason3,"_",pvar3)
+      names(season_varIN) <- c(paste(pseason2,c("SST", "BT","Neocalanus",
+                        "Neocalanus","Euphausiid","Sea ice","Coldpool")))
+    
      
      
      ylablkup     <- melt(season_varIN)%>%rename(season_var = value)
@@ -338,8 +515,13 @@ load("ESR_EBS/midCent_N.Rdata")
      
     # Now make climatology plots
     # ------------------------------------
-     pp_BT <-   plot_weekly( varIN = "temp_bottom5m",  basinIN = "SEBS",
-                             titleIN =  "SEBS Bottom temperature")
+     pp_BT <-   plot_weekly(   datIN = dat, 
+                               dat_hindIN = dat_mn_hind, 
+                               datIN_sub  = dat_sub,
+                               datIN_mn_hind_sub = dat_mn_hind_sub,
+                               useBiascorrected=FALSE,
+                               varIN = "temp_bottom5m",  basinIN = "SEBS",
+                               titleIN =  "SEBS Bottom temperature")
      pp_pH <-   plot_weekly( varIN = "pH_bottom5m",    basinIN = "SEBS",
                              titleIN =  "SEBS Bottom pH")
      pp_O2 <-   plot_weekly( varIN = "oxygen_bottom5m",basinIN = "SEBS",
@@ -356,24 +538,43 @@ load("ESR_EBS/midCent_N.Rdata")
      pp_CPN <-   plot_weekly( varIN = "fracbelow2",     basinIN = "NEBS",
                              titleIN =  "NEBS Cold pool proxy ( fraction < 2 oC)")
      
+     
      # Now make annual TS
      # ------------------------------------
-     season_var1 <- c('Summer SST' ="Summer_temp_surface5m",
-                      'Summer BT' = "Summer_temp_bottom5m" )
-     season_var2 <- c('Summer BT' ="Summer_temp_bottom5m",
+     season_var1 <- c('Summer SST (oC)' ="Summer_temp_surface5m",
+                      'Summer BT (oC)' = "Summer_temp_bottom5m" )
+     season_var2 <- c('Summer BT (oC)' ="Summer_temp_bottom5m",
                       'Winter pH (bottom)' = "Winter_pH_bottom5m" )
-     pp_NEBS2  <- plot_annual(basinIN = "NEBS",season_varIN = season_var2, 
+     
+     season_var3 <- c('Summer BT (oC)'    ="Summer_temp_bottom5m",
+                      'Summer coldpool'    ="Summer_fracbelow2",
+                      'Winter pH (bottom)' = "Winter_pH_bottom5m",
+                      'Winter sea ice' = "Winter_aice"
+                      )
+     
+   
+      test  <- plot_annual(  datIN  = dat_s,
+                             datIN_hind = dat_mn_s_hind,
+                             basinIN = "NEBS",
+                             season_varIN = c('Summer SST' ="Summer_temp_surface5m"), 
+                             futline =.5,alpha_fut =.5,alpha_loess = .4)
+     pp_NEBS2  <- plot_annual(  datIN  = dat_s,
+                                datIN_hind = dat_mn_s_hind,
+                              basinIN = "NEBS",season_varIN = season_var2, 
                               futline =.5,alpha_fut =.5,alpha_loess = .4)
-     pp_NEBS   <- plot_annual(basinIN = "NEBS",season_varIN = season_var1)
      pp_SEBS2  <- plot_annual(basinIN = "SEBS",season_varIN = season_var2)
+     pp_NEBS   <- plot_annual(basinIN = "NEBS",season_varIN = season_var1)
      pp_SEBS   <- plot_annual(basinIN = "SEBS",season_varIN = season_var1)
      
+     pp_NEBS3   <- plot_annual(basinIN = "NEBS",season_varIN = season_var3)
+     pp_SEBS3   <- plot_annual(basinIN = "SEBS",season_varIN = season_var3)
+   
      # Now make plot of warm~GWL
      # ------------------------------------
       gwls <- make_GWLplot(ylablkupIN = ylablkup,
                            cmipIN = cmip6, 
-                           #titleIN = "EBS Temperatures corresponding to Global Warming Levels\n\n",
-                           datIN  = dat_s,datIN_hind = ACLIM_seasonal_hind)
+                           datIN  = dat_s,
+                           datIN_hind = dat_mn_s_hind)
        	 
      varlab2 <- data.frame(var= c("temp_surface5m","temp_bottom5m"),
                           lab2 = c("SST","BT"))
@@ -438,35 +639,42 @@ load("ESR_EBS/midCent_N.Rdata")
                   mindelta = min(mn_val-mnVal_hist),
                  maxdelta = max(mn_val-mnVal_hist))
      
-      save(endofCent,file="ESR_EBS/endofCent.Rdata")
-      save(midCent,file="ESR_EBS/midCent.Rdata")
-      save(endofCentN,file="ESR_EBS/endofCent_N.Rdata")
-      save(midCentN,file="ESR_EBS/midCent_N.Rdata")
+     flout <- file.path("ESR_EBS",as.Date(now()))
+     if(!dir.exists(flout))
+       dir.create(flout)
+     
+     if(update.figs){
+     
+      save(endofCent, file = file.path(flout,"endofCent.Rdata"))
+      save(midCent,   file = file.path(flout,"midCent.Rdata"))
+      save(endofCentN,file = file.path(flout,"endofCent_N.Rdata"))
+      save(midCentN,  file = file.path(flout,"midCent_N.Rdata"))
       
       # Make figs directory:
-      if(!dir.exists("ESR_EBS/Figs")) dir.create("ESR_EBS/Figs")
+      if(!dir.exists(file.path(flout,"Figs"))) dir.create(file.path(flout,"Figs"))
       
       # save plots:
       # -------------------------------
      	sclr <-1
-      save_png(pp_NEBS2$pp,  file = "ESR_EBS/Figs/annualTS_NEBS.png",w = 6*sclr, h = 6*sclr)
-      save_png(pp_NEBS$pp, file = "ESR_EBS/Figs/ACLIM_Holsman_Fig2.png",w = 6*sclr, h = 6*sclr)
-      save_png(pp_SEBS2$pp,  file = "ESR_EBS/Figs/annualTS.png",w = 6*sclr, h = 6*sclr)
-      save_png(pp_SEBS$pp, file = "ESR_EBS/Figs/ACLIM_Holsman_Fig1.png",w = 6*sclr, h = 6*sclr)
+      save_png(pp_NEBS2$pp,  file = file.path(flout,"annualTS_NEBS.png"),w = 6*sclr, h = 6*sclr)
+      save_png(pp_NEBS$pp, file = file.path(flout,"ACLIM_Holsman_Fig2.png"),w = 6*sclr, h = 6*sclr)
+      save_png(pp_SEBS2$pp,  file= file.path(flout,"annualTS.png"),w = 6*sclr, h = 6*sclr)
+      save_png(pp_SEBS$pp, file = = file.path(flout,"ACLIM_Holsman_Fig1.png"),w = 6*sclr, h = 6*sclr)
      
       sclr <-1
-      save_png( gwls$pp, file = "ESR_EBS/Figs/ACLIM_Holsman_Fig3.png",w = 6*sclr, h = 6*sclr)
+      save_png( gwls$pp, file = file.path(flout,"ACLIM_Holsman_Fig3.png"),w = 6*sclr, h = 6*sclr)
      
       sclr <-1.3
-      save_png( pp_BT, file = "ESR_EBS/Figs/ACLIM_Holsman_Fig4.png",w = 6*sclr, h = 6*sclr)
-      save_png( pp_pH, file = "ESR_EBS/Figs/nonBC_weeklyProj_pH.png",w = 6*sclr, h = 6*sclr)
-      save_png( pp_O2, file = "ESR_EBS/Figs/nonBC_weeklyProj_O2.png",w = 6*sclr, h = 6*sclr)
+      save_png( pp_BT, file =  file.path(flout,"ACLIM_Holsman_Fig4.png"),w = 6*sclr, h = 6*sclr)
+      save_png( pp_pH, file = file.path(flout,"nonBC_weeklyProj_pH.png"),w = 6*sclr, h = 6*sclr)
+      save_png( pp_O2, file = file.path(flout,"nonBC_weeklyProj_O2.png"),w = 6*sclr, h = 6*sclr)
       save_png( pp_CP, file = "ESR_EBS/Figs/nonBC_weeklyProj_CP.png",w = 6*sclr, h = 6*sclr)
       
-      save_png( pp_BTN, file = "ESR_EBS/Figs/ACLIM_Holsman_Fig5.png",w = 6*sclr, h = 6*sclr)
-      save_png( pp_pHN, file = "ESR_EBS/Figs/nonBC_weeklyProj_pH_N.png",w = 6*sclr, h = 6*sclr)
-      save_png( pp_O2N, file = "ESR_EBS/Figs/nonBC_weeklyProj_O2_N.png",w = 6*sclr, h = 6*sclr)
-      save_png( pp_CPN, file = "ESR_EBS/Figs/nonBC_weeklyProj_CP_N.png",w = 6*sclr, h = 6*sclr)
+      save_png( pp_BTN, file  = file.path(flout,"ACLIM_Holsman_Fig5.png"),w = 6*sclr, h = 6*sclr)
+      save_png( pp_pHN, file  = file.path(flout,"nonBC_weeklyProj_pH_N.png"),w = 6*sclr, h = 6*sclr)
+      save_png( pp_O2N, file  = file.path(flout,"nonBC_weeklyProj_O2_N.png"),w = 6*sclr, h = 6*sclr)
+      save_png( pp_CPN, file  = file.path(flout,"nonBC_weeklyProj_CP_N.png"),w = 6*sclr, h = 6*sclr)
+      }
       
   #     
   # 	# now set up the docs folder

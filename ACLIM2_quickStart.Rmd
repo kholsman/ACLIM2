@@ -57,28 +57,32 @@ To run this tutorial first clone the ACLIM2 repository to your local drive:
 This set of commands, run within R, downloads the ACLIM2 repository and unpacks it, with the ACLIM2 directory structrue being located in the specified `download_path`.  This also performs the folder renaming mentioned in Option 2.
 
 ```{r gitdwnld, eval = FALSE,echo =T}
+
     # Specify the download directory
     main_nm       <- "ACLIM2"
 
     # Note: Edit download_path for preference
     download_path <-  path.expand("~")
     dest_fldr     <- file.path(download_path,main_nm)
-    
     url           <- "https://github.com/kholsman/ACLIM2/archive/main.zip"
     dest_file     <- file.path(download_path,paste0(main_nm,".zip"))
+    
     download.file(url=url, destfile=dest_file)
     
     # unzip the .zip file (manually unzip if this doesn't work)
     setwd(download_path)
-    unzip (dest_file, exdir = download_path,overwrite = T)
+    unzip(dest_file, exdir = download_path,overwrite = T)
     
     #rename the unzipped folder from ACLIM2-main to ACLIM2
     file.rename(paste0(main_nm,"-main"), main_nm)
     setwd(main_nm)
     
-    
-# Caption: Timeseries of season Aug East Bering Sea bottom temp or 400m temp (which ever is shallower) for the 1955-2099 period. The simulations are forced using historical emission (1955 to 2014) and SSP1-2.6 scenario for future projection (2015 to 2099). A 1-year running mean is applied. Figures show, in colors, CESM2-WACCM ensemble mean, in light grey, the spread of all the CMIP6 models, and in medium grey, and dark grey, 80% and 50% the spread of all the CMIP6 members, respectively. Left panel shows the mean values and right panel shows the anomalies relative to the 1980-2013 climatology.
-    
+    # Caption: Timeseries of season Aug East Bering Sea bottom temp or 400m temp (which ever is shallower)
+    # for the 1955-2099 period. The simulations are forced using historical emission (1955 to 2014) and 
+    # SSP1-2.6 scenario for future projection (2015 to 2099). A 1-year running mean is applied. Figures show,
+    # in colors, CESM2-WACCM ensemble mean, in light grey, the spread of all the CMIP6 models, and in medium 
+    # grey, and dark grey, 80% and 50% the spread of all the CMIP6 members, respectively. Left panel shows 
+    # the mean values and right panel shows the anomalies relative to the 1980-2013 climatology.
     
     
 ```
@@ -380,7 +384,8 @@ Appendix A includes the code used to generate the ACLIM2 indices and bias correc
 The following code will open an interactive shiny() app for exploring the indices. You can also view this online at (kkh2022.shinyapps.io/ACLIM2_indices)[https://kkh2022.shinyapps.io/ACLIM2_indices/].
 
 ```{r, eval=F, include=T,echo=T}
- 
+  suppressMessages(source("R/make.R"))  
+  
   tmpwd<-getwd()
   setwd("R/shiny_aclim/ACLIM2_indices")  
   shiny::runApp("app.R")
@@ -463,6 +468,102 @@ The following code will open an interactive shiny() app for exploring the indice
 
 ```
 
+## RKC indices (Andre)
+
+The target indices for RKC include bottom temperature,SST, wind, and other indices during multiple larval phases and very specific station locations.
+
+Two approaches were used
+(1) generate strata-specific indices for spring and summer and fall
+(2) generate averages across a subset of stations for summer replicated indicies
+
+
+Hindcast values from 1970-2019 were stitched the operational hindcast (2019-2022) and ACLIM projections from 2022-2100 to generate the indices for CMIP5 and CMIP6.
+
+
+```{r nrs, eval=F, include=T,echo=T, results='hide',message=FALSE}
+  # to access these scripts go to https://github.com/kholsman/ACLIM2/tree/main/R/sub_scripts
+ 
+suppressMessages(source("R/make.R"))
+ source("R/sub_scripts/make_RKC_Indices_Andre.R")
+
+# Check the Indices
+  load("Data/out/PCOD_indices/PCOD_vars.Rdata")   
+  load("Data/out/PCOD_indices/PCOD_vars_op.Rdata")   
+
+  require(ggplot2)
+  require(dplyr)
+ 
+  load("Data/out/NRS_indices/NRS_vars_raw.Rdata")   
+  load("Data/out/NRS_indices/NRS_vars_op_raw.Rdata")    
+  NRS_vars_raw <- NRS_vars
+  NRS_vars_op_raw <- NRS_vars_op
+  rm(NRS_vars)
+  rm(NRS_vars_op)
+  load("Data/out/NRS_indices/NRS_vars.Rdata")   
+  load("Data/out/NRS_indices/NRS_vars_op.Rdata")  
+  
+  unique(NRS_vars$var)
+  unique(NRS_vars$scen)
+  
+  plot_var  <- "fracbelow2" #  plot_var  <- "temp_surface5m"
+  plot_scen <- "ssp585"     # plot_scen <- "rcp45"
+ 
+ 
+ dat_all <- rbind(
+   NRS_vars_op%>%filter(var==plot_var,scen==plot_scen)%>%
+     select(year,val_use, val_raw, val_biascorrected,val_delta,GCM_scen)%>%
+     mutate(type="NRS_vars_op",op = "op",raw="corrected"),
+   
+   NRS_vars_op_raw%>%filter(var==plot_var,scen==plot_scen)%>%
+     select(year,val_use, val_raw, val_biascorrected,val_delta,GCM_scen)%>%
+     mutate(type="NRS_vars_op_raw",op = "op",raw="raw"),
+   
+   NRS_vars%>%filter(var==plot_var,scen==plot_scen)%>%
+     select(year,val_use, val_raw, val_biascorrected,val_delta,GCM_scen)%>%
+     mutate(type="NRS_vars",op = "not op",raw="corrected"),
+   
+   NRS_vars_raw%>%filter(var==plot_var,scen==plot_scen)%>%
+     select(year,val_use, val_raw, val_biascorrected,val_delta,GCM_scen)%>%
+     mutate(type="NRS_vars_raw",op = "not op",raw="raw"))
+ 
+ 
+ # compare val_use and val_biascorrected (should be diff for raw):
+ p1<- ggplot(dat = dat_all)+
+    geom_line(aes(x=year, y=val_use,color=GCM_scen,linetype="val_use"),size=.7)+
+    geom_line(aes(x=year, y=val_biascorrected,color=GCM_scen,linetype="val_biascorrected"),size=.8)+
+    theme_minimal()+facet_grid(op~raw)+ylab("value")
+ p1
+ 
+ jpeg("Data/out/NRS_indices/raw_vs_not_NRS_1.jpg",width=8, height=6, res=350, units="in")
+ p1
+ dev.off()
+
+ 
+  # compare val_delta and val_biascorrected (should be the same for all plots)
+ p2<- ggplot(dat = dat_all)+
+    geom_line(aes(x=year, y=val_biascorrected,color=GCM_scen,linetype="val_biascorrected"),size=.7)+
+    geom_line(aes(x=year, y=val_delta,color=GCM_scen,linetype="val_delta"),size=.8)+
+    theme_minimal()+facet_grid(op~raw)+ylab("value")
+ p2
+ 
+ jpeg("Data/out/NRS_indices/raw_vs_not_NRS_2.jpg",width=8, height=6, res=350, units="in")
+ p2
+ dev.off()
+ 
+   # compare val_raw and val_use (should be different for "corrected" (not raw))
+ p3<- ggplot(dat = dat_all)+
+    geom_line(aes(x=year, y=val_use,color=GCM_scen,linetype="val_use"),size=.7)+
+    geom_line(aes(x=year, y=val_raw,color=GCM_scen,linetype="val_raw"),size=.8)+
+    theme_minimal()+facet_grid(op~raw)+ylab("value")
+ p3
+ 
+ jpeg("Data/out/NRS_indices/raw_vs_not_NRS_3.jpg",width=8, height=6, res=350, units="in")
+ p3
+ dev.off()
+  
+```    
+
+
 ## NRS indices (André)
 
 The target indices for NRS include cold pool, bottom temperature, wind, SEBS and NEBS, during the growing season (May-August)  
@@ -477,12 +578,86 @@ Hindcast values from 1970-2019 were stitched the operational hindcast (2019-2022
 
 ```{r nrs, eval=F, include=T,echo=T, results='hide',message=FALSE}
   # to access these scripts go to https://github.com/kholsman/ACLIM2/tree/main/R/sub_fun
-
+ suppressMessages(source("R/make.R"))
  source("R/sub_scripts/make_NRS_indices.R")
  source("R/sub_scripts/make_NRS_indices_raw.R")
-     
-     
-     
+ source("R/sub_scripts/make_pcod_indices_Andre.R")
+
+# Check the Indices
+  load("Data/out/PCOD_indices/PCOD_vars.Rdata")   
+  load("Data/out/PCOD_indices/PCOD_vars_op.Rdata")   
+
+  require(ggplot2)
+  require(dplyr)
+ 
+  load("Data/out/NRS_indices/NRS_vars_raw.Rdata")   
+  load("Data/out/NRS_indices/NRS_vars_op_raw.Rdata")    
+  NRS_vars_raw <- NRS_vars
+  NRS_vars_op_raw <- NRS_vars_op
+  rm(NRS_vars)
+  rm(NRS_vars_op)
+  load("Data/out/NRS_indices/NRS_vars.Rdata")   
+  load("Data/out/NRS_indices/NRS_vars_op.Rdata")  
+  
+  unique(NRS_vars$var)
+  unique(NRS_vars$scen)
+  
+  plot_var  <- "fracbelow2" #  plot_var  <- "temp_surface5m"
+  plot_scen <- "ssp585"     # plot_scen <- "rcp45"
+ 
+ 
+ dat_all <- rbind(
+   NRS_vars_op%>%filter(var==plot_var,scen==plot_scen)%>%
+     select(year,val_use, val_raw, val_biascorrected,val_delta,GCM_scen)%>%
+     mutate(type="NRS_vars_op",op = "op",raw="corrected"),
+   
+   NRS_vars_op_raw%>%filter(var==plot_var,scen==plot_scen)%>%
+     select(year,val_use, val_raw, val_biascorrected,val_delta,GCM_scen)%>%
+     mutate(type="NRS_vars_op_raw",op = "op",raw="raw"),
+   
+   NRS_vars%>%filter(var==plot_var,scen==plot_scen)%>%
+     select(year,val_use, val_raw, val_biascorrected,val_delta,GCM_scen)%>%
+     mutate(type="NRS_vars",op = "not op",raw="corrected"),
+   
+   NRS_vars_raw%>%filter(var==plot_var,scen==plot_scen)%>%
+     select(year,val_use, val_raw, val_biascorrected,val_delta,GCM_scen)%>%
+     mutate(type="NRS_vars_raw",op = "not op",raw="raw"))
+ 
+ 
+ # compare val_use and val_biascorrected (should be diff for raw):
+ p1<- ggplot(dat = dat_all)+
+    geom_line(aes(x=year, y=val_use,color=GCM_scen,linetype="val_use"),size=.7)+
+    geom_line(aes(x=year, y=val_biascorrected,color=GCM_scen,linetype="val_biascorrected"),size=.8)+
+    theme_minimal()+facet_grid(op~raw)+ylab("value")
+ p1
+ 
+ jpeg("Data/out/NRS_indices/raw_vs_not_NRS_1.jpg",width=8, height=6, res=350, units="in")
+ p1
+ dev.off()
+
+ 
+  # compare val_delta and val_biascorrected (should be the same for all plots)
+ p2<- ggplot(dat = dat_all)+
+    geom_line(aes(x=year, y=val_biascorrected,color=GCM_scen,linetype="val_biascorrected"),size=.7)+
+    geom_line(aes(x=year, y=val_delta,color=GCM_scen,linetype="val_delta"),size=.8)+
+    theme_minimal()+facet_grid(op~raw)+ylab("value")
+ p2
+ 
+ jpeg("Data/out/NRS_indices/raw_vs_not_NRS_2.jpg",width=8, height=6, res=350, units="in")
+ p2
+ dev.off()
+ 
+   # compare val_raw and val_use (should be different for "corrected" (not raw))
+ p3<- ggplot(dat = dat_all)+
+    geom_line(aes(x=year, y=val_use,color=GCM_scen,linetype="val_use"),size=.7)+
+    geom_line(aes(x=year, y=val_raw,color=GCM_scen,linetype="val_raw"),size=.8)+
+    theme_minimal()+facet_grid(op~raw)+ylab("value")
+ p3
+ 
+ jpeg("Data/out/NRS_indices/raw_vs_not_NRS_3.jpg",width=8, height=6, res=350, units="in")
+ p3
+ dev.off()
+  
 ```    
 
 
@@ -667,8 +842,12 @@ Hindcast values from 1970-2019 were stitched the operational hindcast (2019-2022
 
 ## make CEATTLE indices (Kir)
 ```{r ceattle, eval=F, include=T,echo=T, results='hide',message=FALSE}
+suppressMessages( suppressWarnings(source("R/make.R")))
 source("R/sub_scripts/make_ceattle_indices.R")
-# now jump down to make .dat file
+source("R/sub_scripts/make_CEATTLE_dat_files.R")
+
+
+# now jump down to make .dat file that is generic
 
 ```
 
@@ -935,262 +1114,9 @@ fn_long <- "ACLIM2_CMIP6_delta_bc.dat"
 archive_old <- T  # Archive the older version of the .dat file?
 normlist    <- read.csv(file=file.path(Rdata_path,"../normlist.csv"))
 
-outpath     <- "Data/out/ADMB_datfiles"
-if(!dir.exists(outpath)) dir.create(outpath)
-
-# define hind and fut data files
-fndat_hind  <- file.path(outpath,paste("KKHhind_",fn,sep=""))
-fndat_fut   <- file.path(outpath,paste("KKHfut_",fn,sep=""))
-
-fndat_hind_long  <- file.path(outpath,paste("KKHhind_",fn_long,sep=""))
-fndat_fut_long   <- file.path(outpath,paste("KKHfut_",fn_long,sep=""))
-
-fndat_hind2 <- file.path(outpath,paste("hind_",fn,sep=""))
-fndat_fut2  <- file.path(outpath,paste("fut_",fn,sep=""))
-
-# create and archive .dat files
-outfile    <- fndat_fut
-if(file.exists(outfile)&archive_old){	
-  # archive older version
-  archivefl <- paste0(substr(outfile,start=1,stop=nchar(outfile)-4),
-                      format(Sys.time(), "%Y%m%d_%H%M%S"),".dat")
-  file.rename(outfile, archivefl)
-  #file.remove(outfile)
-}
-
-file.create(outfile)
-outfile  <- fndat_hind
-if(file.exists(outfile)&archive_old){	
-  # archive older version
-  archivefl <- paste0(substr(outfile,start=1,stop=nchar(outfile)-4),
-                      format(Sys.time(), "%Y%m%d_%H%M%S"),".dat")
-  file.rename(outfile, archivefl)
-  #file.remove(outfile)
-}
-file.create(outfile)
-
-
-
-# 2 -- rescale (Z-score) data and get variables
-# ----------------------------------------------
 CMIPS <- c("K20P19_CMIP6","K20P19_CMIP5")
 
-# preview possible variables
-varall  <- unique(ceattle_vars_op$var)
-varall
-
-
-# vars
-ceattle_vars_op
-ceattle_vars_wide_op
-
-grpby2 <- c("type","var","basin",
-               "year","sim","sim_type",
-               "bc")
-    
-#define hind and fut:
-hind <- ceattle_vars_op%>%filter(year%in%hind_yrs,sim_type=="hind")%>%
-  ungroup()
-
-mnhind <- hind%>%
-  group_by(season,var,basin)%>%
-  summarize(mnhind = mean(val_use,na.rm=T),
-         sdhind = sd(val_use, na.rm=T))%>%ungroup()
-hind <- hind%>%left_join(mnhind)%>%
-  mutate(val_use_scaled = (val_use-mnhind)/sdhind)%>%
-    select(all_of(c(grpby2,"val_use","val_use_scaled")))%>%distinct()%>%
-              ungroup()
-
-
-hind <- hind%>%full_join(expand.grid(year= hind_yrs, var = unique(hind$var)))
-  
-
-fut  <- ceattle_vars_op%>%
-  filter(year%in%fut_yrs)
-    
-#temporary fix: Add Large Zoop for CESM RCP85
-tmp_fut <-fut%>%filter(GCM_scen=="cesm_rcp85")
-grplist<-c("NCaS_integrated","EupS_integrated")
-
-if(length(grep("largeZoop_integrated",unique(tmp_fut$var_raw)) )==0){
-  tmp_futA <- tmp_fut[grep(grplist[1],tmp_fut$var),]
-  tmp_futB <- tmp_fut[grep(grplist[2],tmp_fut$var),]
-  tmp_futA$var2 <- grplist[1] 
-  tmp_futB$var2 <- grplist[2] 
-   sumat<-c("val_use","mnVal_hind","val_delta","val_biascorrected",
-            "val_raw","mn_val")
-   tmp_var_zoop    <- rbind(tmp_futA,tmp_futB)%>%
-      dplyr::filter(var2%in%c("NCaS_integrated","EupS_integrated"))%>%
-      dplyr::group_by(
-        var,
-        season,
-        type,
-        basin,
-        year,
-        sim,
-        gcmcmip,
-        GCM,
-        scen,
-        sim_type,
-        bc,
-        GCM_scen,
-        GCM_scen_sim, 
-        CMIP,
-        GCM2,
-        GCM2_scen_sim,
-        jday,mnDate,var_raw,lognorm,var2)%>%
-     summarise_at(all_of(sumat),mean,na.rm=T)%>%
-     mutate(var_raw="largeZoop_integrated",
-            var = paste0(season,"_largeZoop_integrated"))%>%select(-var2)%>%
-      summarise_at(all_of(sumat),sum,na.rm=T)%>%relocate(names(fut))%>%
-      distinct()
-   
-   fut <- rbind(fut, tmp_var_zoop)
-     
-}
-  fut  <- fut%>%left_join(mnhind)%>%
-    mutate(val_use_scaled = (val_use-mnhind)/sdhind)%>%ungroup()
-
-data.frame(fut%>%filter(var=="Winter_largeZoop_integrated",GCM_scen=="cesm_rcp85"))
-data.frame(fut%>%ungroup()%>%group_by(GCM_scen)%>%summarise(count = length(var)))
-  
-fut <- fut%>%full_join(expand.grid(year= fut_yrs,
-                                   var = unique(fut$var),
-                                   GCM_scen = unique(fut$GCM_scen)))
-data.frame(fut%>%ungroup()%>%group_by(GCM_scen)%>%summarise(count = length(var)))
-  data.frame(fut%>%filter(var=="Winter_largeZoop_integrated",GCM_scen=="cesm_rcp85"))
-
-# now identify which covars are highly correlated
-
-  d_wide   <- ceattle_vars_op%>%
-      filter(year<=lastyr_hind)%>%
-      left_join(mnhind)%>%
-      mutate(val_use_scaled = (val_use-mnhind)/sdhind)%>%ungroup()%>%
-      group_by(across(all_of(grpby2)))%>%
-      summarize_at(all_of(c("val_use_scaled")), mean, na.rm=T)%>%
-      tidyr::pivot_wider(names_from = "var", values_from = "val_use_scaled")
-
-  # calculate correlations and display in column format
-
-  # define columns with meta data:
-  col_meta <- which(colnames(d_wide)%in%grpby2)
-  d_wide_dat <-d_wide[,-col_meta]
-  num_col  <- ncol(d_wide[,-col_meta])
-  out_indx <- which(upper.tri(diag(num_col))) 
-  cor_cols <- d_wide_dat%>%
-    do(melt(cor(.,
-                method="spearman", 
-                use="pairwise.complete.obs"),
-            value.name="cor")[out_indx,])
-  
-  corr     <- cor(na.omit(d_wide_dat))
-  
-  long_dat <- reshape2::melt(corr,variable.name = "variable") %>% 
-    as.data.frame() 
-  
-  # plot co variation between variables
-  corplot <- long_dat %>%arrange(value)%>%
-    ggplot(aes(x=Var1, y=Var2, fill=value)) + 
-    geom_raster() + 
-    scale_fill_viridis_c()+
-    theme_minimal()+
-    theme(axis.text.x = element_text(angle = 90))
-  
-  jpeg(filename = file.path("Data/out/CEATTLE_indices/CEATTLE_indicescorplot.jpg"),
-           width=8,height=7,units="in",res=350)
-  print(corplot)
-  dev.off()
-
-  # # remove those where cov is high (temp by season and cold pool by season)
-  # subset <- long_dat$>$filter(abs(value)<0.6)
-
-# 3 -- write data to hind .dat file
-# ------------------------------------
-
-
-# CEATTLE uses a spp overlap index - you can skip this
-
-overlapdat <- data.frame(
-  atf_OL=c(0.9391937,0.8167094,0.808367,0.5926875,0.7804481,0.5559549,
-           0.4006931,0.5881404,0.7856776,0.511565,0.6352048,0.5583476,
-           0.5792738,0.5417657,0.8212887,0.6287613,0.4536608,0.6587292,
-           0.4884194,0.8289379,0.4399257,0.5950167,0.6388434,0.6111834,
-           0.8742649,0.7868746,0.8024257,0.6227457,0.4956742,0.4347917,
-           0.4791108,0.4369006,0.5613625,0.4353015),
-  south_OL=c(0.9980249,0.9390368,0.9959974,0.6130846,0.951234,0.5851891,
-             0.4934879,0.641471,0.9809618,0.5596813,0.7196964,0.6754698,
-             0.5774808,0.6041351,0.9406521,0.7949525,0.5306435,0.7977694,
-             0.5345031,0.9879945,0.5079171,0.7148121,0.8997132,0.7340859,
-             0.9962068,0.9627235,0.998043,0.8111,0.6087638,0.513057,0.5492621,
-             0.4971361,0.665453,0.5969653)
-)
-
-
-includeOverlap <- F
-overlap        <- matrix(1,3,length(sort(unique(hind$year))))
-overlap_fut    <- array(1,c(3,length(unique(fut$GCM_scen))+1,length(sort(unique(fut$year)))))
-if(includeOverlap){
-  overlap[3,] <- overlapIN
-  overlap[3,][overlap[3,]>1]<-1 #covs$BT2to6/covs$BT0to6
-}
-
-# replace NA values with the mean 
-shortlist <- c("Summer_temp_bottom5m","Winter_temp_bottom5m",
-               "Winter_pH_depthavg","Summer_oxygen_bottom5m",
-               "Summer_temp_surface5m",
-               "Spring_Cop_integrated",
-               "Fall_largeZoop_integrated")
-hind_short <- hind%>%mutate(long_name=var)%>%
-               filter(var%in%shortlist)
-# Kir's .dat file
-makeDat_hind(datIN   = hind_short, 
-             outfile = fndat_hind,
-             value2use = "val_use",
-             value2use_scaled = "val_use_scaled",
-             NAVal     = "mean",  
-             nsppIN    = 3,
-             overlapIN = overlap, 
-             nonScaled_covlist = c("Summer_temp_bottom5m","Summer_temp_surface5m"),
-             Scaled_covlist    = unique(hind_short$var))
-
-makeDat_fut( datIN             = fut%>%mutate(long_name=var)%>%
-               filter(var%in%shortlist), 
-             hinddatIN         = hind%>%mutate(long_name=var)%>%
-               filter(var%in%shortlist),
-             outfile           = fndat_fut,
-             value2use         = "val_use",
-             value2use_scaled  = "val_use_scaled",
-             NAVal             = "mean", 
-             nsppIN            = 3,
-             last_nyrs_avg     = 10, 
-             overlapIN         = overlap_fut,  #(nspp,nsim+1,nyrs_fut) 
-             overlap_hind      = overlap,
-             nonScaled_covlist = c("Summer_temp_bottom5m","Summer_temp_surface5m"),
-             Scaled_covlist    = unique(hind_short$var))
-
-# Kir's .dat file
-makeDat_hind(datIN   = hind%>%mutate(long_name=var), 
-             outfile = fndat_hind_long,
-             value2use = "val_use",
-             value2use_scaled = "val_use_scaled",
-             NAVal     = "mean",  
-             nsppIN    = 3,
-             overlapIN = overlap, 
-             nonScaled_covlist = c("Summer_temp_bottom5m","Summer_temp_surface5m"),
-             Scaled_covlist    = unique(hind$var))
-
-makeDat_fut( datIN             = fut%>%mutate(long_name=var), 
-             hinddatIN         = hind%>%mutate(long_name=var),
-             outfile           = fndat_fut_long,
-             value2use         = "val_use",
-             value2use_scaled  = "val_use_scaled",
-             NAVal             = "mean", 
-             nsppIN            = 3,
-             last_nyrs_avg     = 10, 
-             overlapIN         = overlap_fut,  #(nspp,nsim+1,nyrs_fut) 
-             overlap_hind      = overlap,
-             nonScaled_covlist = c("Summer_temp_bottom5m","Summer_temp_surface5m"),
-             Scaled_covlist    = unique(hind$var))
+source("R/sub_scripts/make_CEATTLE_dat_files.R")
 
 
 ### Here's a generic version that doesn't include nspp and overla[]

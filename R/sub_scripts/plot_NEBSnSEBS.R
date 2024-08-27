@@ -2,6 +2,8 @@
 #'
 #'plot_NEBSnSEBS.R
 #'
+#'
+
   fldrout <- "Figs/prod_plots"
   if(dir.exists(fldrout))
     dir.remove(fldrout)
@@ -17,6 +19,7 @@
                   data.frame(name = varz[which(!varz%in%vardef$name)],units = "",longname=""))
   
   vardef <- vardef%>%filter(name%in%unique(ACLIM_weekly_hind$var))
+  
   
   i <-grep("temp_bottom5m",vardef$name)
   w<-9; h<-6; dpi <-350
@@ -50,9 +53,10 @@
     rm(tmp2)
     rm(tmp)
 
-    tmp3 <- suppressMessages(plotNEBS_productivity_futBC(datIN=ACLIM_weekly_hind,alphaIN = .4,
-                                                       datIN_fut=ACLIM_weekly_fut,
-                                                       varlistIN=vardef[i,]))
+    tmp3 <- suppressMessages(plotNEBS_productivity_futBC(datIN     = ACLIM_weekly_hind,
+                                                         alphaIN   = .4,
+                                                         datIN_fut = ACLIM_weekly_fut%>%mutate(scen=paste0(RCP,"_",GCM)),
+                                                         varlistIN = vardef[i,]))
     
     jpeg(file.path(fldrout,paste0(vv,"_futBC.jpg")),width = w*sclr, height=h*sclr, res=dpi, units="in")
     print(tmp3$p2)

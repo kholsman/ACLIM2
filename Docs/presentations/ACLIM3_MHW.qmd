@@ -1,0 +1,170 @@
+---
+title: "MHW_ACLIM3"
+editor: visual
+format:
+  pptx:
+    reference-doc: ACLIM3_template2.pptx
+---
+
+# Some stuff
+
+## Quarto
+
+<!-- Quarto enables you to weave together content and executable code into a finished presentation. To learn more about Quarto presentations see <https://quarto.org/docs/presentations/>. -->
+
+<!-- https://quarto.org/docs/presentations/powerpoint.html -->
+
+## Bullets
+
+When you click the **Render** button a document will be generated that includes:
+
+-   Content authored with markdown
+-   Output from executable code
+
+## Code
+
+When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+1 + 1
+```
+
+# Methods
+
+## MHW calculations
+
+## Slide with speaker notes
+
+- climatology was derived for each week based on average (and variance of) temperatures from `r ref_years[1]` to `r rev(ref_years)[1]`. 
+- MHW categories were determined as: Category 1 = 1 SD, Category 2 = 2 SD, etc.
+
+::: notes
+Speaker notes go here.
+:::
+
+# SEBS MHWs (bottom temp.)
+
+::: {.columns .onlytextwidth align="top"}
+::: {.column width="40%" align="left"}
+
+- presently,  20% of the time
+- with Carbon Mitigation (ssp126)    --> 70% of the time
+- without Carbon Mitigation (ssp585) --> 95% of the time
+- much higher rate of Cat. 5 MHW
+
+:::
+
+::: {.column width="60%" align="center"}
+![](../../Data/NotShared/MHW/p_mn_25yr_abrv_temp_bottom5m_SEBS.jpg)
+:::
+:::
+
+# NEBS MHWs (bottom temp.)
+
+::: {.columns .onlytextwidth align="top"}
+::: {.column width="40%" align="left"}
+
+- presently,  20% of the time
+- with Carbon Mitigation (ssp126)    --> 40% of the time
+- without Carbon Mitigation (ssp585) --> 70% of the time
+- much higher rate of Cat. 5 MHW
+
+:::
+
+::: {.column width="60%" align="center"}
+![](../../Data/NotShared/MHW/p_mn_25yr_abrv_temp_bottom5m_NEBS.jpg)
+:::
+:::
+# SEBS MHWs (bottom temp.)
+
+::: {.columns .onlytextwidth align="top"}
+::: {.column width="40%" align="left"}
+
+- presently,  20% of the time
+- with Carbon Mitigation (ssp126)    --> 70% of the time
+- without Carbon Mitigation (ssp585) --> 95% of the time
+- much higher rate of Cat. 5 MHW
+
+:::
+
+::: {.column width="60%" align="center"}
+![](../../Data/NotShared/MHW/p_mn_10yr_temp_bottom5m_SEBS.jpg)
+:::
+:::
+
+# NEBS MHWs (bottom temp.)
+
+::: {.columns .onlytextwidth align="top"}
+::: {.column width="40%" align="left"}
+
+- presently,  20% of the time
+- with Carbon Mitigation (ssp126)    --> 40% of the time
+- without Carbon Mitigation (ssp585) --> 70% of the time
+- much higher rate of Cat. 5 MHW
+
+:::
+
+::: {.column width="60%" align="center"}
+![](../../Data/NotShared/MHW/p_mn_10yr_temp_bottom5m_NEBS.jpg)
+:::
+:::
+
+
+
+# Historically (NEBS)
+
+::: {.columns .onlytextwidth align="top"}
+::: {.column width="40%" align="left"}
+
+- 
+- MHW uncommon winter in NEBS
+
+:::
+
+::: {.column width="60%" align="center"}
+![](../../Data/NotShared/MHW/temp_bottom5m/p_hind_NEBS.jpg)
+:::
+:::
+
+
+# Historically (SEBS)
+
+::: {.columns .onlytextwidth align="top"}
+::: {.column width="40%" align="left"}
+
+- 
+- MHW uncommon winter in NEBS
+
+:::
+
+::: {.column width="60%" align="center"}
+![](../../Data/NotShared/MHW/temp_bottom5m/p_hind_SEBS.jpg)
+:::
+:::
+
+
+# longer look - NEBS
+
+::: {.columns .onlytextwidth align="top"}
+
+::: {.column width="1%" align="left"}
+::: {.column width="990%" align="left"}
+
+
+![](../../Data/NotShared/MHW/temp_bottom5m/p_hind_NEBSlong.jpg)
+
+:::
+:::
+:::
+
+# longer look - SEBS
+
+::: {.columns .onlytextwidth align="top"}
+::: {.column width="1%" align="left"}
+::: {.column width="990%" align="left"}
+
+![](../../Data/NotShared/MHW/temp_bottom5m/p_hind_SEBSlong.jpg)
+
+:::
+:::
+:::

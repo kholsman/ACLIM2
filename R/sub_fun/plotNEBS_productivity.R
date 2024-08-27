@@ -40,15 +40,19 @@ plotNEBS_productivity<- function(datIN=ACLIM_weekly_hind,angleIN=90,
       geom_line(aes(x=mnDate,y = mn_val,color=basin),size=1.1)+
       facet_grid(basin~.)+theme_minimal()
       
-  datIN2  <- datIN%>%filter(year<2020)%>%group_by(var,units,sim,basin,type,sim_type,year,season)%>%
+  datIN2  <- datIN%>%filter(year<2020)%>%
+    group_by(var,sim,basin,type,sim_type,year,season)%>%
     summarize(mnVal = mean(mn_val,na.rm=T))
-  mn <- datIN%>%filter(year<2001)%>%group_by(var,units,sim,basin,type,sim_type,season)%>%
+  mn <- datIN%>%filter(year<2001)%>%
+    group_by(var,sim,basin,type,sim_type,season)%>%
     summarize(mnVal = mean(mn_val,na.rm=T))
   
   
   p2  <-ggplot(datIN2)+
-    geom_line(aes(x=year,y = mnVal,color=basin),size=1.1)+ylab(datIN2$units[1])+
-    geom_hline(data=mn,aes(yintercept=mnVal, color=basin),linetype="solid",size=.8)+
+    geom_line(aes(x=year,y = mnVal,color=basin),size=1.1)+
+    ylab(varlistIN$units)+
+    geom_hline(data=mn,aes(yintercept=mnVal, color=basin),
+               linetype="solid",size=.8)+
     facet_grid(season~basin)+theme_minimal()+
     theme(axis.text.x = element_text(angle = angleIN))+
     scale_fill_viridis_d(end = .5, begin =.2)+
@@ -69,10 +73,10 @@ plotNEBS_productivity_fut<- function(datIN=ACLIM_weekly_hind,
   varlistIN$longname
   dat1     <- datIN%>%
     filter(var%in%varlistIN$name, basin%in%basinIN, year <2020)%>%
-    select(var,units,basin,sim, year, season,mn_val, GCM,gcmcmip, scen, CMIP,sim_type,type)%>%
+    select(var,basin,sim, year, season,mn_val, GCM,gcmcmip, scen, CMIP,sim_type,type)%>%
     mutate(val = mn_val)%>%rename(val_biascorrected=mn_val)
   dat2 <- datIN_fut%>%filter(var%in%varlistIN$name, basin%in%basinIN, year >2014)%>%
-    select(var,units,basin,sim, year, season,val_biascorrected, GCM,gcmcmip, scen, CMIP,sim_type,type,val_delta)%>%
+    select(var,basin,sim, year, season,val_biascorrected, GCM,gcmcmip, scen, CMIP,sim_type,type,val_delta)%>%
     rename(val=val_delta )
     #rename(val=val_biascorrected )
   # var_defIN  <- var_defIN%>%rename(var=name)
@@ -96,19 +100,8 @@ plotNEBS_productivity_fut<- function(datIN=ACLIM_weekly_hind,
     
   }
   
- 
-  # datIN2  <- dat%>%group_by(var,units,sim,basin,type,GCM, scen, CMIP,sim_type,year,season)%>%
-  #   summarize(mnVal = mean(val,na.rm=T))%>%mutate(GCM = factor(GCM, levels =c("hind","gfdl","miroc","cesm")))
-  # mn <- dat1%>%filter(year<2001)%>%group_by(var,units,sim,basin,type,GCM, scen, CMIP,sim_type,season)%>%
-  #   summarize(mnVal = mean(val,na.rm=T))
-  # mn <- dat%>%
-  #   filter(var%in%varlistIN$name, basin%in%basinIN,year<2001)%>%
-  #   group_by(var,units,sim,basin,type,sim_type,season)%>%
-  #   summarize(mnVal = mean(mn_val,na.rm=T))%>%mutate(scen="hind")
-  # 
-  
   mn_all <- dat%>%
-    group_by(var,units,basin,type,scen, CMIP,sim_type,year,season)%>%
+    group_by(var,basin,type,scen, CMIP,sim_type,year,season)%>%
     summarize(mnVal = mean(val,na.rm=T),
               sdVal = sd(val, na.rm = T),
               n     = length(val))%>%
@@ -118,7 +111,7 @@ plotNEBS_productivity_fut<- function(datIN=ACLIM_weekly_hind,
            upper2 = mnVal+1.95*seVal,
            lower2 = mnVal-1.95*seVal)
   
-  mn_all_mn <- mn_all%>%group_by(var,units,basin,type,scen, CMIP,sim_type,season)%>%
+  mn_all_mn <- mn_all%>%group_by(var,basin,type,scen, CMIP,sim_type,season)%>%
     filter(scen=="hind")%>%
     summarize(mnVal = mean(mnVal, na.rm = T),
               upper = mean(upper, na.rm = T),
@@ -132,7 +125,7 @@ plotNEBS_productivity_fut<- function(datIN=ACLIM_weekly_hind,
    return(out)
   }
   mn_allGCM <- dat%>%mutate(sub_sim = mfun(sim))%>%
-    group_by(var,units,basin,type,scen,gcmcmip,GCM, CMIP,sim_type,year,season,sub_sim)%>%
+    group_by(var,basin,type,scen,gcmcmip,GCM, CMIP,sim_type,year,season,sub_sim)%>%
     summarize(mnVal = mean(val,na.rm=T),
               sdVal = sd(val, na.rm = T),
               n     = length(val))%>%
@@ -144,7 +137,7 @@ plotNEBS_productivity_fut<- function(datIN=ACLIM_weekly_hind,
   
   
   mn_allGCM_mn <- mn_allGCM%>%
-    group_by(var,units,basin,type,scen,gcmcmip,GCM, CMIP,sim_type,season,sub_sim)%>%
+    group_by(var,basin,type,scen,gcmcmip,GCM, CMIP,sim_type,season,sub_sim)%>%
     filter(scen=="hind")%>%
     mutate(seVal = sdVal/sqrt(n),
            upper = mnVal+1.95*seVal,
@@ -173,11 +166,11 @@ plotNEBS_productivity_fut<- function(datIN=ACLIM_weekly_hind,
   # }
   p1  <-ggplot()+
     #geom_line(data=datIN2%>%filter(GCM=="hind"),aes(x=year,y = mnVal,color=scen),size=.8,alpha=.8)+
-    ylab(dat$units[1])+
+    ylab(varlistIN$units)+
     geom_ribbon(data = mn_all%>%filter(scen=="hind"), aes(x = year, ymin = lower,ymax = upper, fill = scen),alpha = alphaIN)+
     geom_hline(data = mn_all_mn%>%filter(scen=="hind"), aes(yintercept = mnVal, color = scen),linetype="solid",size=.8)+
     geom_line(data = mn_all%>%filter(scen=="hind"), aes(x = year,y = mnVal,color = scen),size=1)+
-    ylab(dat$units[1])+
+    ylab(varlistIN$units)+
     facet_grid(season~basin,scales="free_y")+
     theme_minimal()+
     #ggtitle(varlistIN)+
@@ -189,13 +182,13 @@ plotNEBS_productivity_fut<- function(datIN=ACLIM_weekly_hind,
          caption = "ACLIM2 2023")
   p2  <-ggplot()+
     #geom_line(data=datIN2%>%filter(GCM=="hind"),aes(x=year,y = mnVal,color=scen),size=.8,alpha=.8)+
-    ylab(dat$units[1])+
+    ylab(varlistIN$units)+
      geom_hline(data = mn_all_mn, aes(yintercept = mnVal, color = scen),linetype="solid",size=.8)+
     geom_ribbon(data = mn_all%>%filter(scen!="hind"), aes(x = year, ymin = lower,ymax = upper, fill = scen),alpha = alphaIN)+
     geom_line(data = mn_all%>%filter(scen!="hind"), aes(x = year,y = mnVal,color = scen),size=1)+
     geom_ribbon(data = mn_all%>%filter(scen=="hind"), aes(x = year, ymin = lower,ymax = upper, fill = scen),alpha = alphaIN)+
     geom_line(data = mn_all%>%filter(scen=="hind"), aes(x = year,y = mnVal,color = scen),size=1)+
-    ylab(dat$units[1])+
+    ylab(varlistIN$units)+
     facet_grid(season~basin,scales="free_y")+
     theme_minimal()+
     #ggtitle(varlistIN)+
@@ -205,18 +198,16 @@ plotNEBS_productivity_fut<- function(datIN=ACLIM_weekly_hind,
     labs(title = paste(varlistIN$name,", Delta corrected"),
          subtitle = varlistIN$longname,
          caption = "ACLIM2 2023")
+  
   p3  <-ggplot()+
-    #geom_line(data=datIN2%>%filter(GCM=="hind"),aes(x=year,y = mnVal,color=scen),size=.8,alpha=.8)+
-    ylab(dat$units[1])+
     geom_hline(data = mn_allGCM_mn, aes(yintercept = mnVal, color = scen),linetype="solid",size=.8)+
     geom_ribbon(data = mn_allGCM%>%filter(scen!="hind"), aes(x = year, ymin = lower,ymax = upper, fill = scen,linetype=GCM),alpha = alphaIN)+
     geom_ribbon(data = mn_allGCM%>%filter(scen=="hind"), aes(x = year, ymin = lower,ymax = upper, fill = scen,linetype=GCM),alpha = alphaIN)+
     geom_line(data = mn_allGCM%>%filter(scen!="hind"), aes(x = year,y = mnVal,color = scen,linetype=GCM),size=1)+
     geom_line(data = mn_allGCM%>%filter(scen=="hind"), aes(x = year,y = mnVal,color = scen,linetype=GCM),size=1)+
-    ylab(dat$units[1])+
+    ylab(varlistIN$units)+
     facet_grid(season~basin,scales="free_y")+
     theme_minimal()+
-    #ggtitle(varlistIN)+
     theme(axis.text.x = element_text(angle = angleIN))+
     scale_fill_viridis_d(end = .2, begin =.7)+
     scale_color_viridis_d(end = .2, begin =.7)+
@@ -236,10 +227,10 @@ plotNEBS_productivity_futBC<- function(datIN=ACLIM_weekly_hind,
   varlistIN$longname
   dat1     <- datIN%>%
     filter(var%in%varlistIN$name, basin%in%basinIN, year <2020)%>%
-    select(var,units,basin,sim, year, season,mn_val, GCM,gcmcmip, scen, CMIP,sim_type,type)%>%
+    select(var,basin,sim, year, season,mn_val, GCM,gcmcmip, scen, CMIP,sim_type,type)%>%
     mutate(val_delta = mn_val)%>%rename(val=mn_val)
   dat2 <- datIN_fut%>%filter(var%in%varlistIN$name, basin%in%basinIN, year >2014)%>%
-    select(var,units,basin,sim, year, season,val_biascorrected, GCM,gcmcmip, scen, CMIP,sim_type,type,val_delta)%>%
+    select(var,basin,sim, year, season,val_biascorrected, GCM,gcmcmip, scen, CMIP,sim_type,type,val_delta)%>%
     rename(val=val_biascorrected )
   #rename(val=val_biascorrected )
   # var_defIN  <- var_defIN%>%rename(var=name)
@@ -266,7 +257,7 @@ plotNEBS_productivity_futBC<- function(datIN=ACLIM_weekly_hind,
 
   
   mn_all <- dat%>%
-    group_by(var,units,basin,type,scen, CMIP,sim_type,year,season)%>%
+    group_by(var,basin,type,scen, CMIP,sim_type,year,season)%>%
     summarize(mnVal = mean(val,na.rm=T),
               sdVal = sd(val, na.rm = T),
               n     = length(val))%>%
@@ -276,7 +267,7 @@ plotNEBS_productivity_futBC<- function(datIN=ACLIM_weekly_hind,
            upper2 = mnVal+1.95*seVal,
            lower2 = mnVal-1.95*seVal)
   
-  mn_all_mn <- mn_all%>%group_by(var,units,basin,type,scen, CMIP,sim_type,season)%>%
+  mn_all_mn <- mn_all%>%group_by(var,basin,type,scen, CMIP,sim_type,season)%>%
     filter(scen=="hind")%>%
     summarize(mnVal = mean(mnVal, na.rm = T),
               upper = mean(upper, na.rm = T),
@@ -290,7 +281,7 @@ plotNEBS_productivity_futBC<- function(datIN=ACLIM_weekly_hind,
     return(out)
   }
   mn_allGCM <- dat%>%mutate(sub_sim = mfun(sim))%>%
-    group_by(var,units,basin,type,scen,gcmcmip,GCM, CMIP,sim_type,year,season,sub_sim)%>%
+    group_by(var,basin,type,scen,gcmcmip,GCM, CMIP,sim_type,year,season,sub_sim)%>%
     summarize(mnVal = mean(val,na.rm=T),
               sdVal = sd(val, na.rm = T),
               n     = length(val))%>%
@@ -302,7 +293,7 @@ plotNEBS_productivity_futBC<- function(datIN=ACLIM_weekly_hind,
   
   
   mn_allGCM_mn <- mn_allGCM%>%
-    group_by(var,units,basin,type,scen,gcmcmip,GCM, CMIP,sim_type,season,sub_sim)%>%
+    group_by(var,basin,type,scen,gcmcmip,GCM, CMIP,sim_type,season,sub_sim)%>%
     filter(scen=="hind")%>%
     mutate(seVal = sdVal/sqrt(n),
            upper = mnVal+1.95*seVal,
@@ -330,15 +321,12 @@ plotNEBS_productivity_futBC<- function(datIN=ACLIM_weekly_hind,
   #   
   # }
   p1  <-ggplot()+
-    #geom_line(data=datIN2%>%filter(GCM=="hind"),aes(x=year,y = mnVal,color=scen),size=.8,alpha=.8)+
-    ylab(dat$units[1])+
     geom_ribbon(data = mn_all%>%filter(scen=="hind"), aes(x = year, ymin = lower,ymax = upper, fill = scen),alpha = alphaIN)+
     geom_hline(data = mn_all_mn%>%filter(scen=="hind"), aes(yintercept = mnVal, color = scen),linetype="solid",size=.8)+
     geom_line(data = mn_all%>%filter(scen=="hind"), aes(x = year,y = mnVal,color = scen),size=1)+
     ylab(dat$units[1])+
     facet_grid(season~basin,scales="free_y")+
     theme_minimal()+
-    #ggtitle(varlistIN)+
     theme(axis.text.x = element_text(angle = angleIN))+
     scale_fill_viridis_d(end = .2, begin =.7)+
     scale_color_viridis_d(end = .2, begin =.7)+
@@ -346,8 +334,6 @@ plotNEBS_productivity_futBC<- function(datIN=ACLIM_weekly_hind,
          subtitle = varlistIN$longname,
          caption = "ACLIM2 2023")
   p2  <-ggplot()+
-    #geom_line(data=datIN2%>%filter(GCM=="hind"),aes(x=year,y = mnVal,color=scen),size=.8,alpha=.8)+
-    ylab(dat$units[1])+
     geom_hline(data = mn_all_mn, aes(yintercept = mnVal, color = scen),linetype="solid",size=.8)+
     geom_ribbon(data = mn_all%>%filter(scen!="hind"), aes(x = year, ymin = lower,ymax = upper, fill = scen),alpha = alphaIN)+
     geom_line(data = mn_all%>%filter(scen!="hind"), aes(x = year,y = mnVal,color = scen),size=1)+
@@ -363,9 +349,8 @@ plotNEBS_productivity_futBC<- function(datIN=ACLIM_weekly_hind,
     labs(title = paste(varlistIN$name,", Bias corrected"),
          subtitle = varlistIN$longname,
          caption = "ACLIM2 2023")
+  
   p3  <-ggplot()+
-    #geom_line(data=datIN2%>%filter(GCM=="hind"),aes(x=year,y = mnVal,color=scen),size=.8,alpha=.8)+
-    ylab(dat$units[1])+
     geom_hline(data = mn_allGCM_mn, aes(yintercept = mnVal, color = scen),linetype="solid",size=.8)+
     geom_ribbon(data = mn_allGCM%>%filter(scen!="hind"), aes(x = year, ymin = lower,ymax = upper, fill = scen,linetype=GCM),alpha = alphaIN)+
     geom_ribbon(data = mn_allGCM%>%filter(scen=="hind"), aes(x = year, ymin = lower,ymax = upper, fill = scen,linetype=GCM),alpha = alphaIN)+
