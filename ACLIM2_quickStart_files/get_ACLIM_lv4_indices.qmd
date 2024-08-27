@@ -1,0 +1,64 @@
+---
+title: "Get ACLIM Indices"
+format: pdf
+editor: visual
+---
+
+## Code from Matt Callahan
+
+```{r}
+# load ACLIM lib and data
+source("R/make.R")
+
+library(magrittr)
+library(dplyr)
+library(httr)
+library(jsonlite)
+
+# preview variables
+srvy_var_def$name
+
+# select bottom temp
+varN <- 55
+srvy_var_def$name[varN]
+basinIN <- "SEBS"
+cmipIN <- "aclim_annual_cmip5"
+scenIN <- "HIND_OPERATIONAL"
+
+# Get bottom temp from online ACLIM level 4 indices:
+txt <- paste0("https://apex.psmfc.org/akfin/data_marts/clim/",cmipIN,"?dataset=",scenIN,"&var=",srvy_var_def$name[varN],"&basin=",basinIN)
+
+dat <- fromJSON(content(
+GET(txt),
+  as="text", encoding="UTF-8")) %>%
+  bind_rows()
+
+#fix time:
+dat<- dat%>%rowwise()%>%
+  mutate(MNDATE = strptime(substr(MNDATE,1,10),format="%Y-%M-%d"))%>%
+  data.frame()
+
+head(dat)
+
+```
+
+## Now plot data
+
+```{r}
+
+library(ggplot2)
+
+# preview the avail variables
+
+var_plot <- ggplot(dat)+
+  geom_line(aes(x= MNDATE,y = MN_VAL, color="hind"))+theme_minimal()+
+ # add in sd hindcast
+ geom_ribbon(aes(x=MNDATE,ymin = MN_VAL-SD_VAL, ymax =MN_VAL+SD_VAL, fill = "hind"),alpha=.2)+
+     # geom_line(aes(x= MNDATE,y = MN_VAL+SD_VAL, color="hind"),linetype="dashed")+
+     # geom_line(aes(x= MNDATE,y = MN_VAL-SD_VAL, color="hind"),linetype="dashed")
+ # add in mean hindcast reference
+ geom_line(aes(x= MNDATE,y = MNVAL_HIND, color="mean hind"))+
+  ylab(paste(srvy_var_def$name[varN],"(",srvy_var_def$units[varN],")"))+ theme(legend.position="none")
+var_plot
+  
+```
