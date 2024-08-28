@@ -397,6 +397,9 @@ for (CMIP in c("CMIP6","CMIP5")){
     futDat_weekly_strata  <- fix_caps(futDat_weekly_strata)
     futDat_avg            <- fix_caps(futDat_avg)
     
+    test <- futDat_avg%>%filter(var_salmon =="EWinds_31_10")
+    unique(test$var)
+    
       # output the data as Rdata and CSV
       write_csv(futDat_monthly, file.path(outfldr,"futDat_monthly.csv"))
       save(futDat_monthly, file=file.path(outfldr,"futDat_monthly.Rdata"))
@@ -409,37 +412,3 @@ for (CMIP in c("CMIP6","CMIP5")){
       write_csv(futDat_avg, file.path(outfldr,"futDat_avg.csv"))
       save(futDat_avg, file=file.path(outfldr,"futDat_avg.Rdata"))
       
-### ----- PREV
-
-
-if (1 ==10){
-  # loads packages, data, setup, etc.
-  suppressMessages( suppressWarnings(source("R/make.R")))
-  
-  # get the variable you want:
-  df <- get_var( typeIN    = "monthly", 
-                 monthIN   = 9:10,
-                 plotvar   = "temp_bottom5m",
-                 bcIN      = c("raw","bias corrected"),
-                 CMIPIN    = "K20P19_CMIP6", 
-                 plothist  = T,  # ignore the hist runs
-                 removeyr1 = T)  # "Remove first year of projection ( burn in)")
-  
-  df$plot+coord_cartesian(ylim = c(0, 7))
-  head(df$dat)
-  
-  # concat the hind and fut runs by removing years from projection
-  stitchDate <- "2020-12-30"
-  
-  newdat <- stitchTS(dat = df$dat,
-                     maxD  = stitchDate)
-  
-  # newdat has the full set of data
-  # select miroc_ssp126
-  head(newdat%>%dplyr::filter(GCM_scen==paste0(GCMs[1],"_",scens[1])))
-  tail(newdat%>%dplyr::filter(GCM_scen==paste0(GCMs[1],"_",scens[1])))
-  
-  pp <- plotTS(newdat )
-  pp
-
-}
