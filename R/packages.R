@@ -20,7 +20,10 @@ lib_list <- c(
     "tidyverse",
    "shiny",
    "fuzzyjoin",
-    #"usethis",
+   # Matt C's packages
+   "magrittr",
+   "httr",
+   "jsonlite",
     
   # # these for ggplot mapping:
   #   "raster",

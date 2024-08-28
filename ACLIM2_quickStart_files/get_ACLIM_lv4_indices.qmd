@@ -4,16 +4,12 @@ format: pdf
 editor: visual
 ---
 
-## Code from Matt Callahan
+## Based on Code from Matt Callahan
 
 ```{r}
+
 # load ACLIM lib and data
 source("R/make.R")
-
-library(magrittr)
-library(dplyr)
-library(httr)
-library(jsonlite)
 
 # preview variables
 srvy_var_def$name
@@ -24,6 +20,25 @@ srvy_var_def$name[varN]
 basinIN <- "SEBS"
 cmipIN <- "aclim_annual_cmip5"
 scenIN <- "HIND_OPERATIONAL"
+
+# acces via google drive
+temp <- tempfile(fileext = ".zip")
+# https://drive.google.com/file/d/1S2qoJrqfUvsKbS4-Wkrm7UK7kx3oG52s/view?usp=drive_link
+# https://drive.google.com/drive/folders/1RjYGP0MNbqpNggL3wCBV_3e_J87K7m3f&export=download
+# download.file("https://drive.google.com/uc?authuser=0&id=1AiZda_1-2nwrxI8fLD0Y6e5rTg7aocv0&export=download",
+#   temp)
+download.file("https://drive.google.com/file/d/1S2qoJrqfUvsKbS4-Wkrm7UK7kx3oG52s/view?usp=drive_link",
+  temp)
+out <- unzip(temp, exdir = tempdir())
+bank <- read.csv(out[14], sep = ";")
+str(bank)
+
+# access via local files
+load("Data/out/CMIP5_K20P19_Indices_operational/allEBS_means/ACLIM_annual_hind_mn.Rdata")
+dat_local <- ACLIM_annual_hind%>%filter(var ==srvy_var_def$name[varN], basin ==basinIN)%>%rowwise()%>%
+  mutate(MNVAL=mn_val,MNDATE = strptime(substr(mnDate,1,10),format="%Y-%M-%d"))%>%
+  data.frame()
+# access via AKFIN online database
 
 # Get bottom temp from online ACLIM level 4 indices:
 txt <- paste0("https://apex.psmfc.org/akfin/data_marts/clim/",cmipIN,"?dataset=",scenIN,"&var=",srvy_var_def$name[varN],"&basin=",basinIN)
@@ -58,7 +73,11 @@ var_plot <- ggplot(dat)+
      # geom_line(aes(x= MNDATE,y = MN_VAL-SD_VAL, color="hind"),linetype="dashed")
  # add in mean hindcast reference
  geom_line(aes(x= MNDATE,y = MNVAL_HIND, color="mean hind"))+
-  ylab(paste(srvy_var_def$name[varN],"(",srvy_var_def$units[varN],")"))+ theme(legend.position="none")
+  geom_line(data=dat_local,aes(x= MNDATE,y = mnVal_hind, color="mean hind local"))+
+  ylab(paste(srvy_var_def$name[varN],"(",srvy_var_def$units[varN],")"))+
+  geom_line(data=dat_local,aes(x= MNDATE,y = mn_val, color="hind_local"))+
+  geom_ribbon(data=dat_local,aes(x=MNDATE,ymin = mnVal_hind-sdVal_hind, ymax =mnVal_hind+sdVal_hind, fill = "hind_local"),alpha=.2)
+ # theme(legend.position="none")+
 var_plot
   
 ```

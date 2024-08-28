@@ -22,16 +22,34 @@ cat("\n\nsetting things up\n")
 outfldr <- "Data/out/salmon_indices"
 if(!dir.exists(outfldr)) dir.create(outfldr)
 
-strata_set  <- list(c(70,71),c(71),c(90,61,62))
-mo_set      <- list(c(9,10),c(5,6),7:10)
-var_set     <- list(c("temp_surface5m"),c("NEwinds"),"temp_surface5m")
-names(var_set) <- c("fall_SST_70_71","Winds_71","7through10_SST_90_61_62")
+# strata_set  <- list(c(70,71),c(71),c(90,61,62),)
+# mo_set      <- list(c(9,10),c(5,6),7:10)
+# var_set     <- list(c("temp_surface5m"),c("NEwinds","uEast_surface5m","vNorth_surface5m"),"temp_surface5m")
+# names(var_set) <- c("fall_SST_70_71","Winds_71","7through10_SST_90_61_62")
 
-NEWinds     <- c(0,1,0)
 
-# PCOD_vars_wide_op$NE_winds <- 
-#   getNE_winds(vNorth=PCOD_vars_wide_op$vNorth_surface5m,
-#               uEast=PCOD_vars_wide_op$uEast_surface5m)
+strata_set  <- list(c(32,42),
+                    c(31,10),
+                    c(31,10),
+                    c(31,10),
+                    c(50,61,62)) # averaged within brackets
+mo_set      <- list(c(1:3),
+                    c(5:6),
+                    c(5:6),
+                    c(5:6),
+                    4:12)   # averaged within brackets
+var_set     <- list(c("temp_surface5m"),
+                    c("NEwinds"),
+                    c("uEast_surface5m"),
+                    c("vNorth_surface5m"),
+                    c("temp_surface5m"))# seperate for each variable
+names(var_set) <- c("winter_SST_32_42",
+                    "NEWinds_31_10",
+                    "EWinds_31_10",
+                    "NWinds_31_10",
+                    "4through12_SST_50_61_62")
+NEWinds     <- c(0,1,0,0,0) # 1 = yes
+
 
 #varlist        <- c("pH_bottom5m","pH_depthavg","pH_integrated","pH_surface5m","temp_surface5m", "temp_bottom5m")
 CMIPset        <- c("K20P19_CMIP6","K20P19_CMIP5")
@@ -57,9 +75,12 @@ select_list <- c("sim","year","var_salmon","basin","strata","strata_area_km2","u
                   "season","mo","wk","jday","mnDate","qry_date","sim_type","mday",
                   "val_use","mnVal_hind","sdVal_hind","nVal_hind","seVal_hind","val_raw","var")
 
+# mnVal_hind is the average of val_use across years (one number for each variable)
+# sdVal_hind is the sd of val_use across years (one number for each variable)
+
 for(i in 1:length(strata_set)){
-  
-  if(var_set[[i]]=="NEwinds"){
+    # calculate NE winds
+    if("NEwinds"%in%var_set[[i]]){
     my_vars2       <- function(IN) select_list[select_list%in%names(IN)]
     valset <- c("val_use","mnVal_hind","sdVal_hind","nVal_hind", "seVal_hind","val_raw")
     
@@ -171,6 +192,12 @@ for(i in 1:length(strata_set)){
 }
 
 
+
+    #preview the output
+    test <- hindDat_avg%>%filter(var_salmon =="EWinds_31_10")
+    unique(test$var)
+    test <- hindDat_avg%>%filter(var_salmon =="NEWinds_31_10")
+    unique(test$var)
   
     # output the data as Rdata and CSV
     write_csv(hindDat_weekly_strata, file.path(outfldr,"salmon_hindDat_weekly_strata.csv"))
@@ -200,7 +227,19 @@ select_list <- unique(c(names(hindDat_weekly_strata),"long_name","qry_date","sta
 CMIP <- "CMIP6"
 ii   <- 1
 i    <- 1
-
+fix_caps <- function (dataset){
+    out <- dataset%>%
+      mutate(GCM = gsub("MIROC","miroc",GCM))%>%
+      mutate(GCM = gsub("GFDL","gfdl",GCM))%>%
+      mutate(GCM = gsub("CESM","cesm",GCM))%>%
+      mutate(sim = gsub("MIROC","miroc",sim))%>%
+      mutate(sim = gsub("GFDL","gfdl",sim))%>%
+      mutate(sim = gsub("CESM","cesm",sim))%>%
+      mutate(GCM = factor(GCM, levels =c("hind","gfdl","cesm","miroc")))%>%
+      mutate(GCM_scen = paste0(GCM,"_",RCP))%>%data.frame()
+    return(out)
+  }
+  
 for (CMIP in c("CMIP6","CMIP5")){
   
   if(CMIP == "CMIP6"){
@@ -246,7 +285,7 @@ for (CMIP in c("CMIP6","CMIP5")){
       fut$mo   <- as.numeric(substr(fut$mnDate,6,7))
       fut$mday <- as.numeric(substr(fut$mnDate,9,10))
       
-      if(var_set[[ii]]=="NEwinds"){
+      if("NEwinds"%in%var_set[[ii]]){
         
         valset <- c("val_use","mnVal_hind","sdVal_hind","val_raw","val_delta")
         # PCOD_vars_wide_op$NE_winds <- 
@@ -349,18 +388,7 @@ for (CMIP in c("CMIP6","CMIP5")){
   }
 }
    
-  fix_caps <- function (dataset){
-    out <- dataset%>%
-      mutate(GCM = gsub("MIROC","miroc",GCM))%>%
-      mutate(GCM = gsub("GFDL","gfdl",GCM))%>%
-      mutate(GCM = gsub("CESM","cesm",GCM))%>%
-      mutate(sim = gsub("MIROC","miroc",sim))%>%
-      mutate(sim = gsub("GFDL","gfdl",sim))%>%
-      mutate(sim = gsub("CESM","cesm",sim))%>%
-      mutate(GCM = factor(GCM, levels =c("hind","gfdl","cesm","miroc")))%>%
-      mutate(GCM_scen = paste0(GCM,"_",RCP))%>%data.frame()
-    return(out)
-  }
+
 
   cat("saving outputs\n") 
 
