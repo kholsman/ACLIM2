@@ -400,7 +400,7 @@ for (CMIP in c("CMIP6","CMIP5")){
     test <- futDat_avg%>%filter(var_salmon =="EWinds_31_10")
     unique(test$var)
     
-      # output the data as Rdata and CSV
+      # output the data as R98data and CSV
       write_csv(futDat_monthly, file.path(outfldr,"futDat_monthly.csv"))
       save(futDat_monthly, file=file.path(outfldr,"futDat_monthly.Rdata"))
       
