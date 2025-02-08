@@ -34,11 +34,11 @@
   plotbasin    <- "SEBS"  
   
   # Define the name for the .dat file
-  fn      <- paste0("ACLIM2_CMIP6_short_delta_bc",thisYr,".dat")
-  fn_long <- paste0("ACLIM2_CMIP6_delta_bc",thisYr,".dat")
+  if(!fin%in%ls())       fn      <- paste0("ACLIM2_CMIP6_short_delta_bc",thisYr,".dat")
+  if(!fn_long%in%ls())   fn_long <- paste0("ACLIM2_CMIP6_delta_bc",thisYr,".dat")
   
   archive_old <- T  # Archive the older version of the .dat file?
-  normlist    <- read.csv(file=file.path(Rdata_path,"../normlist.csv"))
+  #normlist    <- read.csv(file=file.path(Rdata_path,"../normlist.csv"))
   
   CMIPS <- c("K20P19_CMIP6","K20P19_CMIP5")
   

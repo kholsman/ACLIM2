@@ -109,7 +109,7 @@
     # ------------------------------------
     # now get monthly values:
     # ------------------------------------
-    # SST, Ph and SBT values. predictions for 1/15, 2/15 .. 12/15..
+    # SST, Ph and BT values. predictions for 1/15, 2/15 .. 12/15..
     # Load bias corrected weekly strata data:
     
     rm(hind)
@@ -446,5 +446,10 @@ for (CMIP in c("CMIP6","CMIP5")){
   
   write_csv(fut_RKC_immature_males_monthly_avg, file.path(outfldr,"fut_RKC_immature_males_monthly_avg.csv"))
   save(fut_RKC_immature_males_monthly_avg, file=file.path(outfldr,"fut_RKC_immature_males_monthly_avg.Rdata"))
+  
+  
+  # create map of stations and plot of results
+  
+  
   
 
