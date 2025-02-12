@@ -1,0 +1,108 @@
+---
+title: "Using the get_var_akfin() function DRAFT"
+author: "Matt Callahan"
+format: 
+  html:
+    self-contained: true
+editor: visual
+---
+
+## Description
+
+The get_var_akfin() function intends to replicate the get_var() function for pulling level 4 ACLIM data, but sources from the AKFIN database. Beginning in 2024 ACLIM has worked with the Alaska Fisheries Information Network (AKFIN) for data management support for indicator data. The previous workflow required users to download a large ammount of data from a google folder, and set it up with the correct file structure for code to function. The proposed workflow pulls desired data from the AKFIN database using web services (apis). Advantages are (hopefully) ease of use is improved, and the need to update your data when models are re-run is removed, as AKFIN will host updated data that will be passed through this function.
+
+## AKFIN Data structure
+
+The data loaded to AKFIN are currently just the data contained in the allEBS_means folder in this repo. Each dataset was uploaded to the AKFIN database through R. You can directly query these tables in the CLIM schema if you have AKFIN oracle access. The allEBS_means data consist of FUT, HIND, and HIST files for both CMIP5 and CMIP6 for each time scale (annual, monthly, etc.). AKFIN combined these into materialized views (e.g. CLIM.ACLIM_ANNUAL_CMIP_MV) and set up web services (apis) for each temporal level to distribute the data in those materialized views. Arguments in the get_vars_akfin() function specify which timescale to use and further filter the web service output to the desired variable, basin, projection, and CMIP5 or CMIP6.
+
+## get_vas_akfin() usage
+
+The get_vars_akfin() expects a user to specify the following arguements.
+
+| Parameter | Options                                         | Default       |
+|-----------|-------------------------------------------------|---------------|
+| typein    | annual, monthly, weekly, surveyrep, or seasonal | annual        |
+| var       | Any ACLIM variable                              | temp_bottom5m |
+| basin     | SEBS or NEBS                                    | SEBS          |
+| dataset   | HIND, FUT, or HIST                              | HIND          |
+| cmip      | CIMP5 or CMIP6                                  | CMIP6         |
+
+: get_var_akfin() parameters
+
+## Function structure
+The url specifies which web service (one for each timescale) is used. The typein arguement is pasted onto the end of the url.
+The function then combines the other variables into a list to be passed to the url. They will essentially be pasted onto the end of the url. For example the default query will produce the following url: https://apex.psmfc.org/akfin/data_marts/clim/aclim_l4_annual?var=temp_bottom5m&basin=SEBS&cmip=CMIP6&dataset=HIND , which you can paste into your browser for funsies. 
+Then the function uses the jsonlite and httr packages to pull the web service response into a list in R.
+Finally, the dplyr::bind_rows function converts the list into a data frame, which is the output of the function.
+
+```{r}
+# packages should be specified in the function code but need to be installed
+# install.packages(c("here", "dplyr", "httr","jsonlite"))
+
+get_var_akfin <- function(typein="annual",
+                          var="temp_bottom5m",
+                          basin="SEBS",
+                          cmip="CMIP6",
+                          dataset="HIND") {
+  if(typein %in% c("annual","monthly", "weekly","surveyrep", "seasonal")) {
+    
+  url <- paste0("https://apex.psmfc.org/akfin/data_marts/clim/aclim_l4_",typein)
+  query<-list(dataset=dataset, var=var, basin=basin, cmip=cmip)
+  
+  jsonlite::fromJSON(httr::content(
+    httr::GET(url=url, query=query),
+    as="text", encoding="UTF-8")) |>
+    dplyr::bind_rows()
+  }
+    
+  else {
+    return("typein must be one of annual, monthly, weekly, surveyrep, or seasonal. Otherwise more error messages coming later")
+  }
+}
+
+# Or File will probably live here
+#source(here::here("R","sub_fun","get_var_akfin.R"))
+```
+
+
+## Examples
+```{r}
+tempbottom5_sebs_hind_cmip6_annual <- get_var_akfin()
+tempbottom5_NBS_hind_cmip6_annual <- get_var_akfin(basin="NEBS")
+tempbottom5_NBS_fut_cmip6_annual <- get_var_akfin(basin="NEBS", dataset = "FUT")
+tempsurface5_NBS_fut_cmip6_annual <- get_var_akfin(basin="NEBS", dataset = "FUT", var="temp_surface5m")
+tempsurface5_NBS_fut_cmip5_annual <- get_var_akfin(basin="NEBS", dataset = "FUT", var="temp_surface5m", cmip="CMIP5")
+tempbottom5_NBS_hind_cmip6_monthly <- get_var_akfin(typein="monthly",basin="NEBS", dataset = "HIND", var="temp_bottom5m", cmip="CMIP6")
+tempbottom5_NBS_hind_cmip6_seasonal <- get_var_akfin(typein="seasonal",basin="NEBS", dataset = "HIND", var="temp_bottom5m", cmip="CMIP6")
+tempbottom5_NBS_hind_cmip6_surveyrep <- get_var_akfin(typein="surveyrep",basin="NEBS", dataset = "HIND", var="temp_bottom5m", cmip="CMIP6")
+tempbottom5_NBS_hind_cmip6_weekly <- get_var_akfin(typein="weekly",basin="NEBS", dataset = "HIND", var="temp_bottom5m", cmip="CMIP6")
+
+head(tempbottom5_NBS_hind_cmip6_weekly)
+# play around with downloads and if you run into any problems raise an issue.
+```
+
+## Multiple variables
+The function currently allows for a single variable only for each arguement. 
+The url actually supports multiple variables for each parameter separated by a column, but I haven't been able to pass them successfully through the query in httr::GET()
+```{r}
+# 
+multibasin <-   jsonlite::fromJSON(httr::content(
+    httr::GET("https://apex.psmfc.org/akfin/data_marts/clim/aclim_l4_annual?var=temp_bottom5m&basin=SEBS,NEBS&cmip=CMIP6&dataset=HIND"),
+    as="text", encoding="UTF-8")) |>
+    dplyr::bind_rows()
+
+unique(multibasin$BASIN)
+```
+The workaround I use for this is the lapply function.
+```{r}
+myvars=c("temp_bottom5m", "temp_surface5m", "temp_integrated","EupO_integrated","EupS_integrated")
+aclim_temp_eup <- lapply(myvars, function(x) FUN=get_var_akfin(typein="surveyrep",basin="NEBS", dataset = "HIND", var=x, cmip="CMIP6")) |>
+  dplyr::bind_rows()
+
+unique(aclim_temp_eup$var)
+                         
+```
+
+So that's it for now, please let me know if you have any feedback, requests, etc.
+Happy climate sciencing!
+Matt
