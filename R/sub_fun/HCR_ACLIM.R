@@ -7,7 +7,7 @@
 #' 
 #' @param x vector of biomass
 #' @param alpha  lower limit of biomass cutoff (e.g., B_5% = 0.05); determines the slope of the HCR
-#' @param alpha2  alternative slope of the HCR; also determines the slope of the HCR when B>Btarget in HCR 5
+#' @param gamma  alternative slope of the HCR; also determines the slope of the HCR when B>Btarget in HCR 5
 #' @param B2B0_lim lower biomass threshold (e.g., B_20% = 0.2); 
 #' @param B2B0_target Target biomass/MSY proxy
 #' @param Flim input of F harvest mortality rate to apply the HCR to
@@ -42,13 +42,13 @@ HCR <-function(x, alpha=0.05, B2B0_lim = 0.2, B2B0_target=0.4,Flim=1){
 }
 
 
-HCR2 <-function(x, alpha=0.05, alpha2 = .2, B2B0_lim = 0.2, B2B0_target=0.4,Flim=1){
+HCR2 <-function(x, alpha=0.05, gamma = .2, B2B0_lim = 0.2, B2B0_target=0.4,Flim=1){
   B2B40    <- x/B2B0_target
   
-  # alpha2 is the environmental sensitivity parameter from vulnerability analyses
+  # gamma is the environmental sensitivity parameter from vulnerability analyses
   if(B2B40>1.){
-    if(alpha2<B2B40){
-      maxFabc=Flim*(exp(-alpha2*(B2B40-1)))
+    if(gamma<B2B40){
+      maxFabc=Flim*(exp(-gamma*(B2B40-1)))
     }
   }else{
     if(alpha<B2B40){

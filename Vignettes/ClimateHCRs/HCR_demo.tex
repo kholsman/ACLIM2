@@ -110,13 +110,13 @@ The Tier three approach is to set the slope of the sloping HCR to
 
 Eq. 1 \[F_{ABC_{max}} = \begin{array}{ll}  
  F_{ABC} &~~~~~~~~ \frac{B}{B_{target}}>1 \\  
- F_{ABC}\dot((\frac{B}{B_{target}}-\alpha)/(1-\alpha)) &~~~~~~~~ \frac{B}{B_{target}} < 1 \leq B_{lim} \\  
+ F_{ABC}((\frac{B}{B_{target}}-\alpha)/(1-\alpha)) &~~~~~~~~ \frac{B}{B_{target}} < 1 \leq B_{lim} \\  
  0 &~~~~~~~~ \frac{B}{B_{target}} < B_{lim}  
  \end{array}\]
 
 \begin{figure}
 \centering
-\includegraphics[width=0.5\textwidth,height=\textheight]{../../Figs/HCR_figs/HCR1.png}
+\includegraphics[width=0.8\textwidth,height=\textheight]{../../Figs/HCR_figs/HCR1.png}
 \caption{ABC+HCR 1: Status quo. This is the Tier 3 Harvest Control Rule,
 including the \(B_{20\%}\) cuttoff for certain species}
 \end{figure}
@@ -148,7 +148,7 @@ Apply a steeper slope (alpha) on recovery.
 
 \begin{figure}
 \centering
-\includegraphics[width=0.5\textwidth,height=\textheight]{../../Figs/HCR_figs/HCR2.png}
+\includegraphics[width=0.8\textwidth,height=\textheight]{../../Figs/HCR_figs/HCR2.png}
 \caption{ABC+HCR 2: Lagged recovery to estimate emergency relief
 financing needs}
 \end{figure}
@@ -168,7 +168,7 @@ and catches.
 
 \begin{figure}
 \centering
-\includegraphics[width=0.5\textwidth,height=\textheight]{../../Figs/HCR_figs/HCR3.png}
+\includegraphics[width=0.8\textwidth,height=\textheight]{../../Figs/HCR_figs/HCR3.png}
 \caption{ABC+HCR 3: Long-term resilience (stronger reserve) Ftarget}
 \end{figure}
 
@@ -198,13 +198,12 @@ catches.
 
 \begin{figure}
 \centering
-\includegraphics[width=0.5\textwidth,height=\textheight]{../../Figs/HCR_figs/HCR4.png}
+\includegraphics[width=0.8\textwidth,height=\textheight]{../../Figs/HCR_figs/HCR4.png}
 \caption{ABC+HCR 4: CE informed sloping rate, e.g., MHW category alpha}
 \end{figure}
 
-\section{ABC+HCR 5: Reserve for rainy day (climate-vulnerability
-informed cap
-effect)}\label{abchcr-5-reserve-for-rainy-day-climate-vulnerability-informed-cap-effect}
+\section{ABC+HCR 5: climate sensitivity reserve (buffer
+shocks)}\label{abchcr-5-climate-sensitivity-reserve-buffer-shocks}
 
 \begin{figure}
 \centering
@@ -225,13 +224,16 @@ have a slowly sloping F proportional to climate vulnerability (or MHW
 category) to mimic realized F rates of pollock under the 2 MT cap, i.e.,
 reserve biomass for climate shocks sensu Holsman et al.~2020. This could
 use MHW decadal predictions to set the right hand side of the curve
-above \(B_{40\%}\).
+above \(B_{40\%}\).In this the climate sensitivitiy buffer \(\gamma\) is
+a value 0 to 1 that scales the reserve for biomass above \(B_{target}\),
+i.e., \(B_{40\%}\):
 
-Eq. 1 \[F_{ABC_{max}} = \begin{array}{lrl}  
- F_{ABC} &~~~~~~~~ \frac{B}{B_{target}}>1  &~~~~~~~~ alpha2 < \frac{B}{B_{target}}\\  
- F_{ABC}\dot((\frac{B}{B_{target}}-\alpha)/(1-\alpha)) &~~~~~~~~ \frac{B}{B_{target}} < 1 \leq B_{lim} \\  
+Eq. 1 \[F_{ABC_{max}} = \begin{array}{lll}  
+ F_{ABC}\ e^{(-\gamma(\frac{B}{B_{target}}-1))} &~~~~~~~~\frac{B}{B_{target}}>1, ~~\mathrm{and}~~ \gamma < \frac{B}{B_{target}}\\ 
+ F_{ABC}((\frac{B}{B_{target}}-\alpha)/(1-\alpha)) &~~~~~~~~ \frac{B}{B_{target}} < 1 \leq B_{lim} \\  
  0 &~~~~~~~~ \frac{B}{B_{target}} < B_{lim}  
- \end{array}\]
+ \end{array}
+ \]
 
 Details: Set the target to 40\% of \(B_{100\%}\), (\(\alpha = 0.05\),
 \(B_{lim} = B_{20\%}\), \(B_{target} = B_{40\%}\)). Shown, for small MHW
@@ -241,15 +243,24 @@ catches.
 
 \begin{figure}
 \centering
-\includegraphics[width=0.5\textwidth,height=\textheight]{../../Figs/HCR_figs/HCR5.png}
-\caption{ABC+HCR 5: Reserve for rainy day (climate-vulnerability
-informed cap effect)}
+\includegraphics[width=0.8\textwidth,height=\textheight]{../../Figs/HCR_figs/HCR5.png}
+\caption{ABC+HCR 5: climate sensitivity reserve (buffer shocks)}
+\end{figure}
+
+\section{ABC+HCR 6: MHW slope + climate sensitivity reserve (buffer
+shocks)}\label{abchcr-6-mhw-slope-climate-sensitivity-reserve-buffer-shocks}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth,height=\textheight]{../../Figs/HCR_figs/HCR6.png}
+\caption{ABC+HCR 6: CE slope + climate sensitivity reserve (buffer
+shocks)}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[width=0.5\textwidth,height=\textheight]{../../Figs/HCR_figs/HCR1TO5.png}
-\caption{ABC+HCR 1- 5: Reserve for rainy day (climate-vulnerability
+\includegraphics[width=0.8\textwidth,height=\textheight]{../../Figs/HCR_figs/HCR1TO6.png}
+\caption{ABC+HCR 1- 6: Reserve for rainy day (climate-vulnerability
 informed cap effect)}
 \end{figure}
 

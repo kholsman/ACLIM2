@@ -4,15 +4,14 @@ author: "K. Holsman"
 date: "1/31/2023"
 always_allow_html: true
 output:
-  pdf_document:
-    toc: TRUE
+  html_document:
+    df_print: paged
+    toc: true
     toc_depth: 3
-    fig_caption: yes
-    fig_height: 4
-    fig_width: 5
-    highlight: tango
-    keep_tex: yes
-    latex_engine: xelatex
+    number_sections: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
   header-includes:
   - \usepackage{knputenc}
   - \usepackage{unicode-math}
@@ -23,14 +22,15 @@ output:
     fig_caption: yes
     fig_width: 4
     keep_md: yes
-  html_document:
-    df_print: paged
-    toc: true
+  pdf_document:
+    toc: TRUE
     toc_depth: 3
-    number_sections: true
-    toc_float:
-      collapsed: false
-      smooth_scroll: true
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 5
+    highlight: tango
+    keep_tex: yes
+    latex_engine: xelatex
 #runtime: shiny
 ---
 
@@ -63,7 +63,7 @@ This is the basic sloping harvest control rule for groundfish in the EBS. There 
 
 Eq. 1 $$F_{ABC_{max}} = \begin{array}{ll}  
  F_{ABC} &~~~~~~~~ \frac{B}{B_{target}}>1 \\  
- F_{ABC}\dot((\frac{B}{B_{target}}-\alpha)/(1-\alpha)) &~~~~~~~~ \frac{B}{B_{target}} < 1 \leq B_{lim} \\  
+ F_{ABC}((\frac{B}{B_{target}}-\alpha)/(1-\alpha)) &~~~~~~~~ \frac{B}{B_{target}} < 1 \leq B_{lim} \\  
  0 &~~~~~~~~ \frac{B}{B_{target}} < B_{lim}  
  \end{array}$$  
 
@@ -93,11 +93,14 @@ HCR_levels <-  c("HCR1a: Status Quo",
                  "HCR4a: no MHW",
                  "HCR4b: small MHW",
                  "HCR4c: large MHW",
-                 "HCR5a: no MHW",
-                 "HCR5b: no MHW, low sensitivity",
-                 "HCR5c: small MHW, low sensitivity",
-                 "HCR5d: large MHW, high sensitivity")
-HCRscen_levels <- paste("HCR",1:5)
+                 "HCR5a: no sensitivity",
+                 "HCR5b: low sensitivity",
+                 "HCR5c: medium sensitivity",
+                 "HCR5d: high sensitivity",
+                 "HCR6a: no MHW, no sensitivity",
+                 "HCR6b: small MHW, low sensitivity",
+                 "HCR6c: large MHW, high sensitivity")
+HCRscen_levels <- paste("HCR",1:6)
 
 plotdat1 <- rbind(data.frame(B2B0=B2B0,
                       F_adj =unlist(lapply(B2B0, HCR, 
@@ -140,7 +143,7 @@ plot_out <- list(p_HCR1)
 
 ```
 
-![ABC+HCR 1: Status quo. This is the Tier 3 Harvest Control Rule, including the $B_{20\%}$ cuttoff for certain species](../../Figs/HCR_figs/HCR1.png){width="50%"}
+![ABC+HCR 1: Status quo. This is the Tier 3 Harvest Control Rule, including the $B_{20\%}$ cuttoff for certain species](../../Figs/HCR_figs/HCR1.png){width="80%"}
 
 # ABC+HCR 2: Lagged recovery to estimate emergency relief financing needs
 
@@ -213,7 +216,7 @@ plot_out <- list(p_HCR1,p_HCR2)
 
 ```
 
-![ABC+HCR 2: Lagged recovery to estimate emergency relief financing needs](../../Figs/HCR_figs/HCR2.png){width="50%"}
+![ABC+HCR 2: Lagged recovery to estimate emergency relief financing needs](../../Figs/HCR_figs/HCR2.png){width="80%"}
 
 # ABC+HCR 3: Long-term resilience (stronger reserve) Ftarget
 
@@ -284,7 +287,7 @@ plot_out <- list(p_HCR1,p_HCR2,p_HCR3)
 
 ```
 
-![ABC+HCR 3: Long-term resilience (stronger reserve) Ftarget](../../Figs/HCR_figs/HCR3.png){width="50%"}
+![ABC+HCR 3: Long-term resilience (stronger reserve) Ftarget](../../Figs/HCR_figs/HCR3.png){width="80%"}
 
 # ABC+HCR 4: CE informed sloping rate, e.g., MHW category alpha
 
@@ -360,22 +363,25 @@ plot_out <- list(p_HCR1,p_HCR2,p_HCR3,p_HCR4)
 
 ```
 
-![ABC+HCR 4: CE informed sloping rate, e.g., MHW category alpha](../../Figs/HCR_figs/HCR4.png){width="50%"}
+![ABC+HCR 4: CE informed sloping rate, e.g., MHW category alpha](../../Figs/HCR_figs/HCR4.png){width="80%"}
 
-# ABC+HCR 5: Reserve for rainy day (climate-vulnerability informed cap effect)
+# ABC+HCR 5: climate sensitivity reserve (buffer shocks)
 
 ![Holsman et al. 2020 Figure](../../Figs/Holsmanetal2020_effectiveF.jpg){width="85%"}
 
 
 The general idea here is to combine the HCR 4 MHW category 0-4 scaling factor when below B_target (B40) and a cap-like effect when over $B_{target}$ The steepness of that cap effect could be varied based on vulnerability (or approximated via MSE), more sensitive species might need more reserve in the "bank". Pollock are an example of the HCR 5 in practice (via effects of the 2MT cap + sloping HCR).
 
-Details: Set the target to 40\% of $B_{100\%}$ ($\alpha = 0.05$, $B_{lim} = B_{20\%}$, $B_{target} = B_{40\%}$).After $B_{40\%}$ have a slowly sloping F proportional to climate vulnerability (or MHW category) to mimic realized F rates of pollock under the 2 MT cap, i.e., reserve biomass for climate shocks sensu Holsman et al. 2020. This could use MHW decadal predictions to set the right hand side of the curve above $B_{40\%}$.
+Details: Set the target to 40\% of $B_{100\%}$ ($\alpha = 0.05$, $B_{lim} = B_{20\%}$, $B_{target} = B_{40\%}$).After $B_{40\%}$ have a slowly sloping F proportional to climate vulnerability (or MHW category) to mimic realized F rates of pollock under the 2 MT cap, i.e., reserve biomass for climate shocks sensu Holsman et al. 2020. This could use MHW decadal predictions to set the right hand side of the curve above $B_{40\%}$.In this the climate sensitivitiy buffer $\gamma$ is a value 0 to 1 that scales the reserve for biomass above $B_{target}$, i.e., $B_{40\%}$:
 
-Eq. 1 $$F_{ABC_{max}} = \begin{array}{lrl}  
- F_{ABC} &~~~~~~~~ \frac{B}{B_{target}}>1  &~~~~~~~~ alpha2 < \frac{B}{B_{target}}\\  
- F_{ABC}\dot((\frac{B}{B_{target}}-\alpha)/(1-\alpha)) &~~~~~~~~ \frac{B}{B_{target}} < 1 \leq B_{lim} \\  
+
+Eq. 1 $$F_{ABC_{max}} = \begin{array}{lll}  
+ F_{ABC}\ e^{(-\gamma(\frac{B}{B_{target}}-1))} &~~~~~~~~\frac{B}{B_{target}}>1, ~~\mathrm{and}~~ \gamma < \frac{B}{B_{target}}\\ 
+ F_{ABC}((\frac{B}{B_{target}}-\alpha)/(1-\alpha)) &~~~~~~~~ \frac{B}{B_{target}} < 1 \leq B_{lim} \\  
  0 &~~~~~~~~ \frac{B}{B_{target}} < B_{lim}  
- \end{array}$$  
+ \end{array}
+ $$  
+ 
  
 Details: Set the target to 40% of $B_{100\%}$, ($\alpha = 0.05$, $B_{lim} = B_{20\%}$, $B_{target} = B_{40\%}$). Shown, for small MHW set the $\alpha = 0.2$, for large MHW set the $\alpha = 0.4$. We’re testing whether this would result in more stable biomass levels and catches.
 
@@ -387,30 +393,29 @@ Details: Set the target to 40% of $B_{100\%}$, ($\alpha = 0.05$, $B_{lim} = B_{2
 
 
 plotdat5 <- rbind(data.frame(B2B0=B2B0,
-                      F_adj =unlist(lapply(
-                        B2B0, HCR, 
-                        alpha = 0.05, B2B0_lim = 0.2, B2B0_target=0.4)), 
-                        alpha = 0.05, B2B0_lim = 0.2, B2B0_target=0.4, 
-                      HCR = "HCR5a: no MHW" , HCRscen="HCR 5"),
-                   data.frame(B2B0=B2B0, 
-                            F_adj = unlist(lapply(B2B0, HCR2,
-                      alpha2=.2, 
+                       F_adj = unlist(lapply(B2B0, HCR2,
+                      gamma=0, 
                       alpha = 0.05, B2B0_lim = 0.2, B2B0_target=0.4)),
                       alpha = 0.05, B2B0_lim = 0.2, B2B0_target=0.4, 
-                      HCR = "HCR5b: no MHW, low sensitivity", HCRscen="HCR 5"),
+                      HCR = "HCR5a: no sensitivity" , HCRscen="HCR 5"),
+                   data.frame(B2B0=B2B0, 
+                      F_adj = unlist(lapply(B2B0, HCR2,
+                      gamma=.1, 
+                      alpha = 0.05, B2B0_lim = 0.2, B2B0_target=0.4)),
+                      alpha = 0.05, B2B0_lim = 0.2, B2B0_target=0.4, 
+                      HCR = "HCR5b: low sensitivity", HCRscen="HCR 5"),
                    data.frame(B2B0=B2B0, 
                             F_adj = unlist(lapply(B2B0, HCR2,
-                      alpha2=.2, 
-                      alpha = 0.2, B2B0_lim = 0.2, B2B0_target=0.4)),
-                      alpha = 0.2, B2B0_lim = 0.2, B2B0_target=0.4, 
-                      HCR = "HCR5c: small MHW, low sensitivity", HCRscen="HCR 5"),
-            
+                      gamma=.3, 
+                      alpha = 0.05, B2B0_lim = 0.2, B2B0_target=0.4)),
+                      alpha = 0.05, B2B0_lim = 0.2, B2B0_target=0.4, 
+                      HCR = "HCR5c: medium sensitivity", HCRscen="HCR 5"),
                  data.frame(B2B0=B2B0, 
                             F_adj = unlist(lapply(B2B0, HCR2,
-                      alpha2=.7, 
-                      alpha = 0.4, B2B0_lim = 0.2, B2B0_target=0.4)),
-                      alpha = 0.4, B2B0_lim = 0.2, B2B0_target=0.4, 
-                       HCR = "HCR5d: large MHW, high sensitivity", HCRscen="HCR 5"))%>%
+                      gamma=.7, 
+                      alpha = 0.05, B2B0_lim = 0.2, B2B0_target=0.4)),
+                      alpha = 0.05, B2B0_lim = 0.2, B2B0_target=0.4, 
+                       HCR = "HCR5d: high sensitivity", HCRscen="HCR 5"))%>%
   mutate(HCR = factor(HCR,levels=HCR_levels),
          HCRscen = factor(HCRscen,levels=HCRscen_levels))
 
@@ -457,7 +462,81 @@ plot_out <- list(p_HCR1,p_HCR2,p_HCR3,p_HCR4,p_HCR5)
 
 
 ```
+ 
+![ABC+HCR 5: climate sensitivity reserve (buffer shocks)](../../Figs/HCR_figs/HCR5.png){width="80%"}
 
-![ABC+HCR 5: Reserve for rainy day (climate-vulnerability informed cap effect)](../../Figs/HCR_figs/HCR5.png){width="50%"}
 
-![ABC+HCR 1- 5: Reserve for rainy day (climate-vulnerability informed cap effect)](../../Figs/HCR_figs/HCR1TO5.png){width="50%"}
+# ABC+HCR 6: MHW slope + climate sensitivity reserve (buffer shocks)
+
+```{r HCR6,include=F,eval=T,echo=F, results=F}
+
+
+plotdat6 <- rbind(data.frame(B2B0=B2B0,
+                      F_adj = unlist(lapply(B2B0, HCR2,
+                      gamma= 0, 
+                      alpha = 0.2, B2B0_lim = 0.2, B2B0_target=0.4)),
+                      alpha = 0.2, B2B0_lim = 0.2, B2B0_target=0.4, 
+                      HCR = "HCR6a: no MHW, no sensitivity" , HCRscen="HCR 6"),
+                   data.frame(B2B0=B2B0, 
+                            F_adj = unlist(lapply(B2B0, HCR2,
+                      gamma=.1, 
+                      alpha = 0.2, B2B0_lim = 0.2, B2B0_target=0.4)),
+                      alpha = 0.2, B2B0_lim = 0.2, B2B0_target=0.4, 
+                      HCR = "HCR6b: small MHW, low sensitivity", HCRscen="HCR 6"),
+            
+                 data.frame(B2B0=B2B0, 
+                            F_adj = unlist(lapply(B2B0, HCR2,
+                      gamma=.7, 
+                      alpha = 0.4, B2B0_lim = 0.2, B2B0_target=0.4)),
+                      alpha = 0.4, B2B0_lim = 0.2, B2B0_target=0.4, 
+                       HCR = "HCR6c: large MHW, high sensitivity", HCRscen="HCR 6"))%>%
+  mutate(HCR = factor(HCR,levels=HCR_levels),
+         HCRscen = factor(HCRscen,levels=HCRscen_levels))
+
+
+p <- ggplot(rbind(plotdat1,plotdat2,plotdat3,plotdat4,plotdat5,plotdat6))+
+  geom_vline(aes(xintercept=B2B0_target),linetype="dashed",size=1.1, color="gray")+
+  geom_line(aes(x=B2B0,y=F_adj,color=HCR),size=1)+
+  facet_grid(HCRscen~.)+
+   coord_cartesian(ylim = c(0,1.3))+   theme_minimal()+ 
+     scale_color_viridis_d(
+      limits = HCR_levels,
+      option = "mako", 
+      name = "HCR", direction = -1, 
+      begin = .15, end = .9
+    )
+i <- 5
+h <- hbase*i*.5*.5
+png(file.path(plot_fn,"HCR1to6.png"),  width = w*sclr, height = h*sclr, units = "in",res = 350)
+print(p)
+dev.off()
+
+plot_out <- list(p_HCR1,p_HCR2,p_HCR3)
+
+p_HCR6 <-ggplot(plotdat6)+
+  geom_vline(aes(xintercept=B2B0_target),linetype="dashed",size=1.1, color="gray")+
+  geom_line(aes(x=B2B0,y=F_adj,color=HCR),size=1)+
+  facet_grid(HCRscen~.)+
+   coord_cartesian(ylim = c(0,1.3))+   theme_minimal()+ 
+     scale_color_viridis_d(
+      limits = HCR_levels,
+      option = "mako", 
+      name = "HCR", direction = -1, 
+      begin = .15, end = .9
+    )
+
+i <- 3
+h <- hbase
+png(file.path(plot_fn,"HCR6.png"),  width = w*sclr, height = h*sclr, units = "in",res = 350)
+print(p_HCR5)
+dev.off()
+
+plot_out <- list(p_HCR1,p_HCR2,p_HCR3,p_HCR4,p_HCR5,p_HCR6)
+
+
+
+```
+
+![ABC+HCR 6: CE slope + climate sensitivity reserve (buffer shocks)](../../Figs/HCR_figs/HCR6.png){width="80%"}
+
+![ABC+HCR 1- 6: Reserve for rainy day (climate-vulnerability informed cap effect)](../../Figs/HCR_figs/HCR1TO6.png){width="80%"}
