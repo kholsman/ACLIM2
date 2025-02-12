@@ -4,6 +4,16 @@ author: "K. Holsman"
 date: "1/31/2023"
 always_allow_html: true
 output:
+  word_document:
+    fig_caption: yes
+    fig_width: 4
+    keep_md: yes
+  header-includes:
+  - \usepackage{knputenc}
+  - \usepackage{unicode-math}
+  - \pagenumbering{gobble}
+  - \documentclass{article}
+  - \usepackage{amsmath}
   html_document:
     df_print: paged
     toc: true
@@ -12,16 +22,6 @@ output:
     toc_float:
       collapsed: false
       smooth_scroll: true
-  header-includes:
-  - \usepackage{knputenc}
-  - \usepackage{unicode-math}
-  - \pagenumbering{gobble}
-  - \documentclass{article}
-  - \usepackage{amsmath}
-  word_document:
-    fig_caption: yes
-    fig_width: 4
-    keep_md: yes
   pdf_document:
     toc: TRUE
     toc_depth: 3
@@ -505,7 +505,7 @@ p <- ggplot(rbind(plotdat1,plotdat2,plotdat3,plotdat4,plotdat5,plotdat6))+
       name = "HCR", direction = -1, 
       begin = .15, end = .9
     )
-i <- 5
+i <- 6
 h <- hbase*i*.5*.5
 png(file.path(plot_fn,"HCR1to6.png"),  width = w*sclr, height = h*sclr, units = "in",res = 350)
 print(p)
@@ -528,7 +528,7 @@ p_HCR6 <-ggplot(plotdat6)+
 i <- 3
 h <- hbase
 png(file.path(plot_fn,"HCR6.png"),  width = w*sclr, height = h*sclr, units = "in",res = 350)
-print(p_HCR5)
+print(p_HCR6)
 dev.off()
 
 plot_out <- list(p_HCR1,p_HCR2,p_HCR3,p_HCR4,p_HCR5,p_HCR6)
