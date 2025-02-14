@@ -4,16 +4,6 @@ author: "K. Holsman"
 date: "1/31/2023"
 always_allow_html: true
 output:
-  word_document:
-    fig_caption: yes
-    fig_width: 4
-    keep_md: yes
-  header-includes:
-  - \usepackage{knputenc}
-  - \usepackage{unicode-math}
-  - \pagenumbering{gobble}
-  - \documentclass{article}
-  - \usepackage{amsmath}
   html_document:
     df_print: paged
     toc: true
@@ -22,6 +12,16 @@ output:
     toc_float:
       collapsed: false
       smooth_scroll: true
+  header-includes:
+  - \usepackage{knputenc}
+  - \usepackage{unicode-math}
+  - \pagenumbering{gobble}
+  - \documentclass{article}
+  - \usepackage{amsmath}
+  word_document:
+    fig_caption: yes
+    fig_width: 4
+    keep_md: yes
   pdf_document:
     toc: TRUE
     toc_depth: 3

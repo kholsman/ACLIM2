@@ -473,8 +473,7 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 28
 ) (/Users/KKH/Library/TinyTeX/texmf-dist/tex/latex/bookmark/bkm-dvipdfm.def
 File: bkm-dvipdfm.def 2023-12-10 v1.31 bookmark driver for dvipdfm (HO)
 \BKM@id=\count334
-))
-No file HCR_demo.aux.
+)) (./HCR_demo.aux)
 \openout1 = `HCR_demo.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 87.
@@ -756,9 +755,6 @@ LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `bold'
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 Package hyperref Info: Link coloring OFF on input line 87.
-
-Package hyperref Warning: Rerun to get /PageLabels entry.
-
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
 (Font)              scaled to size 12.0pt on input line 89.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
@@ -788,8 +784,7 @@ File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 LaTeX Font Info:    Trying to load font information for U+msb on input line 89.
 (/Users/KKH/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-)
-No file HCR_demo.toc.
+) (./HCR_demo.toc)
 \tf@toc=\write3
 \openout3 = `HCR_demo.toc'.
 
@@ -820,10 +815,10 @@ File: ../../Figs/HCR_figs/HCR1.png Graphic file (type bmp)
 l.171 ...lpha_{r} ~~|~~ \frac{B_y}{B_{target}} \lt
                                                    B_{low} \\ 
 Here is how much of TeX's memory you used:
- 18343 strings out of 475846
- 332110 string characters out of 5774346
- 885411 words of memory out of 5000000
- 41026 multiletter control sequences out of 15000+600000
+ 18351 strings out of 475846
+ 332304 string characters out of 5774346
+ 885549 words of memory out of 5000000
+ 41030 multiletter control sequences out of 15000+600000
  565338 words of font info for 83 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  90i,8n,114p,351b,324s stack positions out of 10000i,1000n,20000p,200000b,200000s
