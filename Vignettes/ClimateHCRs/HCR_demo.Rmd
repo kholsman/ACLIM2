@@ -4,15 +4,10 @@ author: "K. Holsman"
 date: "1/31/2023"
 always_allow_html: true
 output:
-  pdf_document:
-    toc: TRUE
-    toc_depth: 3
+  word_document:
     fig_caption: yes
-    fig_height: 4
-    fig_width: 5
-    highlight: tango
-    keep_tex: yes
-    latex_engine: xelatex
+    fig_width: 4
+    keep_md: yes
   header-includes:
   - \usepackage{knputenc}
   - \usepackage{unicode-math}
@@ -27,10 +22,15 @@ output:
     toc_float:
       collapsed: false
       smooth_scroll: true
-  word_document:
+  pdf_document:
+    toc: TRUE
+    toc_depth: 3
     fig_caption: yes
-    fig_width: 4
-    keep_md: yes
+    fig_height: 4
+    fig_width: 5
+    highlight: tango
+    keep_tex: yes
+    latex_engine: xelatex
 #runtime: shiny
 ---
 
@@ -576,4 +576,4 @@ plot_out <- list(p_HCR1,p_HCR2,p_HCR3,p_HCR4,p_HCR5,p_HCR6,p_HCR7)
 
 ![ABC+HCR 7:Recruit per spawner biomass variability adjusted HCR based on analyses by Spencer et al.](../../Figs/HCR_figs/HCR7.png){width="80%"}
 
-![ABC+HCR 1- 6: Reserve for rainy day (climate-vulnerability informed cap effect)](../../Figs/HCR_figs/HCR1TO6.png){width="80%"}
+![ABC+HCR 1- 6: Reserve for rainy day (climate-vulnerability informed cap effect)](../../Figs/HCR_figs/HCR1TO7.png){width="80%"}
