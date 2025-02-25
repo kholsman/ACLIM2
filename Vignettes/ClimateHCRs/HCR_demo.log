@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2025.2.13)  13 FEB 2025 16:55
+This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2025.2.25)  25 FEB 2025 14:51
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -812,12 +812,12 @@ File: ../../Figs/HCR_figs/HCR1.png Graphic file (type bmp)
 
 ]
 ! Undefined control sequence.
-l.171 ...lpha_{r} ~~|~~ \frac{B_y}{B_{target}} \lt
-                                                   B_{low} \\ 
+l.173 ...lpha_{r} ~~|~~ \frac{B_y}{B_{target}} \lt
+                                                   \frac{B_{low}}{B_{target}... 
 Here is how much of TeX's memory you used:
  18351 strings out of 475846
  332304 string characters out of 5774346
- 885549 words of memory out of 5000000
+ 886549 words of memory out of 5000000
  41030 multiletter control sequences out of 15000+600000
  565338 words of font info for 83 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191

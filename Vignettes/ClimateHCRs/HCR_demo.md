@@ -14,14 +14,6 @@ output:
   - \pagenumbering{gobble}
   - \documentclass{article}
   - \usepackage{amsmath}
-  html_document:
-    df_print: paged
-    toc: true
-    toc_depth: 3
-    number_sections: true
-    toc_float:
-      collapsed: false
-      smooth_scroll: true
   pdf_document:
     toc: TRUE
     toc_depth: 3
@@ -31,220 +23,82 @@ output:
     highlight: tango
     keep_tex: yes
     latex_engine: xelatex
+  html_document:
+    df_print: paged
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
 #runtime: shiny
 ---
 
 
-```
-## Loading required package: usethis
-```
 
-```
-## 
-## Attaching package: 'dplyr'
-```
+**Overview**
 
-```
-## The following object is masked from 'package:reshape':
-## 
-##     rename
-```
+During ACLIM phase 2 (2019-2022), modelers evaluated a suite of Harvest Control Scenarios (1-5), in 2025 we added two addition HCRs to the set. Below is a list of those standardized harvest control rules and the equations used to derive the curves. 
 
-```
-## The following objects are masked from 'package:stats':
-## 
-##     filter, lag
-```
-
-```
-## The following objects are masked from 'package:base':
-## 
-##     intersect, setdiff, setequal, union
-```
-
-```
-## 
-## Attaching package: 'purrr'
-```
-
-```
-## The following object is masked from 'package:magrittr':
-## 
-##     set_names
-```
-
-```
-## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-## ✔ forcats   1.0.0     ✔ stringr   1.5.1
-## ✔ ggplot2   3.5.1     ✔ tibble    3.2.1
-## ✔ lubridate 1.9.3     ✔ tidyr     1.3.1
-## ✔ readr     2.1.5     
-## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-## ✖ tidyr::expand()    masks reshape::expand()
-## ✖ tidyr::extract()   masks magrittr::extract()
-## ✖ dplyr::filter()    masks stats::filter()
-## ✖ dplyr::lag()       masks stats::lag()
-## ✖ dplyr::rename()    masks reshape::rename()
-## ✖ purrr::set_names() masks magrittr::set_names()
-## ✖ lubridate::stamp() masks reshape::stamp()
-## ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-## 
-## Attaching package: 'jsonlite'
-## 
-## 
-## The following object is masked from 'package:shiny':
-## 
-##     validate
-## 
-## 
-## The following object is masked from 'package:purrr':
-## 
-##     flatten
-## 
-## 
-## 
-## Attaching package: 'kableExtra'
-## 
-## 
-## The following object is masked from 'package:dplyr':
-## 
-##     group_rows
-## 
-## 
-## Loading required package: nlme
-## 
-## 
-## Attaching package: 'nlme'
-## 
-## 
-## The following object is masked from 'package:dplyr':
-## 
-##     collapse
-## 
-## 
-## This is mgcv 1.9-1. For overview type 'help("mgcv-package")'.
-## 
-## 
-## Attaching package: 'cowplot'
-## 
-## 
-## The following object is masked from 'package:lubridate':
-## 
-##     stamp
-## 
-## 
-## The following object is masked from 'package:reshape':
-## 
-##     stamp
-## 
-## 
-## 
-## Attaching package: 'scales'
-## 
-## 
-## The following object is masked from 'package:readr':
-## 
-##     col_factor
-## 
-## 
-## The following object is masked from 'package:purrr':
-## 
-##     discard
-## 
-## 
-## 
-## Attaching package: 'plotly'
-## 
-## 
-## The following object is masked from 'package:ggplot2':
-## 
-##     last_plot
-## 
-## 
-## The following object is masked from 'package:reshape':
-## 
-##     rename
-## 
-## 
-## The following object is masked from 'package:httr':
-## 
-##     config
-## 
-## 
-## The following object is masked from 'package:stats':
-## 
-##     filter
-## 
-## 
-## The following object is masked from 'package:graphics':
-## 
-##     layout
-## 
-## 
-## Registering fonts with R
-## 
-## Using AREA as value column.  Use the value argument to cast to override this choice
-## 
-## Loading required package: viridisLite
-## 
-## 
-## Attaching package: 'viridis'
-## 
-## 
-## The following object is masked from 'package:scales':
-## 
-##     viridis_pal
-```
-
-# Overview
-
-During ACLIM phase 2 (2019-2022), modelers evaluated a suite of Harvest Control Scenarios (1-5), in 2025 we added two addition HCRs to the set. Below is a list of those standardized harvest control rules and the equations used to derive the curves.
- 1) ABC+HCR 1: Status quo
- 2) ABC+HCR 2: Lagged recovery to estimate emergency relief financing needs
- 3) ABC+HCR 3: Long-term resilience (stronger reserve) Ftarget
- 4) ABC+HCR 4: CE informed sloping rate, e.g., MHW category alpha
- 5) ABC+HCR 5: climate sensitivity reserve (buffer shocks)
- 6) ABC+HCR 6: MHW slope + climate sensitivity reserve (buffer shocks)
- 7) ABC+HCR 6: Recruit per spawner biomass variability adjusted HCR based on analyses by Spencer et al. in prep
+  ABC+HCR 1: Status quo  
+  ABC+HCR 2: Lagged recovery to estimate emergency relief financing needs  
+  ABC+HCR 3: Long-term resilience (stronger reserve) $F_{target}$  
+  ABC+HCR 4: CE informed sloping rate, e.g., MHW category alpha  
+  ABC+HCR 5: climate sensitivity reserve (buffer shocks)  
+  ABC+HCR 6: MHW slope + climate sensitivity reserve (buffer shocks)  
+  ABC+HCR 7: R/S variability adjusted HCR based on covariate effects on R/S
+  ABC+HCR 8: Adjust effective spawning biomass (rather than adjust B_target)
 
 # ABC+HCR 1: Status quo
 
-This is the basic sloping harvest control rule for groundfish in the EBS. There is a B20% cut-off for SSL (Atka, pollock, P. cod). $F_{ABC_{max}}$ is the HCR adjusted F rate that corresponds to ABC. The Tier three approach is to set the slope of the sloping HCR to $\alpha = 0.05$ and $B_{lim} = 0$ and $B_{target} = B_{40\%}$ or $B_{target} = 0.4B_{100\%}$ (i.e., 40\% of unfished biomass $B_{100\%}$, as an MSY proxy) for most species except $B_{lim} = B_{20\%}$ for pollock and Pacific cod.
+This is the basic sloping harvest control rule for groundfish in the EBS. There is a B20% cut-off for SSL (Atka, pollock, P. cod). $F_{ABC_{max}}$ is the HCR adjusted F rate that corresponds to ABC. The Tier three approach is to set the slope of the sloping HCR to $\alpha = 0.05$ and $B_{lim} = 0$ and $B_{target} = B_{40\%}$ or $B_{target} = 0.4B_{100\%}$ (i.e., 40\% of unfished biomass $B_{100\%}$, as an MSY proxy) for most species except $B_{lim} = 0.2B_{100\%}$ ($B_{20\%}$) for pollock and Pacific cod .
 
 Eq. 1 $$F_{ABC_{max}} = \begin{array}{ll}  
- F_{ABC} &~~~~~~~~ \frac{B}{B_{target}}>1 \\  
- F_{ABC}((\frac{B}{B_{target}}-\alpha)/(1-\alpha)) &~~~~~~~~ \frac{B}{B_{target}} < 1 \leq B_{lim} \\  
- 0 &~~~~~~~~ \frac{B}{B_{target}} < B_{lim}  
- \end{array}$$  
+ F_{ABC} &~~~~~~~~ \frac{B_y}{B_{target}}>1 \\  
+ F_{ABC}((\frac{B_y}{B_{target}}-\alpha)/(1-\alpha)) &~~~~~~~~   \frac{B_{lim}}{B_{target}} \le \frac{B_y}{B_{target}} < 1\\  
+ 0 &~~~~~~~~ \frac{B_y}{B_{target}}< \frac{B_{lim}}{B_{target}} 
+ \end{array}$$   
 
 
 
-
-```
-## Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
-## ℹ Please use `linewidth` instead.
-## This warning is displayed once every 8 hours.
-## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was
-## generated.
-```
 
 ![ABC+HCR 1: Status quo. This is the Tier 3 Harvest Control Rule, including the $B_{20\%}$ cuttoff for certain species](../../Figs/HCR_figs/HCR1.png){width="80%"}
 
 # ABC+HCR 2: Lagged recovery to estimate emergency relief financing needs
 
-This simulation set will help us estimate the approximate cost of emergency relief funds by artificially closing the fishery at $B_{25\%}$% (mimicking an enconomic driven closure). During recovery to mimick lagged fishery recovery from a closure shock, we further delay F rate by inducing a stronger alpha during the recovery period. Implementation of this would be to shorten the recovery period following a shock through a "rainy day" fund to supplement the fishery during climate shocks.
+This simulation set will help us estimate the approximate cost of emergency relief funds by artificially closing the fishery at $B_{25\%}$ (mimicking an economic-driven closure). During recovery to mimic lagged fishery recovery from a closure shock, we further delay harvest recovery by adjusting F rate using a larger alpha during the recovery period. Implementation of this would be use the difference in revenue between HCR2 and HCR1 to shorten the recovery period following a shock, e.g., by using the estimate to build a "rainy day" fund to supplement the fishery during climate shocks.
 
-This is the same as in HCR 1 except that the fishery shuts down earlier at $B_{lim} = B_{25\%}  $ and during the simulated lagged recovery the alpha is steeper (slower recovery; $\alpha = 0.30$ instead of $\alpha = 0.05$
+This is the same as in HCR 1 except that the fishery shuts down earlier at $B_{lim} = B_{25\%}$ and during the simulated lagged recovery the alpha is steeper (slower recovery; $\alpha = 0.30$ instead of $\alpha = 0.05$
  
 Details: Sloping HCR, $B_{target} = B_{40\%}$  $\alpha = 0.05$, $B_{lim} = B_{25\%}$, i.e., the cutoff to initiate emergency \$ and a steeper $\alpha = 0.30$ during recovery (recovery occurs at $B_{40\%}$). Calculate difference in catch relative to HCR1 to get an estimate of what \$ relief would be needed to supplement the fishery. Apply a steeper slope (alpha) on recovery.
+
+
+ 
+ Eq. 1 $$F_{ABC_{max}} = \begin{array}{ll}  
+ F_{ABC} &~~~~~~~~ \frac{B_y}{B_{target}}>1 \\  
+ F_{ABC}((\frac{B_y}{B_{target}}-\hat\alpha_y)/(1-\hat\alpha_y)) &~~~~~~~~   \frac{B_{lim}}{B_{target}} \le \frac{B_y}{B_{target}} < 1\\  
+ 0 &~~~~~~~~ \frac{B_y}{B_{target}}< \frac{B_{lim}}{B_{target}} 
+ \end{array}$$  
+ 
+ and,
+ 
+ $$
+ \hat\alpha_y =\{ \begin{array}{ll}  
+\alpha & if~~\hat\alpha_{y-1} = \alpha ~~|~~ \frac{B_y}{B_{target}} \geq 1 \\  
+\alpha_{r} &if ~~\hat\alpha_{y-1} = \alpha_{r} ~~|~~ \frac{B_y}{B_{target}} \lt \frac{B_{low}}{B_{target}} \\  
+ \end{array}
+ $$  
+
+For ACLIM HCR2 model runs we set $\alpha$ to 0.05 and $\alpha_{r}$ to 0.3, whith $ B_{low} =  B_{lim} = 0.25B_{100\%}$.
 
 
 
 ![ABC+HCR 2: Lagged recovery to estimate emergency relief financing needs](../../Figs/HCR_figs/HCR2.png){width="80%"}
 
+
 # ABC+HCR 3: Long-term resilience (stronger reserve) Ftarget
 
-This is the same as in HCR 1 except that the fishery shuts down earlier at $B_{target} = B_{50\%}$ and during the simulated lagged recovey the alpha is steeper (slower recovery; $\alpha = 0.30$ instead of $\alpha = 0.05$.
+This is the same as in HCR 1 except that $B_{target} = B_{50\%}$.
 
 Details: Set the target to 50% of $B_{100\%}$ instead of 40% B40 ($\alpha = 0.05$, $B_{lim} = B_{20\%}$, $B_{target} = B_{50\%}$). We’re testing whether this would result in more stable biomass levels and catches.
 
@@ -255,7 +109,7 @@ Details: Set the target to 50% of $B_{100\%}$ instead of 40% B40 ($\alpha = 0.05
 # ABC+HCR 4: CE informed sloping rate, e.g., MHW category alpha
 
 This is the same as in HCR 1 except that the proposed approach would scale back harvest rates faster below B_target for species that are climate sensitive, or during MHWs. 
-Set the target to 40\% of B_{100\%} ($\alpha = 0.05$, $B_{lim} = B_{20\%}$, $B_{target} = B_{40\%}$) for normal conditions/climate resilient species. But for other species, Below $B_{40\%}$ have steeper alphas based on MHW category forecasts for summer conditions ( or alternatively, climate vulnerability ratings). This reduces future harvest intensity when conditions are forecast to be poor and could help rebound stocks faster following MHW. MHWs are characterized as Category 1-4 based on the degree of anomalous conditions above mean climatology (Category 1 = +1 standard deviations above the mean climatology, Category 4 = +4 SD).
+Set the target to 40\% of $B_{100\%}$ ($\alpha = 0.05$, $B_{lim} = B_{20\%}$, $B_{target} = B_{40\%}$) for normal conditions/climate resilient species. But for other species, below $B_{40\%}$ have steeper alphas based on MHW category forecasts for summer conditions ( or alternatively, climate vulnerability ratings). This reduces future harvest intensity when conditions are forecast to be poor and could help rebound stocks faster following MHW. MHWs are characterized as Category 1-4 based on the degree of anomalous conditions above mean climatology (Category 1 = +1 standard deviations above the mean climatology, Category 4 = +4 SD).
 
 Details: Set the target to 40% of $B_{100\%}$, ($\alpha = 0.05+\mathrm{MHW}_{category}*.09$, $B_{lim} = B_{20\%}$, $B_{target} = B_{40\%}$). E.g., shown, Category 2 MHW set the $\alpha = 0.23$, for large MHW set the $\alpha = 0.41$. We’re testing whether this would result in more stable biomass levels and catches.
 
@@ -268,20 +122,22 @@ Details: Set the target to 40% of $B_{100\%}$, ($\alpha = 0.05+\mathrm{MHW}_{cat
 ![Holsman et al. 2020 Figure](../../Figs/Holsmanetal2020_effectiveF.jpg){width="85%"}
 
 
-The general idea here is to combine the HCR 4 MHW category 0-4 scaling factor when below B_target (B40) and a cap-like effect when over $B_{target}$ The steepness of that cap effect could be varied based on vulnerability (or approximated via MSE), more sensitive species might need more reserve in the "bank". Pollock are an example of the HCR 5 in practice (via effects of the 2MT cap + sloping HCR).
 
-Details: Set the target to 40\% of $B_{100\%}$ ($\alpha = 0.05$, $B_{lim} = B_{20\%}$, $B_{target} = B_{40\%}$).After $B_{40\%}$ have a slowly sloping F proportional to climate vulnerability (or MHW category) to mimic realized F rates of pollock under the 2 MT cap, i.e., reserve biomass for climate shocks sensu Holsman et al. 2020. This could use MHW decadal predictions to set the right hand side of the curve above $B_{40\%}$.In this the climate sensitivitiy buffer $\gamma$ is a value 0 to 1 that scales the reserve for biomass above $B_{target}$, i.e., $B_{40\%}$:
+
+The general idea here is to recreate the pollock cap effect when over $B_{target}$. The steepness of that cap effect could be varied based on vulnerability (or approximated via MSE), more sensitive species might need more reserve in the "bank". Pollock are an example of the HCR 5 in practice (via effects of the 2MT cap + sloping HCR).
+
+Details: Set the target to 40\% of $B_{100\%}$ ($\alpha = 0.05$, $B_{lim} = B_{20\%}$, $B_{target} = B_{40\%}$).After $B_{40\%}$ have a slowly sloping F proportional to climate sensitivity (or MHW category) to mimic realized F rates of pollock under the 2 MT cap, i.e., reserve biomass for climate shocks sensu Holsman et al. 2020. This could use MHW decadal predictions to set the right hand side of the curve above $B_{40\%}$.In this the climate sensitivitiy buffer $\gamma$ is a value 0 to 1 that scales the reserve for biomass above $B_{target}$, i.e., $B_{40\%}$:
 
 
 Eq. 1 $$F_{ABC_{max}} = \begin{array}{lll}  
- F_{ABC}\ e^{(-\gamma(\frac{B}{B_{target}}-1))} &~~~~~~~~\frac{B}{B_{target}}>1, ~~\mathrm{and}~~ \gamma < \frac{B}{B_{target}}\\ 
- F_{ABC}((\frac{B}{B_{target}}-\alpha)/(1-\alpha)) &~~~~~~~~ \frac{B}{B_{target}} < 1 \leq B_{lim} \\  
- 0 &~~~~~~~~ \frac{B}{B_{target}} < B_{lim}  
- \end{array}
- $$  
+ F_{ABC}\ e^{(-\gamma(\frac{B_y}{B_{target}}-1))} &~~~~~~~~\frac{B_y}{B_{target}}>1\\ 
+ F_{ABC}((\frac{B_y}{B_{target}}-\alpha)/(1-\alpha)) &~~~~~~~~ \frac{B_{lim}}{B_{target}} \le \frac{B_y}{B_{target}} < 1 \\  
+  0 &~~~~~~~~ \frac{B_y}{B_{target}}< \frac{B_{lim}}{B_{target}} 
+ \end{array}$$  
  
+ where, $~~ 0 \le \gamma \le 1$.
  
-Details: Set the target to 40% of $B_{100\%}$, ($\alpha = 0.05$, $B_{lim} = B_{20\%}$, $B_{target} = B_{40\%}$). Shown, for small MHW set the $\alpha = 0.2$, for large MHW set the $\alpha = 0.4$. We’re testing whether this would result in more stable biomass levels and catches.
+Details: Set the target to 40% of $B_{100\%}$, ($\alpha = 0.05$, $B_{lim} = B_{20\%}$, $B_{target} = B_{40\%}$). Shown, for low sensitivity stocks set $\gamma = 0.1$, for highly sensitive stocks set $\gamma = 0.7$. We’re testing whether this would result in more stable biomass levels and catches through shocks.
 
 
 
@@ -291,12 +147,65 @@ Details: Set the target to 40% of $B_{100\%}$, ($\alpha = 0.05$, $B_{lim} = B_{2
 
 # ABC+HCR 6: MHW slope + climate sensitivity reserve (buffer shocks)
 
+The general idea here is to combine the HCR 4 MHW category 0-4 scaling factor when below B_target (B40) and a cap-like effect when over $B_{target}$ (HCR5); values are as specified in those scenarios.
+
+Details: Set the target to 40% of $B_{100\%}$, ($\alpha = 0.05$, $B_{lim} = B_{20\%}$, $B_{target} = B_{40\%}$). Shown, for low sensitivity stocks set $\gamma = 0.1$, for highly sensitive stocks set $\gamma = 0.7$. Shown as well, category 2 MHW set the $\alpha = 0.23$, for large MHW set the $\alpha = 0.41$.
 
 
-# ABC+HCR 7: ABC+HCR 7: Recruit per spawner biomass variability adjusted HCR based on analyses by Spencer et al. in prep
+
+
+![ABC+HCR 6: MHW slope + climate sensitivity reserve (buffer shocks)](../../Figs/HCR_figs/HCR6.png){width="80%"}
+
+
+# ABC+HCR 7:Recruit per spawner biomass variability adjusted HCR based on covariate effects on S/R
+
+This approach is based on recent analyses by P. Spencer (in prep) and formulated by K. Holsman. The general idea is to adjust the HCR ref points based on variability in SR relationships such that:
+
+Eq. 1 $$F_{ABC_{max}} = \begin{array}{ll}  
+ F_{ABC}~e^{(-\omega_1*\mathrm{x_y})} &~~~~~~~~ \frac{B_y}{\hat{B}_{target}}>1 \\  
+ F_{ABC}((\frac{B_y}{\hat{B}_{target}}-\alpha)/(1-\alpha))~e^{(-\omega_1*\mathrm{x_y})} &~~~~~~~~   \frac{B_y}{\hat{B}_{lim}} \le \frac{B_y}{\hat{B}_{target}} < 1\\  
+ 0 &~~~~~~~~ \frac{B_y}{\hat{B}_{target}}< \frac{\hat{B}_{lim}}{\hat{B}_{target}} 
+ \end{array}$$   
 
 
 
-![ABC+HCR 6: CE slope + climate sensitivity reserve (buffer shocks)](../../Figs/HCR_figs/HCR6.png){width="80%"}
+ 
+such that $F_{ABC}$ is adjusted by covariate $x_y$ according the parameter $\omega_1$ and $B_{target}$ and $B_{lim}$ are adjusted based on the parameters $\omega_2$  and  $\omega_3$ such that:
+ 
+$$\hat{B}_{target}  = B_{target}e^{(-\omega_2*\mathrm{x_y})}$$
+and 
 
-![ABC+HCR 1- 6: Reserve for rainy day (climate-vulnerability informed cap effect)](../../Figs/HCR_figs/HCR1TO6.png){width="80%"}
+$$\hat{B}_{lim}  = B_{lim}e^{(-\omega_3*\mathrm{x_y})}$$
+and  $\omega_1,~\omega_2~\mathrm{and}~~\omega_3 \ge0$. For the ACLIM HCR 7 simulations $\omega_1$ and $\omega_2$  will be fit using retrospecitve analyses of spawner recruitment relationships across sclaed (z-scored) SST ($x_y$) on EBS pollock by Spencer et al. in prep. 
+Details: Set the target to 40\% of $B_{100\%}$ ($\alpha = 0.05$, $B_{lim} = B_{20\%}$, $B_{target} = B_{40\%}$). In the example below ($x_y$) = 0.7 and for case 7a all $\omega$ values were set to 0, in case 7b $\omega_1 = \omega_2 = \omega_3$ = 0.5, and in case 7c  $\omega_1$  = 0.7,  $\omega_2$  = 0.5, $\omega_3$  = .3.
+
+ 
+
+
+![ABC+HCR 7:Recruit per spawner biomass variability adjusted HCR based on analyses by Spencer et al.](../../Figs/HCR_figs/HCR7.png){width="80%"}
+
+# ABC+HCR 8: Adjust effective spawning biomass (rather than adjust B_target)
+
+In this scenario, rather than adjust the FMP target from $B_{40\%}$, the effective $B_y$ and $B_{y+1}$ is adjust downward:
+
+
+Eq.  $$F_{ABC_{max}} = \begin{array}{ll}  
+ F_{ABC} &~~~~~~~~ \frac{\hat{B}_y}{B_{target}}>1 \\  
+ F_{ABC}((\frac{\hat{B}_y}{B_{target}}-\alpha)/(1-\alpha)) &~~~~~~~~   \frac{B_{lim}}{B_{target}} \le \frac{\hat{B}_y}{B_{target}} < 1\\  
+ 0 &~~~~~~~~ \frac{\hat{B}_y}{B_{target}}< \frac{B_{lim}}{B_{target}} 
+ \end{array}$$  
+ 
+ where,
+ $\hat{B}_y = \theta{B_y}$ and $\theta$ is a scaler on $B_y$ (could be set to a value or could be a function of environmental covariates).
+ 
+Details: Set the target to 40\% of $B_{100\%}$ ($\alpha = 0.05$, $B_{lim} = B_{20\%}$, $B_{target} = B_{40\%}$). In the example below ($x_y$) = 0.7 and for case 8a all $\theta$ is set to 1, in case 8b $\theta$ = 0.75.  
+
+
+
+![ABC+HCR 8:Adjust effective spawning biomass (rather than adjust B_target)](../../Figs/HCR_figs/HCR8.png){width="80%"}
+
+# Full set of HCR scenarios
+
+
+![ABC+HCR 1- 8: Full set of HCR scenarios](../../Figs/HCR_figs/HCR1to8.png){width="80%"}
+

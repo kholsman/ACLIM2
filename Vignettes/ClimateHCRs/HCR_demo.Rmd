@@ -4,24 +4,16 @@ author: "K. Holsman"
 date: "1/31/2023"
 always_allow_html: true
 output:
-  html_document:
-    df_print: paged
-    toc: true
-    toc_depth: 3
-    number_sections: true
-    toc_float:
-      collapsed: false
-      smooth_scroll: true
+  word_document:
+    fig_caption: yes
+    fig_width: 4
+    keep_md: yes
   header-includes:
   - \usepackage{knputenc}
   - \usepackage{unicode-math}
   - \pagenumbering{gobble}
   - \documentclass{article}
   - \usepackage{amsmath}
-  word_document:
-    fig_caption: yes
-    fig_width: 4
-    keep_md: yes
   pdf_document:
     toc: TRUE
     toc_depth: 3
@@ -31,6 +23,14 @@ output:
     highlight: tango
     keep_tex: yes
     latex_engine: xelatex
+  html_document:
+    df_print: paged
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
 #runtime: shiny
 ---
 
