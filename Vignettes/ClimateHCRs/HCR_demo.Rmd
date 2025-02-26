@@ -4,16 +4,12 @@ author: "K. Holsman"
 date: "1/31/2023"
 always_allow_html: true
 output:
-  word_document:
+  bookdown::pdf_document2:
     fig_caption: yes
-    fig_width: 4
-    keep_md: yes
-  header-includes:
-  - \usepackage{knputenc}
-  - \usepackage{unicode-math}
-  - \pagenumbering{gobble}
-  - \documentclass{article}
-  - \usepackage{amsmath}
+    highlight: zenburn
+    keep_tex: yes
+    latex_engine: xelatex
+    toc: true
   pdf_document:
     toc: TRUE
     toc_depth: 3
@@ -23,6 +19,32 @@ output:
     highlight: tango
     keep_tex: yes
     latex_engine: xelatex
+  header-includes:
+  - \usepackage{knputenc}
+  - \usepackage{unicode-math}
+  - \pagenumbering{gobble}
+  - \documentclass{article}
+  - \usepackage{amsmath}
+  - \usepackage{inputenc}
+  - \usepackage{unicode-math}
+  - \usepackage{colortbl}
+  - \usepackage{array}
+  - \usepackage{booktabs}
+  - \usepackage{longtable}
+  - \usepackage{multirow}
+  - \usepackage{wrapfig}
+  - \usepackage{float}
+  - \usepackage{pdflscape}
+  - \usepackage{tabu}
+  - \usepackage{threeparttable}
+  - \usepackage{threeparttablex}
+  - \usepackage[normalem]{ulem}
+  - \usepackage{makecell}
+  - \usepackage{xcolor}
+  word_document:
+    fig_caption: yes
+    fig_width: 4
+    keep_md: yes
   html_document:
     df_print: paged
     toc: true
@@ -127,7 +149,8 @@ During ACLIM phase 2 (2019-2022), modelers evaluated a suite of Harvest Control 
 
 This is the basic sloping harvest control rule for groundfish in the EBS. There is a B20% cut-off for SSL (Atka, pollock, P. cod). $F_{ABC_{max}}$ is the HCR adjusted F rate that corresponds to ABC. The Tier three approach is to set the slope of the sloping HCR to $\alpha = 0.05$ and $B_{lim} = 0$ and $B_{target} = B_{40\%}$ or $B_{target} = 0.4B_{100\%}$ (i.e., 40\% of unfished biomass $B_{100\%}$, as an MSY proxy) for most species except $B_{lim} = 0.2B_{100\%}$ ($B_{20\%}$) for pollock and Pacific cod .
 
-Eq. 1 $$F_{ABC_{max}} = \begin{array}{ll}  
+Eq. 1 $$F_{ABC_{max}} =\Biggl[~
+\begin{array}{ll}  
  F_{ABC} &~~~~~~~~ \frac{B_y}{B_{target}}>1 \\  
  F_{ABC}((\frac{B_y}{B_{target}}-\alpha)/(1-\alpha)) &~~~~~~~~   \frac{B_{lim}}{B_{target}} \le \frac{B_y}{B_{target}} < 1\\  
  0 &~~~~~~~~ \frac{B_y}{B_{target}}< \frac{B_{lim}}{B_{target}} 
@@ -185,7 +208,8 @@ Details: Sloping HCR, $B_{target} = B_{40\%}$  $\alpha = 0.05$, $B_{lim} = B_{25
 
 
  
- Eq. 1 $$F_{ABC_{max}} = \begin{array}{ll}  
+ Eq. 1 $$F_{ABC_{max}} =\Biggl[~
+ \begin{array}{ll}  
  F_{ABC} &~~~~~~~~ \frac{B_y}{B_{target}}>1 \\  
  F_{ABC}((\frac{B_y}{B_{target}}-\hat\alpha_y)/(1-\hat\alpha_y)) &~~~~~~~~   \frac{B_{lim}}{B_{target}} \le \frac{B_y}{B_{target}} < 1\\  
  0 &~~~~~~~~ \frac{B_y}{B_{target}}< \frac{B_{lim}}{B_{target}} 
@@ -193,12 +217,13 @@ Details: Sloping HCR, $B_{target} = B_{40\%}$  $\alpha = 0.05$, $B_{lim} = B_{25
  
  and,
  
- $$
- \hat\alpha_y =\{ \begin{array}{ll}  
-\alpha & if~~\hat\alpha_{y-1} = \alpha ~~|~~ \frac{B_y}{B_{target}} \geq 1 \\  
-\alpha_{r} &if ~~\hat\alpha_{y-1} = \alpha_{r} ~~|~~ \frac{B_y}{B_{target}} \lt \frac{B_{low}}{B_{target}} \\  
- \end{array}
- $$  
+$$
+\hat{\alpha}_y =\Biggl[~ 
+\begin{array}{ll}  
+\alpha & if~~\hat{\alpha}_{y-1} = \alpha ~~\|~~ \frac{B_y}{B_{target}} \geq 1 \\  
+\alpha_{r} & if ~~\hat{\alpha}_{y-1} = \alpha_{r} ~\|~~ \frac{B_y}{B_{target}} < \frac{B_{low}}{B_{target}} \\  
+\end{array}
+$$  
 
 For ACLIM HCR2 model runs we set $\alpha$ to 0.05 and $\alpha_{r}$ to 0.3, whith $ B_{low} =  B_{lim} = 0.25B_{100\%}$.
 
@@ -370,7 +395,8 @@ The general idea here is to recreate the pollock cap effect when over $B_{target
 Details: Set the target to 40\% of $B_{100\%}$ ($\alpha = 0.05$, $B_{lim} = B_{20\%}$, $B_{target} = B_{40\%}$).After $B_{40\%}$ have a slowly sloping F proportional to climate sensitivity (or MHW category) to mimic realized F rates of pollock under the 2 MT cap, i.e., reserve biomass for climate shocks sensu Holsman et al. 2020. This could use MHW decadal predictions to set the right hand side of the curve above $B_{40\%}$.In this the climate sensitivitiy buffer $\gamma$ is a value 0 to 1 that scales the reserve for biomass above $B_{target}$, i.e., $B_{40\%}$:
 
 
-Eq. 1 $$F_{ABC_{max}} = \begin{array}{lll}  
+Eq. 1 $$F_{ABC_{max}} =\Biggl[~ 
+\begin{array}{lll}  
  F_{ABC}\ e^{(-\gamma(\frac{B_y}{B_{target}}-1))} &~~~~~~~~\frac{B_y}{B_{target}}>1\\ 
  F_{ABC}((\frac{B_y}{B_{target}}-\alpha)/(1-\alpha)) &~~~~~~~~ \frac{B_{lim}}{B_{target}} \le \frac{B_y}{B_{target}} < 1 \\  
   0 &~~~~~~~~ \frac{B_y}{B_{target}}< \frac{B_{lim}}{B_{target}} 
@@ -507,7 +533,8 @@ plot_out <- list(p_HCR1,p_HCR2,p_HCR3,p_HCR4,p_HCR5,p_HCR6)
 
 This approach is based on recent analyses by P. Spencer (in prep) and formulated by K. Holsman. The general idea is to adjust the HCR ref points based on variability in SR relationships such that:
 
-Eq. 1 $$F_{ABC_{max}} = \begin{array}{ll}  
+Eq. 1 $$F_{ABC_{max}} =\Biggl[~
+\begin{array}{ll}  
  F_{ABC}~e^{(-\omega_1*\mathrm{x_y})} &~~~~~~~~ \frac{B_y}{\hat{B}_{target}}>1 \\  
  F_{ABC}((\frac{B_y}{\hat{B}_{target}}-\alpha)/(1-\alpha))~e^{(-\omega_1*\mathrm{x_y})} &~~~~~~~~   \frac{B_y}{\hat{B}_{lim}} \le \frac{B_y}{\hat{B}_{target}} < 1\\  
  0 &~~~~~~~~ \frac{B_y}{\hat{B}_{target}}< \frac{\hat{B}_{lim}}{\hat{B}_{target}} 
@@ -598,7 +625,8 @@ plot_out <- list(p_HCR1,p_HCR2,p_HCR3,p_HCR4,p_HCR5,p_HCR6,p_HCR7)
 In this scenario, rather than adjust the FMP target from $B_{40\%}$, the effective $B_y$ and $B_{y+1}$ is adjust downward:
 
 
-Eq.  $$F_{ABC_{max}} = \begin{array}{ll}  
+Eq.  $$F_{ABC_{max}} =\Biggl[~ 
+\begin{array}{ll}  
  F_{ABC} &~~~~~~~~ \frac{\hat{B}_y}{B_{target}}>1 \\  
  F_{ABC}((\frac{\hat{B}_y}{B_{target}}-\alpha)/(1-\alpha)) &~~~~~~~~   \frac{B_{lim}}{B_{target}} \le \frac{\hat{B}_y}{B_{target}} < 1\\  
  0 &~~~~~~~~ \frac{\hat{B}_y}{B_{target}}< \frac{B_{lim}}{B_{target}} 
