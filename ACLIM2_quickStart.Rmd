@@ -46,6 +46,15 @@ output:
  
 ```
 
+<center>
+
+![](Figs/ACLIM_logo.jpg){ height=50%, width=50%}
+
+</center>
+
+![The ACLIM2 Repository [**github.com/kholsman/ACLIM2**](https://github.com/kholsman/ACLIM2 "ACLIM2 Repo") is maintained by **[Kirstin Holsman](mailto:kirstin.holsman@noaa.gov)**, Alaska Fisheries Science Center, NOAA Fisheries, Seattle WA. Multiple programs and projects have supported the production and sharing of the suite of Bering10K hindcasts and projections. *Last updated: `r today`*. ACLIM is supported through various funding and academic partnerships](Figs/logo3.png){ width=100%}
+
+
 # Download the ACLIM2 repo & data
 
 ## Clone the ACLIM2 repo{.tabset}
@@ -77,14 +86,6 @@ This set of commands, run within R, downloads the ACLIM2 repository and unpacks 
     file.rename(paste0(main_nm,"-main"), main_nm)
     setwd(main_nm)
     
-    # Caption: Timeseries of season Aug East Bering Sea bottom temp or 400m temp (which ever is shallower)
-    # for the 1955-2099 period. The simulations are forced using historical emission (1955 to 2014) and 
-    # SSP1-2.6 scenario for future projection (2015 to 2099). A 1-year running mean is applied. Figures show,
-    # in colors, CESM2-WACCM ensemble mean, in light grey, the spread of all the CMIP6 models, and in medium 
-    # grey, and dark grey, 80% and 50% the spread of all the CMIP6 members, respectively. Left panel shows 
-    # the mean values and right panel shows the anomalies relative to the 1980-2013 climatology.
-    
-    
 ```
 
 ### Option 2: Download the zipped repo  
@@ -108,28 +109,121 @@ If you have git installed and can work with it, this is the preferred method as 
 
 ## Get the data
 
-<!-- **Step 1)[ can skip if not using .nc files directly] ** -->
-<!-- * Go to the google drive and download the zipped file with the R data `2022_03_07_Rdata.zip`: -->
+Updated! ACLIM bias corrected indices are now available on AKFIN. Use the vignette below by Matt Callahan to access the data and download it using R.
 
-<!-- * [00_ACLIM_shared > 02_Data > Newest_Data(use this) > unzip_and_putin_Data_in_folder.zip](https://drive.google.com/drive/folders/11BQEfNEl9vvrN-V0LgS67XS4aLE9pNzz) -->
 
-<!-- * Unzip the folder and move the contents of the zipped folder to your local folder `ACLIM2/Data/in`. -->
+### Description
 
-<!-- <!-- ![](Figs/DATA_dir.png){ width=50%} --> -->
+The get_var_akfin() function intends to replicate the get_var() function for pulling level 4 ACLIM data, but sources from the AKFIN database. Beginning in 2024 ACLIM has worked with the Alaska Fisheries Information Network (AKFIN) for data management support for indicator data. The previous workflow required users to download a large ammount of data from a google folder, and set it up with the correct file structure for code to function. The proposed workflow pulls desired data from the AKFIN database using web services (apis). Advantages are (hopefully) ease of use is improved, and the need to update your data when models are re-run is removed, as AKFIN will host updated data that will be passed through this function.
 
-<!-- **Step 2)** -->
-* Go to the google drive and download the zipped file with the R ACLIM2 indices `ACLIM2_indices.zip`:
+### AKFIN Data structure
 
-* [00_ACLIM_shared > 02_Data > Newest_Data(use this) > unzip_and_put_in_dat_out_folder_CMIP6](https://drive.google.com/drive/u/1/folders/1clPtrPCQMPcwqr8UE78_Sd2IGwyBuDcD)  
+The data loaded to AKFIN are currently just the data contained in the allEBS_means folder in this repo. Each dataset was uploaded to the AKFIN database through R. You can directly query these tables in the CLIM schema if you have AKFIN oracle access. The allEBS_means data consist of FUT, HIND, and HIST files for both CMIP5 and CMIP6 for each time scale (annual, monthly, etc.). AKFIN combined these into materialized views (e.g. CLIM.ACLIM_ANNUAL_CMIP_MV) and set up web services (apis) for each temporal level to distribute the data in those materialized views. Arguments in the get_vars_akfin() function specify which timescale to use and further filter the web service output to the desired variable, basin, projection, and CMIP5 or CMIP6.
 
-* [00_ACLIM_shared > 02_Data > Newest_Data(use this) > unzip_and_put_in_dat_out_folder_CMIP5](https://drive.google.com/drive/u/1/folders/1t_JqDBQU-Fyy5nvIYRAmVcqzWi4mq7mk)
+### get_vas_akfin() usage
 
-* Unzip `K29P19_CMIP5.zip` or `K29P19_CMIP6.zip` files move the `K29P19_CMIP5` or `K29P19_CMIP6` folders to your local folder `ACLIM2/Data/out`. The result should be the following folder structure on your local computer:  
-* `ACLIM2/Data/out/K29P19_CMIP6/allEBSmeans`: main folder with annual, monthly, seasonal, and survey replicated level 4 ACLIM indices
-* `ACLIM2/Data/out/K29P19_CMIP6/BC_ACLIMregion`: Weekly x Strata based indices, including delta and bias corrected values (these are "rolled up" to become strata AREA weighted mean vals in the allEBSmeans folder).
-* `ACLIM2/Data/out/K29P19_CMIP6/BC_ACLIMsurveyrep`: Survey replicated indices at each station, including delta and bias corrected values (these are "rolled up" to become average across station mean vals in the allEBSmeans folder).
+The get_vars_akfin() expects a user to specify the following arguements.
 
-* `ACLIM2/Data/out/K29P19_CMIP5/allEBSmeans`: as above but for CMIP5
+| Parameter | Options                                         | Default       |
+|---------------|------------------------------------------|---------------|
+| typein    | annual, monthly, weekly, surveyrep, or seasonal | annual        |
+| var       | Any ACLIM variable                              | temp_bottom5m |
+| basin     | SEBS or NEBS                                    | SEBS          |
+| dataset   | HIND, FUT, or HIST                              | HIND          |
+| cmip      | CIMP5 or CMIP6                                  | CMIP6         |
+
+: get_var_akfin() parameters
+
+### Function structure
+
+The url specifies which web service (one for each timescale) is used. The typein arguement is pasted onto the end of the url. The function then combines the other variables into a list to be passed to the url. They will essentially be pasted onto the end of the url. For example the default query will produce the following url: https://apex.psmfc.org/akfin/data_marts/clim/aclim_l4_annual?var=temp_bottom5m&basin=SEBS&cmip=CMIP6&dataset=HIND , which you can paste into your browser for funsies. Then the function uses the jsonlite and httr packages to pull the web service response into a list in R. Finally, the dplyr::bind_rows function converts the list into a data frame, which is the output of the function.
+
+```{r, eval = FALSE,echo =T}
+# packages should be specified in the function code but need to be installed
+# install.packages(c("here", "dplyr", "httr","jsonlite"))
+
+get_var_akfin <- function(typein="annual",
+                          var="temp_bottom5m",
+                          basin="SEBS",
+                          cmip="CMIP6",
+                          dataset="HIND") {
+  if(typein %in% c("annual","monthly", "weekly","surveyrep", "seasonal")) {
+    
+  url <- paste0("https://apex.psmfc.org/akfin/data_marts/clim/aclim_l4_",typein)
+  query<-list(dataset=dataset, var=var, basin=basin, cmip=cmip)
+  
+  jsonlite::fromJSON(httr::content(
+    httr::GET(url=url, query=query),
+    as="text", encoding="UTF-8")) |>
+    dplyr::bind_rows()
+  }
+    
+  else {
+    return("typein must be one of annual, monthly, weekly, surveyrep, or seasonal. Otherwise more error messages coming later")
+  }
+}
+
+# Or File will probably live here
+#source(here::here("R","sub_fun","get_var_akfin.R"))
+```
+
+### Examples
+
+```{r, eval = FALSE,echo =T}
+tempbottom5_sebs_hind_cmip6_annual <- get_var_akfin()
+tempbottom5_NBS_hind_cmip6_annual <- get_var_akfin(basin="NEBS")
+tempbottom5_NBS_fut_cmip6_annual <- get_var_akfin(basin="NEBS", dataset = "FUT")
+tempsurface5_NBS_fut_cmip6_annual <- get_var_akfin(basin="NEBS", dataset = "FUT", var="temp_surface5m")
+tempsurface5_NBS_fut_cmip5_annual <- get_var_akfin(basin="NEBS", dataset = "FUT", var="temp_surface5m", cmip="CMIP5")
+tempbottom5_NBS_hind_cmip6_monthly <- get_var_akfin(typein="monthly",basin="NEBS", dataset = "HIND", var="temp_bottom5m", cmip="CMIP6")
+tempbottom5_NBS_hind_cmip6_seasonal <- get_var_akfin(typein="seasonal",basin="NEBS", dataset = "HIND", var="temp_bottom5m", cmip="CMIP6")
+tempbottom5_NBS_hind_cmip6_surveyrep <- get_var_akfin(typein="surveyrep",basin="NEBS", dataset = "HIND", var="temp_bottom5m", cmip="CMIP6")
+tempbottom5_NBS_hind_cmip6_weekly <- get_var_akfin(typein="weekly",basin="NEBS", dataset = "HIND", var="temp_bottom5m", cmip="CMIP6")
+
+head(tempbottom5_NBS_hind_cmip6_weekly)
+# play around with downloads and if you run into any problems raise an issue.
+```
+
+### Multiple variables
+
+The function currently allows for a single variable only for each arguement. The url actually supports multiple variables for each parameter separated by a column, but I haven't been able to pass them successfully through the query in httr::GET()
+
+```{r, eval = FALSE,echo =T}
+# 
+multibasin <-   jsonlite::fromJSON(httr::content(
+    httr::GET("https://apex.psmfc.org/akfin/data_marts/clim/aclim_l4_annual?var=temp_bottom5m&basin=SEBS,NEBS&cmip=CMIP6&dataset=HIND"),
+    as="text", encoding="UTF-8")) |>
+    dplyr::bind_rows()
+
+unique(multibasin$BASIN)
+```
+
+The workaround I use for this is the lapply function.
+
+```{r, eval = FALSE,echo =T}
+myvars=c("temp_bottom5m", "temp_surface5m", "temp_integrated","EupO_integrated","EupS_integrated")
+aclim_temp_eup <- lapply(myvars, function(x) FUN=get_var_akfin(typein="surveyrep",basin="NEBS", dataset = "HIND", var=x, cmip="CMIP6")) |>
+  dplyr::bind_rows()
+
+unique(aclim_temp_eup$var)
+                         
+```
+
+So that's it for now, please let me know if you have any feedback, requests, etc. Happy climate sciencing! Matt C
+
+
+<!-- * Go to the google drive and download the zipped file with the R ACLIM2 indices `ACLIM2_indices.zip`: -->
+
+<!-- * [00_ACLIM_shared > 02_Data > Newest_Data(use this) > unzip_and_put_in_dat_out_folder_CMIP6](https://drive.google.com/drive/u/1/folders/1clPtrPCQMPcwqr8UE78_Sd2IGwyBuDcD)   -->
+
+<!-- * [00_ACLIM_shared > 02_Data > Newest_Data(use this) > unzip_and_put_in_dat_out_folder_CMIP5](https://drive.google.com/drive/u/1/folders/1t_JqDBQU-Fyy5nvIYRAmVcqzWi4mq7mk) -->
+
+<!-- * Unzip `K29P19_CMIP5.zip` or `K29P19_CMIP6.zip` files move the `K29P19_CMIP5` or `K29P19_CMIP6` folders to your local folder `ACLIM2/Data/out`. The result should be the following folder structure on your local computer:   -->
+<!-- * `ACLIM2/Data/out/K29P19_CMIP6/allEBSmeans`: main folder with annual, monthly, seasonal, and survey replicated level 4 ACLIM indices -->
+<!-- * `ACLIM2/Data/out/K29P19_CMIP6/BC_ACLIMregion`: Weekly x Strata based indices, including delta and bias corrected values (these are "rolled up" to become strata AREA weighted mean vals in the allEBSmeans folder). -->
+<!-- * `ACLIM2/Data/out/K29P19_CMIP6/BC_ACLIMsurveyrep`: Survey replicated indices at each station, including delta and bias corrected values (these are "rolled up" to become average across station mean vals in the allEBSmeans folder). -->
+
+<!-- * `ACLIM2/Data/out/K29P19_CMIP5/allEBSmeans`: as above but for CMIP5 -->
 
 
 <!-- ![](Figs/DATA_dir2.png){ width=50%} -->
@@ -139,7 +233,7 @@ If you have git installed and can work with it, this is the preferred method as 
 
 Open R() and used 'setwd()' to navigate to the root ACLIM2 folder (.e.g, ~/mydocuments/ACLIM2)
 
-```{R  start, eval=TRUE, echo=T, results='show',message=FALSE}
+```{R  start, eval=T, echo=T, results='show',message=FALSE}
     
     # set the workspace to your local ACLIM2 folder
     # e.g., "/Users/kholsman/Documents/GitHub/ACLIM2"
@@ -480,10 +574,10 @@ Two approaches were used
 Hindcast values from 1970-2019 were stitched the operational hindcast (2019-2022) and ACLIM projections from 2022-2100 to generate the indices for CMIP5 and CMIP6.
 
 
-```{r nrs, eval=F, include=T,echo=T, results='hide',message=FALSE}
+```{r rkc, eval=F, include=T,echo=T, results='hide',message=FALSE}
   # to access these scripts go to https://github.com/kholsman/ACLIM2/tree/main/R/sub_scripts
  
-suppressMessages(source("R/make.R"))
+ suppressMessages(source("R/make.R"))
  source("R/sub_scripts/make_RKC_Indices_Andre.R")
 
 # Check the Indices
