@@ -4,6 +4,6 @@
 \contentsline {section}{\numberline {4}ABC+HCR 4: CE informed sloping rate, e.g., MHW category alpha}{3}{section.4}%
 \contentsline {section}{\numberline {5}ABC+HCR 5: climate sensitivity reserve (buffer shocks)}{4}{section.5}%
 \contentsline {section}{\numberline {6}ABC+HCR 6: MHW slope + climate sensitivity reserve (buffer shocks)}{5}{section.6}%
-\contentsline {section}{\numberline {7}ABC+HCR 7:Recruit per spawner biomass variability adjusted HCR based on covariate effects on S/R}{7}{section.7}%
+\contentsline {section}{\numberline {7}ABC+HCR 7:Recruit per spawner biomass variability adjusted HCR based on covariate effects on S/R}{5}{section.7}%
 \contentsline {section}{\numberline {8}ABC+HCR 8: Adjust effective spawning biomass (rather than adjust B\_target)}{7}{section.8}%
 \contentsline {section}{\numberline {9}Full set of HCR scenarios}{8}{section.9}%

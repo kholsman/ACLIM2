@@ -61,8 +61,8 @@ output:
 rootpth <- getwd()
  #setwd("D:/GitHub_cloud/ACLIM2")
  #setwd( "/Users/KKH/Documents/GitHub_mac/ACLIM2")
- setwd("../../")
- source("R/make.R")       # loads packages, data, setup, etc.
+ #setwd("../../")
+ #source("R/make.R")       # loads packages, data, setup, etc.
 setwd(rootpth)
  knitr::opts_chunk$set(echo = TRUE)
 library(ggplot2)

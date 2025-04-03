@@ -116,7 +116,7 @@ ABC+HCR 8: Adjust effective spawning biomass (rather than adjust B\_target)
 
 \section{ABC+HCR 1: Status quo}\label{abchcr-1-status-quo}
 
-This is the basic sloping harvest control rule for groundfish in the EBS. There is a B20\% cut-off for SSL (Atka, pollock, P. cod). \(F_{ABC_{max}}\) is the HCR adjusted F rate that corresponds to ABC. The Tier three approach is to set the slope of the sloping HCR to \(\alpha = 0.05\) and \(B_{lim} = 0\) and \(B_{target} = B_{40\%}\) or \(B_{target} = 0.4B_{100\%}\) (i.e., 40\% of unfished biomass \(B_{100\%}\), as an MSY proxy) for most species except \(B_{lim} = 0.2B_{100\%}\) (\(B_{20\%}\)) for pollock and Pacific cod .
+This is the basic sloping harvest control rule for groundfish in the EBS. There is a B20\% cut-off for SSL (Atka, pollock, P. cod). \(F_{ABC_{max}}\) is the HCR adjusted F rate that corresponds to ABC. The Tier three approach is to set the slope of the sloping HCR to \(\alpha = 0.05\) and \(B_{lim} = 0\) and \(B_{target} = B_{40\%}\) or \(B_{target} = 0.4B_{0}\) (i.e., 40\% of unfished biomass \(B_{0}\), as an MSY proxy) for most species except \(B_{lim} = 0.2B_{0}\) (\(B_{20\%}\)) for pollock and Pacific cod .
 
 Eq. 1 \[F_{ABC_{max}} =\Biggl[~
 \begin{array}{ll}  
@@ -156,7 +156,7 @@ and,
 \end{array}
 \]
 
-For ACLIM HCR2 model runs we set \(\alpha\) to 0.05 and \(\alpha_{r}\) to 0.3, whith \$ B\_\{low\} = B\_\{lim\} = 0.25B\_\{100\%\}\$.
+For ACLIM HCR2 model runs we set \(\alpha\) to 0.05 and \(\alpha_{r}\) to 0.3, whith \$ B\_\{low\} = B\_\{lim\} = 0.25B\_\{0\}\$.
 
 \begin{figure}
 \centering
@@ -168,7 +168,7 @@ For ACLIM HCR2 model runs we set \(\alpha\) to 0.05 and \(\alpha_{r}\) to 0.3, w
 
 This is the same as in HCR 1 except that \(B_{target} = B_{50\%}\).
 
-Details: Set the target to 50\% of \(B_{100\%}\) instead of 40\% B40 (\(\alpha = 0.05\), \(B_{lim} = B_{20\%}\), \(B_{target} = B_{50\%}\)). We're testing whether this would result in more stable biomass levels and catches.
+Details: Set the target to 50\% of \(B_{0}\) instead of 40\% \(B_{0}\) (\(\alpha = 0.05\), \(B_{lim} = B_{20\%}\), \(B_{target} = B_{50\%}\)). We're testing whether this would result in more stable biomass levels and catches.
 
 \begin{figure}
 \centering
@@ -179,9 +179,9 @@ Details: Set the target to 50\% of \(B_{100\%}\) instead of 40\% B40 (\(\alpha =
 \section{ABC+HCR 4: CE informed sloping rate, e.g., MHW category alpha}\label{abchcr-4-ce-informed-sloping-rate-e.g.-mhw-category-alpha}
 
 This is the same as in HCR 1 except that the proposed approach would scale back harvest rates faster below B\_target for species that are climate sensitive, or during MHWs.
-Set the target to 40\% of \(B_{100\%}\) (\(\alpha = 0.05\), \(B_{lim} = B_{20\%}\), \(B_{target} = B_{40\%}\)) for normal conditions/climate resilient species. But for other species, below \(B_{40\%}\) have steeper alphas based on MHW category forecasts for summer conditions ( or alternatively, climate vulnerability ratings). This reduces future harvest intensity when conditions are forecast to be poor and could help rebound stocks faster following MHW. MHWs are characterized as Category 1-4 based on the degree of anomalous conditions above mean climatology (Category 1 = +1 standard deviations above the mean climatology, Category 4 = +4 SD).
+Set the target to 40\% of \(B_{0}\) (\(\alpha = 0.05\), \(B_{lim} = B_{20\%}\), \(B_{target} = B_{40\%}\)) for normal conditions/climate resilient species. But for other species, below \(B_{40\%}\) have steeper alphas based on MHW category forecasts for summer conditions ( or alternatively, climate vulnerability ratings). This reduces future harvest intensity when conditions are forecast to be poor and could help rebound stocks faster following MHW. MHWs are characterized as Category 1-4 based on the degree of anomalous conditions above mean climatology (Category 1 = +1 standard deviations above the mean climatology, Category 4 = +4 SD).
 
-Details: Set the target to 40\% of \(B_{100\%}\), (\(\alpha = 0.05+\mathrm{MHW}_{category}*.09\), \(B_{lim} = B_{20\%}\), \(B_{target} = B_{40\%}\)). E.g., shown, Category 2 MHW set the \(\alpha = 0.23\), for large MHW set the \(\alpha = 0.41\). We're testing whether this would result in more stable biomass levels and catches.
+Details: Set the target to 40\% of \(B_{0}\), (\(\alpha = 0.05+\mathrm{MHW}_{category}*.09\), \(B_{lim} = B_{20\%}\), \(B_{target} = B_{40\%}\)). E.g., shown, Category 2 MHW set the \(\alpha = 0.23\), for large MHW set the \(\alpha = 0.41\). We're testing whether this would result in more stable biomass levels and catches.
 
 \begin{figure}
 \centering
@@ -199,7 +199,7 @@ Details: Set the target to 40\% of \(B_{100\%}\), (\(\alpha = 0.05+\mathrm{MHW}_
 
 The general idea here is to recreate the pollock cap effect when over \(B_{target}\). The steepness of that cap effect could be varied based on vulnerability (or approximated via MSE), more sensitive species might need more reserve in the ``bank''. Pollock are an example of the HCR 5 in practice (via effects of the 2MT cap + sloping HCR).
 
-Details: Set the target to 40\% of \(B_{100\%}\) (\(\alpha = 0.05\), \(B_{lim} = B_{20\%}\), \(B_{target} = B_{40\%}\)).After \(B_{40\%}\) have a slowly sloping F proportional to climate sensitivity (or MHW category) to mimic realized F rates of pollock under the 2 MT cap, i.e., reserve biomass for climate shocks sensu Holsman et al.~2020. This could use MHW decadal predictions to set the right hand side of the curve above \(B_{40\%}\).In this the climate sensitivitiy buffer \(\gamma\) is a value 0 to 1 that scales the reserve for biomass above \(B_{target}\), i.e., \(B_{40\%}\):
+Details: Set the target to 40\% of \(B_{0}\) (\(\alpha = 0.05\), \(B_{lim} = B_{20\%}\), \(B_{target} = B_{40\%}\)).After \(B_{40\%}\) have a slowly sloping F proportional to climate sensitivity (or MHW category) to mimic realized F rates of pollock under the 2 MT cap, i.e., reserve biomass for climate shocks sensu Holsman et al.~2020. This could use MHW decadal predictions to set the right hand side of the curve above \(B_{40\%}\).In this the climate sensitivitiy buffer \(\gamma\) is a value 0 to 1 that scales the reserve for biomass above \(B_{target}\), i.e., \(B_{40\%}\):
 
 Eq. 1 \[F_{ABC_{max}} =\Biggl[~ 
 \begin{array}{lll}  
@@ -210,7 +210,7 @@ Eq. 1 \[F_{ABC_{max}} =\Biggl[~
 
 where, \(~~ 0 \le \gamma \le 1\).
 
-Details: Set the target to 40\% of \(B_{100\%}\), (\(\alpha = 0.05\), \(B_{lim} = B_{20\%}\), \(B_{target} = B_{40\%}\)). Shown, for low sensitivity stocks set \(\gamma = 0.1\), for highly sensitive stocks set \(\gamma = 0.7\). We're testing whether this would result in more stable biomass levels and catches through shocks.
+Details: Set the target to 40\% of \(B_{0}\), (\(\alpha = 0.05\), \(B_{lim} = B_{20\%}\), \(B_{target} = B_{40\%}\)). Shown, for low sensitivity stocks set \(\gamma = 0.1\), for highly sensitive stocks set \(\gamma = 0.7\). We're testing whether this would result in more stable biomass levels and catches through shocks.
 
 \begin{figure}
 \centering
@@ -222,7 +222,7 @@ Details: Set the target to 40\% of \(B_{100\%}\), (\(\alpha = 0.05\), \(B_{lim} 
 
 The general idea here is to combine the HCR 4 MHW category 0-4 scaling factor when below B\_target (B40) and a cap-like effect when over \(B_{target}\) (HCR5); values are as specified in those scenarios.
 
-Details: Set the target to 40\% of \(B_{100\%}\), (\(\alpha = 0.05\), \(B_{lim} = B_{20\%}\), \(B_{target} = B_{40\%}\)). Shown, for low sensitivity stocks set \(\gamma = 0.1\), for highly sensitive stocks set \(\gamma = 0.7\). Shown as well, category 2 MHW set the \(\alpha = 0.23\), for large MHW set the \(\alpha = 0.41\).
+Details: Set the target to 40\% of \(B_{0}\), (\(\alpha = 0.05\), \(B_{lim} = B_{20\%}\), \(B_{target} = B_{40\%}\)). Shown, for low sensitivity stocks set \(\gamma = 0.1\), for highly sensitive stocks set \(\gamma = 0.7\). Shown as well, category 2 MHW set the \(\alpha = 0.23\), for large MHW set the \(\alpha = 0.41\).
 
 \begin{figure}
 \centering
@@ -248,7 +248,7 @@ and
 
 \[\hat{B}_{lim}  = B_{lim}e^{(-\omega_3*\mathrm{x_y})}\]
 and \(\omega_1,~\omega_2~\mathrm{and}~~\omega_3 \ge0\). For the ACLIM HCR 7 simulations \(\omega_1\) and \(\omega_2\) will be fit using retrospecitve analyses of spawner recruitment relationships across sclaed (z-scored) SST (\(x_y\)) on EBS pollock by Spencer et al.~in prep.
-Details: Set the target to 40\% of \(B_{100\%}\) (\(\alpha = 0.05\), \(B_{lim} = B_{20\%}\), \(B_{target} = B_{40\%}\)). In the example below (\(x_y\)) = 0.7 and for case 7a all \(\omega\) values were set to 0, in case 7b \(\omega_1 = \omega_2 = \omega_3\) = 0.5, and in case 7c \(\omega_1\) = 0.7, \(\omega_2\) = 0.5, \(\omega_3\) = .3.
+Details: Set the target to 40\% of \(B_{0}\) (\(\alpha = 0.05\), \(B_{lim} = B_{20\%}\), \(B_{target} = B_{40\%}\)). In the example below (\(x_y\)) = 0.7 and for case 7a all \(\omega\) values were set to 0, in case 7b \(\omega_1 = \omega_2 = \omega_3\) = 0.5, and in case 7c \(\omega_1\) = 0.7, \(\omega_2\) = 0.5, \(\omega_3\) = .3.
 
 \begin{figure}
 \centering
@@ -258,7 +258,7 @@ Details: Set the target to 40\% of \(B_{100\%}\) (\(\alpha = 0.05\), \(B_{lim} =
 
 \section{ABC+HCR 8: Adjust effective spawning biomass (rather than adjust B\_target)}\label{abchcr-8-adjust-effective-spawning-biomass-rather-than-adjust-b_target}
 
-In this scenario, rather than adjust the FMP target from \(B_{40\%}\), the effective \(B_y\) and \(B_{y+1}\) is adjust downward:
+In this scenario, rather than adjust the FMP target from \(B_{40\%}\), the effective \(B_y\) and \(B_{y+1}\) is adjusted downward:
 
 Eq. \[F_{ABC_{max}} =\Biggl[~ 
 \begin{array}{ll}  
@@ -270,7 +270,7 @@ Eq. \[F_{ABC_{max}} =\Biggl[~
 where,
 \(\hat{B}_y = \theta{B_y}\) and \(\theta\) is a scaler on \(B_y\) (could be set to a value or could be a function of environmental covariates).
 
-Details: Set the target to 40\% of \(B_{100\%}\) (\(\alpha = 0.05\), \(B_{lim} = B_{20\%}\), \(B_{target} = B_{40\%}\)). In the example below (\(x_y\)) = 0.7 and for case 8a all \(\theta\) is set to 1, in case 8b \(\theta\) = 0.75.
+Details: Set the target to 40\% of \(B_{0}\) (\(\alpha = 0.05\), \(B_{lim} = B_{20\%}\), \(B_{target} = B_{40\%}\)). In the example below (\(x_y\)) = 0.7 and for case 8a all \(\theta\) is set to 1, in case 8b \(\theta\) = 0.75.
 
 \begin{figure}
 \centering

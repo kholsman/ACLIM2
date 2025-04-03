@@ -39,6 +39,20 @@
   # Run bias correction for all variables 
   # - rbinds bias-corrected projection to historical run
   # - SSP126
+
+  
+  hindcast <- roms_avg_data %>% filter(simulation == "hindcast") %>%
+    arrange(year,month) %>%
+    mutate(value_dc = value) %>%
+    select(NMFS_AREA, depthclass, varname, year, month, date, value, value_dc, unit)
+  
+  projection <- roms_avg_data %>% filter(simulation == "ssp126") %>%
+    group_by(month, varname, depthclass, NMFS_AREA) %>%
+    mutate(value_dc = value) %>%
+    ungroup() %>% arrange(year, month) %>%
+    select(NMFS_AREA, depthclass, varname, year, month, date, value, value_dc, unit)
+  ssp126_avg_notbiascorrected <- rbind(hindcast,projection)
+  
   ssp126_avg_biascorrected <- delta_correction(
     hindcast = roms_avg_data %>% filter(simulation == "hindcast"),
     historical = roms_avg_data %>% filter(simulation == "historical"),
@@ -48,6 +62,16 @@
     #use_sd = TRUE,
     use_sd = F,
     include_hindcast = F)
+  
+  ssp126_hindcast <- delta_correction(
+    hindcast = roms_avg_data %>% filter(simulation == "hindcast"),
+    historical = roms_avg_data %>% filter(simulation == "historical"),
+    projection = roms_avg_data %>% filter(simulation == "ssp126"),
+    ref_yrs = 1990:2014, # Overlap years for historical and hindcast ROMS
+    lognormal = FALSE,
+    #use_sd = TRUE,
+    use_sd = F,
+    include_hindcast = T)
   
   # - SSP245
   ssp245_avg_biascorrected <- delta_correction(
@@ -70,6 +94,44 @@
     #use_sd = TRUE,
     use_sd = F,
     include_hindcast = F)
+
+  plot_dat_all <- rbind(ssp126_avg_biascorrected%>%
+                          mutate(BC = "bias_corrected",simulation = "ssp126"),
+                        projection%>%select(all_of(names(ssp126_avg_biascorrected)))%>%
+                          mutate(BC = "raw projection",simulation = "ssp126"),
+                        hindcast%>%mutate(value_dc=value)%>%select(all_of(names(ssp126_avg_biascorrected)))%>%
+                          mutate(BC = "raw hindcast",simulation = "ssp126"),
+                        ssp126_hindcast%>%
+          mutate(BC = "bcWith_hindcast",simulation = "ssp126"))
+  
+  plot_dat <- plot_dat_all%>%
+    filter(varname == "temp", depthclass == "Bottom",  NMFS_AREA == "All") %>%
+    # Take mean fall 
+    #group_by(year, month,simulation) %>%
+    #summarise(BT = mean(temp)) %>% # Sum biomass across 610 and 620
+    mutate(season = case_when(
+      month %in% c(3,4,5) ~ "spring",
+      month %in% c(11,12,1,2) ~ "winter",
+      month %in% c(6,7,8) ~ "summer",
+      month %in% c(9,10) ~ "fall",
+    ))  %>%
+    group_by(year, season,simulation,BC) %>%
+    summarise(BT = mean(value, na.rm=T),
+              BT_sd = sd(value, na.rm=T)) %>%
+    mutate(GCM="GFDL",
+           BT_low = BT-BT_sd,
+           BT_high = BT+BT_sd)%>%mutate(Basin = "GOA")%>%
+    mutate( BC = factor( BC , 
+                         levels = c( "bias_corrected","bcWith_hindcast","raw projection","raw hindcast")))
+  
+  
+  ggplot()+
+    geom_line(data=plot_dat%>%filter(season=="summer",BC=="bias_corrected")%>%select(-BC),
+              aes(x=year,y=BT),color="gray")+
+    geom_line(data=plot_dat%>%filter(season=="summer"),
+              aes(x=year,y=BT,color=BC),linetype="dashed",size=.8)+
+    facet_wrap(BC~.)+
+    theme_minimal()
 
   
   # Extract small copepod for desired area
@@ -109,9 +171,9 @@
     scale_color_viridis_d()+
       scale_fill_viridis_d()
   
-  
+  # ----------------------------------
   # Now ACLIM
-  
+  # ----------------------------------
   setwd("/Users/KKH/Documents/GitHub_mac/ACLIM2")
   # loads packages, data, setup, etc.
   suppressWarnings(source("R/make.R"))
