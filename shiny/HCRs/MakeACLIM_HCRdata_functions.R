@@ -93,7 +93,7 @@ plot_HCR_shiny <- function(dataIN,
 # ------
 
 B0    <- 3e6  # hypothetical B0 from the stock assessment in 2015
-B     <- seq(0,1.2,.001)*B0
+B     <- seq(0,1.3,.001)*B0
 B2B0  <- B/B0
 
 HCR_levels <-  c("HCR1a: Status Quo",

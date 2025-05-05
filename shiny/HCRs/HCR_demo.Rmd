@@ -164,7 +164,7 @@ typeIN <- 1
 # Fadjustment to F_abc, i.e., sloping HCR
 F_adj <- unlist(lapply(B2B0, ACLIM_HCR, type=typeIN, alpha = 0.05, B2B0_lim = 0.2, B2B0_target=0.4))
 
-baseData <- data.frame(B2B0=B2B0, F_adj = unlist(lapply(B2B0, ACLIM_HCR, type=1,
+baseData <- data.frame(B2B0=B2B0, F_adj = unlist( lapply(B2B0, ACLIM_HCR, type=1,
                       alpha = 0.05, B2B0_lim = 0.2, B2B0_target=0.4)),
                       alpha = 0.05, B2B0_lim = 0.2, B2B0_target=0.4)
 
@@ -173,6 +173,7 @@ plotdat1 <- rbind(data.frame(B2B0=B2B0,
                       alpha = 0.05, B2B0_lim = 0.0, B2B0_target=0.4)), 
                       alpha = 0.05, B2B0_lim = 0.0, B2B0_target=0.4, 
                       HCR = "HCR1a: Status Quo" , HCRscen="HCR1", subtxt = "a"),
+                  
                  data.frame(B2B0=B2B0, 
                             F_adj = unlist(lapply(B2B0, ACLIM_HCR, type=typeIN,
                       alpha = 0.05, B2B0_lim = 0.2, B2B0_target=0.4)),
@@ -330,7 +331,7 @@ plot_out <- list(p_HCR1,p_HCR2,p_HCR3)
 This is the same as in HCR 1 except that the proposed approach would scale back harvest rates faster below B_target for species that are climate sensitive, or during MHWs. 
 Set the target to 40\% of $B_{0}$ ($\alpha = 0.05$, $B_{lim} = B_{20\%}$, $B_{target} = B_{40\%}$) for normal conditions/climate resilient species. But for other species, below $B_{40\%}$ have steeper alphas based on MHW category forecasts for summer conditions ( or alternatively, climate vulnerability ratings). This reduces future harvest intensity when conditions are forecast to be poor and could help rebound stocks faster following MHW. MHWs are characterized as Category 1-4 based on the degree of anomalous conditions above mean climatology (Category 1 = +1 standard deviations above the mean climatology, Category 4 = +4 SD).
 
-Details: Set the target to 40% of $B_{0}$, ($\alpha = 0.05+\mathrm{MHW}_{category}*.09$, $B_{lim} = B_{20\%}$, $B_{target} = B_{40\%}$). E.g., shown, Category 2 MHW set the $\alpha = 0.23$, for large MHW set the $\alpha = 0.41$. We’re testing whether this would result in more stable biomass levels and catches.
+Details: Set the target to 40% of $B_{0}$, ($\alpha = 0.05+\mathrm{MHW}_{category}*.09$, $B_{lim} = B_{20\%}$, $B_{target} = B_{40\%}$). E.g., shown, Category 2 MHW set the $\alpha = 0.2$, for large MHW set the $\alpha = 0.4$. We’re testing whether this would result in more stable biomass levels and catches.
 
 ```{r HCR4,include=F,eval=T,echo=F, results=F}
 
@@ -347,13 +348,13 @@ plotdat4 <- rbind(data.frame(B2B0=B2B0,
                       HCR = "HCR4a: no MHW" , HCRscen="HCR4", subtxt = "a"),
                  data.frame(B2B0=B2B0,
                           F_adj = unlist(lapply(B2B0, ACLIM_HCR, type=typeIN,
-                        alpha = 0.23, B2B0_lim = 0.2, B2B0_target=0.4)),
-                        alpha = 0.23, B2B0_lim = 0.2, B2B0_target=0.4, 
+                        alpha = 0.2, B2B0_lim = 0.2, B2B0_target=0.4)),
+                        alpha = 0.2, B2B0_lim = 0.2, B2B0_target=0.4, 
                         HCR = "HCR4b: small MHW", HCRscen="HCR4", subtxt = "b"),
                    data.frame(B2B0=B2B0,
                           F_adj = unlist(lapply(B2B0, ACLIM_HCR, type=typeIN,
-                        alpha = 0.41, B2B0_lim = 0.2, B2B0_target=0.4)),
-                        alpha = 0.41, B2B0_lim = 0.2, B2B0_target=0.4, 
+                        alpha = 0.4, B2B0_lim = 0.2, B2B0_target=0.4)),
+                        alpha = 0.4, B2B0_lim = 0.2, B2B0_target=0.4, 
                         HCR = "HCR4c: large MHW", HCRscen="HCR4", subtxt = "c"))%>%
   mutate(HCR = factor(HCR,levels=HCR_levels),
          HCRscen = factor(HCRscen,levels=HCRscen_levels),
@@ -474,7 +475,7 @@ plot_out <- list(p_HCR1,p_HCR2,p_HCR3,p_HCR4,p_HCR5)
 
 The general idea here is to combine the HCR 4 MHW category 0-4 scaling factor when below B_target (B40) and a cap-like effect when over $B_{target}$ (HCR5); values are as specified in those scenarios.
 
-Details: Set the target to 40% of $B_{0}$, ($\alpha = 0.05$, $B_{lim} = B_{20\%}$, $B_{target} = B_{40\%}$). Shown, for low sensitivity stocks set $\gamma = 0.1$, for highly sensitive stocks set $\gamma = 0.7$. Shown as well, category 2 MHW set the $\alpha = 0.23$, for large MHW set the $\alpha = 0.41$.
+Details: Set the target to 40% of $B_{0}$, ($\alpha = 0.05$, $B_{lim} = B_{20\%}$, $B_{target} = B_{40\%}$). Shown, for low sensitivity stocks set $\gamma = 0.1$, for highly sensitive stocks set $\gamma = 0.7$. Shown as well, category 2 MHW set the $\alpha = 0.2$, for large MHW set the $\alpha = 0.4$.
 
 ```{r HCR6,include=F,eval=T,echo=F, results=F}
 typeIN <- 6

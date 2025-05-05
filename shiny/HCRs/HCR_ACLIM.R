@@ -14,6 +14,8 @@
 #' 5) ABC+HCR 5: climate sensitivity reserve (buffer shocks)
 #' 6) ABC+HCR 6: MHW slope + climate sensitivity reserve (buffer shocks)
 #' 7) ABC+HCR 7: Recruit per spawner biomass variability adjusted HCR based on analyses by Spencer et al. in prep
+#' 8) ABC+HCR 8: scale SSB_y using log_theta in order to mimic chage in B_target
+#' 9) ABC+HCR 9: Same as HCR5 except the gamma is a scaler on 1-inv.logit(scaled(covar))
 #' @param alpha default is 0.05, this is the slope of the HCR
 #' @param invlogit_gamma  log of the gamma parameter default is inv.logit(10); gamma decay rate value is between 0 and 1
 #' @param log_omega1 omega1 is >0 covariate linked penalty on Flim for HCR 7
@@ -33,42 +35,42 @@
                          log_omega1  = log(0),  
                          log_omega2  = log(0),  
                          log_omega3  = log(0), 
-                         log_theta = 1,
+                         log_theta = 0,
                          B2B0_lim, 
                          B2B0_target,
                          Flim   = 1,
                          cov    = NULL){
       
-      if(!type%in%c(1:8)){
+      if( !type%in%c( 1:9 ) ){
         stop("Error with HCR_ACLIM function: type must be an integer between 1 and 8")
       }
       
       if(type%in%c(1,2,3,4)){
-               B2B40    <- B2B0/B2B0_target
-               if(B2B40>1.){
-                 maxFabc = Flim
-               }else{
-                 if(alpha<B2B40){
-                   maxFabc = Flim*((B2B40-alpha)/(1.-alpha))
-                 }else{
-                   maxFabc=0.0
-                 }
-               }
+        B2B40    <- B2B0 / B2B0_target
+        if( B2B40 > 1. ){
+            maxFabc = Flim
+        }else{
+          if( alpha < B2B40 ){
+              maxFabc = Flim*( ( B2B40 - alpha ) / ( 1. - alpha ) )
+          }else{
+            maxFabc = 0.0
+          }
+        }
       }
       
-      if(type%in%c(5,6)){
+      if( type%in%c( 5, 6 )){
         B2B40    <- B2B0/B2B0_target
         # gamma is the environmental sensitivity parameter from vulnerability analyses
-        gamma <- logit(invlogit_gamma) # gamma is between 0 and 1
-        if(B2B40>1.){
-          if(gamma<B2B40){
-            maxFabc=Flim*(exp(-gamma*(B2B40-1)))
-          }
+        gamma <- logit( invlogit_gamma ) # gamma is between 0 and 1
+        if( B2B40 > 1. ){
+          # if( gamma < B2B40 ){
+            maxFabc = Flim*( exp( -gamma* (B2B40 - 1 ) ) ) 
+         # }
         }else{
-          if(alpha<B2B40){
-            maxFabc=Flim*((B2B40-alpha)/(1.-alpha))
+          if( alpha < B2B40 ){
+            maxFabc = Flim*(( B2B40 - alpha ) / ( 1. - alpha ) )
           }else{
-            maxFabc=0.0
+            maxFabc = 0.0
           }
         }
       }
@@ -107,6 +109,23 @@
             maxFabc=0.0
           }
         }
+      }
+      
+      if(type%in%c(9)){
+        B2B40    <- B2B0/B2B0_target
+        # gamma is the environmental sensitivity parameter from vulnerability analyses
+        gamma <- logit(invlogit_gamma) # gamma is between 0 and 1
+        if(B2B40 > 1.){
+          maxFabc=Flim*(exp(-((1-inv.logit(cov))*gamma)*(B2B40-1)))
+          
+        }else{
+          if(alpha<B2B40){
+            maxFabc=Flim*((B2B40-alpha)/(1.-alpha))
+          }else{
+            maxFabc=0.0
+          }
+        }
+        
       }
       
       if(B2B40<=(B2B0_lim/B2B0_target))

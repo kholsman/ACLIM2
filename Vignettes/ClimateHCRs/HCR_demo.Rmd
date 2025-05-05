@@ -58,20 +58,20 @@ output:
 
 ```{r setup, include=F, eval = TRUE, echo =F, results=F}
 
-rootpth <- getwd()
+ rootpth <- getwd()
  #setwd("D:/GitHub_cloud/ACLIM2")
- #setwd( "/Users/KKH/Documents/GitHub_mac/ACLIM2")
+ #setwd( "/Users/KKH/Documents/GitHub_mac/ACLIM2/Vignettes/ClimateHCRs")
  setwd("../../")
- source("R/make.R")       # loads packages, data, setup, etc.
-setwd(rootpth)
+ source("R/make.R")       # loads ACLIM2 packages, data, setup, etc.
+ setwd(rootpth)
  knitr::opts_chunk$set(echo = TRUE)
-library(ggplot2)
-library(dplyr)
+ library(ggplot2)
+ library(dplyr)
  library(viridis)
+ library(readxl)
 
- plot_fn <- file.path(rootpth,"..","..","Figs","HCR_figs")
+plot_fn <- file.path(rootpth,"..","..","Figs","HCR_figs")
 if(!dir.exists(plot_fn)) dir.create(plot_fn)
-
 inv.logit<-function(x){ exp(x)/(1+exp(x))}
  
 w     <- 4
@@ -83,48 +83,115 @@ B0    <- 3e6  # hypothetical B0 from the stock assessment in 2015
 B     <- seq(0,1.2,.001)*B0
 B2B0  <- B/B0
 Fabc  <- .3 # hypothetical F ABC as determined from the model
-
-
-HCR_levels <-  c("HCR1a: Status Quo",
-                 "HCR1b: Status Quo + SSL", 
-                 "HCR2a: decline",
-                 "HCR2b: lagged recovery",
-                 "HCR3a: B50", 
-                 "HCR3b: B50 + SSL", 
-                 "HCR4a: no MHW",
-                 "HCR4b: small MHW",
-                 "HCR4c: large MHW",
-                 "HCR5a: no sensitivity",
-                 "HCR5b: low sensitivity",
-                 # "HCR5c: medium sensitivity",
-                 "HCR5c: high sensitivity",
-                 "HCR6a: no MHW, no sensitivity",
-                 "HCR6b: small MHW, low sensitivity",
-                 "HCR6c: large MHW, high sensitivity",
-                 "HCR7a: max productivity (SQ)",
-                 "HCR7b: SR cov effects",
-                 "HCR7c: SR cov effects uneven omega",
-                 "HCR8a: max productivity (SQ)",
-                 "HCR8b: theta set to 0.75")
-  
-  
-HCRscen_levels <- paste0("HCR",1:8)
-subtxt_levels <- c("a","b","c","d")
-colset        <- viridis(length(HCRscen_levels), 
+# read in HCRpar 
+    HCRpar     <- readxl::read_xlsx(file.path("HCR_par.xlsx"),col_names=T)%>%data.frame()
+    
+    HCRset         <- HCRpar$HCR_sub%>%unique()
+    HCR_levels     <- HCRpar$HCR_sub |> unique()
+    HCRscen_levels <- paste0("HCR",HCRpar$HCR |> unique())
+    subtxt_levels  <- HCRpar$sub |> unique()
+    colset         <- viridis(length(HCRscen_levels), 
                          option = "mako", direction = -1,  begin = .15, end = .9)
-lineset       <- c("solid","dashed","dotted","solid")
-linesize      <- c(1,1,1,.7)
-
-col_line <- data.frame(HCR = factor(HCR_levels,levels=HCR_levels),
+    lineset       <- c("solid","dashed","dotted","solid")
+    linesize      <- c(1,1,1,.7)
+    # test the data inputs to make sure they are correct:
+    B0    <- 3e6  # hypothetical B0 from the stock assessment in 2015
+    B     <- seq(0,1.2,.001)*B0
+    B2B0  <- B/B0
+    sp_tab <- data.frame(Species = c("Species1","Species2","Species3"),
+                         sp = c("pollock","P. cod","atf"),sp_num = c(1:3))
+    
+    col_line <- data.frame(HCR = factor(HCR_levels,levels=HCR_levels),
                        HCRscen = factor(substr(HCR_levels,1,4),levels=HCRscen_levels),
                        subtxt  =  factor(substr(HCR_levels,5,5),levels=subtxt_levels))
 
-col_line$col  <- colset[as.numeric(col_line$HCRscen)]
-col_line$line <- lineset[as.numeric(col_line$subtxt)]
-col_line$size <- linesize[as.numeric(col_line$subtxt)]
-
-col_in  <- col_line$HCR; names(col_in)<-col_line$col  
-line_in <- col_line$HCR; names(line_in)<-col_line$line  
+    col_line$col  <- colset[as.numeric(col_line$HCRscen)]
+    col_line$line <- lineset[as.numeric(col_line$subtxt)]
+    col_line$size <- linesize[as.numeric(col_line$subtxt)]
+    
+    col_in  <- col_line$HCR; names(col_in)<-col_line$col  
+    line_in <- col_line$HCR; names(line_in)<-col_line$line  
+    txt2num<-function(x){
+         if(is.character(x))
+          return(eval(parse(text=x)))
+         else
+           return(x)
+    }
+    
+    baseData <- data.frame(B2B0=B2B0, F_adj = unlist(lapply(B2B0, ACLIM_HCR, type=1,
+                      alpha = 0.05, B2B0_lim = 0.2, B2B0_target=0.4)),
+                      alpha = 0.05, B2B0_lim = 0.2, B2B0_target=0.4)
+    cov_val <- 2.4
+    for(hh in 1:length(HCRset)){
+        
+      sub    <- HCRpar%>%filter(HCR_sub==HCRset[hh])
+      HCRtmp <- sub$HCR[1]
+      HCRsub <- sub$sub[1]
+      sub    <- melt(sub[,1:4], id.vars = "Parm", 
+                     variable_name = "Species")%>%left_join(sp_tab,by = join_by(Species))
+     
+      sub <- sub%>%rowwise()%>%mutate(value2 = txt2num(value))%>%
+        select(-value)%>%rename(value=value2)
+      sub <- reshape2::dcast(sub%>%select(Parm,Species,value), Species~Parm,  )%>%rename(
+        alpha=alpha_ABC,B2B0_lim = minBlimMult,cov=hcr_cov, B2B0_target =Btarget)
+      sub$type <- HCRtmp
+       sub$cov <- cov_val
+      # if(hh==9)
+      #   sub$cov <- -3
+     
+        
+      
+      for(i in 1: dim(sub)[1]){
+        plotdat1 <- suppressWarnings(
+          data.frame(B2B0 = B2B0,
+                     F_adj = unlist( lapply (B2B0, ACLIM_HCR,
+                                      type = HCRtmp,
+                                      alpha =  sub$alpha[i],
+                                      invlogit_gamma = sub$invlogit_gamma[i],
+                                      log_omega1 = sub$log_omega1[i],
+                                      log_omega2 = sub$log_omega2[i],
+                                      log_omega3 = sub$log_omega3[i],
+                                      log_theta = sub$log_theta[i],
+                                      B2B0_lim = sub$B2B0_lim[i],
+                                      B2B0_target = sub$B2B0_target[i],
+                                      cov = sub$cov[i],
+                                      Flim = 1)),
+                             sub[i,],
+                             HCR = HCRset[hh],
+                             HCRscen = paste0("HCR",HCRtmp),
+                             subtxt = HCRsub))
+        
+        if(i==1){
+          plotdat_all <- plotdat1
+        }else{
+          plotdat_all <- rbind(plotdat_all,plotdat1)
+        }
+        rm(plotdat1)
+      }
+      if(hh == 1){
+        plotdat_out <- plotdat_all
+      }else{
+        plotdat_out <- rbind(plotdat_out,plotdat_all)
+      }
+      rm(plotdat_all)
+    }
+    
+    
+     
+      plot_HCR(dataIN = plotdat_out%>%filter(Species=="Species1"), 
+               baseDataIN = baseData,
+               ylim = c(0,1.3) , 
+               col_lineIN = col_line,
+               ncolIN = 1 )
+      
+         plot_HCR(
+                  dataIN = plotdat_out%>%
+                    filter(type==8,
+                            Species=="Species1"), 
+                  baseDataIN = baseData,
+                  col_lineIN = col_line,
+                  ncolIN = 1 )
+       
 
 
 source("../../R/sub_fun/plot_HCR.R")
@@ -148,7 +215,7 @@ During ACLIM phase 2 (2019-2022), modelers evaluated a suite of Harvest Control 
 
 # ABC+HCR 1: Status quo
 
-This is the basic sloping harvest control rule for groundfish in the EBS. There is a B20% cut-off for SSL (Atka, pollock, P. cod). $F_{ABC_{max}}$ is the HCR adjusted F rate that corresponds to ABC. The Tier three approach is to set the slope of the sloping HCR to $\alpha = 0.05$ and $B_{lim} = 0$ and $B_{target} = B_{40\%}$ or $B_{target} = 0.4B_{0}$ (i.e., 40\% of unfished biomass $B_{0}$, as an MSY proxy) for most species except $B_{lim} = 0.2B_{0}$ ($B_{20\%}$) for pollock and Pacific cod .
+This is the basic sloping harvest control rule for groundfish in the EBS. There is a B20% cut-off for SSL (Atka, pollock, P. cod). $F_{ABC_{max}}$ is the HCR adjusted F rate that corresponds to ABC. The Tier three approach is to set the slope of the sloping HCR to $\alpha$ = `r HCRpar%>%filter(HCR==1, sub=="a",Parm=="alpha_ABC")%>%select(Species1)%>%as.numeric()` and $B_{lim} = 0$ and $B_{target} = B_{40\%}$ or $B_{target}$ = `r HCRpar%>%filter(HCR==1, sub=="a",Parm=="Btarget")%>%select(Species1)%>%as.numeric()` $B_{0}$ (i.e., 40\% of unfished biomass $B_{0}$, as an MSY proxy) for most species except $B_{lim} = 0.2B_{0}$ ($B_{20\%}$) for pollock and Pacific cod .
 
 Eq. 1 $$F_{ABC_{max}} =\Biggl[~
 \begin{array}{ll}  
@@ -481,20 +548,20 @@ typeIN <- 6
 
 plotdat6 <- rbind(data.frame(B2B0=B2B0,
                       F_adj = unlist(lapply(B2B0, ACLIM_HCR, type=typeIN,
-                      invlogit_gamma= inv.logit(0), 
+                      invlogit_gamma = inv.logit(0), 
                       alpha = 0.05, B2B0_lim = 0.2, B2B0_target=0.4)),
                       alpha = 0.05, B2B0_lim = 0.2, B2B0_target=0.4, 
                       HCR = "HCR6a: no MHW, no sensitivity" , HCRscen="HCR6", subtxt = "a"),
                    data.frame(B2B0=B2B0, 
                             F_adj = unlist(lapply(B2B0, ACLIM_HCR, type=typeIN,
-                      invlogit_gamma= inv.logit(.1),  
+                      invlogit_gamma = inv.logit(.1),  
                       alpha = 0.2, B2B0_lim = 0.2, B2B0_target=0.4)),
                       alpha = 0.2, B2B0_lim = 0.2, B2B0_target=0.4, 
                       HCR = "HCR6b: small MHW, low sensitivity", HCRscen="HCR6", subtxt = "b"),
             
                  data.frame(B2B0=B2B0, 
                             F_adj = unlist(lapply(B2B0, ACLIM_HCR, type=typeIN,
-                      invlogit_gamma=.7, 
+                      invlogit_gamma = .7, 
                       alpha = 0.4, B2B0_lim = 0.2, B2B0_target=0.4)),
                       alpha = 0.4, B2B0_lim = 0.2, B2B0_target=0.4, 
                        HCR = "HCR6c: large MHW, high sensitivity", HCRscen="HCR6", subtxt = "c"))%>%

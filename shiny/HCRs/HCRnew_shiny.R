@@ -34,11 +34,11 @@ ui <- page_sidebar(
    # actionButton("run", "Update Plot", class = "btn-primary"),
    #  actionButton("reset_input", "Reset inputs"),
     uiOutput('resetable_input'),
-    sliderInput("mhw", "delta SST (deg c)",
-                min = -4, max = 4, value = 0,step=.1),
     checkboxInput(inputId = "showbase", label = "Show Status Quo on each plot",
                   value = T, width = NULL),
-                    #---- right inputs
+    checkboxInput(inputId = "showcustom", label = "Show Custom HCR",
+                 value = T, width = NULL),
+                    #---- right inputs35
                    card(
                      card_header("HCR Visualization"),
                      # checkboxGroupInput("hcrScenarios", "HCR Scenarios to Display",
@@ -49,27 +49,43 @@ ui <- page_sidebar(
                      selectInput("hcrScenarios", "HCR Scenarios to Display",
                                  # choices = c("HCR1a: Status Quo" = "HCR1a: Status Quo",
                                  #             "HCR1b: Status Quo + SSL" = "HCR1b: Status Quo + SSL"),
-                                 c("Custom",HCR_levels),
+                                 #c("Custom",HCR_levels),
+                                 HCR_levels,
                                  multiple = TRUE,
                                  selected = c("HCR1a: Status Quo", "HCR1b: Status Quo + SSL")),
                      sliderInput("B_y", "Display B2B0 (Current SSBiomass Status relative to B_0)",
                                   value = 0.6, min = 0, max = 2, step = .3)
                      ),
                     card(
-                      card_header("Optional Custom Inputs"),
-                      selectInput("hcrType", "Select Custom HCR Type", HCR_choices),
+                      #card_header("Optional Custom Inputs"),
+                      card_header(markdown("## Optional Custom Inputs")),
+                      selectInput("hcrType", "Select Custom HCR Type", HCR_choices, selected = HCR_choices[6]),
                                   # choices = c("Type 1: Status Quo" = "1",
                                   #             "Custom" = "0")),
-                      numericInput("alpha", "Alpha", value = 0.05, min = 0, max = 1, step = 0.01),
-                      
-                      numericInput("gamma", "gamma", value = 0, min =-1, max = 10, step = 0.01),
-                      numericInput("omega1", "omega1", value = 0, min = 0, max = 10, step = 0.01),
-                      numericInput("omega2", "omega2", value = 0, min = 0, max = 10, step = 0.01),
-                      numericInput("omega3", "omega3", value = 0, min = 0, max = 10, step = 0.01),
-                      numericInput("theta", "theta", value = 0, min = 0, max = 10, step = 0.01),
-                    
+                      markdown("### HCR 1-8 base inputs
+                        - **B2B0_lim**: lower biomass threshold (e.g., B_20% = 0.2); 
+                        - **B2B0_target**: Target biomass/MSY proxy
+                        - **Flim**: input of F harvest mortality rate to adjust with the HCR 
+                        - **alpha**: default is 0.05, this is the slope of the HCR"),
                       numericInput("b2b0_lim", "B2B0 Limit", value = 0.2, min = 0, max = 1, step = 0.01),
-                      numericInput("b2b0_target", "B2B0 Target", value = 0.4, min = 0, max = 1, step = 0.01)
+                      numericInput("b2b0_target", "B2B0 Target", value = 0.4, min = 0, max = 1, step = 0.01),
+                      numericInput("alpha", "Alpha", value = 0.05, min = 0, max = 1, step = 0.01),
+                      markdown("### HCR 5 & 6 additional inputs
+                      - **gamma**: log of the gamma parameter default is 0; gamma decay rate value is between 0 and 1"),
+                      sliderInput("gamma", "gamma", value = .7, min =0.01, max = 0.99, step = 0.01),
+                      markdown("### HCR 7 additional inputs
+                        - **omega1**: omega1 is >0 covariate linked penalty on Flim for HCR 7
+                        - **omega2**: covariate linked penalty on B2B0_target for HCR 7
+                        - **omega3**: covariate linked penalty on B2B0_lim for HCR 7"),
+                      sliderInput("cov", "scaled covariate (e.g., delta SST (deg C))",
+                                  min = -2, max = 2, value = .7, step=.01),
+                       sliderInput("omega1", "omega1", value = .7, min = 0.001, max = 1, step = 0.01),
+                      sliderInput("omega2", "omega2", value = .5, min = 0.001, max = 1, step = 0.01),
+                      sliderInput("omega3", "omega3", value = .3, min = 0.001, max = 1, step = 0.01),
+                      markdown("### HCR 8 additional inputs
+                               - **theta** is a scaler on SSB, should be >0"),
+                      sliderInput("theta", "theta", value = 0.8, min = 0, max = 2, step = 0.001)
+                    
               
                       
                       # numericInput("fabc", "F ABC", value = 0.3, min = 0, max = 1, step = 0.01)
@@ -155,14 +171,20 @@ ui <- page_sidebar(
 if(1==10){
   input <- list()
   
-  input$mhw <- 10
+
   input$showbase <- T
   input$hcrScenarios <-c( "HCR1a: Status Quo", "HCR1b: Status Quo + SSL")
   input$B_y <- 0.6
-  input$hcrType <- HCR_choices[1]
+  input$hcrType <- HCR_choices[6]
   input$alpha <-   0.05
   input$b2b0_lim <- .2
   input$b2b0_target <-0.4
+  input$gamma <- .7
+  input$omega1 <- .7
+  input$omega2 <- .5
+  input$omega3 <-.3
+  input$theta <- .7
+  input$cov <- .4
   
 }
 
@@ -179,7 +201,7 @@ server <- shinyServer(function(input, output, session) {
     plotdat <- data.frame()
     # plotdat <- reactive({
     
-      if ("Custom" %in% input$hcrScenarios) {
+      if (input$showcustom) {
         
          tmp_custom <- data.frame(
           B2B0 = B2B0,
@@ -194,35 +216,36 @@ server <- shinyServer(function(input, output, session) {
               log_omega2  = log(input$omega2),
               log_omega3  = log(input$omega3),
               log_theta   = log(input$theta),
-              cov =input$mhw,
+              cov = input$cov,
             )),
           
-          alpha = input$alpha, B2B0_lim = input$b2b0_lim, 
+          alpha       = input$alpha, 
+          B2B0_lim    = input$b2b0_lim, 
           B2B0_target = input$b2b0_target)
          
          tmp_custom <- tmp_custom%>%
           mutate(
-            HCR = paste("Custom",names(HCR_choices)[ as.numeric(input$hcrType)]),
-            HCRscen = names(HCR_choices)[ as.numeric(input$hcrType)], 
-            subtxt = "")
+            HCR     = paste("Custom",names(HCR_choices)[ as.numeric(input$hcrType)]),
+            HCRscen = paste("Custom",names(HCR_choices)[ as.numeric(input$hcrType)]), 
+            subtxt  = "")
         
         
         print(input$hcrType )
         print(names(HCR_choices)[ as.numeric(input$hcrType)])
-       print(head(tmp_custom))
-        coluse <- col_line%>%filter(HCRscen ==  names(HCR_choices)[ as.numeric(input$hcrType)])
-       coluse$col <- "orange"
-        col_lineC <- rbind(data.frame(HCR   = tmp_custom$HCR[1],
-                                    HCRscen = tmp_custom$HCRscen[1], 
-                                    subtxt  = tmp_custom$subtxt[1],
-                                    col     = coluse$col[1],
-                                    line    = "solid",
-                                    size    = 1),
+        print(head(tmp_custom))
+        coluse     <- col_line%>%
+          filter(HCRscen ==  names(HCR_choices)[ as.numeric(input$hcrType)])
+        coluse$col <- "orange"
+        col_lineC  <- rbind(data.frame(HCR   = tmp_custom$HCR[1],
+                                    HCRscen  = tmp_custom$HCRscen[1], 
+                                    subtxt   = tmp_custom$subtxt[1],
+                                    col      = coluse$col[1],
+                                    line     = "solid",
+                                    size     = 1),
                           col_line)
                                     
         print(head(col_lineC))
-        
-          plotdat <- rbind( plotdat_all%>%filter(HCR%in% input$hcrScenarios),
+        plotdat <- rbind( plotdat_all%>%filter(HCR%in% input$hcrScenarios),
                             tmp_custom%>%left_join( col_lineC, by = c("HCR", "HCRscen", "subtxt")))
           
         }else{
