@@ -20,14 +20,14 @@
 #' @param omega1 omega1 is >0 covariate linked penalty on Flim for HCR 7
 #' @param omega2 covariate linked penalty on B2B0_target for HCR 7
 #' @param omega3 covariate linked penalty on B2B0_lim for HCR 7
-#' @param B2B0_lim lower biomass threshold (e.g., B_20% = 0.2); 
-#' @param B2B0_target Target biomass/MSY proxy
+#' @param B2B0_lim lower biomass threshold (e.g., B_20% = 0.2*B0); 
+#' @param B2B0_target Target biomass in biomass units /MSY proxy (e.g., B_40% = 0.4*B0);
 #' @param Flim input of F harvest mortality rate to apply the HCR to
 #' @param theta is a scaler on SSB, should be >0
 #' 
 #' @export
 #' 
-    ACLIM_HCR <-function(B2B0,
+    ACLIM_HCR <- function(B2B0,
                          type,
                          alpha, 
                          log_gamma = .2, 
@@ -40,7 +40,7 @@
                          Flim   = 1,
                          cov    = NULL){
       
-      if(!type%in%c(1:9)){
+      if(!type%in%c(1:10)){
         warning("warning with HCR_ACLIM function: type must be an integer between 1 and 9")
       }
       
@@ -124,9 +124,34 @@
         }
       }
       
+      # decay inverse to SSB/Btarget above 1
+      if(type%in%c(10)){
+        # gamma is the environmental sensitivity parameter from vulnerability analyses
+        gamma <- exp(log_gamma) # gamma is between 0 and 1, and is the Btarget offset
+        B2B40       <- B2B0/B2B0_target # ratio (etc 0.4)
+       
+        if(B2B40 > 1 ){
+         
+          maxFabc = Flim
+          
+          #if(B2B40 >=  B2B40/(B2B0/( B2B0_target*(1 + gamma) ) ) ){
+          if(B2B40 >= (1 + gamma) ){
+              maxFabc = Flim/(B2B40/(1+gamma))
+          }
+         
+        }else{
+          if(alpha<B2B40){
+            maxFabc=Flim*((B2B40-alpha)/(1.-alpha))
+          }else{
+            maxFabc=0.0
+          }
+        }
+      }
+      
       if(B2B40<=(B2B0_lim/B2B0_target))
         maxFabc=0.0
       return(maxFabc)
+      
       
       
 }

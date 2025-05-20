@@ -1,12 +1,12 @@
-name: HCRs
-title: HCRs
+name: HCRshiny
+title: HCRshiny
 username: kholsman
 account: kholsman
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
-appId: 14416682
-bundleId: 10087992
-url: https://kholsman.shinyapps.io/HCRs/
+appId: 14708520
+bundleId: 10313884
+url: https://kholsman.shinyapps.io/HCRshiny/
 version: 1
 asMultiple: FALSE
 asStatic: FALSE

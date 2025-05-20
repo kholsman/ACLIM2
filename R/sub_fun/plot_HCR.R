@@ -24,7 +24,7 @@ plot_HCR <- function(dataIN,baseDataIN = baseData, ylim = c(0,1.3) , col_lineIN 
     coord_cartesian(ylim = c(ylim[1],ylim[2]))+
     
     theme_minimal()+    
-    scale_color_manual(values = col2$col)+   
+    scale_color_manual(values = col2$col)+
     scale_size_manual(values = col2$size)+   
     scale_linetype_manual(values = col2$line)
   

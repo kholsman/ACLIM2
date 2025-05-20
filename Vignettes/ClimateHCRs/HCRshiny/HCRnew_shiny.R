@@ -5,22 +5,10 @@ library(viridis)
 library(bslib)
 library(plotly)
 
-
-source("MakeACLIM_HCRdata_functions.R")
-HCR_choices <- seq(1,length(HCRscen_levels))
-names(HCR_choices)<-c(HCRscen_levels)
-
-#plodat_all <- readRDS("data/plodat_all.rds")
-
-# getdata<- reactive({source("MakeACLIM_HCRdata_functions.R")})
-# 
-# output$data <- renderDataTable(
-#   plodat_all <- getdata()$plodat_all
-#   
-#   
-#   "Then call all your if statements and such on the function using Pitch"
-# )
-# 
+ # tmpdir<-getwd(); setwd("/Users/KKH/Documents/GitHub_mac/ACLIM2/Vignettes/ClimateHCRs/HCRshiny")
+source("R/MakeACLIM_HCRdata_functions.R")
+HCR_choices        <- seq(1,length(HCRscen_levels))
+names(HCR_choices) <- c(HCRscen_levels)
 
 # UI
 ui <- page_sidebar(
@@ -47,7 +35,7 @@ ui <- page_sidebar(
                      #               c("Custom",HCR_levels),
                      #               selected = c("HCR1a: Status Quo", "HCR1b: Status Quo + SSL")),
                      selectInput("hcrScenarios", "HCR Scenarios to Display",
-                                 # choices = c("HCR1a: Status Quo" = "HCR1a: Status Quo",
+                                 # choices = c("HCR1a: Status Quo" = "HCR1a: Status Quo (no SSL)",
                                  #             "HCR1b: Status Quo + SSL" = "HCR1b: Status Quo + SSL"),
                                  #c("Custom",HCR_levels),
                                  HCR_levels,
@@ -142,10 +130,11 @@ ui <- page_sidebar(
         markdown("
             ## About Harvest Control Rules
             
-             During ACLIM phase 2 (2019-2022), modelers evaluated a suite of Harvest 
-                  Control Scenarios (1-5), in 2025 in coordination with GOACLIM we added 
-                  three addition HCRs to the set.Below is a list of those standardized 
-                  harvest control rules and the equations used to derive the curves. 
+             During ACLIM phase 2 (2019-2022), modelers evaluated a suite of 
+             Harvest Control Scenarios (1-5), in 2025 in collaboration with 
+             GOA-CLIM2 we added a number of additional HCRs to the set. Below 
+             is a list of those standardized harvest control rules and the 
+             equations used to derive the curves. 
 
                     - ABC+HCR 1: Status quo  
                     - ABC+HCR 2: Lagged recovery to estimate emergency relief financing needs  
@@ -155,6 +144,7 @@ ui <- page_sidebar(
                     - ABC+HCR 6: MHW slope + climate sensitivity reserve (buffer shocks)  
                     - ABC+HCR 7: R/S variability adjusted HCR based on covariate effects on R/S
                     - ABC+HCR 8: Adjust effective spawning biomass (rather than adjust B_target)
+                    - ABC+HCR 9: Forecast informed version of HCR 5
 
             ")
         ), # end panel
@@ -209,19 +199,26 @@ server <- shinyServer(function(input, output, session) {
               B2B0, ACLIM_HCR, 
               type = as.numeric(input$hcrType),
               alpha = input$alpha, 
-              B2B0_lim = input$b2b0_lim,
               B2B0_target = input$b2b0_target,
-              invlogit_gamma  = inv.logit(input$gamma),
-              log_omega1  = log(input$omega1),
-              log_omega2  = log(input$omega2),
-              log_omega3  = log(input$omega3),
+              B2B0_lim = input$b2b0_lim,
+              log_gamma  = log(input$gamma),
+              omega1  = (input$omega1),
+              omega2  = (input$omega2),
+              omega3  = (input$omega3),
               log_theta   = log(input$theta),
               cov = input$cov,
             )),
           
           alpha       = input$alpha, 
-          B2B0_lim    = input$b2b0_lim, 
-          B2B0_target = input$b2b0_target)
+          B2B0_target = input$b2b0_target,
+          cov = input$cov,
+          log_gamma  = log(input$gamma),
+          log_theta   = log(input$theta), 
+          B2B0_lim    = input$b2b0_lim,
+          omega1  = (input$omega1),
+          omega2  = (input$omega2),
+          omega3  = (input$omega3)
+          )
          
          tmp_custom <- tmp_custom%>%
           mutate(
@@ -245,17 +242,16 @@ server <- shinyServer(function(input, output, session) {
                           col_line)
                                     
         print(head(col_lineC))
-        plotdat <- rbind( plotdat_all%>%filter(HCR%in% input$hcrScenarios),
-                            tmp_custom%>%left_join( col_lineC, by = c("HCR", "HCRscen", "subtxt")))
+        plotdat <- rbind( plotdat_all%>%select(-Species,-alpha_OFL,-alpha2_ABC,-type),
+                            tmp_custom%>%left_join( col_lineC, by = c("HCR", "HCRscen", "subtxt")) )
           
         }else{
           
-          plotdat <- plotdat_all%>%filter(HCR%in% input$hcrScenarios)
+          plotdat <- plotdat_all
         
         }
-      # return(plotdat)
-      # })
-    # Update the reactive value
+    
+    plotdat <- plotdat%>%filter(HCR%in% input$hcrScenarios)
     plotData(plotdat)
     
   })

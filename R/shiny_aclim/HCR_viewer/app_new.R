@@ -19,23 +19,7 @@ library("dplyr")
 library("RColorBrewer")
 
 print(getwd())
-source("../../sub_scripts/Kir_plotACLIM_GOACLIM.R")
-
-HCR <-function(x, alpha=0.05, B2B0_lim = 0.2, B2B0_target=0.4,Flim=1){
-    B2B40    <- x/B2B0_target
-    if(B2B40>1.){
-        maxFabc=Flim
-    }else{
-        if(alpha<B2B40){
-            maxFabc=Flim*((B2B40-alpha)/(1.-alpha))
-        }else{
-            maxFabc=0.0
-        }
-    }
-    if(B2B40<=(B2B0_lim/B2B0_target))
-        maxFabc=0.0
-    return(maxFabc)
-}
+source("../../sub_fun/Kir_plotACLIM_GOACLIM.R")
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
