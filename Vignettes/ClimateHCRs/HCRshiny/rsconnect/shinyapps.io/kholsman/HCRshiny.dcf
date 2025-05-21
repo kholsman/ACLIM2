@@ -5,7 +5,7 @@ account: kholsman
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 14708520
-bundleId: 10313884
+bundleId: 10315497
 url: https://kholsman.shinyapps.io/HCRshiny/
 version: 1
 asMultiple: FALSE
