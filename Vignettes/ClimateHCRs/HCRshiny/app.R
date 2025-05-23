@@ -19,17 +19,17 @@ ui <- bslib::page_sidebar(
   title = "Harvest Control Rule (HCR) Explorer",
   # App header ---
   
-   #card(card_header("",card_image(file = "ACLIMGOABadges2.png", width = '100%'))),
+  # card(card_header("",card_image(file = "ACLIMGOABadges2.png", width = '100%'))),
      # Sidebar panel for inputs ----
      sidebar = sidebar(
        width = "30%",
        # actionButton("run", "Update Plot", class = "btn-primary"),
-       #  actionButton("reset_input", "Reset inputs"),
-    uiOutput('resetable_input'),
-    checkboxInput(inputId = "showbase", label = "Show Status Quo on each plot",
-                  value = T, width = NULL),
-    checkboxInput(inputId = "showcustom", label = "Show Custom HCR",
-                 value = T, width = NULL),
+       # actionButton("reset_input", "Reset inputs"),
+          uiOutput('resetable_input'),
+          checkboxInput(inputId = "showbase", label = "Show Status Quo on each plot",
+                        value = T, width = NULL),
+          checkboxInput(inputId = "showcustom", label = "Show Custom HCR",
+                       value = T, width = NULL),
                     #---- right inputs35
                    card(
                      card_header("HCR Visualization"),
@@ -56,7 +56,7 @@ ui <- bslib::page_sidebar(
                       numericInput("alpha", "Alpha", value = 0.05, min = 0, max = 1, step = 0.01),
                       markdown("### HCR 5 & 6 & 9 additional inputs
                       - **gamma**: log of the gamma parameter default is 0; gamma decay rate value is between 0 and 1"),
-                      sliderInput("gamma", "gamma", value = .7, min =0.01, max = 2, step = 0.01),
+                      sliderInput("gamma", "gamma", value = .7, min =0.01, max = 4, step = 0.01),
                       markdown("### HCR 7 & 9 additional inputs
                       - **cov**: this is a scaled (z-scored) covariate such as SST, cold pool or BT"),
                       sliderInput("cov", "covariate value",
@@ -77,7 +77,7 @@ ui <- bslib::page_sidebar(
                       # numericInput("fabc", "F ABC", value = 0.3, min = 0, max = 1, step = 0.01)
                       )
         ),# end sidebar
-    # Main panel for displaying outputs ----
+  # Main panel for displaying outputs ----
   # Output: A tabset that combines three panels ----
   navset_card_underline(
   # nav card ----
@@ -257,19 +257,16 @@ server <- shinyServer(function(input, output, session) {
     plotData(plotdat)
     
   })
- 
-   # get HTML
- # output$inc <- renderUI(includeHTML("HCR_demo.html"))
-  
-  
-  # Render the HCR plot
-  output$hcrPlot <- renderPlotly({
+
+     # Render the HCR plot
+     output$hcrPlot <- renderPlotly({
     req(plotData())
     plot_title <- ("Harvest Control Rule")
+    
     # plot_HCR_shiny(dataIN = plotdat, plotTitle = plot_title, showbase = input$showbase,B2B0_ref = input$B_y)
     gg <- plot_HCR_shiny(dataIN = plotData(), 
                          plotTitle = plot_title, showbase = input$showbase)
-    ggplotly(gg)%>%plotly::layout(legend=list(x=0, 
+    ggplotly(gg)%>%plotly::layout(legend=list(x = 0, 
                                               xanchor='left',
                                               yanchor='bottom',
                                               orientation='h')) 
@@ -295,6 +292,7 @@ server <- shinyServer(function(input, output, session) {
    
   # Initialize the plot on app start - if needed
   observe({
+    
     # Trigger initial plot creation after app launches
     if (is.null(plotData())) {
       # You can set an initial value here if needed
@@ -321,9 +319,6 @@ server <- shinyServer(function(input, output, session) {
                                     line    = "solid",
                                     size    = 1),
                          col_line)
-      
-      #"B_y" 
-      
       plotdat <- hcr1a%>%left_join( col_lineC, by = c("HCR", "HCRscen", "subtxt"))
       plotData(plotdat)
     }

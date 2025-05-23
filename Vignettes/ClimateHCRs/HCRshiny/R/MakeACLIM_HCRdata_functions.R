@@ -95,11 +95,12 @@ source("R/HCR_ACLIM.R")
 # read in HCRpar 
 HCRpar     <- readxl::read_xlsx(file.path("data","HCR_par_shiny.xlsx"),col_names=T)%>%data.frame()
 
-
 B0    <- 3e6  # hypothetical B0 from the stock assessment in 2015
-B     <- seq(0,1.2,.001)*B0
+B     <- seq(0,4,.001)*B0
 B2B0  <- B/B0
-Fabc  <- .3 # hypothetical F ABC as determined from the model
+Fabc  <- .3 
+
+# hypothetical F ABC as determined from the model
 
 HCRset         <- HCRpar$HCR_sub%>%unique()
 HCR_levels     <- HCRpar$HCR_sub |> unique()
@@ -109,10 +110,8 @@ colset         <- viridis(length(HCRscen_levels),
                           option = "mako", direction = -1,  begin = .15, end = .9)
 lineset       <- c("solid","dashed","dotted","solid")
 linesize      <- c(1,1,1,.7)
+
 # test the data inputs to make sure they are correct:
-B0    <- 3e6  # hypothetical B0 from the stock assessment in 2015
-B     <- seq(0,1.2,.001)*B0
-B2B0  <- B/B0
 sp_tab <- data.frame(Species = c("Species1","Species2","Species3"),
                      sp = c("pollock","P. cod","atf"),sp_num = c(1:3))
 

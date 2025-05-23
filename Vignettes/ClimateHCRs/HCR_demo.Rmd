@@ -220,8 +220,7 @@ Eq. 1 $$F_{ABC_{max}} =\Biggl[~
 
 ```{r HCR1, include=F,Eval=T, echo=F, results =F}
 
-typeIN <- 1
-
+typeIN   <- 1
 plotdat1 <- plotdat_out%>%
                     filter(type==typeIN,
                             Species=="Species1")
