@@ -6,6 +6,7 @@ Data/In/Map_layers/shp_files/*
 Data/In/Map_layers/shp_files/*
 
 Data/In/Newest
+Data/fromGdrive
 Data/In/Newest/aclim_thredds*
 Data/In/Newest/Rdata/*
 Data/In/Newest/roms_for_aclim/*

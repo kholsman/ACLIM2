@@ -5,8 +5,7 @@ library(viridis)
 library(bslib)
 library(plotly)
 library(reshape)
-
-
+library(writexl)
  # tmpdir<-getwd(); setwd("/Users/KKH/Documents/GitHub_mac/ACLIM2/Vignettes/ClimateHCRs/HCRshiny")
 source("R/MakeACLIM_HCRdata_functions.R")
 
@@ -20,11 +19,16 @@ ui <- bslib::page_sidebar(
   # App header ---
   
   # card(card_header("",card_image(file = "ACLIMGOABadges2.png", width = '100%'))),
-     # Sidebar panel for inputs ----
+  # Sidebar panel for inputs ----
      sidebar = sidebar(
        width = "30%",
        # actionButton("run", "Update Plot", class = "btn-primary"),
        # actionButton("reset_input", "Reset inputs"),
+       downloadButton("dl_input", "Download HCR Parameters (HCRpar.xlsx) "),
+       #downloadButton("dl_Rfun", "Download HCR R function ( HCR_ACLIM() ) "),
+       downloadButton("dl_output", "Download HCR plot data"),
+       uiOutput("tab"),
+       
           uiOutput('resetable_input'),
           checkboxInput(inputId = "showbase", label = "Show Status Quo on each plot",
                         value = T, width = NULL),
@@ -124,34 +128,34 @@ ui <- bslib::page_sidebar(
 
     
     # Panel with summary ----
-      nav_panel("Summary", 
-        markdown("
-            ## About Harvest Control Rules
-            
-             During ACLIM phase 2 (2019-2022), modelers evaluated a suite of 
-             Harvest Control Scenarios (1-5), in 2025 in collaboration with 
-             GOA-CLIM2 we added a number of additional HCRs to the set. Below 
-             is a list of those standardized harvest control rules and the 
-             equations used to derive the curves. 
+      # nav_panel("Summary", 
+      #   markdown("
+      #       ## About Harvest Control Rules
+      #       
+      #        During ACLIM phase 2 (2019-2022), modelers evaluated a suite of 
+      #        Harvest Control Scenarios (1-5), in 2025 in collaboration with 
+      #        GOA-CLIM2 we added a number of additional HCRs to the set. Below 
+      #        is a list of those standardized harvest control rules and the 
+      #        equations used to derive the curves. 
+      # 
+      #               - ABC+HCR 1: Status quo  
+      #               - ABC+HCR 2: Lagged recovery to estimate emergency relief financing needs  
+      #               - ABC+HCR 3: Long-term resilience (stronger reserve) $F_{target}$  
+      #               - ABC+HCR 4: CE informed sloping rate, e.g., MHW category alpha  
+      #               - ABC+HCR 5: climate sensitivity reserve (buffer shocks)  
+      #               - ABC+HCR 6: MHW slope + climate sensitivity reserve (buffer shocks)  
+      #               - ABC+HCR 7: R/S variability adjusted HCR based on covariate effects on R/S
+      #               - ABC+HCR 8: Adjust effective spawning biomass (rather than adjust B_target)
+      #               - ABC+HCR 9: Forecast informed version of HCR 5
+      # 
+      #       ")
+      #   ), # end panel
+    nav_panel(
+      "Detailed Information",
+      #shiny::includeHTML("HCR_demo.html")
+      shiny::includeCSS("HCR_demo.html")
+    )
 
-                    - ABC+HCR 1: Status quo  
-                    - ABC+HCR 2: Lagged recovery to estimate emergency relief financing needs  
-                    - ABC+HCR 3: Long-term resilience (stronger reserve) $F_{target}$  
-                    - ABC+HCR 4: CE informed sloping rate, e.g., MHW category alpha  
-                    - ABC+HCR 5: climate sensitivity reserve (buffer shocks)  
-                    - ABC+HCR 6: MHW slope + climate sensitivity reserve (buffer shocks)  
-                    - ABC+HCR 7: R/S variability adjusted HCR based on covariate effects on R/S
-                    - ABC+HCR 8: Adjust effective spawning biomass (rather than adjust B_target)
-                    - ABC+HCR 9: Forecast informed version of HCR 5
-
-            ")
-        ), # end panel
-    # Panel with info ----
-      nav_panel(
-        "Detailed Information",
-         #shiny::includeHTML("HCR_demo.html")
-        shiny::includeCSS("HCR_demo.html")
-      ) # end panel
     ) # end  navset_card_underline
 ) # end  to page_sidebar io
 
@@ -163,7 +167,7 @@ if(1==10){
   input$showbase <- T
   input$hcrScenarios <-c( "HCR1a: Status Quo", "HCR1b: Status Quo + SSL")
   input$B_y <- 0.6
-  input$hcrType <- HCR_choices[6]
+  input$hcrType <- 10; # HCR_choices[6]
   input$alpha <-   0.05
   input$b2b0_lim <- .2
   input$b2b0_target <-0.4
@@ -179,7 +183,52 @@ if(1==10){
 # server <- function(input, output, session) {
 server <- shinyServer(function(input, output, session) {
   # Reactive values to store plotting data
+  
  plotData <- reactiveVal(NULL)
+ outPar   <- reactiveVal(NULL)
+ 
+     url <- a("ACLIM2 HCR R function", href="https://github.com/kholsman/ACLIM2/blob/main/Vignettes/ClimateHCRs/HCRshiny/R/HCR_ACLIM.R")
+     output$tab <- renderUI({
+      # tagList("URL link:", url)
+       tagList(url)
+     })
+ 
+    observe({
+       HCRpar_out <-  HCRpar_out <- HCRpar%>%
+         dplyr::select(-Species2,-Species3)%>%
+         dplyr::rename(value = Species1)
+       
+      if (input$showcustom) {
+         # append input file
+       
+         tmpsub <- HCRpar_out%>%dplyr::filter(HCR==10, sub=="a")
+         HCRpar_custom <- 
+           data.frame(rbind(
+             c("alpha_ABC" , input$alpha), 
+             c("alpha2_ABC",tmpsub%>%filter(Parm == "alpha2_ABC")%>%select(value)%>%as.numeric()), 
+             c("alpha_OFL",tmpsub%>%filter(Parm == "alpha_OFL")%>%select(value)%>%as.numeric()), 
+             c("log_gamma",round(log(input$gamma),4)),
+             c("omega1",(input$omega1)),
+             c( "omega2" , (input$omega2)),
+             c("omega3"  , (input$omega3)),
+             c("log_theta"   , round(log(input$theta),4)),
+             c("minBlimMult" ,input$b2b0_lim),
+             c("Btarget" , input$b2b0_target),
+             c("hcr_cov" , input$cov) ))
+         
+         colnames(HCRpar_custom) <- names(tmpsub)[1:2]
+         
+         HCRpar_custom$HCR <- as.numeric(input$hcrType)
+         HCRpar_custom$sub <- ""
+         HCRpar_custom$HCR_sub <- "Custom HCR"
+         
+         HCRpar_out <- rbind(HCRpar_out,HCRpar_custom)
+         
+        }
+       outPar(HCRpar_out)
+      
+     })
+
 
   # Update plot on button click
    # observeEvent(input$run, {
@@ -190,7 +239,8 @@ server <- shinyServer(function(input, output, session) {
     # plotdat <- reactive({
     
       if (input$showcustom) {
-        
+         # append input file
+       
          tmp_custom <- data.frame(
           B2B0 = B2B0,
           F_adj = unlist(lapply(
@@ -204,7 +254,7 @@ server <- shinyServer(function(input, output, session) {
               omega2  = (input$omega2),
               omega3  = (input$omega3),
               log_theta   = log(input$theta),
-              cov = -1*input$cov,
+              cov = input$cov,
             )),
           
           alpha       = input$alpha, 
@@ -272,7 +322,19 @@ server <- shinyServer(function(input, output, session) {
                                               orientation='h')) 
    
   })
-  
+     
+     output$dl_input <- downloadHandler(
+       filename = function() { "HCRpar.xlsx"},
+       content = function(file) {write_xlsx(outPar(), path = file)}
+     )
+     # output$dl_Rfun <- downloadHandler(
+     #   filename = function() { "HCR_ACLIM_function.R"},
+     #   content = function(file) {save(HCR_ACLIM, path = file)}
+     # ) 
+     output$dl_output <- downloadHandler(
+       filename = function() { "HCRplotData.xlsx"},
+       content = function(file) {write_xlsx(plotData(), path = file)}
+     )
 
   output$hcrPlotCompare <- renderPlotly({
     req(plotData())

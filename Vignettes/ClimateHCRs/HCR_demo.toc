@@ -1,11 +1,12 @@
-\contentsline {section}{ABC+HCR 1: Status quo}{2}{section*.2}%
-\contentsline {section}{ABC+HCR 2: Lagged recovery to estimate emergency relief financing needs}{2}{section*.3}%
-\contentsline {section}{ABC+HCR 3: Long-term resilience (stronger reserve) Ftarget}{3}{section*.4}%
-\contentsline {section}{ABC+HCR 4: CE informed sloping rate, e.g., MHW category alpha}{3}{section*.5}%
-\contentsline {section}{ABC+HCR 5: climate sensitivity reserve (buffer shocks)}{4}{section*.6}%
-\contentsline {section}{ABC+HCR 6: MHW slope + climate sensitivity reserve (buffer shocks)}{5}{section*.7}%
-\contentsline {section}{ABC+HCR 7:Recruit per spawner biomass variability adjusted HCR based on covariate effects on S/R}{7}{section*.8}%
-\contentsline {section}{ABC+HCR 8: Adjust effective spawning biomass (rather than adjust B\_target)}{7}{section*.9}%
-\contentsline {section}{ABC+HCR 9: Forecast informed version of HCR 5}{8}{section*.10}%
-\contentsline {section}{ABC+HCR 10: Forecast informed version of HCR 5}{9}{section*.11}%
-\contentsline {section}{Full set of HCR scenarios}{9}{section*.12}%
+\contentsline {section}{\numberline {1}ABC+HCR 1: Status quo}{2}{section.1}%
+\contentsline {section}{\numberline {2}ABC+HCR 2: Lagged recovery to estimate emergency relief financing needs}{3}{section.2}%
+\contentsline {section}{\numberline {3}ABC+HCR 3: Long-term resilience (stronger reserve) B\_target}{4}{section.3}%
+\contentsline {section}{\numberline {4}ABC+HCR 4: Environmental index informed sloping rate, e.g., MHW category alpha}{4}{section.4}%
+\contentsline {section}{\numberline {5}ABC+HCR 5: Maximize productivity/ increased reserve (buffer shocks)}{5}{section.5}%
+\contentsline {section}{\numberline {6}ABC+HCR 6: Combination of MHW (HCR4) + Maximize productivity (HCR5)}{6}{section.6}%
+\contentsline {section}{\numberline {7}ABC+HCR 7: Risk Table Bridging: R/S variability covariate adjusted HCR}{8}{section.7}%
+\contentsline {section}{\numberline {8}ABC+HCR 8: Adjust effective spawning biomass (simulate adjusted B\_target)}{8}{section.8}%
+\contentsline {section}{\numberline {9}ABC+HCR 9: Forecast informed version of HCR 5}{9}{section.9}%
+\contentsline {section}{\numberline {10}ABC+HCR 10: Maximize productivity/increased reserve (HCR5), linear version (1/ B\_target) with offset}{10}{section.10}%
+\contentsline {section}{\numberline {11}Full set of HCR scenarios}{11}{section.11}%
+\contentsline {section}{References}{11}{section*.2}%
