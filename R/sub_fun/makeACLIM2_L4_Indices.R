@@ -53,10 +53,18 @@ makeACLIM2_L4_Indices_strata <- function(
   gc()
   
   i <- 0
-  ACLIM_annual_hind   <- ACLIM_hind$annual%>%dplyr::mutate(i = i,  gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=hind_sim)%>%ungroup()
-  ACLIM_seasonal_hind <- ACLIM_hind$seasonal%>%dplyr::mutate(i = i,gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=hind_sim)%>%ungroup()
-  ACLIM_monthly_hind  <- ACLIM_hind$monthly%>%dplyr::mutate(i = i, gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=hind_sim)%>%ungroup()
-  ACLIM_weekly_hind   <- ACLIM_hind$weekly%>%dplyr::mutate(i = i,  gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=hind_sim)%>%ungroup()
+  ACLIM_annual_hind   <- ACLIM_hind$annual%>%dplyr::mutate(i = i,  
+                                                           gcmcmip="hind",CMIP=CMIP,
+                                                           GCM ="hind", scen = "hind", mod=hind_sim)%>%ungroup()
+  ACLIM_seasonal_hind <- ACLIM_hind$seasonal%>%dplyr::mutate(i = i,
+                                                             gcmcmip="hind",CMIP=CMIP,
+                                                             GCM ="hind", scen = "hind", mod=hind_sim)%>%ungroup()
+  ACLIM_monthly_hind  <- ACLIM_hind$monthly%>%dplyr::mutate(i = i, 
+                                                            gcmcmip="hind",CMIP=CMIP,
+                                                            GCM ="hind", scen = "hind", mod=hind_sim)%>%ungroup()
+  ACLIM_weekly_hind   <- ACLIM_hind$weekly%>%dplyr::mutate(i = i,  
+                                                           gcmcmip="hind",CMIP=CMIP,
+                                                           GCM ="hind", scen = "hind", mod=hind_sim)%>%ungroup()
   #ACLIM_surveyrep_hind<- surveyrep_adj$hind%>%dplyr::mutate(i = i,gcmcmip="hind",CMIP=CMIP,GCM ="hind", scen = "hind", mod=mod)
   
   

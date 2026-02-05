@@ -11,11 +11,11 @@
 #'
 
 
-get_var <- function(
+get_var2 <- function(
   typeIN    = "annual", #ACLIM2 Index Type"
   plotvar   = "temp_bottom5m",  #variable to plot
   alphaIN   = c(0.6,.1),
-  adjIN     = "val_delta",
+  adjIN = "val_delta",
   plothist     = T,
   ifmissingyrs = 5,
   stitchDateIN = stitchDate,
@@ -73,13 +73,9 @@ get_var <- function(
       yrin  <- sort(unique(dfut$year))[1]
       dfut  <- dfut%>%dplyr::filter(year>yrin)
     }
-    CMIP       <- CMIPIN[c]
-    
-    if( "RCP"%in%names(dfut) )
-      dfut <- dfut%>%rename(scen = RCP)
-    
+    #CMIP       <- CMIPIN[c]
     if(is.null(scenIN))
-      scenINuse <- unique(dfut$scen)
+      scenINuse <- unique(dfut$RCP)
     
     for(s in 1:length(scenINuse)){
       
@@ -102,26 +98,27 @@ get_var <- function(
     sellist  <- sellist[sellist%in%names(dhind)]
       
       hind     <- dhind%>%dplyr::filter(var ==plotvar,basin==plotbasin,GCM2 =="hind")%>%
-        dplyr::select(all_of(c(sellist,"mnVal_hind")))%>%
-        mutate(val_delta = mn_val,val_biascorrected=mn_val) # in hindcast there is no bc so set both to raw
-      
+        dplyr::select(all_of(c(sellist,"mnVal_hind")))
+      #%>%
+      #  mutate(val_delta = mn_val,val_biascorrected=mn_val)
       hist     <- dhist%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%
-        dplyr::select(all_of(sellist))%>%
-        mutate(mnVal_hind=NA,val_delta = mn_val,val_biascorrected=mn_val)# in hist there is no bc so set both to raw
+        dplyr::select(all_of(sellist))
+      #%>%
+       # mutate(mnVal_hind=NA,val_delta = mn_val,val_biascorrected=mn_val)
       
       fut      <- dfut%>%dplyr::filter(var ==plotvar,basin==plotbasin)%>%mutate(GCM2 = GCM)%>%
         dplyr::select(all_of(c(sellist,"mnVal_hind","val_delta","val_biascorrected")))
     
-    # get raw values
-    fut     <- fut%>%mutate(  val_use = mn_val )
-    hist    <- hist%>%mutate( val_use = mn_val )
-    hind    <- hind%>%mutate( val_use = mn_val )
-    plotdat <- rbind(hind, hist ,fut )%>%dplyr::mutate(bc = "raw",bc_type = adjIN)%>%data.frame()
+      # get raw values
+    fut  <- fut%>%mutate(val_use  = mn_val)
+    hist <- hist%>%mutate(val_use = mn_val)
+    hind <- hind%>%mutate(val_use = mn_val)
+    plotdat    <- rbind(hind,hist,fut)%>%dplyr::mutate(bc = "raw")
     
     # get adjusted values
-    hind_bc    <- hind%>%dplyr::mutate(val_use = mn_val, bc="bias corrected",bc_type = adjIN)%>%data.frame()
+    hind_bc    <- hind%>%dplyr::mutate(val_use = mn_val, bc="bias corrected")
     eval(parse(text = paste0("fut_bc <- fut%>%dplyr::mutate(val_use  = ",adjIN,",bc='bias corrected')") ))
-    fut_bc  <- rbind(hind_bc,fut_bc%>%mutate(bc_type = adjIN)%>%data.frame())
+    fut_bc     <-rbind(hind_bc,fut_bc)
     
     plotdat          <- rbind(plotdat,fut_bc)
     plotdat$bc       <- factor(plotdat$bc, levels =c("raw","bias corrected"))
@@ -137,7 +134,6 @@ get_var <- function(
     }
     rm(plotdat)
   }
-  
   if(is.null(scenIN))
     scenINuse <- unique(plotdatout$scen)
   

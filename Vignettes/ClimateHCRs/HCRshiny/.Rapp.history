@@ -1,0 +1,421 @@
+?makeDat
+?makefutR_data
+load("/Users/KKH/Documents/GitHub_mac/futR/data/datlist.rda")
+ls()
+datlist
+load("/Users/KKH/Documents/GitHub_mac/vonBEE/data/LWA.rda")
+14500*9
+install.packages("languageserver")
+install.packages("httpgd")
+remotes::install_github("nx10/httpgd")
+9,332.00*12
+9332.00*12
+12*7817.00
+264000/12
+264000/12/2
+264000-178000
+86000/178000
+178000*1.48
+load("/Users/KKH/Documents/GitHub_mac/CEATTLE_projects/2025_CEATTLE_overlap_paper/runs/overlap_out_fut_range_overlap.Rdata")
+ls()
+head) overlap_out_fut
+head(overlap_out_fut)
+tail(overlap_out_fut)
+Sys.which("R")
+#'#
+#' Load ACLIM HCRs.R#
+#' #
+#' K. Holsman 2025#
+#' #
+#' #
+#' #
+#' #
+#
+# ------#
+#
+library(shiny)#
+library(ggplot2)#
+library(dplyr)#
+library(viridis)#
+#library(bslib)#
+library(plotly)#
+library(reshape)#
+#
+# --- functions:#
+# Define helper functions#
+inv.logit <- function(x){ #
+  exp(x)/(1+exp(x))#
+}#
+#
+logit <- function(p){ #
+  log(p/(1-p))#
+}
+getwd()
+setwd("/Users/KKH/Documents/GitHub_mac/ACLIM2/Vignettes/ClimateHCRs/HCRshiny")
+# Function to plot HCR curves#
+plot_HCR_shiny <- function(dataIN,#
+                           baseDataIN = baseData,#
+                           showbase = T,#
+                           B2B0_ref = NULL,#
+                           wrapit = F,#
+                           plotTitle = "Harvest Control Rule" ,#
+                           ylim = c(0,1.3) , #
+                           xlim = c(0,0.6) ,#
+                           ncolIN = 1 ){#
+  #dataIN2 <- left_join(dataIN,col_lineIN)#
+  baseData <- baseDataIN#
+  dataIN2  <- dataIN#
+  # col2     <- dataIN2%>%select(HCR,col,line, size)%>%distinct()#
+  B2B0_target <- dataIN$B2B0_target[1]#
+  plotout <- #
+    ggplot(dataIN2)+#
+    geom_vline(aes(xintercept=B2B0_target),linetype="dashed",size=1.1, color="gray")#
+  if(showbase)#
+    plotout <- plotout +#
+    geom_line(data=baseData,aes(x=B2B0,y=F_adj),color="gray",linetype = "solid", size= .7)#
+  plotout <- plotout +#
+    geom_line(aes(x=B2B0,y=F_adj,color=HCR,linetype = HCR, size= HCR))#
+  if(!is.null(B2B0_ref)){#
+    plotout <- plotout +#
+      geom_point(data =plotdat%>%filter(B2B0 == B2B0_ref), #
+                 aes(x=B2B0,y=F_adj,color=HCR,size=2))#
+  }#
+  plotout <- plotout +#
+    #facet_wrap(HCRscen~.,ncol=ncolIN)+#
+    coord_cartesian(ylim = c(ylim[1],ylim[2]),#
+                    xlim = c(xlim[1],xlim[2]))+   #
+    theme_minimal()+    #
+    scale_color_manual(values = setNames(dataIN$col, dataIN$HCR)) +#
+    scale_linetype_manual(values = setNames(dataIN$line, dataIN$HCR)) +#
+    scale_size_manual(values = setNames(dataIN$size, dataIN$HCR)) +#
+    #labs(x = expression(B/B[0]), y = expression(F/F[ABC]), title = plotTitle) +#
+    labs(x = "B/B0", y = "F_adj", title = plotTitle) +#
+    theme(legend.position = "bottom",#
+          legend.title = element_blank(),#
+          plot.title = element_text(hjust = 0.5))#
+  if(wrapit)#
+    plotout <- plotout + facet_wrap(HCRscen~.,ncol=ncolIN)+#
+    theme(legend.position = "bottom",#
+          legend.title = element_blank(),#
+          plot.title = element_text(hjust = 0.5))#
+  return(plotout)#
+}#
+# HCR function from ACLIM (mimicking the one from your source file)#
+source("R/HCR_ACLIM.R")
+HCRpar     <- readxl::read_xlsx(file.path("data","HCR_par_shiny.xlsx"),col_names=T)%>%data.frame()#
+#
+B0    <- 3e6  # hypothetical B0 from the stock assessment in 2015#
+B     <- seq(0,4,.001)*B0#
+B2B0  <- B/B0#
+Fabc  <- .3
+HCRset         <- HCRpar$HCR_sub%>%unique()#
+HCR_levels     <- HCRpar$HCR_sub |> unique()#
+HCRscen_levels <- paste0("HCR",HCRpar$HCR |> unique())#
+subtxt_levels  <- HCRpar$sub |> unique()#
+colset         <- viridis(length(HCRscen_levels), #
+                          option = "mako", direction = -1,  begin = .15, end = .9)#
+lineset       <- c("solid","dashed","dotted","solid")#
+linesize      <- c(1,1,1,.7)#
+#
+# test the data inputs to make sure they are correct:#
+sp_tab <- data.frame(Species = c("Species1","Species2","Species3"),#
+                     sp = c("pollock","P. cod","atf"),sp_num = c(1:3))
+HCRnm_nm   <- lapply(strsplit(HCR_levels,split=":"),"[[",1)%>%unlist()#
+HCRnum     <- lapply(strsplit(HCRnm_nm,split="HCR"),"[[",2)%>%unlist()#
+HCR_subtxt <- substr(HCRnum,1,nchar(HCRnum)-1)#
+#
+col_line <- data.frame(HCR = factor(HCR_levels,levels=HCR_levels),#
+                       HCRscen = factor(paste0("HCR",substr(HCRnum,1,nchar(HCRnum)-1)),levels=HCRscen_levels),#
+                       subtxt  = factor( substr(HCRnum,nchar(HCRnum),nchar(HCRnum)),levels=subtxt_levels))#
+col_line$col  <- colset[as.numeric(col_line$HCRscen)]#
+col_line$line <- lineset[as.numeric(col_line$subtxt)]#
+col_line$size <- linesize[as.numeric(col_line$subtxt)]#
+#
+col_in  <- col_line$HCR; names(col_in)<-col_line$col  #
+line_in <- col_line$HCR; names(line_in)<-col_line$line  #
+txt2num<-function(x){#
+  if(is.character(x))#
+    return(eval(parse(text=x)))#
+  else#
+    return(x)#
+}#
+#
+baseData <- data.frame(B2B0=B2B0, F_adj = unlist(lapply(B2B0, ACLIM_HCR, type=1,#
+                                                        alpha = 0.05, B2B0_lim = 0.2, B2B0_target=0.4)),#
+                       alpha = 0.05, B2B0_lim = 0.2, B2B0_target=0.4)#
+cov_val <- 2.4
+cov_val <- 2.4#
+for(hh in 1:length(HCRset)){#
+  sub    <- HCRpar%>%filter(HCR_sub==HCRset[hh])#
+  HCRtmp <- sub$HCR[1]#
+  HCRsub <- sub$sub[1]#
+  sub    <- reshape::melt(sub[,1:4], id.vars = "Parm", #
+                 variable_name = "Species")%>%left_join(sp_tab,by = join_by(Species))#
+  sub <- sub%>%#
+    rowwise()%>%#
+    mutate(value2 = txt2num(value))%>%#
+    select(-value)%>%dplyr::rename(value = value2)#
+  sub <- reshape2::dcast(sub%>%select(Parm,Species,value), Species~Parm,  )%>%#
+    dplyr::rename(#
+    alpha=alpha_ABC,B2B0_lim = minBlimMult,cov=hcr_cov, B2B0_target =Btarget)#
+  sub$type <- HCRtmp#
+  sub$cov <- cov_val#
+  # if(hh==9)#
+  #   sub$cov <- -3#
+  for(i in 1: dim(sub)[1]){#
+    plotdat1 <- suppressWarnings(#
+      data.frame(B2B0 = B2B0,#
+                 F_adj = unlist( lapply (B2B0, ACLIM_HCR,#
+                                         type = HCRtmp,#
+                                         alpha =  sub$alpha[i],#
+                                         log_gamma = sub$log_gamma[i],#
+                                         omega1 = sub$omega1[i],#
+                                         omega2 = sub$omega2[i],#
+                                         omega3 = sub$omega3[i],#
+                                         log_theta = sub$log_theta[i],#
+                                         B2B0_lim = sub$B2B0_lim[i],#
+                                         B2B0_target = sub$B2B0_target[i],#
+                                         cov = sub$cov[i],#
+                                         Flim = 1)),#
+                 sub[i,],#
+                 HCR = HCRset[hh],#
+                 HCRscen = paste0("HCR",HCRtmp),#
+                 subtxt = HCRsub))#
+    if(i==1){#
+      plotdat_all <- plotdat1#
+    }else{#
+      plotdat_all <- rbind(plotdat_all,plotdat1)#
+    }#
+    rm(plotdat1)#
+  }#
+  if(hh == 1){#
+    plotdat_out <- plotdat_all#
+  }else{#
+    plotdat_out <- rbind(plotdat_out,plotdat_all)#
+  }#
+  rm(plotdat_all)#
+}#
+#
+plotdat_out <- plotdat_out%>%filter(Species == "Species1")#
+#
+plotdat_all <- plotdat_out%>%left_join( col_line, by = c("HCR", "HCRscen", "subtxt"))
+plotdat_out
+head(plotdat_out)
+B2B0
+Btarget
+B_target
+B_target <- 0.4
+B
+Btmp
+Btmp<- seq(0,1,.1)
+logit(Btmp)
+inv.logit(Btmp)
+plot(inv.logit(Btmp))
+plot(inv.logit(seq(-10,10,.1)))
+plot(inv.logit(seq(-1,1,.1)))
+plot(inv.logit(seq(-10,10,.1)))
+plot(inv.logit(seq(-10,10,.1)))
+inv.logit(10)
+inv.logit(10)
+inv.logit
+plot(iseq(-10,10,.1),nv.logit(seq(-10,10,.1)))
+plot(seq(-10,10,.1),inv.logit(seq(-10,10,.1)))
+plot(seq(-2,2,.1),inv.logit(seq(-10,10,.1)))
+plot(seq(-2,2,.1),inv.logit(seq(-2,2,.1)))
+B_lim
+B_lim<-.2
+Btmp/B_lim
+B_tmp/B_target
+Btmp/B_target
+log(Btmp/B_target)
+logit(Btmp/B_target)
+log(Btmp/B_target)
+inv.logit(log(Btmp/B_target))
+plot(Btmp,inv.logit(log(Btmp/B_target)))
+plot(Btmp,inv.logit(log(Btmp/B_target)))
+Btmp/B_target
+log(Btmp/B_target)
+log(Btmp/(1+B_target))
+plot(Btmp,inv.logit(log(Btmp/(1+B_target))))
+log(Btmp/(1+B_target)
+)
+plot(Btmp,inv.logit((Btmp/(1+B_target))))
+plot(Btmp,inv.logit((Btmp/(0+B_target))))
+plot(Btmp,inv.logit((Btmp/(1+B_target))))
+plot(Btmp,inv.logit((Btmp/(2+B_target))))
+plot(Btmp,inv.logit((Btmp/(20+B_target))))
+plot(Btmp,inv.logit((Btmp/(0+B_target))))
+plot(Btmp,inv.logit(((Btmp/B_lim)/(0+B_target))))
+plot(Btmp,inv.logit((log(Btmp/B_lim)/log(0+B_target))))
+plot(Btmp,logit((log(Btmp/B_lim)/log(0+B_target))))
+logit(F) = (Btmp-B_target)
+(Btmp-B_target)
+inv.logit(Btmp-B_target)
+inv.logit(Btmp-2*B_target)
+inv.logit(Btmp-20*B_target)
+inv.logit(Btmp-B_target)
+inv.logit(Btmp-B_target+Btmp-B_lim)
+plot(Btmp ,inv.logit(Btmp-B_target))
+plot(Btmp ,inv.logit(Btmp-B_target)/log(B_target))
+plot(Btmp ,inv.logit(Btmp-B_target))
+plot(Btmp ,inv.logit(10*(Btmp-B_target))
+)
+plot(Btmp ,inv.logit(10*(Btmp-B_target)))
+plot(Btmp ,inv.logit(10*(Btmp-B_target)),type = "l")
+plot(Btmp ,inv.logit(3*(Btmp-B_target)),type = "l")
+plot(Btmp ,inv.logit(5*(Btmp-B_target)),type = "l")
+plot(Btmp ,inv.logit(50*(Btmp-B_target)),type = "l")
+plot(Btmp ,inv.logit(100*(Btmp-B_target)),type = "l")
+plot(Btmp ,inv.logit(50*(Btmp-B_target)),type = "l")
+plot(Btmp ,inv.logit(5*(Btmp-B_target)),type = "l")
+plot(Btmp ,inv.logit(5*((Btmp-B_lim)-B_target))),type = "l")
+plot(Btmp ,inv.logit(5*(Btmp-B_lim)-B_target))),type = "l")
+plot(Btmp ,inv.logit(5*(Btmp-B_lim)-B_target)),type = "l")
+plot(Btmp ,inv.logit(5*(Btmp-B_lim)-B_target),type = "l")
+plot(Btmp ,inv.logit(5*((Btmp-B_lim)-B_target)),type = "l")
+plot(Btmp ,inv.logit(5*((Btmp+B_lim)-B_target)),type = "l")
+plot(Btmp ,inv.logit(50*((Btmp+B_lim)-B_target)),type = "l")
+plot(Btmp ,inv.logit(30*((Btmp+B_lim)-B_target)),type = "l")
+plot(Btmp ,inv.logit(50*((Btmp+B_lim)-B_target)),type = "l")
+plot(Btmp ,inv.logit(50*((Btmp - B_lim)-B_target)),type = "l")
+plot(Btmp ,inv.logit(50*((B_lim - Btmp)-B_target)),type = "l")
+plot(Btmp ,inv.logit(50*((Btmp - B_lim)-B_target)),type = "l")
+plot(Btmp ,inv.logit(50*((Btmp + B_lim)-B_target)),type = "l")
+B_lim <- 0; plot(Btmp ,inv.logit(50*((Btmp + B_lim)-B_target)),type = "l")
+B_lim <- 0.2; plot(Btmp ,inv.logit(50*((Btmp + B_lim)-B_target)),type = "l")
+B_lim <- 0.2;B_target <- .4; plot(Btmp ,inv.logit(50*((Btmp + B_lim)-B_target)),type = "l")
+B_lim <- 0.2;B_target <- .8; plot(Btmp ,inv.logit(50*((Btmp + B_lim)-B_target)),type = "l")
+B_lim <- 0.2;B_target <- .5; plot(Btmp ,inv.logit(50*((Btmp + B_lim)-B_target)),type = "l")
+B_lim <- 0.2;B_target <- .5; plot(Btmp ,inv.logit(5*((Btmp + B_lim)-B_target)),type = "l")
+B_lim <- 0.2;B_target <- .5; plot(Btmp ,inv.logit(10*((Btmp + B_lim)-B_target)),type = "l")
+B_lim <- 0.2;B_target <- .5; plot(Btmp ,inv.logit(100*((Btmp + B_lim)-B_target)),type = "l")
+B_lim <- 0.2;B_target <- .5; plot(Btmp ,inv.logit(100*((Btmp + B_lim)-B_target)),type = "l");abline(v = .4)
+B_lim <- 0.2;B_target <- .5; plot(Btmp ,inv.logit(100*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),type ='dotted')
+B_lim <- 0.2;B_target <- .5; plot(Btmp ,inv.logit(100*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),linetype ='dotted')
+B_lim <- 0.2;B_target <- .5; plot(Btmp ,inv.logit(100*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),type =2')
+B_lim <- 0.2;B_target <- .5; plot(Btmp ,inv.logit(100*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),type =2)
+B_lim <- 0.2;B_target <- .5; plot(Btmp ,inv.logit(100*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),type =2)
+B_lim <- 0.2;B_target <- .5; plot(Btmp ,inv.logit(100*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),linetype =2)
+B_lim <- 0.2;B_target <- .5; plot(Btmp ,inv.logit(100*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),line_type =2)
+B_lim <- 0.2;B_target <- .5; plot(Btmp ,inv.logit(100*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),line_type =2)
+?abline
+B_lim <- 0.2;B_target <- .5; plot(Btmp ,inv.logit(100*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+B_lim <- 0.2;B_target <- .5; plot(Btmp ,inv.logit(100*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+B_lim <- 0.05;B_target <- .5; plot(Btmp ,inv.logit(100*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+B_lim <- .5;B_target <- .5; plot(Btmp ,inv.logit(100*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+B_lim <- .5;B_target <- .4; plot(Btmp ,inv.logit(100*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+B_lim <- .2;B_target <- .4; plot(Btmp ,inv.logit(100*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+B_lim <- .5;B_target <- .4; plot(Btmp ,inv.logit(100*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+B_lim <- 2;B_target <- .4; plot(Btmp ,inv.logit(100*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+B_lim <- .02;B_target <- .4; plot(Btmp ,inv.logit(100*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+B_lim <- .2;B_target <- .4; plot(Btmp ,inv.logit(100*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+B_lim <- .2;B_target <- .5; plot(Btmp ,inv.logit(100*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+B_lim <- .2;B_target <- .5; plot(Btmp ,inv.logit(100*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+B_lim <- .2;B_target <- .5; plot(Btmp ,inv.logit(10*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+B_lim <- .12;B_target <- .5; plot(Btmp ,inv.logit(10*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+B_lim <- .12;B_target <- .4; plot(Btmp ,inv.logit(10*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+B_lim <- .12;B_target <- .3; plot(Btmp ,inv.logit(10*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+B_lim <- .02;B_target <- .3; plot(Btmp ,inv.logit(10*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+B_lim <- .02;B_target <- .3; plot(Btmp ,inv.logit(20*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+B_lim <- .02;B_target <- .4; plot(Btmp ,inv.logit(20*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+B_lim <- .2;B_target <- .4; plot(Btmp ,inv.logit(20*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+Btmp <-seq(0,2,.01);B_lim <- .2;B_target <- .4; plot(Btmp ,inv.logit(20*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+Btmp <-seq(0,1.4,.01);B_lim <- .2;B_target <- .4; plot(Btmp ,inv.logit(20*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+Btmp <-seq(0,1.4,.01);B_lim <- .02;B_target <- .4; plot(Btmp ,inv.logit(20*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+Btmp <-seq(0,1.4,.01);B_lim <- .1;B_target <- .4; plot(Btmp ,inv.logit(20*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+Btmp <-seq(0,1.4,.01);B_lim <- .1;B_target <- .5; plot(Btmp ,inv.logit(20*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+Btmp <-seq(0,1.4,.01);B_lim <- .1;B_target <- .3; plot(Btmp ,inv.logit(20*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+Btmp <-seq(0,1.4,.01);B_lim <- .1;B_target <- .4; plot(Btmp ,inv.logit(20*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+Btmp <-seq(0,1,.01);B_lim <- .1;B_target <- .4; plot(Btmp ,inv.logit(20*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+gamma <- 20; Btmp <-seq(0,1,.01);B_lim <- .1;B_target <- .4; plot(Btmp ,inv.logit(gamma*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+gamma <- 30; Btmp <-seq(0,1,.01);B_lim <- .1;B_target <- .4; plot(Btmp ,inv.logit(gamma*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+gamma <- 10; Btmp <-seq(0,1,.01);B_lim <- .1;B_target <- .4; plot(Btmp ,inv.logit(gamma*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+gamma <- 20; Btmp <-seq(0,1,.01);B_lim <- .1;B_target <- .4; plot(Btmp ,inv.logit(gamma*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+gamma <- 50; Btmp <-seq(0,1,.01);B_lim <- .1;B_target <- .4; plot(Btmp ,inv.logit(gamma*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+gamma <- 50; Btmp <-seq(0,1,.01);B_lim <- .1;B_target <- .5; plot(Btmp ,inv.logit(gamma*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+gamma <- 50; Btmp <-seq(0,1,.01);B_lim <- .01;B_target <- .5; plot(Btmp ,inv.logit(gamma*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+gamma <- 50; Btmp <-seq(0,1,.01);B_lim <- .2;B_target <- .5; plot(Btmp ,inv.logit(gamma*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+gamma <- 10; Btmp <-seq(0,1,.01);B_lim <- .3;B_target <- .35; plot(Btmp ,inv.logit(gamma*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+gamma <- 10; Btmp <-seq(0,1,.01);B_lim <- .1;B_target <- .35; plot(Btmp ,inv.logit(gamma*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+gamma <- 10; Btmp <-seq(0,1,.01);B_lim <- 0;B_target <- .35; plot(Btmp ,inv.logit(gamma*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+gamma <- 10; Btmp <-seq(0,1,.01);B_lim <- 0;B_target <- .5; plot(Btmp ,inv.logit(gamma*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+gamma <- 10; Btmp <-seq(0,1,.01);B_lim <- 0;B_target <- .5; plot(Btmp ,inv.logit(gamma*((Btmp + B_lim)+B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+gamma <- 10; Btmp <-seq(0,1,.01);B_lim <- 0;B_target <- .5; plot(Btmp ,inv.logit(gamma*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+gamma <- 10; Btmp <-seq(0,1,.01);B_lim <- 0;B_target <- .5; plot(Btmp ,inv.logit(gamma*((Btmp + B_lim)-B_target/gamma)),type = "l");abline(v = c(.2,.4),lty =2)
+gamma <- 10; Btmp <-seq(0,1,.01);B_lim <- 0;B_target <- .5; plot(Btmp ,inv.logit(gamma*((Btmp + B_lim)-B_target/(gamma/4)),type = "l");abline(v = c(.2,.4),lty =2)
+gamma <- 10; Btmp <-seq(0,1,.01);B_lim <- 0;B_target <- .5; plot(Btmp ,inv.logit(gamma*((Btmp + B_lim)-B_target/(gamma/4)),type = "l");abline(v = c(.2,.4),lty =2)
+gamma <- 10; Btmp <-seq(0,1,.01);B_lim <- 0;B_target <- .5; plot(Btmp ,inv.logit(gamma*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+gamma <- 10; Btmp <-seq(0,1,.01);B_lim <- 0;B_target <- .5; plot(Btmp ,inv.logit(gamma*((Btmp + B_lim*gamma)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+gamma <- 10; Btmp <-seq(0,1,.01);B_lim <- 0.2;B_target <- .5; plot(Btmp ,inv.logit(gamma*((Btmp + B_lim*gamma)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+gamma <- 10; Btmp <-seq(0,1,.01);B_lim <- 0.2;B_target <- .5; plot(Btmp ,inv.logit(gamma*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+gamma <- 2; Btmp <-seq(0,1,.01);B_lim <- 0.2;B_target <- .5; plot(Btmp ,inv.logit(gamma*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+gamma <- 2; Btmp <-seq(0,1,.01);B_lim <- 0.2;B_target <- .5; plot(Btmp ,inv.logit(gamma*((Btmp + B_lim/gamma)-B_target/gamma)),type = "l");abline(v = c(.2,.4),lty =2)
+gamma <- 10; Btmp <-seq(0,1,.01);B_lim <- 0.2;B_target <- .5; plot(Btmp ,inv.logit(gamma*((Btmp + B_lim/gamma)-B_target/gamma)),type = "l");abline(v = c(.2,.4),lty =2)
+gamma <- .1; Btmp <-seq(0,1,.01);B_lim <- 0.2;B_target <- .5; plot(Btmp ,inv.logit(gamma*((Btmp + B_lim/gamma)-B_target/gamma)),type = "l");abline(v = c(.2,.4),lty =2)
+gamma <- 1; Btmp <-seq(0,1,.01);B_lim <- 0.2;B_target <- .5; plot(Btmp ,inv.logit(gamma*((Btmp + B_lim/gamma)-B_target/gamma)),type = "l");abline(v = c(.2,.4),lty =2)
+gamma <- 1; Btmp <-seq(0,1,.01);B_lim <- 0.2;B_target <- .4; plot(Btmp ,inv.logit(gamma*((Btmp + B_lim/gamma)-B_target/gamma)),type = "l");abline(v = c(.2,.4),lty =2)
+gamma <- 1; Btmp <-seq(0,1,.01);B_lim <- 0.2;B_target <- .4; plot(Btmp ,inv.logit(gamma*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+gamma <- 4; Btmp <-seq(0,1,.01);B_lim <- 0.2;B_target <- .4; plot(Btmp ,inv.logit(gamma*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+gamma <- 40; Btmp <-seq(0,1,.01);B_lim <- 0.2;B_target <- .4; plot(Btmp ,inv.logit(gamma*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+gamma <- 200; Btmp <-seq(0,1,.01);B_lim <- 0.2;B_target <- .4; plot(Btmp ,inv.logit(gamma*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+gamma <- 20; Btmp <-seq(0,1,.01);B_lim <- 0.2;B_target <- .4; plot(Btmp ,inv.logit(gamma*((Btmp + B_lim)-B_target)),type = "l");abline(v = c(.2,.4),lty =2)
+inv.logit
+HCR11 <- function(x,gamma){ #
+  exp(x)/(gamma+exp(x))#
+}
+HCR11(x = Btmp, gamma = 10)
+plot(Btmp,HCR11(x = Btmp, gamma = 10))
+plot(Btmp,HCR11(x = Btmp, gamma = 10),type="l")
+plot(Btmp,HCR11(x = Btmp, gamma = .2),type="l")
+plot(Btmp,HCR11(x = Btmp, gamma = 2),type="l")
+plot(Btmp,HCR11(x = Btmp, gamma = 200),type="l")
+plot(Btmp,HCR11(x = Btmp/B_limit, gamma = 200),type="l")
+plot(Btmp,HCR11(x = Btmp/B_lim, gamma = 200),type="l")
+plot(Btmp,HCR11(x = Btmp-B_lim, gamma = 200),type="l")
+plot(Btmp,HCR11(x = Btmp-B_lim, gamma = 200),type="l")
+exp(-2)
+exp(.2)
+exp(.12)
+exp(.00002)
+log(.2)
+log(Btmp/B_target)
+inv.logit(log(Btmp/B_target))
+plot(Btmp,inv.logit(log(Btmp/B_target)))
+plot(Btmp,inv.logit(log(Btmp*B_target)))
+plot(Btmp,inv.logit(log(Btmp/B_lim)))
+plot(Btmp,inv.logit(exp(Btmp/B_lim)))
+plot(Btmp,inv.logit(exp(Btmp/B_target)))
+plot(Btmp,inv.logit((Btmp/B_target)))
+plot(Btmp,inv.logit(Btmp/B_target))
+plot(Btmp,inv.logit(Btmp/B_target)-inv.logit(Btmp/B_lim))
+plot(Btmp,inv.logit(Btmp/B_target)-inv.logit(Btmp-B_lim))
+plot(Btmp,inv.logit(Btmp-B_target)-inv.logit(Btmp-B_lim))
+plot(Btmp,inv.logit(Btmp-B_target)-inv.logit(Btmp+B_lim))
+plot(Btmp,inv.logit(Btmp-B_target)+inv.logit(Btmp+B_lim))
+plot(Btmp,inv.logit(Btmp-B_target + Btmp+B_lim))
+plot(Btmp,inv.logit(Btmp- B_target + B_lim))
+plot(Btmp,inv.logit(Btmp - B_target + B_lim))
+plot(Btmp,inv.logit(Btmp - B_target + B_lim));abline(v=c(.2,.4),lty=3)
+plot(Btmp,inv.logit(Btmp - B_target + B_lim),type = "line");abline(v=c(.2,.4),lty=3)
+plot(Btmp,inv.logit(Btmp - B_target + B_lim));abline(v=c(.2,.4),lty=3)
+plot(Btmp,inv.logit(Btmp - B_target + B_lim),type = "l");abline(v=c(.2,.4),lty=3)
+plot(Btmp,inv.logit(Btmp - B_target + B_lim),type = "l"); abline(v = c(.2,.4), lty = 3)
+plot(Btmp,inv.logit(Btmp - B_target),type = "l"); abline(v = c(.2,.4), lty = 3)
+plot(Btmp,inv.logit(gamma*(Btmp - B_target)),type = "l"); abline(v = c(.2,.4), lty = 3)
+plot(Btmp-B_lim,inv.logit(gamma*(Btmp - B_target)),type = "l"); abline(v = c(.2,.4), lty = 3)
+plot(Btmp-B_lim/2,inv.logit(gamma*(Btmp - B_target)),type = "l"); abline(v = c(.2,.4), lty = 3)
+B_lim <- 0.2; B_target <- .4;plot(Btmp-B_lim/2,inv.logit(gamma*(Btmp - B_target)),type = "l"); abline(v = c(.2,.4), lty = 3)
+B_lim <- 0; B_target <- .4;plot(Btmp-B_lim/2,inv.logit(gamma*(Btmp - B_target)),type = "l"); abline(v = c(.2,.4), lty = 3)
+B_lim <- 0.2; B_target <- .4;plot(Btmp-B_lim/2,inv.logit(gamma*(Btmp - B_target)),type = "l"); abline(v = c(.2,.4), lty = 3)
+B_lim <- 0.2; B_target <- .4;plot(Btmp-B_lim/2,inv.logit(gamma*(Btmp - B_target)),type = "l"); abline(v = c(.2,.4), lty = 3);Btmp-B_lim
+B_lim <- 0.2; B_target <- .4;plot(Btmp-B_lim,inv.logit(gamma*(Btmp - B_target)),type = "l"); abline(v = c(.2,.4), lty = 3);
+B_lim <- 0.2; B_target <- .4;plot(Btmp,inv.logit(gamma*(Btmp - B_target)),type = "l"); abline(v = c(.2,.4), lty = 3);
+B_lim <- 0.2; B_target <- .4;plot(Btmp+B_lim,inv.logit(gamma*(Btmp - B_target)),type = "l"); abline(v = c(.2,.4), lty = 3);
+B_lim <- 0.2; B_target <- .4;plot(Btmp,inv.logit(gamma*(Btmp - B_target)),type = "l"); abline(v = c(.2,.4), lty = 3);
+B_lim <- 0.2; B_target <- .4;plot(Btmp-B_target,inv.logit(gamma*(Btmp - B_target)),type = "l"); abline(v = c(.2,.4), lty = 3);
+B_lim <- 0.2; B_target <- .4;plot(Btmp,inv.logit(gamma*(Btmp - B_target)),type = "l"); abline(v = c(.2,.4), lty = 3);
+B_lim <- 0.2; B_target <- .4;plot(Btmp-B_lim,inv.logit(gamma*(Btmp - B_target)),type = "l"); abline(v = c(.2,.4), lty = 3);
+B_lim <- 0.1; B_target <- .4;plot(Btmp-B_lim,inv.logit(gamma*(Btmp - B_target)),type = "l"); abline(v = c(.2,.4), lty = 3);
+B_lim <- 0.2; B_target <- .4;plot(Btmp-B_lim,inv.logit(gamma*(Btmp - B_target)),type = "l"); abline(v = c(.2,.4), lty = 3);
+inv.logit
+B_lim <- 0.1; B_target <- .4;plot(Btmp-B_lim,inv.logit(gamma*(Btmp - B_target)),type = "l"); abline(v = c(.2,.4), lty = 3);

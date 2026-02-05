@@ -25,6 +25,7 @@ get_var_ophind <- function(
   CMIPIN    = "K20P19_CMIP6", 
   bcIN      = c("raw","bias corrected"),# "bias corrected or raw",
   GCMIN     = NULL, #
+  pathIN    = "data/out/CMIP6_K20P19_Indices_operational/allEBS_means",
   scenIN    = NULL,
   plotbasin  = c("SEBS"),
   facet_rowIN  = "bc", #choices=c("bc","basin","scen")
@@ -34,14 +35,22 @@ get_var_ophind <- function(
   scenINuse <- scenIN
   
   for(c in 1:length(CMIPIN)){
-    load(paste0("Data/out/",CMIPIN[c],"/allEBS_means/ACLIM_",typeIN,"_operational_hind_mn.Rdata"))
+    
+    load(file.path(pathIN,paste0("ACLIM_",typeIN,"_operational_hind_mn.Rdata")))
+    
+   # load(paste0("Data/out/",CMIPIN[c],"/allEBS_means/ACLIM_",typeIN,"_operational_hind_mn.Rdata"))
     eval(parse(text = paste0("dhindIN_op <- ACLIM_",typeIN,"_hind")))
     eval(parse(text = paste0("rm(ACLIM_",typeIN,"_hind)")))
-
-    load(paste0("Data/out/",CMIPIN[c],"/allEBS_means/ACLIM_",typeIN,"_hind_mn.Rdata"))
-    load(paste0("Data/out/",CMIPIN[c],"/allEBS_means/ACLIM_",typeIN,"_hist_mn.Rdata"))
-    load(paste0("Data/out/",CMIPIN[c],"/allEBS_means/ACLIM_",typeIN,"_fut_mn.Rdata"))
     
+    load(file.path(pathIN,paste0("ACLIM_",typeIN,"_hind_mn.Rdata")))
+    load(file.path(pathIN,paste0("ACLIM_",typeIN,"_hist_mn.Rdata")))
+    load(file.path(pathIN,paste0("ACLIM_",typeIN,"_fut_mn.Rdata")))
+    
+# 
+#     load(paste0("Data/out/",CMIPIN[c],"/allEBS_means/ACLIM_",typeIN,"_hind_mn.Rdata"))
+#     load(paste0("Data/out/",CMIPIN[c],"/allEBS_means/ACLIM_",typeIN,"_hist_mn.Rdata"))
+#     load(paste0("Data/out/",CMIPIN[c],"/allEBS_means/ACLIM_",typeIN,"_fut_mn.Rdata"))
+#     
     eval(parse(text = paste0("dhindIN <- ACLIM_",typeIN,"_hind")))
     eval(parse(text = paste0("dhistIN <- ACLIM_",typeIN,"_hist")))
     eval(parse(text = paste0("dfut <- ACLIM_",typeIN,"_fut")))

@@ -6,14 +6,6 @@ always_allow_html: true
 bibliography: refs.bib
 csl: american-fisheries-society.csl
 output:
-  html_document:
-    df_print: paged
-    toc: FALSE
-    toc_depth: 3
-    number_sections: true
-    toc_float:
-      collapsed: false
-      smooth_scroll: true
   pdf_document:
     toc: TRUE
     toc_depth: 3
@@ -23,6 +15,10 @@ output:
     highlight: tango
     keep_tex: yes
     latex_engine: xelatex
+  word_document:
+    fig_caption: yes
+    fig_width: 4
+    keep_md: yes
   header-includes:
   - \usepackage{knputenc}
   - \usepackage{unicode-math}
@@ -45,10 +41,14 @@ output:
   - \usepackage[normalem]{ulem}
   - \usepackage{makecell}
   - \usepackage{xcolor}
-  word_document:
-    fig_caption: yes
-    fig_width: 4
-    keep_md: yes
+  html_document:
+    df_print: paged
+    toc: FALSE
+    toc_depth: 3
+    number_sections: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: true
   bookdown::pdf_document2:
     fig_caption: yes
     highlight: zenburn
