@@ -1,0 +1,695 @@
+---
+title: "Pipeline: Make Bias Corrected ACLIM L4 indices"
+author: "K Holsman"
+format: html
+editor: visual
+---
+last update 2026
+
+# Overview
+
+This pipeline will step through the methods to create the bias corrected L4 indices for ACLIM. The general approach is:
+
+1.  get the Level3 (and or Level2) files from the thredds ACLIM PMEL server.
+2.  Convert the Level3 files to Rdata files.
+3.  Bias correct the projections using the updated hindcast.
+4.  Make Level4 indices: summarize the weekly strata-specific files by NEBS, SEBS, and NEBS+SEBS area weighted monthly, seasonal and annual means (Level4).
+5.  Upload the files to the AKFIN database
+
+# Step 0 : Set up the workspace
+
+```{r step0, include = T, echo = F, eval = T}
+# rm(list=ls())
+
+library(here)
+main <- here()
+
+# ----------------------------
+# load functions and packages in ACLIM repo
+# ----------------------------
+source(here("R/make.R")) |> suppressMessages()
+
+# ----------------------------
+# ref_years - for bias correction, 
+# standardized for ACLIM modelers; update if needed
+# ----------------------------
+ref_years 
+
+# ----------------------------
+# timestamp for updated folder (date is date of download from thredds)
+# ----------------------------
+tmstp    <- "2026_02_05"  
+
+# ----------------------------
+# switches
+# ----------------------------
+# set these to TRUE to update:
+redownload_nc_files   <- FALSE
+updateR_files         <- FALSE
+update_biascorrection <- FALSE
+
+# ----------------------------
+# set up paths and folders:
+# ----------------------------
+local_fl <- file.path(main,"Data/in",tmstp)
+Rdata_path   <- file.path(local_fl,"Rdata_files")
+nc_data_path <- file.path(local_fl,"nc_files")
+
+if(!file.exists(local_fl)) dir.create(local_fl)
+if(!file.exists(Rdata_path)) dir.create(Rdata_path)
+if(!file.exists(nc_data_path)) dir.create(nc_data_path)
+
+# ----------------------------
+# load thredds scraping utilities
+# ----------------------------
+source(here("R/subfun_aclim_thredds_util.R"))
+
+# ----------------------------
+# load/get the set of model runs from the thredds server:
+# ----------------------------
+
+if(redownload_nc_files){
+  sims <- aclim_thredds(section = "files")
+  save_as(x    = sims, 
+          name = "model_runs", 
+          file = file.path(Rdata_path,"model_runs.Rdata"))
+ 
+}else{
+   load(file.path(Rdata_path,"model_runs.Rdata")) # model_runs
+
+}
+ 
+# ----------------------------
+# load/get the list of Level2 variables from the thredds server:
+# ----------------------------
+
+if(redownload_nc_files){
+  L2_time_periods <- aclim_thredds(run = model_runs[2], level = 2)
+  L2_time_periods
+   save_as(x = L2_time_periods, 
+           name = "l2_time_periods",
+           file = file.path(Rdata_path,"l2_time_periods.Rdata")  )
+
+  L2_files <- aclim_thredds(run = model_runs[2],
+                            level = 2,
+                            time_period = L2_time_periods[1] )
+
+  L2_var_list  <- sub("^average_", "",  L2_files$variable)
+  save_as(L2_var_list, 
+          name = "l2_vars", 
+          file = file.path(Rdata_path,"l2_vars.Rdata")  )
+
+}else{
+  load(file.path(Rdata_path,"l2_vars.Rdata"))
+}
+
+
+```
+
+# Step 1 & 2: get the Level3 files from the thredds ACLIM PMEL server and covert to Rdata files (locally).
+
+The code below uses the get_l3 function - updated in 2026 - to grab the Level3 .nc files from the ACLIM thredds server. But to download the nc files for L2 and L3 directly see see: `~ACLIM2/Vignettes/get_ACLIM_nc_thredds_data.R` which includes step by step methods to inventory and download both Level2 and Level3 indices.
+
+```{r step1, echo=T,eval=T,include=T}
+
+# ===================================================
+#  grab the .nc files from the thredds server:
+# ===================================================
+if(redownload_nc_files){
+  
+  get_l3(from_thredds = T, 
+         download_nc = T,
+         cleanIT =  F,
+         convert2Rdata = F,  # just get the data for now
+         local_path = NULL,
+         varlist = vl,
+         sim_list = model_runs[-which(model_runs%in%c("B10K-K20nobio_CORECFS_daily"))])  
+  # get all the data
+  
+}
+
+# ===================================================
+# now convert the nc files to rdata for the variables in vl
+# ===================================================
+  tmp_path <- here::here("Data/in/2026_02_05/nc_files/B10K-K20_CORECFS/Level3")
+
+  nc <- nc_open(file.path(tmp_path,"ACLIMsurveyrep_B10K-K20_CORECFS.nc"))
+  survey_vars <- names(nc$var)
+  nc_close(nc)
+
+  nc <- nc_open(file.path(tmp_path,"ACLIMregion_B10K-K20_CORECFS.nc"))
+  weeklyByarea_vars <- names(nc$var)
+  nc_close(nc)
+  # weekly_vars may be outdated 
+
+  setdiff(weeklyByarea_vars,weekly_vars)
+       
+# ----------------------------
+# optional: first test with a small set of vars such as:
+# ----------------------------
+vl <- c("temp_bottom5m" ,
+        "NCaS_integrated", 
+        "Cop_integrated"  ,
+        "EupS_integrated")
+
+# weekly_vars and srvy_vars are lists loaded in the R/make.R from the ACLIM2 repo
+all_vars <- c(
+  weeklyByarea_vars[-which(weeklyByarea_vars%in%c("region_area"))],
+  survey_vars[-which(survey_vars%in%c("station_id",
+                                          "latitude",
+                                          "longitude", 
+                                          "stratum",
+                                          "doy"))]) |>unique()
+
+skip_list <-c("Iron_bottom5m","Iron_integrated","Iron_surface5m")
+save(skip_list,file=file.path(Rdata_path,"skip_list.Rdata"))
+
+# this takes a while if downloading all of the vars (approx 5 min per model run) ....
+if(updateR_files){
+  
+  get_l3(from_thredds = F, 
+         download_nc = F,
+         cleanIT =  T,
+         convert2Rdata = T,
+         fileset = c("ACLIMsurveyrep", "ACLIMregion" ),
+         varlist = all_vars[!all_vars%in%skip_list],
+         local_path = NULL,
+         verbose = T,
+         sim_list = model_runs[!model_runs%in%
+                                 c("B10K-K20nobio_CORECFS_daily")])  
+  # get all the data
+
+}
+
+```
+
+# Step 3: Bias correct the projections using the updated hindcast.
+
+In the next step we bias correct the projections based on historical or hindcast data. For CMIP5, we did not have historical runs for each global model (e.g., MIROC) so we bias corrected to a reference period from the hindcast (re-centering each variable in each projection using the overlapping projection and hindcast periods such that the mean of the projection was adjusted downward (upward) to mathc the mean of the corresponding hindcast reference period). This resulted in a slightly smaller "overlapping" refenrence period.
+
+For CMIP6, we had historical time periods that extended further back for each projection simulation so we recentered the projection x global model combination (e.g., MIROC ssp126) on the delta adjusted historical reference period means (historical MIROC and hindcast).
+
+For survey data the bias correction occurs at the level of the strata (not station location).
+
+For the regional weekly data, bias correction occured at the strata and weekly using a gam smoothed climatological average (to interpolate / smooth means across the few times when model weeks were missing from the simulation year).
+
+These methods are explored in more detail in Bigmann et al, in review.
+
+```{r step3, echo=TRUE,eval=FALSE,include=TRUE}
+
+# ===================================================
+# now bias correct to the hindcast for each CMIP
+# ===================================================
+
+# define the CMIP model sets:
+CMIP6_set <- model_runs[grep("K20P19",model_runs)]
+CMIP5_set <- model_runs[grep("H16_",model_runs)]
+
+# define the hindcast (should only be one for each)
+hind_cmip5_nm <- CMIP5_set[grep("CORECFS",CMIP5_set)]
+hind_cmip6_nm <- CMIP6_set[grep("CORECFS",CMIP6_set)]
+
+# ---------------------------------
+# load the weekly_vars list
+# ---------------------------------
+if(updateR_files){
+    L3_types <- c("ACLIMsurveyrep_","ACLIMregion_")
+  
+    tmppath  <- file.path(nc_data_path,CMIP6_set[d],"Level3")
+    dirlist  <- dir(tmppath)
+    tmp_fl   <- paste0(L3_types[1],CMIP6_set[d],".nc")
+    
+    nc <- ncdf4::nc_open(file.path(tmppath, tmp_fl))
+    print(nc)
+    
+    srvy_vars <- names(nc$var)
+    srvy_vars   <- c(srvy_vars,"largeZoop_integrated")
+
+    save(srvy_vars,file = file.path(Rdata_path,"srvy_vars.Rdata"))
+    nc_close(nc)
+    
+    tmppath  <- file.path(nc_data_path,CMIP6_set[d],"Level3")
+    dirlist  <- dir(tmppath)
+    tmp_fl   <- paste0(L3_types[2],CMIP6_set[d],".nc")
+    
+    nc <- ncdf4::nc_open(file.path(tmppath, tmp_fl))
+    print(nc)
+    
+    weekly_vars <- names(nc$var)
+    weekly_vars <- c(weekly_vars,"largeZoop_integrated")
+    save(weekly_vars,file = file.path(Rdata_path,"weekly_vars.Rdata"))
+    nc_close(nc) 
+  
+}else{
+  load(file.path(Rdata_path,"weekly_vars.Rdata"))
+  load(file.path(Rdata_path,"srvy_vars.Rdata"))
+  load(file.path(Rdata_path,"l2_vars.Rdata"))
+  load(file.path(Rdata_path,"skip_list.Rdata"))
+}
+
+
+# ---------------------------------
+# now create the bias corrected L4 Indices
+# ---------------------------------
+# skip_list
+
+vl1   <- srvy_vars #srvy_vars[!srvy_vars%in%rm_var_list]
+vl2   <- weekly_vars   # weekly_vars[!weekly_vars%in%rm_wk_list]
+
+# ---------------------------------
+# add in largeZoop (gets generated in make_indices_region_new.R)
+# ---------------------------------
+vl <- c(unique(c(vl1,vl2)),"largeZoop_integrated")
+
+# ---------------------------------
+# Identify which variables would be normally 
+# distributed (i.e., can have negative values)
+# ---------------------------------
+update_norm_list <- FALSE
+if(update_norm_list){
+
+  normvl <- c( 
+               vl[grep("temp",vl)],
+               vl[grep("pH",vl)],
+               #vl[grep("Ben",vl)],
+               vl[grep("Hsbl",vl)],
+               vl[grep("shflux",vl)],
+               vl[grep("ssflux",vl)],
+               vl[grep("vNorth",vl)],
+               vl[grep("uEast",vl)])
+  
+  normlist <- data.frame(var = vl, lognorm = "none",stringsAsFactors = F)
+  normlist$lognorm[!normlist$var%in%normvl]   <- "log"
+  
+  # specify which can only be 0 to 1 as "logit"
+  normlist$lognorm[normlist$var%in%
+                     c( vl[grep("aice",vl)],
+                        vl[grep("fracbelow0",vl)],
+                        vl[grep("fracbelow1",vl)],
+                        vl[grep("fracbelow2",vl)])]  <- "logit"
+  
+  save(normlist,file      = file.path(Rdata_path,"normlist.Rdata"))
+  write.csv(normlist,file = file.path(Rdata_path,"normlist.csv"))
+
+}else{
+  load(file      = file.path(Rdata_path,"normlist.Rdata"))
+}
+
+
+sv_bc    <- c("largeZoop_integrated","fracbelow2",
+              "temp_bottom5m","temp_surface5m","pH_depthavg")
+sv_bc <- NULL  # bias correct all indices
+
+
+save(weekly_vars,file   = here::here("Data/out/weekly_vars.Rdata"))
+save(srvy_vars,file     = here::here("Data/out/srvy_vars.Rdata"))
+write.csv(normlist,file = here::here("Data/out/","normlist.csv"))
+
+
+
+# ===================================================
+# generate indices and bias corrected projections 
+# this takes about 30 mins each
+# ===================================================
+
+  # -------------------------------------------
+  # CMIP6 K20P19
+  # -------------------------------------------
+  
+  load(file.path(Rdata_path,"model_runs.Rdata"))
+  
+  gcmcmipL <- c("B10K-K20P19_CMIP6_miroc",
+                "B10K-K20P19_CMIP6_gfdl",
+                "B10K-K20P19_CMIP6_cesm") 
+  
+  gcmcmipL2 <- c("B10K-K20P19_CMIP5_MIROC",
+                 "B10K-K20P19_CMIP5_GFDL",
+                 "B10K-K20P19_CMIP5_CESM")
+
+  #source("~/Documents/GitHub_mac/ACLIM2/R/03_load_functions.R")
+  rmlist <- c("station_id","latitude","longitude","stratum","doy")
+  #gc()
+  tmp_hind <- 
+    makeACLIM2_BC_Indices_new(
+    bystrata  = TRUE,
+    BC_target = "mn_val",  # bias corrected column name
+    ref_yrsIN = 1980:2013,
+    sv         = sv_bc,
+    updateHist = FALSE, # update_hist,
+    updateHind =  FALSE, # update_hind,
+    updateProj = TRUE,  
+    smoothIT   = TRUE,  # use gam() smoother
+    sfIN       = "val_delta",
+    CMIP_fdlr  = "K20P19_CMIP6",
+    scenIN     = c("ssp126","ssp585"),
+    hind_sim   =  "B10K-K20P19_CORECFS",
+    histLIST   = paste0(gcmcmipL,"_historical"),
+    gcmcmipLIST  = gcmcmipL,
+    usehist      = TRUE,
+    Rdata_pathIN = Rdata_path,
+    regnm        = "ACLIMregion",
+    srvynm       = "ACLIMsurveyrep",
+    normlist_IN  = normlist[!normlist$var%in%rmlist,],
+    sim_listIN   = model_runs[-grep("historical",model_runs)],
+    gcinfoIN     = FALSE) |> suppressMessages()
+  
+  rplc_bcplot <-TRUE
+  source("R/sub_scripts/plot_BC_stratawk.R")
+
+  
+  # make bc indices for survey rep stations
+  tmp2_hind<- suppressMessages(
+    makeACLIM2_BC_Indices_new(
+    bystrata  = FALSE,
+    BC_target = "mn_val",
+    sv        = sv_bc,
+    sfIN      = "val_delta",
+    smoothIT  = TRUE,  # use gam() smoother
+    updateHist = TRUE, # update_hist,
+    updateHind = TRUE, # update_hind,
+    updateProj = TRUE,
+    CMIP_fdlr   ="K20P19_CMIP6",
+    scenIN      = c("ssp126","ssp585"),
+    hind_sim    =  "B10K-K20P19_CORECFS",
+    histLIST    = paste0(gcmcmipL,"_historical"),
+    gcmcmipLIST = gcmcmipL,
+    usehist     = TRUE,
+    Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
+    regnm       = "ACLIMregion",
+    srvynm      = "ACLIMsurveyrep",
+    normlist_IN = normlist[!normlist$var%in%rmlist,],
+    sim_listIN  = model_runs[-grep("historical",model_runs)],
+    gcinfoIN    = FALSE))
+
+
+# -------------------------------------------
+# CMIP5 K20P19
+# -------------------------------------------
+
+gcmcmipL2 <- c("B10K-K20P19_CMIP5_MIROC",
+               "B10K-K20P19_CMIP5_GFDL",
+               "B10K-K20P19_CMIP5_CESM")
+# make bc indices for strata specific values:
+tmphind <- suppressMessages(makeACLIM2_BC_Indices_new(
+  bystrata  = TRUE,
+  BC_target = "mn_val",
+  ref_yrsIN = 1980:2020,
+  sv        = sv_bc,
+  updateHist = TRUE, # update_hist,
+  updateHind = TRUE, # update_hind,
+  updateProj = FALSE,
+  smoothIT  = TRUE,
+  CMIP_fdlr ="K20P19_CMIP5",
+  scenIN    = c("rcp45","rcp85"),
+  hind_sim  =  "B10K-K20P19_CORECFS",
+  histLIST  = gcmcmipL2,
+  gcmcmipLIST  = gcmcmipL2,
+  usehist      = FALSE,
+  Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
+  regnm        = "ACLIMregion",
+  srvynm       = "ACLIMsurveyrep",
+  normlist_IN  = normlist[!normlist$var%in%rmlist,],
+  sim_listIN   = model_runs[-grep("historical",model_runs)],
+  gcinfoIN     = FALSE))
+
+tmp <- suppressMessages(makeACLIM2_BC_Indices_new(
+  bystrata  = TRUE,
+  BC_target = "mn_val",
+  ref_yrsIN = 1980:2020,
+  sv        = sv_bc,
+  updateHist = FALSE, # update_hist,
+  updateHind = FALSE, # update_hind,
+  updateProj = TRUE,
+  smoothIT  = TRUE,
+  CMIP_fdlr ="K20P19_CMIP5",
+  scenIN    = c("rcp45","rcp85"),
+  hind_sim  =  "B10K-K20P19_CORECFS",
+  histLIST  = gcmcmipL2,
+  gcmcmipLIST  = gcmcmipL2,
+  usehist      = FALSE,
+  Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
+  regnm        = "ACLIMregion",
+  srvynm       = "ACLIMsurveyrep",
+  normlist_IN  = normlist[!normlist$var%in%rmlist,],
+  sim_listIN   = model_runs[-grep("historical",model_runs)],
+  gcinfoIN     = FALSE))   
+
+# rplc_bcplot <-TRUE
+# source("R/sub_scripts/plot_BC_stratawk.R")
+# 
+
+# make bc indices for survey rep stations
+tmp2<- suppressMessages(makeACLIM2_BC_Indices_new(
+  bystrata  = FALSE,
+  BC_target = "mn_val",
+  sv = sv_bc, 
+  smoothIT  = TRUE,
+  CMIP_fdlr ="K20P19_CMIP5",
+  scenIN    = c("rcp45","rcp85"),
+  hind_sim  =  "B10K-K20P19_CORECFS",
+  histLIST  = gcmcmipL2,
+  gcmcmipLIST  = gcmcmipL2,
+  usehist     = FALSE,
+  Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
+  regnm       = "ACLIMregion",
+  srvynm      = "ACLIMsurveyrep",
+  normlist_IN = normlist[!normlist$var%in%rmlist,],
+  sim_listIN  = model_runs[-grep("historical",model_runs)],
+  gcinfoIN    = FALSE))
+
+```
+
+# Step 4: Make Level4 ACLIM indices
+
+In this step we summarize the weekly strata-specific files by NEBS, SEBS, and NEBS+SEBS area weighted monthly, seasonal and annual means (Level4).
+
+```{r step 4, echo=TRUE,eval=FALSE,include=T}
+
+# -------------------------------------------
+# make ACLIM level 4 indices (annual, monthly, weekly, etc)
+# -------------------------------------------
+# source("~/Documents/GitHub_mac/ACLIM2/R/03_load_functions.R")
+gc()
+suppressMessages(
+  makeACLIM2_L4_Indices_strata(
+  CMIP_fdlr   = "Data/out/K20P19_CMIP6",
+  CMIP        = "CMIP6",
+  scenIN      = c("ssp126","ssp585"),
+  hind_sim    = "B10K-K20P19_CORECFS",
+  gcmcmipLIST = gcmcmipL,
+  ref_yrsIN   = 1980:2013,
+  subfldrIN     = "BC_ACLIMregion",
+  sim_listIN  = model_runs, 
+  varlistIN   = sv_bc,
+  prefix      = "ACLIMregion"))
+
+gc()
+suppressMessages(makeACLIM2_L4_Indices_survey(
+  CMIP_fdlr   = "Data/out/K20P19_CMIP6",
+  CMIP        = "CMIP6",
+  scenIN      = c("ssp126","ssp585"),
+  hind_sim    = "B10K-K20P19_CORECFS",
+  gcmcmipLIST = gcmcmipL,
+  subfldrIN     = "BC_ACLIMsurveyrep",
+  sim_listIN  = model_runs, 
+  varlistIN   = sv_bc,
+  prefix      = "ACLIMsurveyrep"))
+
+source("R/sub_scripts/plot_NEBSnSEBS.R")
+
+
+suppressMessages(makeACLIM2_L4_Indices_strata(
+  CMIP_fdlr   = "Data/out/K20P19_CMIP5",
+  CMIP        = "CMIP5",
+  scenIN    = c("rcp45","rcp85"),
+  hind_sim    = "B10K-K20P19_CORECFS",
+  gcmcmipLIST = gcmcmipL2,
+  subfldrIN     = "BC_ACLIMregion",
+  sim_listIN  = model_runs, 
+  varlistIN   = sv_bc,
+  prefix      = "ACLIMregion"))
+gc()
+
+suppressMessages(makeACLIM2_L4_Indices_survey(
+  CMIP_fdlr   = "Data/out/K20P19_CMIP5",
+  CMIP        = "CMIP5",
+  scenIN    = c("rcp45","rcp85"),
+  hind_sim    = "B10K-K20P19_CORECFS",
+  gcmcmipLIST = gcmcmipL2,
+  subfldrIN     = "BC_ACLIMsurveyrep",
+  sim_listIN  = model_runs, 
+  varlistIN   = sv_bc,
+  prefix      = "ACLIMsurveyrep"))
+
+# APPENDIX B: Create & bias correct ACLIM2 indices to IEA the operational hindcast
+
+
+# --------------------------------------
+# SETUP WORKSPACE
+# rm(list=ls())
+# setwd("D:/GitHub_cloud/ACLIM2")
+# loads packages, data, setup, etc.
+# generate indices and bias corrected projections 
+# this takes about 30 mins each
+# -------------------------------------------
+# Operational hincast CMIP6 K20P19
+# -------------------------------------------
+sv_bc <- NULL
+gcmcmipL <- c("B10K-K20P19_CMIP6_miroc",
+              "B10K-K20P19_CMIP6_gfdl",
+              "B10K-K20P19_CMIP6_cesm") 
+tmp_hind <- suppressMessages(makeACLIM2_BC_Indices_new(
+  bystrata  = TRUE,
+  overwrite = FALSE,
+  BC_target = "mn_val",
+  ref_yrsIN = 1980:2013,
+  sv         = sv_bc,
+  updateHist = FALSE, # update_hist,
+  updateHind = TRUE, # update_hind,
+  updateProj = FALSE,
+  smoothIT  = TRUE,
+  sfIN      = "val_delta",
+  CMIP_fdlr ="K20P19_CMIP6",
+  scenIN    = c("ssp126","ssp585"),
+  hind_sim  = "OperationalHindcast",
+  histLIST  = paste0(gcmcmipL,"_historical"),
+  gcmcmipLIST  = gcmcmipL,
+  usehist      = TRUE,
+  Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
+  regnm        = "ACLIMregion",
+  srvynm       = "ACLIMsurveyrep",
+  normlist_IN  = normlist[!normlist$var%in%rmlist,],
+  sim_listIN   = model_runs[-grep("historical",model_runs)],
+  gcinfoIN     = FALSE))
+
+
+tmp_hind2 <- suppressMessages(makeACLIM2_BC_Indices_new(
+  bystrata  = FALSE,
+  overwrite = FALSE,
+  BC_target = "mn_val",
+  ref_yrsIN = 1980:2013,
+  sv         = sv_bc,
+  updateHist = FALSE, # update_hist,
+  updateHind = TRUE, # update_hind,
+  updateProj = FALSE,
+  smoothIT  = TRUE,
+  sfIN      = "val_delta",
+  CMIP_fdlr ="K20P19_CMIP6",
+  scenIN    = c("ssp126","ssp585"),
+  hind_sim  = "OperationalHindcast",
+  histLIST  = paste0(gcmcmipL,"_historical"),
+  gcmcmipLIST  = gcmcmipL,
+  usehist      = TRUE,
+  Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
+  regnm        = "ACLIMregion",
+  srvynm       = "ACLIMsurveyrep",
+  normlist_IN  = normlist[!normlist$var%in%rmlist,],
+  sim_listIN   = model_runs[-grep("historical",model_runs)],
+  gcinfoIN     = FALSE))
+
+#make ACLIM level 4 indices (annual, monthly, seasonal, weekly)
+
+suppressMessages(makeACLIM2_L4_Indices_strata(
+  CMIP_fdlr   = "Data/out/K20P19_CMIP6",
+  ophind      = TRUE,
+  CMIP        = "CMIP6",
+  scenIN      = c("ssp126","ssp585"),
+  hind_sim    = "OperationalHindcast",
+  gcmcmipLIST = gcmcmipL,
+  subfldrIN     = "BC_ACLIMregion",
+  sim_listIN  = model_runs, 
+  varlistIN   = sv_bc,
+  #varlistIN   = c("aice","largeZoop_integrated"),
+  prefix      = "ACLIMregion"))
+gc()
+
+suppressMessages(makeACLIM2_L4_Indices_survey(
+  CMIP_fdlr   = "Data/out/K20P19_CMIP6",
+  ophind      = TRUE,
+  CMIP        = "CMIP6",
+  scenIN      = c("ssp126","ssp585"),
+  hind_sim    = "OperationalHindcast",
+  gcmcmipLIST = gcmcmipL,
+  subfldrIN     = "BC_ACLIMsurveyrep",
+  sim_listIN  = model_runs, 
+  varlistIN   = sv_bc,
+  prefix      = "ACLIMsurveyrep"))
+
+if(1==10){
+  
+  #Skip this for now
+  
+  # -------------------------------------------  
+  # CMIP5 H16
+  # -------------------------------------------
+  gcmcmipL2 <- c("B10K-H16_CMIP5_MIROC",
+                 "B10K-H16_CMIP5_GFDL",
+                 "B10K-H16_CMIP5_CESM") 
+  
+  tmp <- suppressMessages(makeACLIM2_BC_Indices_new(
+    bystrata  = TRUE,
+    BC_target = "mn_val",
+    sv        = NULL,
+    ref_yrsIN = 1980:2020,
+    smoothIT  = TRUE,
+    CMIP_fdlr ="B10K_H16",
+    scenIN    = c("rcp45","rcp85"),
+    hind_sim  =  "B10K-H16_CORECFS",
+    histLIST  = gcmcmipL2,
+    gcmcmipLIST  = gcmcmipL2,
+    usehist      = FALSE,
+    Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
+    regnm        = "ACLIMregion",
+    srvynm       = "ACLIMsurveyrep",
+    normlist_IN  = normlist[!normlist$var%in%rmlist,],
+    sim_listIN   = model_runs[-grep("historical",model_runs)],
+    gcinfoIN     = FALSE))
+  
+  # make bc indices for survey rep stations
+  tmp2<- suppressMessages(makeACLIM2_BC_Indices_new(
+    bystrata  = FALSE,
+    BC_target = "mn_val",
+    sv = sv_bc, 
+    smoothIT  = TRUE,
+    CMIP_fdlr ="B10K_H16",
+    scenIN    = c("rcp45","rcp85"),
+    hind_sim  =  "B10K-H16_CORECFS",
+    histLIST  = gcmcmipL2,
+    gcmcmipLIST  = gcmcmipL2,
+    usehist     = FALSE,
+    Rdata_pathIN = file.path(Rdata_path,"roms_for_public"),
+    regnm       = "ACLIMregion",
+    srvynm      = "ACLIMsurveyrep",
+    normlist_IN = normlist[!normlist$var%in%rmlist,],
+    sim_listIN  = model_runs[-grep("historical",model_runs)],
+    gcinfoIN    = FALSE))
+  #make ACLIM level 4 indices (annual, monthly, seasonal, weekly)
+  
+  suppressMessages(makeACLIM2_L4_Indices_strata(
+    CMIP_fdlr   = "Data/out/K20P19_CMIP5",
+    CMIP        = "CMIP5",
+    scenIN    = c("rcp45","rcp85"),
+    hind_sim    = "B10K-H16_CORECFS",
+    gcmcmipLIST = gcmcmipL2,
+    subfldr     = "BC_ACLIMregion",
+    sim_listIN  = model_runs, 
+    varlistIN   = normlist$var,
+    prefix      = "ACLIMregion"))
+  gc()
+  
+  suppressMessages(makeACLIM2_L4_Indices_survey(
+    CMIP_fdlr   = "Data/out/K20P19_CMIP5",
+    CMIP        = "CMIP5",
+    scenIN    = c("rcp45","rcp85"),
+    hind_sim    = "B10K-H16_CORECFS",
+    gcmcmipLIST = gcmcmipL2,
+    subfldr     = "BC_ACLIMsurveyrep",
+    sim_listIN  = model_runs, 
+    varlistIN   = normlist$var,
+    prefix      = "ACLIMsurveyrep"))
+}
+
+
+```
+
+# Step 5: Upload the files to the AKFIN database

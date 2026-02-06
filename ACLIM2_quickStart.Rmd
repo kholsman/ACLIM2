@@ -1250,7 +1250,7 @@ The following code shows how the ACLIM2 indices and bias correction was done. Yo
   # setwd("D:/GitHub_cloud/ACLIM2")
   # setwd("/Volumes/LaCie/GitHub_cloud/ACLIM2")
   # loads packages, data, setup, etc.
-  source("R/sub_scripts/APPENDIX_A.R")
+  source("R/sub_scripts/AppA_make_ACLIM_indices.R")
 
 ```
 
