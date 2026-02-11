@@ -8,7 +8,7 @@
 #' @param varlist list of variables to extract from the .nc files
 #' @param convert2Rdata convert the nc files to Rdata files
 #' @param proj_list list of simulations to draw from
-#' @param cleanIT  strip the longer columsn and collaspse them to a meta data file
+#' @param cleanIT  strip the longer names out and save them to a meta data file
 #' @param verbose return info on which variables are being converted
 #' @include  fun_aclim_thredds_util.R
 #' @example 
@@ -165,7 +165,7 @@ get_l3 <-function(
               meta          <- rbind(meta,dt_tmp)
              
               if(cleanIT)
-                tmp_var0 <- tmp_var0%>%select(-units,-long_name)|>data.frame()
+                tmp_var0 <- tmp_var0%>%select(-long_name)|>data.frame()
               tmp_var0$sim  <- strsplit(tmpfl$filename,".nc")[[1]]
               
               if(ii == 1)

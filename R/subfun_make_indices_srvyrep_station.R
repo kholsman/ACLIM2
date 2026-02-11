@@ -17,11 +17,11 @@ make_indices_srvyrep_station<-function(
     STRATA_AREAIN = STRATA_AREA,
     type          = "survey replicated",
     group_byIN    = c("station_id","latitude","longitude",
-                      "strata","strata_area_km2","basin","sim","long_name","var"),
+                      "strata","strata_area_km2","basin","sim","var"),
     log_adj    = 1e-4
 ){
   
-  var_defUSE <-srvy_var_def
+  #var_defUSE <-srvy_var_def
   
   
   if("largeZoop_integrated"%in%svIN){ 
@@ -36,15 +36,7 @@ make_indices_srvyrep_station<-function(
                       doy,subregion,
                       year,sim)%>%
       dplyr::summarise(val =sum(val))%>%
-      dplyr::mutate(var = "largeZoop_integrated",
-                    longname ="Total On-shelf large Zoop integrated over depth (NCa, Eup)")
-    sub <- tmp_var_zoop%>%filter(var=="largeZoop_integrated")%>%ungroup()%>%
-      select(var,longname)%>%
-      rename(name=var)%>%
-      distinct()
-    
-    var_defUSE <-rbind(srvy_var_def,sub)
-    rm(sub)
+      dplyr::mutate(var = "largeZoop_integrated")%>%ungroup()%>%data.frame()
     
     datIN    <- simIN%>%
       dplyr::filter(var%in%svIN)%>%
@@ -56,11 +48,9 @@ make_indices_srvyrep_station<-function(
                     doy,subregion,
                     year,sim,val,
                     var)%>%
-      dplyr:: left_join(var_defUSE, by=c("var"="name"))%>%
-      dplyr:: mutate(stratum = as.numeric(as.character(stratum)))
+      dplyr:: mutate(stratum = as.numeric(as.character(stratum)))%>%
+      ungroup()%>%data.frame()
     
-    datIN <- datIN%>%
-      dplyr::left_join(var_defUSE%>%select(name), by=c("var"="name"))
     datIN <- rbind(datIN,
                    data.frame(tmp_var_zoop)[,match(names(datIN),names(tmp_var_zoop))])
   }else{
@@ -74,17 +64,15 @@ make_indices_srvyrep_station<-function(
                     doy,subregion,
                     year,sim,val,
                     var)%>%
-      dplyr:: left_join(var_defUSE, by=c("var"="name"))%>%
       dplyr:: mutate(stratum = as.numeric(as.character(stratum)))
-    
-    datIN <- datIN%>%
-      dplyr::left_join(var_defUSE%>%select(name), by=c("var"="name"))
-    
+     # dplyr:: left_join(var_defUSE, by=c("var"="name"))%>%
+      
+   
   }
   
   
-  datIN<-datIN%>%
-    dplyr::left_join(normlistIN)%>%mutate(tmpval = val)
+  datIN <- datIN%>%
+         dplyr::left_join(normlistIN)%>%mutate(tmpval = val)
   
   # get station annual mean values
   # -------------------------------------
@@ -96,8 +84,7 @@ make_indices_srvyrep_station<-function(
     dplyr::left_join(STRATA_AREAIN%>%dplyr::select(stratum=STRATUM,strata_area_km2=AREA))%>%
     dplyr::rename(basin  = subregion,
                   jday   = doy,
-                  strata = stratum,
-                  long_name = longname)%>%
+                  strata = stratum)%>%
     dplyr::ungroup()%>%
     dplyr::group_by(across(all_of(c("year",group_byIN))))%>%
     dplyr::summarise(
@@ -110,7 +97,7 @@ make_indices_srvyrep_station<-function(
                   season   = "srvy_rep",
                   mnDate   = as.Date(paste0(year,"-01-01"))+jday,
                   qry_date = format(Sys.time(), "%Y_%m_%d"),
-                  type     = type)%>%ungroup()
+                  type     = type)%>%ungroup()%>%data.frame()
   
   # get strata mean values (average across years)
   # -------------------------------------
@@ -124,7 +111,7 @@ make_indices_srvyrep_station<-function(
     dplyr::group_by(across(all_of(group_byIN)))%>%
     dplyr::summarize(mnVal_x   = mean(mn_val,na.rm=T),
                      sdVal_x   = sd(mn_val, na.rm = T),
-                     nVal_x    = length(!is.na(mn_val)))%>%ungroup()
+                     nVal_x    = length(!is.na(mn_val)))%>%ungroup()%>%data.frame()
   
   tmp_var$seVal_x <- tmp_var$sdVal_x/sqrt(tmp_var$nVal_x)
   
@@ -135,7 +122,7 @@ make_indices_srvyrep_station<-function(
     sub_strata <- datIN%>%filter(year%in%ref_yrs)
   }
   
-  sub_strata<-sub_strata%>%
+  sub_strata <- sub_strata%>%
     dplyr::group_by(var,basin,strata)%>%
     dplyr::summarize(sdVal_x_strata   = sd(mn_val, na.rm = T))%>%
     ungroup()%>%

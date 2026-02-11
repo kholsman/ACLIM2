@@ -6,6 +6,25 @@
 #'K Holsman
 #'
 
+fixcaps<-function(x,out="RCP"){
+  RCP = unlist(lapply(strsplit(x,"_"),"[",5))
+  GCM = unlist(lapply(strsplit(x,"_"),"[",4))
+  CMIP = unlist(lapply(strsplit(x,"_"),"[",3))
+  mod = unlist(lapply(strsplit(x,"_"),"[",2))
+  gcmcmip = paste(mod,CMIP,GCM,sep="_")
+  if(out =="RCP")
+    return(RCP)
+  if(out == "GCM")
+    return(GCM)
+  if(out == "CMIP")
+    return(CMIP)
+  if (out=="mod")
+    return(mod)
+  if(out=="gcmcmip")
+    return(gcmcmip)
+  
+}
+
 dir.remove<-function(x){
   eval(parse(text=paste0("system('rm -r ",x,"')")))
 }

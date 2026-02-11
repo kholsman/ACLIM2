@@ -172,11 +172,32 @@
     cat("------------------------------\n")
     cat("------------------------------\n")
     cat("\n")
-    cat(paste("The following datasets use the B10K-H16_CORECFS hindcast and are public, please cite as Hermann et al. 2019 (v.H16) :\n"))
-    for(k in public)
+    txt <- paste("The following datasets use the B10K-H16_CORECFS hindcast and are public, please cite as Hermann et al. 2016, 2019 (v.H16) :\n")
+    
+    wrapped <- strwrap(txt, width = 50)
+    cat(wrapped, sep = "\n")
+    
+     for(k in public)
       cat(paste(k,"\n"))
+    
     cat("\n")
-    cat(paste("The following datasets use the B10K-K20_CORECFS hindcast and are public, please reach out to A. Hermann, K. Kearney, W. Cheng, and D. Pilcher for more info, please cite as Kearney et al. 2020 and Pilcher et al. (2021) for v.K20 hindcast), Hermann et al. (2021), and Cheng et al. 2021 (for CMIP6 projections). \n"))
+    txt <- paste("The following datasets use the B10K-K20P19 model to project under CMIP5 and are public, please reach out to D. Pilcher, K. Kearney, W. Cheng, and A. Hermann for more info, please cite as Kearney et al. 2020 and Pilcher et al. (2021) for v.K20P19 hindcast and Pilcher et al. (2021) for CMIP5 projections. \n")
+    
+    wrapped <- strwrap(txt, width = 50)
+    cat(wrapped, sep = "\n")
+    
+    tt <- sim_list[grep("B10K-K20P19_CMIP5", sim_list)]
+    for(s in seq_along(tt))
+      cat(paste(tt[s],"\n"))
+    
+    cat("\n")
+    txt <- paste("The following datasets use the B10K-K20_CORECFS hindcast and are public, 
+                 please reach out to A. Hermann, K. Kearney, W. Cheng, and D. Pilcher for 
+                 more info, please cite as Kearney et al. 2020 and Pilcher et al. (2021) for v.K20P19 hindcast), Hermann et al. (2021), and Cheng et al. 2021 (for CMIP6 projections). \n")
+    
+    wrapped <- strwrap(txt, width = 50)
+    cat(wrapped, sep = "\n")
+    
     for(k in embargoed)
       cat(paste(k,"\n"))
     

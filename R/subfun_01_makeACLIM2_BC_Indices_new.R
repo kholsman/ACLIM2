@@ -1,12 +1,12 @@
 #'
 #'
 #'
-#'makeACLIM2_BC_Indices_new()
+#'makeACLIM2_BC_Indices_new
 #'
 #'Author: Kirstin Holsman
 #'kirstin.holsman at noaa.gov
 #'
-#'This script will created the ACLIM indices and 
+#'This script created the ACLIM L4 indices and 
 #'    correct the CMIP6 projections using the 
 #'    hindcast and historical simulations
 #' updated 2026
@@ -140,7 +140,7 @@ makeACLIM2_BC_Indices_new <- function(
                  scenIN    =  scenIN,
                  regnm     = regnm,
                  srvynm    = srvynm,
-                 histLIST =histLIST,
+                 histLIST  = histLIST,
                  Rdata_pathIN = Rdata_pathIN,
                  normlist_IN = normlist_IN,
                  gcmcmipLIST = gcmcmipLIST,
@@ -150,13 +150,17 @@ makeACLIM2_BC_Indices_new <- function(
   }
   
   if(updateProj){
-    cat("Load hind & hist \n")
+   
     #nm <- "BC_mn_hist.Rdata"
-    nm <- paste(subtxt,"BC_mn_hist.Rdata",sep="_")
-    load(file=file.path(fl,nm))
+   if(usehist) {
+     nm <- paste(subtxt,"BC_mn_hist.Rdata",sep="_")
+     cat("Load hist",file.path(fl,nm),"\n")
+     load(file=file.path(fl,nm))
+   }
     
     #nm <- "BC_mn_hind.Rdata"
     nm <- paste(subtxt,hind_sim,"BC_mn_hind.Rdata",sep="_")
+    cat("Load hind",file.path(fl,nm),"\n")
     load(file=file.path(fl,nm))
     
     cat("Remove any previous fut files \n")
@@ -169,7 +173,7 @@ makeACLIM2_BC_Indices_new <- function(
             file.remove(file.path(fl,dd))
         }
       }
- 
+  
     #source("R/sub_scripts/sub_makeACLIM2_BC_indices/sub_get_proj.R")
     sub_get_proj(  reg_txtIN = reg_txtIN,
                    fut_startY= 2015,
@@ -195,6 +199,7 @@ makeACLIM2_BC_Indices_new <- function(
                    normlist_IN  = normlist_IN,
                    gcmcmipLIST  = gcmcmipLIST,
                    sim_listIN   = sim_listIN)
+    
     cat(" Make proj...Complete \n")
   }
 }
