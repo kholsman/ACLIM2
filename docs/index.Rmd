@@ -73,7 +73,7 @@ ACLIM is focusing on key species (fish, crabs and marine mammals) where changes 
 
 ## Get the ACLIM Level4 indices
 
-<a href="Pipeline_to_make_L4_indices.html">Pipeline to make L4 indices</a>
+[Pipeline to make L4 indices](Pipeline_to_make_L4_indices.html)
 
 
 ## Clone the ACLIM2 repo
