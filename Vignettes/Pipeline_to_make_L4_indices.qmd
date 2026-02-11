@@ -16,6 +16,7 @@ format:
     number-sections: true
     code-fold: false
     df-print: paged
+    embed-resources: true
   pdf:
     pdf-engine: lualatex
     documentclass: scrartcl
